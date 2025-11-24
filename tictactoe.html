@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tic-Tac-Toe / Indrolend</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="script.js"></script>
+</head>
+<body class="ttt-bg">
+  <div class="ttt-container">
+    <header class="ttt-header">
+      <h1>image gallery lock</h1>
+      <p>win to open the gallery.</p>
+    </header>
+
+    <main class="ttt-main">
+      <div id="tttBoard" class="ttt-board">
+        <button class="ttt-cell" data-index="0"></button>
+        <button class="ttt-cell" data-index="1"></button>
+        <button class="ttt-cell" data-index="2"></button>
+        <button class="ttt-cell" data-index="3"></button>
+        <button class="ttt-cell" data-index="4"></button>
+        <button class="ttt-cell" data-index="5"></button>
+        <button class="ttt-cell" data-index="6"></button>
+        <button class="ttt-cell" data-index="7"></button>
+        <button class="ttt-cell" data-index="8"></button>
+      </div>
+      <div id="tttStatus" class="ttt-status"></div>
+    </main>
+  </div>
+
+  <div id="tttWinModal" class="ttt-modal hidden">
+    <div class="ttt-modal-inner">
+      <p>image gallery unlocked.</p>
+      <button id="tttWinOk" class="ttt-win-ok">ok</button>
+    </div>
+  </div>
+</body>
+</html>
