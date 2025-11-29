@@ -518,7 +518,7 @@ let verifyBtn = document.getElementById("fkrc-verifywin-verify-button");
 function addCaptchaListeners() {
     if (checkboxBtn && verifyBtn) {
         document.addEventListener("click", function (event) {
-            const path = event.composedPath ? event.composedPath() : [];
+            const path = event.path || (event.composedPath && event.composedPath()) || [];
             if (!path.includes(verifyWindow) && isVerifyWindowVisible()) {
                 closeVerifyWindow();
             }
