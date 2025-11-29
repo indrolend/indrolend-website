@@ -81,16 +81,6 @@ html, body {
 }
 
 /* HOME PAGE */
-.home-bg {
-  background: radial-gradient(circle at top, #050b20 0, #01030a 55%, #000000 100%);
-  min-height: 100vh;
-}
-
-.home-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 32px 18px 48px;
-}
 
 .home-title {
   font-size: 26px;
@@ -590,32 +580,6 @@ html, body {
   flex-wrap: wrap;
   gap: 6px;
   margin-top: 8px;
-}
-
-.story-choice-btn {
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(154,252,139,0.4);
-  background: transparent;
-  color: var(--terminal-green);
-  font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
-  font-size: 11px;
-  cursor: pointer;
-}
-
-.story-choice-btn:hover {
-  background: rgba(15,40,30,0.9);
-}
-
-/* variables from user */
-.story-var {
-  color: var(--terminal-green);
-  font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
-}
-
-.glitch-char {
-  display: inline-block;
-  transition: font-family 0.15s ease;
 }
 
 /* ---- GALLERY PAGE ---- */

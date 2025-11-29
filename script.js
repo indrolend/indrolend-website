@@ -1,34 +1,4 @@
-
 document.addEventListener("DOMContentLoaded", () => {
-  // --- Fake CAPTCHA on index.html ---
-  const checkbox = document.getElementById("captchaCheck");
-  const captchaBox = document.getElementById("captchaBox");
-  const typingScreen = document.getElementById("typingScreen");
-  const typingArea = document.getElementById("typingArea");
-
-  if (checkbox && captchaBox && typingScreen && typingArea) {
-    checkbox.addEventListener("click", () => {
-      captchaBox.classList.add("hidden");
-      typingScreen.classList.remove("hidden");
-
-      let text = "";
-      let count = 0;
-
-      const interval = setInterval(() => {
-        text += "INDROLEND   ";
-        typingArea.textContent = text;
-        count++;
-
-        if (count > 30) {
-          clearInterval(interval);
-          setTimeout(() => {
-            window.location.href = "home.html";
-          }, 600);
-        }
-      }, 100);
-    });
-  }
-
   // --- Matrix background on home.html ---
   const matrixEl = document.getElementById("matrixBg");
   if (matrixEl) {
@@ -99,31 +69,6 @@ if (galleryCard) {
     };
     setRandomChar();
     setInterval(setRandomChar, 180);
-  }
-
-  // --- Gallery page logic ---
-  const galleryImg = document.getElementById("galleryImage");
-  const prevBtn = document.getElementById("galleryPrev");
-  const nextBtn = document.getElementById("galleryNext");
-
-  if (galleryImg && prevBtn && nextBtn && Array.isArray(window.__GALLERY_IMAGES__)) {
-    let index = 0;
-    const total = window.__GALLERY_IMAGES__.length;
-
-    function updateImage() {
-      const name = window.__GALLERY_IMAGES__[index];
-      galleryImg.src = "images/" + name;
-    }
-
-    prevBtn.addEventListener("click", () => {
-      index = (index - 1 + total) % total;
-      updateImage();
-    });
-
-    nextBtn.addEventListener("click", () => {
-      index = (index + 1) % total;
-      updateImage();
-    });
   }
 
   // --- Word game / story engine on wordgame.html ---
@@ -516,6 +461,10 @@ Dr. Wei's voice lingers at the edge of the memory:
   }
 
   // --- Gallery gating on gallery.html ---
+  const galleryImg = document.getElementById("galleryImage");
+  const prevBtn = document.getElementById("galleryPrev");
+  const nextBtn = document.getElementById("galleryNext");
+
   if (galleryImg && prevBtn && nextBtn && Array.isArray(window.__GALLERY_IMAGES__)) {
     const unlocked = localStorage.getItem("galleryUnlocked") === "true";
     if (!unlocked) {
@@ -569,7 +518,8 @@ let verifyBtn = document.getElementById("fkrc-verifywin-verify-button");
 function addCaptchaListeners() {
     if (checkboxBtn && verifyBtn) {
         document.addEventListener("click", function (event) {
-            if (!event.path.includes(verifyWindow) && isVerifyWindowVisible()) {
+            const path = event.path || (event.composedPath && event.composedPath()) || [];
+            if (!path.includes(verifyWindow) && isVerifyWindowVisible()) {
                 closeVerifyWindow();
             }
         });
