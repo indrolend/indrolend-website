@@ -668,6 +668,113 @@ html, body {
 .gallery-prev { left: 10px; }
 .gallery-next { right: 10px; }
 
+/* ---- SWIPEABLE CAROUSEL GALLERY ---- */
+.gallery-main-carousel {
+  position: relative;
+  border-radius: 18px;
+  border: 1px solid var(--border-subtle);
+  background: #020612;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.95);
+  padding: 20px 0;
+  overflow: hidden;
+}
+
+.carousel-track-container {
+  width: 100%;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.carousel-track-container:active {
+  cursor: grabbing;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 20px;
+  padding: 0 20px;
+  transition: transform 0.3s ease-out;
+  will-change: transform;
+}
+
+.carousel-track.dragging {
+  transition: none;
+}
+
+.carousel-slide {
+  flex: 0 0 auto;
+  width: calc(100% - 40px);
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  min-height: 400px;
+}
+
+.carousel-slide img {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+.carousel-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 0 20px;
+  flex-wrap: wrap;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-subtle);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.carousel-dot:hover {
+  background: var(--terminal-green-soft);
+}
+
+.carousel-dot.active {
+  background: var(--terminal-green);
+  transform: scale(1.3);
+}
+
+@media (min-width: 900px) {
+  .carousel-slide {
+    width: 600px;
+  }
+  .carousel-track {
+    gap: 30px;
+    padding: 0 calc((100% - 600px) / 2);
+  }
+}
+
+@media (max-width: 640px) {
+  .carousel-slide {
+    width: calc(100vw - 60px);
+    min-height: 300px;
+  }
+  .carousel-track {
+    gap: 15px;
+    padding: 0 15px;
+  }
+  .gallery-main-carousel {
+    padding: 15px 0;
+  }
+}
+
 @media (max-width: 640px) {
   .home-header-image-wrap {
     width: 100%;

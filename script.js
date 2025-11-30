@@ -620,35 +620,138 @@ Dr. Wei's voice lingers at the edge of the memory:
   }
 
   // --- Gallery gating on gallery.html ---
-  const galleryImg = document.getElementById("galleryImage");
-  const prevBtn = document.getElementById("galleryPrev");
-  const nextBtn = document.getElementById("galleryNext");
+  const carouselTrack = document.getElementById("carouselTrack");
+  const carouselIndicator = document.getElementById("carouselIndicator");
 
-  if (galleryImg && prevBtn && nextBtn && Array.isArray(window.__GALLERY_IMAGES__)) {
+  if (carouselTrack && carouselIndicator && Array.isArray(window.__GALLERY_IMAGES__)) {
     const unlocked = localStorage.getItem("galleryUnlocked") === "true";
     if (!unlocked) {
       window.location.href = "home.html";
     } else {
-      let index = 0;
-      const total = window.__GALLERY_IMAGES__.length;
+      const images = window.__GALLERY_IMAGES__;
+      let currentIndex = 0;
+      let isDragging = false;
+      let startX = 0;
+      let currentTranslate = 0;
+      let prevTranslate = 0;
+      let animationID = 0;
 
-      function updateImage() {
-        const name = window.__GALLERY_IMAGES__[index];
-        galleryImg.src = "images/" + name;
-        galleryImg.alt = "image " + (index + 1) + " of " + total;
+      // Create slides
+      images.forEach((name, i) => {
+        const slide = document.createElement("div");
+        slide.className = "carousel-slide";
+        const img = document.createElement("img");
+        img.src = "images/" + name;
+        img.alt = "image " + (i + 1) + " of " + images.length;
+        img.loading = "lazy";
+        slide.appendChild(img);
+        carouselTrack.appendChild(slide);
+
+        // Create dot
+        const dot = document.createElement("div");
+        dot.className = "carousel-dot" + (i === 0 ? " active" : "");
+        dot.addEventListener("click", () => goToSlide(i));
+        carouselIndicator.appendChild(dot);
+      });
+
+      const slides = carouselTrack.querySelectorAll(".carousel-slide");
+      const dots = carouselIndicator.querySelectorAll(".carousel-dot");
+
+      function getSlideWidth() {
+        return slides[0] ? slides[0].offsetWidth + parseInt(getComputedStyle(carouselTrack).gap) : 300;
       }
 
-      prevBtn.addEventListener("click", () => {
-        index = (index - 1 + total) % total;
-        updateImage();
+      function setPositionByIndex() {
+        currentTranslate = -currentIndex * getSlideWidth();
+        prevTranslate = currentTranslate;
+        setSliderPosition();
+        updateDots();
+      }
+
+      function setSliderPosition() {
+        carouselTrack.style.transform = `translateX(${currentTranslate}px)`;
+      }
+
+      function updateDots() {
+        dots.forEach((dot, i) => {
+          dot.classList.toggle("active", i === currentIndex);
+        });
+      }
+
+      function goToSlide(index) {
+        currentIndex = Math.max(0, Math.min(index, images.length - 1));
+        setPositionByIndex();
+      }
+
+      // Touch events
+      carouselTrack.addEventListener("touchstart", touchStart, { passive: true });
+      carouselTrack.addEventListener("touchmove", touchMove, { passive: false });
+      carouselTrack.addEventListener("touchend", touchEnd);
+
+      // Mouse events
+      carouselTrack.addEventListener("mousedown", touchStart);
+      carouselTrack.addEventListener("mousemove", touchMove);
+      carouselTrack.addEventListener("mouseup", touchEnd);
+      carouselTrack.addEventListener("mouseleave", touchEnd);
+
+      function touchStart(e) {
+        isDragging = true;
+        startX = getPositionX(e);
+        carouselTrack.classList.add("dragging");
+        animationID = requestAnimationFrame(animation);
+      }
+
+      function touchMove(e) {
+        if (!isDragging) return;
+        const currentX = getPositionX(e);
+        currentTranslate = prevTranslate + currentX - startX;
+        if (e.cancelable) e.preventDefault();
+      }
+
+      function touchEnd() {
+        isDragging = false;
+        cancelAnimationFrame(animationID);
+        carouselTrack.classList.remove("dragging");
+
+        const movedBy = currentTranslate - prevTranslate;
+        const threshold = getSlideWidth() / 4;
+
+        if (movedBy < -threshold && currentIndex < images.length - 1) {
+          currentIndex++;
+        } else if (movedBy > threshold && currentIndex > 0) {
+          currentIndex--;
+        }
+
+        setPositionByIndex();
+      }
+
+      function getPositionX(e) {
+        return e.type.includes("mouse") ? e.pageX : e.touches[0].clientX;
+      }
+
+      function animation() {
+        setSliderPosition();
+        if (isDragging) requestAnimationFrame(animation);
+      }
+
+      // Keyboard navigation
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft" && currentIndex > 0) {
+          currentIndex--;
+          setPositionByIndex();
+        } else if (e.key === "ArrowRight" && currentIndex < images.length - 1) {
+          currentIndex++;
+          setPositionByIndex();
+        }
       });
 
-      nextBtn.addEventListener("click", () => {
-        index = (index + 1) % total;
-        updateImage();
+      // Handle window resize
+      window.addEventListener("resize", () => {
+        setPositionByIndex();
       });
 
-      updateImage();
+      // Initialize position
+      setPositionByIndex();
     }
   }
 

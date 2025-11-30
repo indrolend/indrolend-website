@@ -13,12 +13,13 @@
       <h1>image gallery</h1>
       <a href="home.html" class="gallery-back">← back</a>
     </header>
-    <main class="gallery-main">
-      <button class="gallery-nav gallery-prev" id="galleryPrev">‹</button>
-      <div class="gallery-image-wrap">
-        <img id="galleryImage" src="images/0.JPG" alt="gallery image" />
+    <main class="gallery-main-carousel">
+      <div class="carousel-track-container">
+        <div class="carousel-track" id="carouselTrack">
+          <!-- Images will be loaded dynamically by JS -->
+        </div>
       </div>
-      <button class="gallery-nav gallery-next" id="galleryNext">›</button>
+      <div class="carousel-indicator" id="carouselIndicator"></div>
     </main>
   </div>
   <script>
