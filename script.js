@@ -1,7 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
   // --- Important word fluctuation effect ---
+  // Font weights available in EB Garamond
+  const fontVariants = [
+    { weight: 400, style: 'normal' },
+    { weight: 500, style: 'normal' },
+    { weight: 600, style: 'normal' },
+    { weight: 700, style: 'normal' },
+    { weight: 800, style: 'normal' },
+    { weight: 400, style: 'italic' },
+    { weight: 500, style: 'italic' },
+    { weight: 600, style: 'italic' }
+  ];
+
   function initImportantWords() {
     const importantWords = document.querySelectorAll(".important-word");
+    const allLetterSpans = [];
+
     importantWords.forEach(el => {
       // Skip if already processed
       if (el.dataset.fluctuateInit) return;
@@ -20,10 +34,29 @@ document.addEventListener("DOMContentLoaded", () => {
           span.className = "important-word-letter";
           // Random animation delay between 0 and 2 seconds
           span.style.animationDelay = (Math.random() * 2).toFixed(2) + "s";
+          // Set initial random font variant
+          const variant = fontVariants[Math.floor(Math.random() * fontVariants.length)];
+          span.style.fontWeight = variant.weight;
+          span.style.fontStyle = variant.style;
           el.appendChild(span);
+          allLetterSpans.push(span);
         }
       });
     });
+
+    // Cycle font variants randomly for each letter
+    if (allLetterSpans.length > 0) {
+      setInterval(() => {
+        // Change a random subset of letters each cycle
+        const numToChange = Math.max(1, Math.floor(allLetterSpans.length * 0.15));
+        for (let i = 0; i < numToChange; i++) {
+          const randomSpan = allLetterSpans[Math.floor(Math.random() * allLetterSpans.length)];
+          const variant = fontVariants[Math.floor(Math.random() * fontVariants.length)];
+          randomSpan.style.fontWeight = variant.weight;
+          randomSpan.style.fontStyle = variant.style;
+        }
+      }, 400);
+    }
   }
   initImportantWords();
 

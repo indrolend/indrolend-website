@@ -1050,12 +1050,16 @@ html, body {
 /* ---- IMPORTANT WORD FLUCTUATION EFFECT ---- */
 .important-word {
   display: inline;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
 }
 
 .important-word-letter {
   display: inline-block;
   will-change: transform;
   animation: letterFluctuate 2.5s ease-in-out infinite;
+  transition: font-weight 0.3s ease-out, font-style 0.3s ease-out;
 }
 
 @keyframes letterFluctuate {
