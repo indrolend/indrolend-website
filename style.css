@@ -1059,7 +1059,18 @@ html, body {
   display: inline-block;
   will-change: transform;
   animation: letterFluctuate 2.5s ease-in-out infinite;
-  transition: font-weight 0.3s ease-out, font-style 0.3s ease-out;
+  transition: font-weight 0.3s ease-out, font-style 0.3s ease-out, transform 0.15s ease-out, color 0.15s ease-out;
+}
+
+/* Button press effect - expand and rainbow */
+.app-card:active .important-word-letter,
+.important-word.pressed .important-word-letter {
+  animation-play-state: paused;
+}
+
+.important-word-letter.rainbow-expand {
+  transform: scale(1.3) !important;
+  animation-play-state: paused;
 }
 
 @keyframes letterFluctuate {

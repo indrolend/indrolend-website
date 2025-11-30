@@ -12,6 +12,17 @@ document.addEventListener("DOMContentLoaded", () => {
     { weight: 600, style: 'italic' }
   ];
 
+  // Rainbow colors for button press effect
+  const rainbowColors = [
+    '#ff0000', // red
+    '#ff7f00', // orange
+    '#ffff00', // yellow
+    '#00ff00', // green
+    '#0000ff', // blue
+    '#4b0082', // indigo
+    '#9400d3'  // violet
+  ];
+
   function initImportantWords() {
     const importantWords = document.querySelectorAll(".important-word");
     const allLetterSpans = [];
@@ -23,8 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const text = el.textContent;
       el.textContent = "";
+      const letterSpansInWord = [];
 
-      [...text].forEach(char => {
+      [...text].forEach((char, index) => {
         if (char === " ") {
           // Preserve whitespace as text node (no animation needed)
           el.appendChild(document.createTextNode(" "));
@@ -32,6 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const span = document.createElement("span");
           span.textContent = char;
           span.className = "important-word-letter";
+          span.dataset.originalColor = '';
+          span.dataset.letterIndex = index;
           // Random animation delay between 0 and 2 seconds
           span.style.animationDelay = (Math.random() * 2).toFixed(2) + "s";
           // Set initial random font variant
@@ -40,8 +54,48 @@ document.addEventListener("DOMContentLoaded", () => {
           span.style.fontStyle = variant.style;
           el.appendChild(span);
           allLetterSpans.push(span);
+          letterSpansInWord.push(span);
         }
       });
+
+      // Store letter spans on the element for easy access
+      el._letterSpans = letterSpansInWord;
+    });
+
+    // Add button press interaction to app-cards
+    const appCards = document.querySelectorAll(".app-card");
+    appCards.forEach(card => {
+      const importantWord = card.querySelector(".important-word");
+      if (!importantWord || !importantWord._letterSpans) return;
+
+      const letterSpans = importantWord._letterSpans;
+
+      // Mouse/touch down - expand and rainbow
+      const activateEffect = (e) => {
+        letterSpans.forEach((span, i) => {
+          span.classList.add('rainbow-expand');
+          // Assign rainbow color based on position
+          span.style.color = rainbowColors[i % rainbowColors.length];
+        });
+      };
+
+      // Mouse/touch up - reset
+      const deactivateEffect = () => {
+        letterSpans.forEach(span => {
+          span.classList.remove('rainbow-expand');
+          span.style.color = '';
+        });
+      };
+
+      // Mouse events
+      card.addEventListener('mousedown', activateEffect);
+      card.addEventListener('mouseup', deactivateEffect);
+      card.addEventListener('mouseleave', deactivateEffect);
+
+      // Touch events
+      card.addEventListener('touchstart', activateEffect, { passive: true });
+      card.addEventListener('touchend', deactivateEffect);
+      card.addEventListener('touchcancel', deactivateEffect);
     });
 
     // Cycle font variants randomly for each letter
