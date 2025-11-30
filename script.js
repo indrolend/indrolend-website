@@ -10,18 +10,31 @@ document.addEventListener("DOMContentLoaded", () => {
     const lineColor = "rgba(94, 232, 125, 0.1)";
     const connectionDistance = 120;
 
+    // Character pool: numbers (0-9), uppercase (A-Z), lowercase (a-z), symbols
+    const charPool = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%&*?!+-=";
+
+    function getRandomChar() {
+      return charPool[Math.floor(Math.random() * charPool.length)];
+    }
+
     function resizeCanvas() {
       particlesCanvas.width = window.innerWidth;
       particlesCanvas.height = window.innerHeight;
     }
 
     function createParticle() {
+      const size = Math.floor(Math.random() * 6 + 10); // Font size between 10-16px
       return {
         x: Math.random() * particlesCanvas.width,
         y: Math.random() * particlesCanvas.height,
         vx: (Math.random() - 0.5) * maxSpeed,
         vy: (Math.random() - 0.5) * maxSpeed,
-        size: Math.random() * 2 + 1
+        size: size,
+        font: `${size}px "SF Mono", Menlo, Monaco, Consolas, monospace`, // Pre-cached font string
+        char: getRandomChar(),
+        // Each particle changes at its own random interval (300ms to 1500ms)
+        changeInterval: Math.random() * 1200 + 300,
+        lastChangeTime: performance.now()
       };
     }
 
@@ -33,12 +46,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function updateParticles() {
+      const now = performance.now();
       particles.forEach(p => {
         p.x += p.vx;
         p.y += p.vy;
 
         if (p.x < 0 || p.x > particlesCanvas.width) p.vx *= -1;
         if (p.y < 0 || p.y > particlesCanvas.height) p.vy *= -1;
+
+        // Change character at randomized intervals
+        if (now - p.lastChangeTime >= p.changeInterval) {
+          p.char = getRandomChar();
+          p.lastChangeTime = now;
+          // Randomize next change interval for natural variation
+          p.changeInterval = Math.random() * 1200 + 300;
+        }
       });
     }
 
@@ -63,12 +85,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      // Draw particles
+      // Draw particles as characters
+      ctx.fillStyle = particleColor;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
       particles.forEach(p => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = particleColor;
-        ctx.fill();
+        ctx.font = p.font;
+        ctx.fillText(p.char, p.x, p.y);
       });
     }
 
