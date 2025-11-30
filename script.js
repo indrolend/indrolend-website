@@ -1,4 +1,146 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // --- Particles Background (replaces Matrix) ---
+  const particlesCanvas = document.getElementById("particles-bg");
+  if (particlesCanvas) {
+    const ctx = particlesCanvas.getContext("2d");
+    let particles = [];
+    const particleCount = 60;
+    const maxSpeed = 0.3;
+    const particleColor = "rgba(94, 232, 125, 0.4)";
+    const lineColor = "rgba(94, 232, 125, 0.1)";
+    const connectionDistance = 120;
+
+    function resizeCanvas() {
+      particlesCanvas.width = window.innerWidth;
+      particlesCanvas.height = window.innerHeight;
+    }
+
+    function createParticle() {
+      return {
+        x: Math.random() * particlesCanvas.width,
+        y: Math.random() * particlesCanvas.height,
+        vx: (Math.random() - 0.5) * maxSpeed,
+        vy: (Math.random() - 0.5) * maxSpeed,
+        size: Math.random() * 2 + 1
+      };
+    }
+
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(createParticle());
+      }
+    }
+
+    function updateParticles() {
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > particlesCanvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > particlesCanvas.height) p.vy *= -1;
+      });
+    }
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+
+      // Draw connections
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < connectionDistance) {
+            ctx.beginPath();
+            ctx.strokeStyle = lineColor;
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw particles
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = particleColor;
+        ctx.fill();
+      });
+    }
+
+    function animateParticles() {
+      updateParticles();
+      drawParticles();
+      requestAnimationFrame(animateParticles);
+    }
+
+    resizeCanvas();
+    initParticles();
+    animateParticles();
+
+    window.addEventListener("resize", () => {
+      resizeCanvas();
+      initParticles();
+    });
+  }
+
+  // --- Tilt/Parallax Hover Effect for App Cards ---
+  const appCards = document.querySelectorAll(".app-card");
+  appCards.forEach(card => {
+    // Add micro-interact class for button effects
+    card.classList.add("micro-interact");
+
+    const handleMove = (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = ((y - centerY) / centerY) * -8;
+      const rotateY = ((x - centerX) / centerX) * 8;
+      
+      card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-2px)`;
+    };
+
+    const handleLeave = () => {
+      card.style.transform = "";
+    };
+
+    const handleTouchStart = (e) => {
+      const touch = e.touches[0];
+      const rect = card.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = ((y - centerY) / centerY) * -4;
+      const rotateY = ((x - centerX) / centerX) * 4;
+      
+      card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    };
+
+    const handleTouchEnd = () => {
+      card.style.transform = "";
+    };
+
+    // Vibration effect on click
+    card.addEventListener("click", () => {
+      card.classList.add("vibrating");
+      setTimeout(() => card.classList.remove("vibrating"), 300);
+    });
+
+    card.addEventListener("mousemove", handleMove);
+    card.addEventListener("mouseleave", handleLeave);
+    card.addEventListener("touchstart", handleTouchStart, { passive: true });
+    card.addEventListener("touchend", handleTouchEnd);
+  });
+
   // --- Important word fluctuation effect ---
   // Font weights available in EB Garamond
   const fontVariants = [
@@ -46,11 +188,11 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
           const span = document.createElement("span");
           span.textContent = char;
-          span.className = "important-word-letter";
+          span.className = "important-word-letter wavy-text-letter";
           span.dataset.originalColor = '';
           span.dataset.letterIndex = index;
-          // Random animation delay between 0 and 2 seconds
-          span.style.animationDelay = (Math.random() * 2).toFixed(2) + "s";
+          // Random animation delay between 0 and 2 seconds for fluctuation
+          span.style.animationDelay = (Math.random() * 2).toFixed(2) + "s, " + (index * 0.08).toFixed(2) + "s";
           // Set initial random font variant
           const variant = fontVariants[Math.floor(Math.random() * fontVariants.length)];
           span.style.fontWeight = variant.weight;
@@ -66,8 +208,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Add button press interaction to app-cards
-    const appCards = document.querySelectorAll(".app-card");
-    appCards.forEach(card => {
+    const appCardsForText = document.querySelectorAll(".app-card");
+    appCardsForText.forEach(card => {
       const importantWord = card.querySelector(".important-word");
       if (!importantWord || !importantWord._letterSpans) return;
 
@@ -158,52 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   initImportantWords();
 
-  // --- Matrix background on home.html ---
-  const matrixEl = document.getElementById("matrixBg");
-  if (matrixEl) {
-    const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-    const computeDims = () => {
-      const charWidth = 8;   // px approximation
-      const charHeight = 14; // px approximation
-      const cols = Math.max(40, Math.ceil(window.innerWidth / charWidth));
-      const rows = Math.max(30, Math.ceil(window.innerHeight / charHeight));
-      return { cols, rows };
-    };
-
-    let dims = computeDims();
-
-    const randChar = () => chars[Math.floor(Math.random() * chars.length)];
-
-    function buildMatrix() {
-      dims = computeDims();
-      const { cols, rows } = dims;
-      let out = "";
-      for (let r = 0; r < rows; r++) {
-        let row = "";
-        for (let c = 0; c < cols; c++) {
-          row += randChar();
-        }
-        out += row + "\n";
-      }
-      matrixEl.textContent = out;
-    }
-
-    buildMatrix();
-    window.addEventListener("resize", () => {
-      buildMatrix();
-    });
-    setInterval(() => {
-      // random flicker on a few positions
-      const text = matrixEl.textContent.split("");
-      for (let i = 0; i < text.length; i++) {
-        if (Math.random() < 0.02 && text[i] !== "\n") {
-          text[i] = randChar();
-        }
-      }
-      matrixEl.textContent = text.join("");
-    }, 250);
-  }
+  // --- (Matrix background removed, replaced by particles) ---
 
   
 // --- Gallery lock state (home) ---
@@ -644,7 +741,7 @@ Dr. Wei's voice lingers at the edge of the memory:
         initGalleryFilename();
       }
 
-      // Initialize fluctuating text effect for gallery filename
+      // Initialize fluctuating text effect for gallery filename with color cycling
       function initGalleryFilename() {
         const el = galleryFileName;
         // Clear previous spans
@@ -652,14 +749,17 @@ Dr. Wei's voice lingers at the edge of the memory:
         const text = el.textContent;
         el.textContent = "";
 
+        // Add color cycling class
+        el.classList.add("color-cycle");
+
         [...text].forEach((char, index) => {
           if (char === " ") {
             el.appendChild(document.createTextNode(" "));
           } else {
             const span = document.createElement("span");
             span.textContent = char;
-            span.className = "important-word-letter";
-            span.style.animationDelay = (Math.random() * 2).toFixed(2) + "s";
+            span.className = "important-word-letter wavy-text-letter";
+            span.style.animationDelay = (Math.random() * 2).toFixed(2) + "s, " + (index * 0.08).toFixed(2) + "s";
             const variant = fontVariants[Math.floor(Math.random() * fontVariants.length)];
             span.style.fontWeight = variant.weight;
             span.style.fontStyle = variant.style;
