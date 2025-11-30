@@ -1,4 +1,163 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // --- Important word fluctuation effect ---
+  // Font weights available in EB Garamond
+  const fontVariants = [
+    { weight: 400, style: 'normal' },
+    { weight: 500, style: 'normal' },
+    { weight: 600, style: 'normal' },
+    { weight: 700, style: 'normal' },
+    { weight: 800, style: 'normal' },
+    { weight: 400, style: 'italic' },
+    { weight: 500, style: 'italic' },
+    { weight: 600, style: 'italic' }
+  ];
+
+  // Rainbow colors for button press effect
+  const rainbowColors = [
+    '#ff0000', // red
+    '#ff7f00', // orange
+    '#ffff00', // yellow
+    '#00ff00', // green
+    '#0000ff', // blue
+    '#4b0082', // indigo
+    '#9400d3'  // violet
+  ];
+
+  // Track which cards are hovered for faster font cycling
+  const hoveredCards = new Set();
+
+  function initImportantWords() {
+    const importantWords = document.querySelectorAll(".important-word");
+    const allLetterSpans = [];
+
+    importantWords.forEach(el => {
+      // Skip if already processed
+      if (el.dataset.fluctuateInit) return;
+      el.dataset.fluctuateInit = "true";
+
+      const text = el.textContent;
+      el.textContent = "";
+      const letterSpansInWord = [];
+
+      [...text].forEach((char, index) => {
+        if (char === " ") {
+          // Preserve whitespace as text node (no animation needed)
+          el.appendChild(document.createTextNode(" "));
+        } else {
+          const span = document.createElement("span");
+          span.textContent = char;
+          span.className = "important-word-letter";
+          span.dataset.originalColor = '';
+          span.dataset.letterIndex = index;
+          // Random animation delay between 0 and 2 seconds
+          span.style.animationDelay = (Math.random() * 2).toFixed(2) + "s";
+          // Set initial random font variant
+          const variant = fontVariants[Math.floor(Math.random() * fontVariants.length)];
+          span.style.fontWeight = variant.weight;
+          span.style.fontStyle = variant.style;
+          el.appendChild(span);
+          allLetterSpans.push(span);
+          letterSpansInWord.push(span);
+        }
+      });
+
+      // Store letter spans on the element for easy access
+      el._letterSpans = letterSpansInWord;
+    });
+
+    // Add button press interaction to app-cards
+    const appCards = document.querySelectorAll(".app-card");
+    appCards.forEach(card => {
+      const importantWord = card.querySelector(".important-word");
+      if (!importantWord || !importantWord._letterSpans) return;
+
+      const letterSpans = importantWord._letterSpans;
+
+      // Hover - track for faster font cycling
+      card.addEventListener('mouseenter', () => {
+        hoveredCards.add(card);
+      });
+      card.addEventListener('mouseleave', () => {
+        hoveredCards.delete(card);
+      });
+
+      // Mouse/touch down - exploding firework effect with rainbow
+      const activateEffect = (e) => {
+        letterSpans.forEach((span, i) => {
+          // Remove classes first to allow re-triggering
+          span.classList.remove('rainbow-expand', 'exploding');
+          
+          // Force reflow to restart animation
+          void span.offsetWidth;
+          
+          // Random explosion direction for firework effect
+          const angle = (Math.PI * 2 * i) / letterSpans.length + (Math.random() - 0.5) * 0.5;
+          const distance = 8 + Math.random() * 12; // 8-20px explosion distance
+          const explodeX = Math.cos(angle) * distance;
+          const explodeY = Math.sin(angle) * distance;
+          
+          span.style.setProperty('--explode-x', explodeX + 'px');
+          span.style.setProperty('--explode-y', explodeY + 'px');
+          span.classList.add('rainbow-expand', 'exploding');
+          // Assign rainbow color based on position
+          span.style.color = rainbowColors[i % rainbowColors.length];
+        });
+      };
+
+      // Mouse/touch up - reset
+      const deactivateEffect = () => {
+        letterSpans.forEach(span => {
+          span.classList.remove('rainbow-expand', 'exploding');
+          span.style.color = '';
+        });
+      };
+
+      // Mouse events
+      card.addEventListener('mousedown', activateEffect);
+      card.addEventListener('mouseup', deactivateEffect);
+      card.addEventListener('mouseleave', deactivateEffect);
+
+      // Touch events
+      card.addEventListener('touchstart', activateEffect, { passive: true });
+      card.addEventListener('touchend', deactivateEffect);
+      card.addEventListener('touchcancel', deactivateEffect);
+    });
+
+    // Cycle font variants randomly for each letter
+    // Normal speed cycle (every 400ms)
+    if (allLetterSpans.length > 0) {
+      setInterval(() => {
+        // Change a random subset of letters each cycle
+        const numToChange = Math.max(1, Math.floor(allLetterSpans.length * 0.15));
+        for (let i = 0; i < numToChange; i++) {
+          const randomSpan = allLetterSpans[Math.floor(Math.random() * allLetterSpans.length)];
+          const variant = fontVariants[Math.floor(Math.random() * fontVariants.length)];
+          randomSpan.style.fontWeight = variant.weight;
+          randomSpan.style.fontStyle = variant.style;
+        }
+      }, 400);
+
+      // Fast font cycling for hovered cards (every 80ms - 5x faster)
+      setInterval(() => {
+        hoveredCards.forEach(card => {
+          const importantWord = card.querySelector(".important-word");
+          if (!importantWord || !importantWord._letterSpans) return;
+          
+          const letterSpans = importantWord._letterSpans;
+          // Change more letters when hovered (40% instead of 15%)
+          const numToChange = Math.max(1, Math.floor(letterSpans.length * 0.4));
+          for (let i = 0; i < numToChange; i++) {
+            const randomSpan = letterSpans[Math.floor(Math.random() * letterSpans.length)];
+            const variant = fontVariants[Math.floor(Math.random() * fontVariants.length)];
+            randomSpan.style.fontWeight = variant.weight;
+            randomSpan.style.fontStyle = variant.style;
+          }
+        });
+      }, 80);
+    }
+  }
+  initImportantWords();
+
   // --- Matrix background on home.html ---
   const matrixEl = document.getElementById("matrixBg");
   if (matrixEl) {
@@ -461,35 +620,79 @@ Dr. Wei's voice lingers at the edge of the memory:
   }
 
   // --- Gallery gating on gallery.html ---
-  const galleryImg = document.getElementById("galleryImage");
+  const galleryFileName = document.getElementById("galleryFileName");
+  const galleryFileLink = document.getElementById("galleryFileLink");
+  const galleryCounter = document.getElementById("galleryCounter");
   const prevBtn = document.getElementById("galleryPrev");
   const nextBtn = document.getElementById("galleryNext");
 
-  if (galleryImg && prevBtn && nextBtn && Array.isArray(window.__GALLERY_IMAGES__)) {
+  if (galleryFileName && galleryFileLink && prevBtn && nextBtn && Array.isArray(window.__GALLERY_IMAGES__)) {
     const unlocked = localStorage.getItem("galleryUnlocked") === "true";
     if (!unlocked) {
       window.location.href = "home.html";
     } else {
-      let index = 0;
-      const total = window.__GALLERY_IMAGES__.length;
+      const images = window.__GALLERY_IMAGES__;
+      let currentIndex = 0;
 
-      function updateImage() {
-        const name = window.__GALLERY_IMAGES__[index];
-        galleryImg.src = "images/" + name;
-        galleryImg.alt = "image " + (index + 1) + " of " + total;
+      function updateDisplay() {
+        const name = images[currentIndex];
+        galleryFileName.textContent = name;
+        galleryFileLink.href = "images/" + name;
+        galleryCounter.textContent = (currentIndex + 1) + " / " + images.length;
+        
+        // Re-initialize important-word effect for the filename
+        initGalleryFilename();
+      }
+
+      // Initialize fluctuating text effect for gallery filename
+      function initGalleryFilename() {
+        const el = galleryFileName;
+        // Clear previous spans
+        el.dataset.fluctuateInit = "";
+        const text = el.textContent;
+        el.textContent = "";
+
+        [...text].forEach((char, index) => {
+          if (char === " ") {
+            el.appendChild(document.createTextNode(" "));
+          } else {
+            const span = document.createElement("span");
+            span.textContent = char;
+            span.className = "important-word-letter";
+            span.style.animationDelay = (Math.random() * 2).toFixed(2) + "s";
+            const variant = fontVariants[Math.floor(Math.random() * fontVariants.length)];
+            span.style.fontWeight = variant.weight;
+            span.style.fontStyle = variant.style;
+            el.appendChild(span);
+          }
+        });
+
+        el.dataset.fluctuateInit = "true";
       }
 
       prevBtn.addEventListener("click", () => {
-        index = (index - 1 + total) % total;
-        updateImage();
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        updateDisplay();
       });
 
       nextBtn.addEventListener("click", () => {
-        index = (index + 1) % total;
-        updateImage();
+        currentIndex = (currentIndex + 1) % images.length;
+        updateDisplay();
       });
 
-      updateImage();
+      // Keyboard navigation
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") {
+          currentIndex = (currentIndex - 1 + images.length) % images.length;
+          updateDisplay();
+        } else if (e.key === "ArrowRight") {
+          currentIndex = (currentIndex + 1) % images.length;
+          updateDisplay();
+        }
+      });
+
+      // Initialize
+      updateDisplay();
     }
   }
 

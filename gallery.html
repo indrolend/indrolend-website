@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Image Gallery / Indrolend</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&display=swap" rel="stylesheet">
   <script defer src="script.js"></script>
 </head>
 <body class="gallery-bg">
@@ -15,8 +16,11 @@
     </header>
     <main class="gallery-main">
       <button class="gallery-nav gallery-prev" id="galleryPrev">‹</button>
-      <div class="gallery-image-wrap">
-        <img id="galleryImage" src="images/0.JPG" alt="gallery image" />
+      <div class="gallery-content">
+        <a id="galleryFileLink" href="#" target="_blank" class="gallery-filename-link">
+          <span id="galleryFileName" class="important-word gallery-filename"></span>
+        </a>
+        <div class="gallery-counter" id="galleryCounter"></div>
       </div>
       <button class="gallery-nav gallery-next" id="galleryNext">›</button>
     </main>
