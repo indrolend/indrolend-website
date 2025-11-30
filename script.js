@@ -191,8 +191,10 @@ document.addEventListener("DOMContentLoaded", () => {
           span.className = "important-word-letter wavy-text-letter";
           span.dataset.originalColor = '';
           span.dataset.letterIndex = index;
-          // Random animation delay between 0 and 2 seconds for fluctuation
-          span.style.animationDelay = (Math.random() * 2).toFixed(2) + "s, " + (index * 0.08).toFixed(2) + "s";
+          // Set animation delays: random for fluctuation, sequential for wavy effect
+          const fluctuateDelay = (Math.random() * 2).toFixed(2);
+          const wavyDelay = (index * 0.08).toFixed(2);
+          span.style.animationDelay = `${fluctuateDelay}s, ${wavyDelay}s`;
           // Set initial random font variant
           const variant = fontVariants[Math.floor(Math.random() * fontVariants.length)];
           span.style.fontWeight = variant.weight;
@@ -207,9 +209,8 @@ document.addEventListener("DOMContentLoaded", () => {
       el._letterSpans = letterSpansInWord;
     });
 
-    // Add button press interaction to app-cards
-    const appCardsForText = document.querySelectorAll(".app-card");
-    appCardsForText.forEach(card => {
+    // Add button press interaction to app-cards (reusing appCards from above)
+    appCards.forEach(card => {
       const importantWord = card.querySelector(".important-word");
       if (!importantWord || !importantWord._letterSpans) return;
 
