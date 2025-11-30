@@ -935,6 +935,17 @@ html, body {
     color: #fff;
 }
 
+.fkrc-verifywin-header-image {
+    padding: 0;
+    overflow: hidden;
+}
+
+.fkrc-verifywin-header-img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
 .fkrc-verifywin-header-text-small {
     font-size: 14px;
     line-height: normal;
