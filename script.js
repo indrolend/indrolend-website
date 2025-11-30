@@ -11,17 +11,17 @@ document.addEventListener("DOMContentLoaded", () => {
       el.textContent = "";
 
       [...text].forEach(char => {
-        const span = document.createElement("span");
-        span.textContent = char;
-        // Preserve whitespace without animation
         if (char === " ") {
-          span.style.display = "inline";
+          // Preserve whitespace as text node (no animation needed)
+          el.appendChild(document.createTextNode(" "));
         } else {
+          const span = document.createElement("span");
+          span.textContent = char;
           span.className = "important-word-letter";
           // Random animation delay between 0 and 2 seconds
           span.style.animationDelay = (Math.random() * 2).toFixed(2) + "s";
+          el.appendChild(span);
         }
-        el.appendChild(span);
       });
     });
   }
