@@ -1054,32 +1054,21 @@ html, body {
 
 .important-word-letter {
   display: inline-block;
-  animation: letterFluctuate 2s ease-in-out infinite;
+  will-change: transform;
+  animation: letterFluctuate 2.5s ease-in-out infinite;
 }
 
 @keyframes letterFluctuate {
   0%, 100% {
-    font-weight: 400;
-    letter-spacing: 0;
     transform: translate(0, 0);
-    filter: brightness(1);
   }
   25% {
-    font-weight: 450;
-    letter-spacing: 0.3px;
-    transform: translate(0.5px, -0.5px);
-    filter: brightness(1.05);
+    transform: translate(0.4px, -0.4px);
   }
   50% {
-    font-weight: 500;
-    letter-spacing: -0.3px;
-    transform: translate(-0.5px, 0.5px);
-    filter: brightness(0.95);
+    transform: translate(-0.4px, 0.4px);
   }
   75% {
-    font-weight: 425;
-    letter-spacing: 0.2px;
     transform: translate(0.3px, 0.3px);
-    filter: brightness(1.02);
   }
 }
