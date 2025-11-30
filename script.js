@@ -620,138 +620,79 @@ Dr. Wei's voice lingers at the edge of the memory:
   }
 
   // --- Gallery gating on gallery.html ---
-  const carouselTrack = document.getElementById("carouselTrack");
-  const carouselIndicator = document.getElementById("carouselIndicator");
+  const galleryFileName = document.getElementById("galleryFileName");
+  const galleryFileLink = document.getElementById("galleryFileLink");
+  const galleryCounter = document.getElementById("galleryCounter");
+  const prevBtn = document.getElementById("galleryPrev");
+  const nextBtn = document.getElementById("galleryNext");
 
-  if (carouselTrack && carouselIndicator && Array.isArray(window.__GALLERY_IMAGES__)) {
+  if (galleryFileName && galleryFileLink && prevBtn && nextBtn && Array.isArray(window.__GALLERY_IMAGES__)) {
     const unlocked = localStorage.getItem("galleryUnlocked") === "true";
     if (!unlocked) {
       window.location.href = "home.html";
     } else {
       const images = window.__GALLERY_IMAGES__;
       let currentIndex = 0;
-      let isDragging = false;
-      let startX = 0;
-      let currentTranslate = 0;
-      let prevTranslate = 0;
-      let animationID = 0;
 
-      // Create slides
-      images.forEach((name, i) => {
-        const slide = document.createElement("div");
-        slide.className = "carousel-slide";
-        const img = document.createElement("img");
-        img.src = "images/" + name;
-        img.alt = "image " + (i + 1) + " of " + images.length;
-        img.loading = "lazy";
-        slide.appendChild(img);
-        carouselTrack.appendChild(slide);
+      function updateDisplay() {
+        const name = images[currentIndex];
+        galleryFileName.textContent = name;
+        galleryFileLink.href = "images/" + name;
+        galleryCounter.textContent = (currentIndex + 1) + " / " + images.length;
+        
+        // Re-initialize important-word effect for the filename
+        initGalleryFilename();
+      }
 
-        // Create dot
-        const dot = document.createElement("div");
-        dot.className = "carousel-dot" + (i === 0 ? " active" : "");
-        dot.addEventListener("click", () => goToSlide(i));
-        carouselIndicator.appendChild(dot);
+      // Initialize fluctuating text effect for gallery filename
+      function initGalleryFilename() {
+        const el = galleryFileName;
+        // Clear previous spans
+        el.dataset.fluctuateInit = "";
+        const text = el.textContent;
+        el.textContent = "";
+
+        [...text].forEach((char, index) => {
+          if (char === " ") {
+            el.appendChild(document.createTextNode(" "));
+          } else {
+            const span = document.createElement("span");
+            span.textContent = char;
+            span.className = "important-word-letter";
+            span.style.animationDelay = (Math.random() * 2).toFixed(2) + "s";
+            const variant = fontVariants[Math.floor(Math.random() * fontVariants.length)];
+            span.style.fontWeight = variant.weight;
+            span.style.fontStyle = variant.style;
+            el.appendChild(span);
+          }
+        });
+
+        el.dataset.fluctuateInit = "true";
+      }
+
+      prevBtn.addEventListener("click", () => {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        updateDisplay();
       });
 
-      const slides = carouselTrack.querySelectorAll(".carousel-slide");
-      const dots = carouselIndicator.querySelectorAll(".carousel-dot");
-
-      function getSlideWidth() {
-        return slides[0] ? slides[0].offsetWidth + parseInt(getComputedStyle(carouselTrack).gap) : 300;
-      }
-
-      function setPositionByIndex() {
-        currentTranslate = -currentIndex * getSlideWidth();
-        prevTranslate = currentTranslate;
-        setSliderPosition();
-        updateDots();
-      }
-
-      function setSliderPosition() {
-        carouselTrack.style.transform = `translateX(${currentTranslate}px)`;
-      }
-
-      function updateDots() {
-        dots.forEach((dot, i) => {
-          dot.classList.toggle("active", i === currentIndex);
-        });
-      }
-
-      function goToSlide(index) {
-        currentIndex = Math.max(0, Math.min(index, images.length - 1));
-        setPositionByIndex();
-      }
-
-      // Touch events
-      carouselTrack.addEventListener("touchstart", touchStart, { passive: true });
-      carouselTrack.addEventListener("touchmove", touchMove, { passive: false });
-      carouselTrack.addEventListener("touchend", touchEnd);
-
-      // Mouse events
-      carouselTrack.addEventListener("mousedown", touchStart);
-      carouselTrack.addEventListener("mousemove", touchMove);
-      carouselTrack.addEventListener("mouseup", touchEnd);
-      carouselTrack.addEventListener("mouseleave", touchEnd);
-
-      function touchStart(e) {
-        isDragging = true;
-        startX = getPositionX(e);
-        carouselTrack.classList.add("dragging");
-        animationID = requestAnimationFrame(animation);
-      }
-
-      function touchMove(e) {
-        if (!isDragging) return;
-        const currentX = getPositionX(e);
-        currentTranslate = prevTranslate + currentX - startX;
-        if (e.cancelable) e.preventDefault();
-      }
-
-      function touchEnd() {
-        isDragging = false;
-        cancelAnimationFrame(animationID);
-        carouselTrack.classList.remove("dragging");
-
-        const movedBy = currentTranslate - prevTranslate;
-        const threshold = getSlideWidth() / 4;
-
-        if (movedBy < -threshold && currentIndex < images.length - 1) {
-          currentIndex++;
-        } else if (movedBy > threshold && currentIndex > 0) {
-          currentIndex--;
-        }
-
-        setPositionByIndex();
-      }
-
-      function getPositionX(e) {
-        return e.type.includes("mouse") ? e.pageX : e.touches[0].clientX;
-      }
-
-      function animation() {
-        setSliderPosition();
-        if (isDragging) requestAnimationFrame(animation);
-      }
+      nextBtn.addEventListener("click", () => {
+        currentIndex = (currentIndex + 1) % images.length;
+        updateDisplay();
+      });
 
       // Keyboard navigation
       document.addEventListener("keydown", (e) => {
-        if (e.key === "ArrowLeft" && currentIndex > 0) {
-          currentIndex--;
-          setPositionByIndex();
-        } else if (e.key === "ArrowRight" && currentIndex < images.length - 1) {
-          currentIndex++;
-          setPositionByIndex();
+        if (e.key === "ArrowLeft") {
+          currentIndex = (currentIndex - 1 + images.length) % images.length;
+          updateDisplay();
+        } else if (e.key === "ArrowRight") {
+          currentIndex = (currentIndex + 1) % images.length;
+          updateDisplay();
         }
       });
 
-      // Handle window resize
-      window.addEventListener("resize", () => {
-        setPositionByIndex();
-      });
-
-      // Initialize position
-      setPositionByIndex();
+      // Initialize
+      updateDisplay();
     }
   }
 
