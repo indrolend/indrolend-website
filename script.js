@@ -23,6 +23,9 @@ document.addEventListener("DOMContentLoaded", () => {
     '#9400d3'  // violet
   ];
 
+  // Track which cards are hovered for faster font cycling
+  const hoveredCards = new Set();
+
   function initImportantWords() {
     const importantWords = document.querySelectorAll(".important-word");
     const allLetterSpans = [];
@@ -70,10 +73,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const letterSpans = importantWord._letterSpans;
 
-      // Mouse/touch down - expand and rainbow
+      // Hover - track for faster font cycling
+      card.addEventListener('mouseenter', () => {
+        hoveredCards.add(card);
+      });
+      card.addEventListener('mouseleave', () => {
+        hoveredCards.delete(card);
+      });
+
+      // Mouse/touch down - exploding firework effect with rainbow
       const activateEffect = (e) => {
         letterSpans.forEach((span, i) => {
-          span.classList.add('rainbow-expand');
+          // Random explosion direction for firework effect
+          const angle = (Math.PI * 2 * i) / letterSpans.length + (Math.random() - 0.5) * 0.5;
+          const distance = 8 + Math.random() * 12; // 8-20px explosion distance
+          const explodeX = Math.cos(angle) * distance;
+          const explodeY = Math.sin(angle) * distance;
+          
+          span.style.setProperty('--explode-x', explodeX + 'px');
+          span.style.setProperty('--explode-y', explodeY + 'px');
+          span.classList.add('rainbow-expand', 'exploding');
           // Assign rainbow color based on position
           span.style.color = rainbowColors[i % rainbowColors.length];
         });
@@ -82,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Mouse/touch up - reset
       const deactivateEffect = () => {
         letterSpans.forEach(span => {
-          span.classList.remove('rainbow-expand');
+          span.classList.remove('rainbow-expand', 'exploding');
           span.style.color = '';
         });
       };
@@ -99,6 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Cycle font variants randomly for each letter
+    // Normal speed cycle (every 400ms)
     if (allLetterSpans.length > 0) {
       setInterval(() => {
         // Change a random subset of letters each cycle
@@ -110,6 +130,24 @@ document.addEventListener("DOMContentLoaded", () => {
           randomSpan.style.fontStyle = variant.style;
         }
       }, 400);
+
+      // Fast font cycling for hovered cards (every 80ms - 5x faster)
+      setInterval(() => {
+        hoveredCards.forEach(card => {
+          const importantWord = card.querySelector(".important-word");
+          if (!importantWord || !importantWord._letterSpans) return;
+          
+          const letterSpans = importantWord._letterSpans;
+          // Change more letters when hovered (40% instead of 15%)
+          const numToChange = Math.max(1, Math.floor(letterSpans.length * 0.4));
+          for (let i = 0; i < numToChange; i++) {
+            const randomSpan = letterSpans[Math.floor(Math.random() * letterSpans.length)];
+            const variant = fontVariants[Math.floor(Math.random() * fontVariants.length)];
+            randomSpan.style.fontWeight = variant.weight;
+            randomSpan.style.fontStyle = variant.style;
+          }
+        });
+      }, 80);
     }
   }
   initImportantWords();
