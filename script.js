@@ -1,4 +1,32 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // --- Important word fluctuation effect ---
+  function initImportantWords() {
+    const importantWords = document.querySelectorAll(".important-word");
+    importantWords.forEach(el => {
+      // Skip if already processed
+      if (el.dataset.fluctuateInit) return;
+      el.dataset.fluctuateInit = "true";
+
+      const text = el.textContent;
+      el.textContent = "";
+
+      [...text].forEach(char => {
+        const span = document.createElement("span");
+        span.textContent = char;
+        // Preserve whitespace without animation
+        if (char === " ") {
+          span.style.display = "inline";
+        } else {
+          span.className = "important-word-letter";
+          // Random animation delay between 0 and 2 seconds
+          span.style.animationDelay = (Math.random() * 2).toFixed(2) + "s";
+        }
+        el.appendChild(span);
+      });
+    });
+  }
+  initImportantWords();
+
   // --- Matrix background on home.html ---
   const matrixEl = document.getElementById("matrixBg");
   if (matrixEl) {
