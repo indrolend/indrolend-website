@@ -84,6 +84,12 @@ document.addEventListener("DOMContentLoaded", () => {
       // Mouse/touch down - exploding firework effect with rainbow
       const activateEffect = (e) => {
         letterSpans.forEach((span, i) => {
+          // Remove classes first to allow re-triggering
+          span.classList.remove('rainbow-expand', 'exploding');
+          
+          // Force reflow to restart animation
+          void span.offsetWidth;
+          
           // Random explosion direction for firework effect
           const angle = (Math.PI * 2 * i) / letterSpans.length + (Math.random() - 0.5) * 0.5;
           const distance = 8 + Math.random() * 12; // 8-20px explosion distance
