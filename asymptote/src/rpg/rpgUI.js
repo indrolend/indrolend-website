@@ -32,13 +32,22 @@ export function updateRPGUI() {
     button.textContent = move.name;
     button.title = move.description;
     
-    // Disable if not player's turn or battle inactive
-    button.disabled = rpgState.turn !== 'player' || !rpgState.battleActive;
+    // Only disable if battle is inactive - allow clicks during player turn
+    button.disabled = !rpgState.battleActive;
+    
+    // Add visual feedback for turn state
+    if (rpgState.turn !== 'player') {
+      button.style.opacity = '0.5';
+      button.style.cursor = 'not-allowed';
+    } else {
+      button.style.opacity = '1';
+      button.style.cursor = 'pointer';
+    }
     
     button.addEventListener('click', () => {
       if (rpgState.turn === 'player' && rpgState.battleActive) {
         executePlayerMove(move);
-        updateRPGUI(); // Refresh UI after move
+        // UI will be updated in the game loop
       }
     });
     

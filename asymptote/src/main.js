@@ -46,12 +46,16 @@ function init() {
     handleModeChange('rpg');
   });
   
-  // Show intro screen first
-  if (!state.gameStarted) {
+  // Check if intro has been shown before
+  const hasSeenIntro = localStorage.getItem('asymptote_intro_shown');
+  
+  // Show intro screen only on first boot
+  if (!state.gameStarted && !hasSeenIntro) {
     const SCREEN_TRANSITION_DELAY = 500;
     const beginButton = showIntroScreen();
     beginButton.addEventListener('click', () => {
       hideIntroScreen();
+      localStorage.setItem('asymptote_intro_shown', 'true');
       setTimeout(() => {
         showSetupScreen((selectedResources) => {
           applyStartingResources(selectedResources, state);
@@ -72,6 +76,25 @@ function init() {
           requestAnimationFrame(gameLoop);
         });
       }, SCREEN_TRANSITION_DELAY);
+    });
+  } else if (!state.gameStarted && hasSeenIntro) {
+    // Skip intro, go directly to setup
+    showSetupScreen((selectedResources) => {
+      applyStartingResources(selectedResources, state);
+      hideSetupScreen();
+      state.gameStarted = true;
+      state.mode = 'gathering';
+      
+      // Initialize gathering system
+      gatheringSystem = new GatheringSystem(state);
+      
+      // Hide canvas, show gathering UI
+      simCanvas.parentElement.style.display = 'none';
+      gatheringContainer.style.display = 'block';
+      renderGatheringUI(gatheringSystem, gatheringContainer);
+      
+      setMode('gathering');
+      requestAnimationFrame(gameLoop);
     });
   } else {
     // Start animation loop immediately if game already started
@@ -107,20 +130,23 @@ function handleModeChange(mode) {
 
 function gameLoop(currentTime) {
   const deltaTime = currentTime - lastTime;
-  lastTime = currentTime;
   
   // Only run game loop if game has started
   if (!state.gameStarted) {
+    requestAnimationFrame(gameLoop);
     return;
+  }
+  
+  // Always run the time engine (tick) regardless of mode
+  if (deltaTime > 100) { // Update every 100ms
+    tick();
+    updateStatsDisplay();
+    lastTime = currentTime;
   }
   
   if (state.mode === 'sim') {
     // Run simulation mode
-    if (deltaTime > 100) { // Update every 100ms
-      tick();
-      updateStatsDisplay();
-      updateNarrative();
-    }
+    updateNarrative();
     renderSimulation();
   } else if (state.mode === 'rpg') {
     // Run RPG mode
@@ -128,11 +154,6 @@ function gameLoop(currentTime) {
     updateRPGUI();
   } else if (state.mode === 'gathering') {
     // Run gathering mode
-    const GATHERING_UPDATE_INTERVAL = 1000;
-    if (deltaTime > GATHERING_UPDATE_INTERVAL) { // Update every second for passive effects
-      tick();
-      updateStatsDisplay();
-    }
     // UI updates happen on click, no need to constantly re-render
   }
   
