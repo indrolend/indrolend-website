@@ -24,7 +24,7 @@ export function executePlayerMove(move) {
 
 export function executeEnemyTurn() {
   if (!rpgState.battleActive) return;
-  if (rpgState.turn !== 'player') {
+  if (rpgState.turn === 'enemy') {
     // Enemy's turn
     enemyAI();
     
@@ -85,12 +85,13 @@ function dealDamageToPlayer(damage) {
   if (player.buffs.shield && player.buffs.shield > 0) {
     const blocked = Math.min(damage, player.buffs.shield);
     player.buffs.shield -= blocked;
-    damage -= blocked;
-    if (damage <= 0) {
+    const remainingDamage = damage - blocked;
+    if (remainingDamage <= 0) {
       addToBattleLog('Your shield absorbs the blow!');
       return;
     }
     addToBattleLog(`Your shield blocks ${blocked} damage.`);
+    damage = remainingDamage;
   }
   
   // Apply damage
