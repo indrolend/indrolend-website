@@ -128,7 +128,8 @@ function gameLoop(currentTime) {
     updateRPGUI();
   } else if (state.mode === 'gathering') {
     // Run gathering mode
-    if (deltaTime > 1000) { // Update every second for passive effects
+    const GATHERING_UPDATE_INTERVAL = 1000;
+    if (deltaTime > GATHERING_UPDATE_INTERVAL) { // Update every second for passive effects
       tick();
       updateStatsDisplay();
     }

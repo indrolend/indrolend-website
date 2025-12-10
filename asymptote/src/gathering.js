@@ -1,5 +1,9 @@
 // Resource gathering system (Minecraft-style)
 
+// Configuration constants
+const RESPAWN_DELAY_MS = 10000;
+const COLLECTION_ANIMATION_MS = 150;
+
 const RESOURCE_TYPES = {
   wood: {
     name: 'Wood',
@@ -77,7 +81,7 @@ export class GatheringSystem {
         node.available = false;
         setTimeout(() => {
           this.respawnNode(resourceType);
-        }, 10000); // Respawn after 10 seconds
+        }, RESPAWN_DELAY_MS);
       }
       
       return true;
@@ -208,7 +212,7 @@ export function renderGatheringUI(gatheringSystem, container) {
           nodeDiv.style.transform = 'scale(1.1)';
           setTimeout(() => {
             nodeDiv.style.transform = '';
-          }, 150);
+          }, COLLECTION_ANIMATION_MS);
         }
       });
     }
