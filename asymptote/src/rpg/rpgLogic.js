@@ -81,21 +81,24 @@ function dealDamageToPlayer(damage) {
     return;
   }
   
+  // Calculate actual damage after shield
+  let actualDamage = damage;
+  
   // Check for shield
   if (player.buffs.shield && player.buffs.shield > 0) {
-    const blocked = Math.min(damage, player.buffs.shield);
+    const blocked = Math.min(actualDamage, player.buffs.shield);
     player.buffs.shield -= blocked;
-    const remainingDamage = damage - blocked;
-    if (remainingDamage <= 0) {
+    actualDamage -= blocked;
+    
+    if (actualDamage <= 0) {
       addToBattleLog('Your shield absorbs the blow!');
       return;
     }
     addToBattleLog(`Your shield blocks ${blocked} damage.`);
-    damage = remainingDamage;
   }
   
   // Apply damage
-  player.currentHP -= damage;
+  player.currentHP -= actualDamage;
   player.currentHP = Math.max(player.currentHP, 0);
 }
 
