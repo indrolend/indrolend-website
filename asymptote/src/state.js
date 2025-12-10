@@ -20,7 +20,7 @@ export const state = {
   M: 0.3,          // Meaning (emergent)
   
   time: 0,         // Simulation time
-  mode: 'intro',   // Current mode: 'intro', 'setup', 'sim', or 'rpg'
+  mode: 'intro',   // Current mode: 'intro', 'setup', 'gathering', 'sim', or 'rpg'
   gameStarted: false,
   
   // Starting resources

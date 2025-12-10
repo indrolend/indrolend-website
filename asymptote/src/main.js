@@ -7,9 +7,12 @@ import { initRPGFromCivState } from './rpg/rpgState.js';
 import { initRPGRender, renderRPG } from './rpg/rpgRender.js';
 import { initRPGUI, updateRPGUI, hideRPGUI } from './rpg/rpgUI.js';
 import { showIntroScreen, hideIntroScreen, showSetupScreen, hideSetupScreen, applyStartingResources } from './intro.js';
+import { GatheringSystem, renderGatheringUI } from './gathering.js';
 
 let lastTime = 0;
 let simCanvas, rpgCanvas;
+let gatheringSystem = null;
+let gatheringContainer = null;
 
 function init() {
   // Get canvas elements
@@ -24,7 +27,17 @@ function init() {
   initUI();
   initRPGUI();
   
+  // Create gathering container
+  gatheringContainer = document.createElement('div');
+  gatheringContainer.id = 'gathering-container';
+  gatheringContainer.style.display = 'none';
+  document.querySelector('.canvas-container').after(gatheringContainer);
+  
   // Set up mode buttons
+  document.getElementById('gatheringModeBtn').addEventListener('click', () => {
+    handleModeChange('gathering');
+  });
+  
   document.getElementById('simModeBtn').addEventListener('click', () => {
     handleModeChange('sim');
   });
@@ -44,8 +57,17 @@ function init() {
           applyStartingResources(selectedResources, state);
           hideSetupScreen();
           state.gameStarted = true;
-          state.mode = 'sim';
-          setMode('sim');
+          state.mode = 'gathering'; // Start in gathering mode
+          
+          // Initialize gathering system
+          gatheringSystem = new GatheringSystem(state);
+          
+          // Hide canvas, show gathering UI
+          simCanvas.parentElement.style.display = 'none';
+          gatheringContainer.style.display = 'block';
+          renderGatheringUI(gatheringSystem, gatheringContainer);
+          
+          setMode('gathering');
           // Start animation loop after setup
           requestAnimationFrame(gameLoop);
         });
@@ -62,9 +84,22 @@ function handleModeChange(mode) {
     // Entering RPG mode - initialize from civ state
     initRPGFromCivState();
     updateRPGUI();
+    gatheringContainer.style.display = 'none';
+    simCanvas.parentElement.style.display = 'flex';
   } else if (mode === 'sim' && state.mode !== 'sim') {
-    // Exiting RPG mode
+    // Exiting RPG mode or switching to sim
     hideRPGUI();
+    gatheringContainer.style.display = 'none';
+    simCanvas.parentElement.style.display = 'flex';
+  } else if (mode === 'gathering') {
+    // Entering gathering mode
+    if (!gatheringSystem) {
+      gatheringSystem = new GatheringSystem(state);
+    }
+    hideRPGUI();
+    simCanvas.parentElement.style.display = 'none';
+    gatheringContainer.style.display = 'block';
+    renderGatheringUI(gatheringSystem, gatheringContainer);
   }
   
   setMode(mode);
@@ -91,6 +126,13 @@ function gameLoop(currentTime) {
     // Run RPG mode
     renderRPG();
     updateRPGUI();
+  } else if (state.mode === 'gathering') {
+    // Run gathering mode
+    if (deltaTime > 1000) { // Update every second for passive effects
+      tick();
+      updateStatsDisplay();
+    }
+    // UI updates happen on click, no need to constantly re-render
   }
   
   requestAnimationFrame(gameLoop);

@@ -18,6 +18,16 @@ A delicate balance maintains their civilization.`;
 let currentCharIndex = 0;
 let typingInterval = null;
 
+// Helper function to wrap text in spans for letter animation
+function wrapLettersInSpans(text) {
+  return text.split('').map((char, index) => {
+    if (char === ' ') return ' ';
+    const fluctuateDelay = (Math.random() * 2).toFixed(2);
+    const wavyDelay = (index * 0.08).toFixed(2);
+    return `<span class="btn-letter" style="animation-delay: ${fluctuateDelay}s, ${wavyDelay}s">${char}</span>`;
+  }).join('');
+}
+
 export function showIntroScreen() {
   const container = document.querySelector('.container');
   container.style.display = 'none';
@@ -36,7 +46,7 @@ export function showIntroScreen() {
   
   const beginButton = document.createElement('button');
   beginButton.className = 'begin-btn';
-  beginButton.textContent = 'begin?';
+  beginButton.innerHTML = wrapLettersInSpans('begin?');
   beginButton.style.display = 'none';
   beginButton.id = 'begin-btn';
   
@@ -172,7 +182,7 @@ export function showSetupScreen(onComplete) {
   
   const startButton = document.createElement('button');
   startButton.className = 'start-btn';
-  startButton.textContent = 'Begin Civilization';
+  startButton.innerHTML = wrapLettersInSpans('Begin Civilization');
   startButton.disabled = true;
   startButton.id = 'start-btn';
   

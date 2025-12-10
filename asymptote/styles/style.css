@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -5,7 +7,7 @@
 }
 
 body {
-  font-family: 'Courier New', monospace;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
   background-color: #000;
   color: #0f0;
   padding: 20px;
@@ -25,16 +27,11 @@ header {
 }
 
 h1 {
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
   font-size: 2.5rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   margin-bottom: 10px;
-}
-
-.subtitle {
-  font-size: 0.9rem;
-  color: #0a0;
-  font-style: italic;
 }
 
 .controls {
@@ -402,4 +399,163 @@ footer {
   .resources-container {
     grid-template-columns: 1fr;
   }
+}
+
+/* Fluctuating letter animation */
+@keyframes letterFluctuate {
+  0%, 100% {
+    text-shadow: 0 0 8px #0f0, 0 0 16px #0f080;
+    transform: translateY(0);
+  }
+  50% {
+    text-shadow: 0 0 20px #0f0, 0 0 40px #0f080;
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes wavyMotion {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* Apply fluctuating effect to buttons */
+.begin-btn, .start-btn {
+  position: relative;
+  overflow: visible;
+}
+
+.begin-btn .btn-letter, .start-btn .btn-letter {
+  display: inline-block;
+  animation: letterFluctuate 2.5s ease-in-out infinite, wavyMotion 3s ease-in-out infinite;
+  will-change: transform;
+}
+
+.begin-btn:hover .btn-letter, .start-btn:hover .btn-letter {
+  animation-duration: 0.5s, 1s;
+}
+
+/* Resource card titles with fluctuation */
+.resource-card h3 {
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+}
+
+.setup-title {
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+}
+
+/* Fix mobile button positioning */
+@media (max-width: 768px) {
+  .setup-content {
+    padding: 20px;
+    padding-bottom: 100px; /* Extra space for button */
+  }
+  
+  .start-btn {
+    position: relative;
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+  
+  .resources-container {
+    margin-bottom: 40px;
+  }
+}
+
+/* Mining/resource gathering mode styles */
+.mining-mode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.resource-node {
+  padding: 30px;
+  border: 3px solid #0f0;
+  background-color: #001a00;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  min-width: 200px;
+  text-align: center;
+}
+
+.resource-node:hover {
+  background-color: #003300;
+  box-shadow: 0 0 20px #0f0;
+  transform: scale(1.05);
+}
+
+.resource-node:active {
+  transform: scale(0.95);
+}
+
+.resource-node .resource-name {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+}
+
+.resource-node .resource-progress {
+  width: 100%;
+  height: 10px;
+  background-color: #000;
+  border: 1px solid #0f0;
+  margin-top: 10px;
+  position: relative;
+}
+
+.resource-node .resource-progress-bar {
+  height: 100%;
+  background-color: #0f0;
+  transition: width 0.1s linear;
+}
+
+.resource-node .resource-count {
+  font-size: 0.9rem;
+  color: #0a0;
+  margin-top: 5px;
+}
+
+.resources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+.inventory-display {
+  border: 2px solid #0f0;
+  padding: 20px;
+  background-color: #001a00;
+  margin-bottom: 20px;
+}
+
+.inventory-display h3 {
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  margin-bottom: 15px;
+}
+
+.inventory-items {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.inventory-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 1.1rem;
+}
+
+.inventory-item span {
+  font-weight: bold;
 }

@@ -74,18 +74,26 @@ export function updateStatsDisplay() {
 export function setMode(mode, onModeChange) {
   state.mode = mode;
   
+  const gatheringBtn = document.getElementById('gatheringModeBtn');
   const simBtn = document.getElementById('simModeBtn');
   const rpgBtn = document.getElementById('rpgModeBtn');
   const simCanvas = document.getElementById('sim-canvas');
   const rpgCanvas = document.getElementById('rpg-canvas');
   
-  if (mode === 'sim') {
+  // Remove active from all buttons
+  if (gatheringBtn) gatheringBtn.classList.remove('active');
+  if (simBtn) simBtn.classList.remove('active');
+  if (rpgBtn) rpgBtn.classList.remove('active');
+  
+  if (mode === 'gathering') {
+    if (gatheringBtn) gatheringBtn.classList.add('active');
+    simCanvas.style.display = 'none';
+    rpgCanvas.style.display = 'none';
+  } else if (mode === 'sim') {
     simBtn.classList.add('active');
-    rpgBtn.classList.remove('active');
     simCanvas.style.display = 'block';
     rpgCanvas.style.display = 'none';
   } else if (mode === 'rpg') {
-    simBtn.classList.remove('active');
     rpgBtn.classList.add('active');
     simCanvas.style.display = 'none';
     rpgCanvas.style.display = 'block';
