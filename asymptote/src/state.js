@@ -20,7 +20,16 @@ export const state = {
   M: 0.3,          // Meaning (emergent)
   
   time: 0,         // Simulation time
-  mode: 'sim',     // Current mode: 'sim' or 'rpg'
+  mode: 'intro',   // Current mode: 'intro', 'setup', 'sim', or 'rpg'
+  gameStarted: false,
+  
+  // Starting resources
+  startingResources: {
+    wood: 0,
+    stone: 0,
+    food: 0,
+    metal: 0
+  },
   
   // History for visualization
   history: {

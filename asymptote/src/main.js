@@ -6,6 +6,7 @@ import { updateNarrative } from './narrative.js';
 import { initRPGFromCivState } from './rpg/rpgState.js';
 import { initRPGRender, renderRPG } from './rpg/rpgRender.js';
 import { initRPGUI, updateRPGUI, hideRPGUI } from './rpg/rpgUI.js';
+import { showIntroScreen, hideIntroScreen, showSetupScreen, hideSetupScreen, applyStartingResources } from './intro.js';
 
 let lastTime = 0;
 let simCanvas, rpgCanvas;
@@ -32,8 +33,27 @@ function init() {
     handleModeChange('rpg');
   });
   
-  // Start animation loop
-  requestAnimationFrame(gameLoop);
+  // Show intro screen first
+  if (!state.gameStarted) {
+    const beginButton = showIntroScreen();
+    beginButton.addEventListener('click', () => {
+      hideIntroScreen();
+      setTimeout(() => {
+        showSetupScreen((selectedResources) => {
+          applyStartingResources(selectedResources, state);
+          hideSetupScreen();
+          state.gameStarted = true;
+          state.mode = 'sim';
+          setMode('sim');
+          // Start animation loop after setup
+          requestAnimationFrame(gameLoop);
+        });
+      }, 500);
+    });
+  } else {
+    // Start animation loop immediately if game already started
+    requestAnimationFrame(gameLoop);
+  }
 }
 
 function handleModeChange(mode) {
@@ -52,6 +72,11 @@ function handleModeChange(mode) {
 function gameLoop(currentTime) {
   const deltaTime = currentTime - lastTime;
   lastTime = currentTime;
+  
+  // Only run game loop if game has started
+  if (!state.gameStarted) {
+    return;
+  }
   
   if (state.mode === 'sim') {
     // Run simulation mode
