@@ -316,7 +316,7 @@ export function renderBoard(board, canvas, ctx) {
   ctx.restore();
   
   // Draw UI
-  drawUI(ctx, board);
+  drawUI(ctx, board, canvas);
 }
 
 function drawHex(ctx, hex, isSelected) {
@@ -365,7 +365,7 @@ function drawHex(ctx, hex, isSelected) {
   ctx.restore();
 }
 
-function drawUI(ctx, board) {
+function drawUI(ctx, board, canvas) {
   // Resources
   ctx.fillStyle = '#0f0';
   ctx.font = '16px "EB Garamond", serif';
