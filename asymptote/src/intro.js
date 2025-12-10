@@ -1,5 +1,10 @@
 // Introduction and setup screens
 
+// Configuration constants
+const TYPING_DELAY_MS = 30;
+const SCREEN_TRANSITION_DELAY = 500;
+const MAX_RESOURCE_SELECTIONS = 3;
+
 const introText = `In darkness, they grope for meaning.
 
 Rich meaning emerges from mystery rather than clarity.
@@ -61,7 +66,7 @@ function typeText(element, text, callback) {
       clearInterval(typingInterval);
       if (callback) callback();
     }
-  }, 30); // 30ms per character
+  }, TYPING_DELAY_MS);
 }
 
 export function hideIntroScreen() {
@@ -128,7 +133,7 @@ export function showSetupScreen(onComplete) {
   ];
   
   const selectedResources = new Set();
-  const maxSelections = 3;
+  const maxSelections = MAX_RESOURCE_SELECTIONS;
   
   resources.forEach(resource => {
     const card = document.createElement('div');
@@ -206,7 +211,7 @@ export function hideSetupScreen() {
       setupOverlay.remove();
       const container = document.querySelector('.container');
       container.style.display = 'block';
-    }, 500);
+    }, SCREEN_TRANSITION_DELAY);
   }
 }
 

@@ -35,6 +35,7 @@ function init() {
   
   // Show intro screen first
   if (!state.gameStarted) {
+    const SCREEN_TRANSITION_DELAY = 500;
     const beginButton = showIntroScreen();
     beginButton.addEventListener('click', () => {
       hideIntroScreen();
@@ -48,7 +49,7 @@ function init() {
           // Start animation loop after setup
           requestAnimationFrame(gameLoop);
         });
-      }, 500);
+      }, SCREEN_TRANSITION_DELAY);
     });
   } else {
     // Start animation loop immediately if game already started
