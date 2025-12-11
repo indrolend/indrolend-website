@@ -4,8 +4,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* Prevent double-tap zoom on mobile */
-  touch-action: manipulation;
 }
 
 body {
@@ -14,6 +12,8 @@ body {
   color: #0f0;
   padding: 20px;
   min-height: 100vh;
+  /* Prevent double-tap zoom on mobile */
+  touch-action: manipulation;
 }
 
 .container {
