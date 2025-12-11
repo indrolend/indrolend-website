@@ -77,7 +77,7 @@ const UPGRADES = [
     id: 'click2x',
     name: 'Click Multiplier x2',
     cost: 100,
-    effect: () => game.clickPower *= 2,
+    effect: (game) => game.clickPower *= 2,
     description: 'Double click power',
     purchased: false
   },
@@ -85,7 +85,7 @@ const UPGRADES = [
     id: 'click5x',
     name: 'Click Multiplier x5',
     cost: 1000,
-    effect: () => game.clickPower *= 2.5,
+    effect: (game) => game.clickPower *= 2.5,
     description: 'Click power x2.5',
     purchased: false,
     requires: 'click2x'
@@ -94,7 +94,7 @@ const UPGRADES = [
     id: 'click10x',
     name: 'Click Multiplier x10',
     cost: 10000,
-    effect: () => game.clickPower *= 2,
+    effect: (game) => game.clickPower *= 2,
     description: 'Click power x2',
     purchased: false,
     requires: 'click5x'
@@ -103,7 +103,7 @@ const UPGRADES = [
     id: 'gen2x',
     name: 'Generator Boost',
     cost: 500,
-    effect: () => game.productionMultiplier *= 2,
+    effect: (game) => game.productionMultiplier *= 2,
     description: 'Double all production',
     purchased: false
   },
@@ -111,7 +111,7 @@ const UPGRADES = [
     id: 'gen4x',
     name: 'Generator Surge',
     cost: 5000,
-    effect: () => game.productionMultiplier *= 2,
+    effect: (game) => game.productionMultiplier *= 2,
     description: 'Double all production again',
     purchased: false,
     requires: 'gen2x'
@@ -120,7 +120,7 @@ const UPGRADES = [
     id: 'autocollect',
     name: 'Auto-Collect',
     cost: 2500,
-    effect: () => game.autoCollect = true,
+    effect: (game) => game.autoCollect = true,
     description: 'Automatically collect idle gains on page load',
     purchased: false
   }
@@ -220,7 +220,7 @@ class ClickerGame {
     const upgDef = UPGRADES.find(u => u.id === upgradeId);
     this.understanding -= upgDef.cost;
     this.upgrades[upgradeId].purchased = true;
-    upgDef.effect();
+    upgDef.effect(this);
     return true;
   }
   
@@ -276,13 +276,21 @@ class ClickerGame {
       
       this.understanding = saveData.understanding || 0;
       this.totalClicks = saveData.totalClicks || 0;
-      this.clickPower = saveData.clickPower || 1;
-      this.productionMultiplier = saveData.productionMultiplier || 1;
       this.enlightenments = saveData.enlightenments || 0;
-      this.autoCollect = saveData.autoCollect || false;
       this.generators = saveData.generators || this.generators;
       this.upgrades = saveData.upgrades || this.upgrades;
       this.stats = saveData.stats || this.stats;
+      
+      // Reapply all purchased upgrades to restore clickPower and productionMultiplier
+      this.clickPower = 1;
+      this.productionMultiplier = 1;
+      this.autoCollect = false;
+      
+      for (const upgDef of UPGRADES) {
+        if (this.upgrades[upgDef.id].purchased) {
+          upgDef.effect(this);
+        }
+      }
       
       // Calculate offline progress
       if (this.autoCollect && saveData.lastSaveTime) {

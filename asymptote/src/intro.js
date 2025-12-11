@@ -85,6 +85,11 @@ export function hideIntroScreen() {
     introOverlay.classList.add('fade-out');
     setTimeout(() => {
       introOverlay.remove();
+      // Show the main container
+      const container = document.querySelector('.container');
+      if (container) {
+        container.style.display = 'block';
+      }
     }, 500);
   }
   if (typingInterval) {

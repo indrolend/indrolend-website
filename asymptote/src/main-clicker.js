@@ -224,7 +224,9 @@ function renderUpgrades() {
 function updateUI() {
   document.getElementById('understanding').textContent = formatNumber(Math.floor(game.understanding));
   document.getElementById('production').textContent = formatNumber(game.getProductionPerSecond(), 1);
-  document.getElementById('click-power').textContent = formatNumber(game.clickPower);
+  // Show actual click power including enlightenment bonus
+  const actualClickPower = game.clickPower * game.getEnlightenmentBonus();
+  document.getElementById('click-power').textContent = formatNumber(actualClickPower);
   document.getElementById('enlightenments').textContent = game.enlightenments;
   document.getElementById('enlightenment-bonus').textContent = Math.floor(game.enlightenments * 10);
   
