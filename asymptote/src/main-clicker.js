@@ -384,6 +384,10 @@ function addStyles() {
       justify-content: center;
       gap: 10px;
       box-shadow: 0 0 30px #0f040;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
     }
     
     .main-click-button:hover {
@@ -526,6 +530,8 @@ function addStyles() {
       cursor: pointer;
       border-radius: 4px;
       transition: all 0.2s;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
     
     .gen-buy-btn:hover:not(:disabled), .upg-buy-btn:hover:not(:disabled) {
@@ -565,6 +571,8 @@ function addStyles() {
       gap: 5px;
       align-items: center;
       margin: 0 auto;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
     
     .enlighten-button:hover:not(:disabled) {
@@ -605,6 +613,8 @@ function addStyles() {
       cursor: pointer;
       border-radius: 4px;
       transition: all 0.2s;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
     
     .small-btn:hover {

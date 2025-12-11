@@ -4,6 +4,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  /* Prevent double-tap zoom on mobile */
+  touch-action: manipulation;
 }
 
 body {
@@ -83,6 +85,8 @@ input[type="range"] {
   font-size: 1rem;
   text-transform: uppercase;
   transition: all 0.3s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mode-btn:hover {
@@ -192,6 +196,8 @@ footer {
   font-family: 'Courier New', monospace;
   font-size: 0.9rem;
   transition: all 0.3s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .rpg-move-btn:hover:not(:disabled) {
@@ -268,6 +274,8 @@ footer {
   text-transform: lowercase;
   transition: all 0.3s;
   opacity: 0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .begin-btn.fade-in {
@@ -341,6 +349,8 @@ footer {
   transition: background-color 0.2s, transform 0.2s;
   background-color: #001a00;
   box-shadow: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .resource-card:hover {
@@ -497,6 +507,10 @@ footer {
   position: relative;
   min-width: 200px;
   text-align: center;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .resource-node:hover {
