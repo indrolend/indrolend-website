@@ -68,24 +68,15 @@ function init() {
   const hasSeenIntro = localStorage.getItem('asymptote_intro_shown');
   
   if (!hasSeenIntro) {
-    const SCREEN_TRANSITION_DELAY = 500;
     const beginButton = showIntroScreen();
     beginButton.addEventListener('click', () => {
       hideIntroScreen();
       localStorage.setItem('asymptote_intro_shown', 'true');
-      setTimeout(() => {
-        showSetupScreen(() => {
-          hideSetupScreen();
-          startGame();
-        });
-      }, SCREEN_TRANSITION_DELAY);
+      startGame();
     });
   } else {
     // Skip intro, go directly to game
-    showSetupScreen(() => {
-      hideSetupScreen();
-      startGame();
-    });
+    startGame();
   }
 }
 
