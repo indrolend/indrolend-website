@@ -5,15 +5,16 @@ const TYPING_DELAY_MS = 30;
 const SCREEN_TRANSITION_DELAY = 500;
 const MAX_RESOURCE_SELECTIONS = 3;
 
-const introText = `Reality's too big for your brain.
+const introText = `OK OK OK listen—
 
-So you compress it.
-Copy what works.
-Get closer, but never quite there.
+Your brain is like... *hiccup* ...it's too SMALL, right?
 
-This is The Asymptote Engine.
+So you just... you SQUISH stuff. Copy the good bits.
+You get CLOSER but you never... you never GET there.
 
-Let's go.`;
+That's... that's the whole thing. The asymptote thingy.
+
+I love you man. Let's DO this.`;
 
 let currentCharIndex = 0;
 let typingInterval = null;
@@ -110,11 +111,11 @@ export function showSetupScreen(onComplete) {
   setupContent.className = 'setup-content';
   
   const title = document.createElement('h2');
-  title.textContent = 'Choose 3 Resources';
+  title.textContent = 'OK Pick 3 Things';
   title.className = 'setup-title';
   
   const subtitle = document.createElement('p');
-  subtitle.textContent = 'Pick what you start with';
+  subtitle.textContent = 'Just pick em. Trust me.';
   subtitle.className = 'setup-subtitle';
   
   const resourcesContainer = document.createElement('div');
@@ -124,26 +125,26 @@ export function showSetupScreen(onComplete) {
     { 
       id: 'wood', 
       name: 'Wood', 
-      description: 'Build structures',
-      effect: '+Growth'
+      description: 'Makes... structures and stuff',
+      effect: 'idk it grows back tho'
     },
     { 
       id: 'stone', 
       name: 'Stone', 
-      description: 'Lasting monuments',
-      effect: '+Stability'
+      description: 'Lasts forever basically',
+      effect: 'real sturdy bro'
     },
     { 
       id: 'food', 
       name: 'Food', 
-      description: 'Feed your people',
-      effect: '+Health'
+      description: 'People gotta eat man',
+      effect: 'keeps em alive'
     },
     { 
       id: 'metal', 
       name: 'Metal', 
-      description: 'Tools and tech',
-      effect: '+Knowledge'
+      description: 'The GOOD stuff',
+      effect: 'tools n shit'
     }
   ];
   
@@ -187,7 +188,7 @@ export function showSetupScreen(onComplete) {
   
   const startButton = document.createElement('button');
   startButton.className = 'start-btn';
-  startButton.innerHTML = wrapLettersInSpans('Begin');
+  startButton.innerHTML = wrapLettersInSpans('LETS GOOOO');
   startButton.disabled = true;
   startButton.id = 'start-btn';
   
