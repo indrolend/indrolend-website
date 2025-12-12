@@ -11,17 +11,17 @@ const GENERATORS = [
     baseCost: 10,
     baseProduction: 0.1,
     costMultiplier: 1.15,
-    description: 'Bro you gotta squish down the crazy universe into stuff that actually fits in your head. Reality → brain-sized chunks.',
-    concept: 'DENSITY & COMPRESSION'
+    description: 'OK so like... you squish the BIG thing into a small thing that FITS in your head, yeah?',
+    concept: '*gestures wildly* DENSITY'
   },
   {
     id: 'meditation',
-    name: 'Bootleg Reality',
+    name: 'The Copy Machine',
     baseCost: 50,
     baseProduction: 1,
     costMultiplier: 1.15,
-    description: 'You\'re not a mirror dude, you\'re a knockoff. Just copy the vibes that matter, forget the rest.',
-    concept: 'EMULATION STACKS'
+    description: 'Dude you just copy the VIBES that work. Forget the rest. Bootleg reality baby.',
+    concept: 'wait no—EMULATION'
   },
   {
     id: 'study',
@@ -29,17 +29,17 @@ const GENERATORS = [
     baseCost: 250,
     baseProduction: 5,
     costMultiplier: 1.15,
-    description: 'Everything grows layers on layers on layers. It gets so complex it has to hide itself or you\'d lose your mind.',
-    concept: 'HIDDEN COMPLEXITY'
+    description: 'It stacks bro. Layers on layers on... *counts on fingers* ...MORE layers.',
+    concept: 'complexity hides itself!!!'
   },
   {
     id: 'research',
-    name: 'Final Boss',
+    name: 'The Last Step',
     baseCost: 1000,
     baseProduction: 25,
     costMultiplier: 1.15,
-    description: 'The last step can kill the whole chain. The edge is what actually counts, not all the prep.',
-    concept: 'LAST-MILE PRINCIPLE'
+    description: 'The LAST bit is what kills you. Or saves you. The edge man, THE EDGE.',
+    concept: 'last mile principle *taps head*'
   },
   {
     id: 'analysis',
@@ -47,26 +47,26 @@ const GENERATORS = [
     baseCost: 5000,
     baseProduction: 100,
     costMultiplier: 1.15,
-    description: 'Copying the copy of the copy. Power goes BRRRR but you might drift from what\'s actually real.',
-    concept: 'RECURSIVE POWER'
+    description: 'Copy the copy of the COPY—it goes BRRRR but you drift from what\'s real...',
+    concept: 'recursion babyyyy'
   },
   {
     id: 'synthesis',
-    name: 'Set In Stone',
+    name: 'Frozen Choice',
     baseCost: 25000,
     baseProduction: 500,
     costMultiplier: 1.15,
-    description: 'When choices become infrastructure they stop feeling like choices. That\'s just how it is now.',
-    concept: 'FROZEN DECISIONS'
+    description: 'When choices become the FLOOR you walk on. They ain\'t choices no more.',
+    concept: 'path dependence or whatever'
   },
   {
     id: 'revelation',
-    name: 'Slow Burn',
+    name: 'Slow Then BOOM',
     baseCost: 100000,
     baseProduction: 2500,
     costMultiplier: 1.15,
-    description: 'When you start out the effects are invisible. Later? BOOM. The curve sneaks up on you.',
-    concept: 'DELAYED VISIBILITY'
+    description: 'Nothing nothing nothing then WHAM. Exponential stuff. Sneaky curves.',
+    concept: 'delayed effects *makes explosion sound*'
   },
   {
     id: 'transcendence',
@@ -74,8 +74,8 @@ const GENERATORS = [
     baseCost: 500000,
     baseProduction: 10000,
     costMultiplier: 1.15,
-    description: 'Where your brain can\'t compress anymore, that\'s where meaning lives. The boundary of what you can handle.',
-    concept: 'EDGE OF UNDERSTANDING'
+    description: 'Where your brain CAN\'T compress anymore—that\'s where meaning LIVES dude.',
+    concept: 'the EDGE. the asymptote. *chef kiss*'
   }
 ];
 
@@ -83,78 +83,78 @@ const GENERATORS = [
 const UPGRADES = [
   {
     id: 'click2x',
-    name: 'Chunk It Up',
+    name: 'Chunking',
     cost: 100,
     effect: (game) => game.clickPower *= 2,
-    description: 'Stop the flow, make it chunks. Double your click power.',
-    narrative: 'Damn dude, patterns are just objects now, not some endless stream.'
+    description: '2x clicks. You stop the FLOW and make it CHUNKS.',
+    narrative: 'patterns r objects now not streams'
   },
   {
     id: 'click5x',
     name: 'Focus Mode',
     cost: 1000,
     effect: (game) => game.clickPower *= 2.5,
-    description: 'Limited attention = you gotta pick what matters. Filter the noise.',
-    narrative: 'Not everything is important bro. You\'re learning to ignore the BS.',
+    description: '2.5x clicks. Limited attention so you GOTTA pick what matters bro.',
+    narrative: 'ignore the BS. focus.',
     requires: 'click2x'
   },
   {
     id: 'click10x',
-    name: 'Built Different',
+    name: 'Constraints',
     cost: 10000,
     effect: (game) => game.clickPower *= 2,
-    description: 'Your limits aren\'t bugs—they\'re features. Constraints let you DO stuff.',
-    narrative: 'Your weaknesses are literally just good design. That\'s wild.',
+    description: '2x clicks. Your limits aren\'t bugs—they\'re FEATURES man.',
+    narrative: 'constraints = action. wild right?',
     requires: 'click5x'
   },
   {
     id: 'gen2x',
-    name: 'Squad Up',
+    name: 'Network Effect',
     cost: 500,
     effect: (game) => game.productionMultiplier *= 2,
-    description: 'Network effect baby. Everyone\'s copying reality differently.',
-    narrative: 'You\'re not doing this alone. Scale needs the squad.'
+    description: '2x production. Everyone copies reality DIFFERENTLY. Squad up.',
+    narrative: 'you need the SQUAD for scale'
   },
   {
     id: 'gen4x',
     name: 'Move Fast',
     cost: 5000,
     effect: (game) => game.productionMultiplier *= 2,
-    description: 'At scale, speed > perfection. Errors are fine.',
-    narrative: 'Sometimes being perfect costs more than just vibing with mistakes.',
+    description: '2x production. Speed beats perfect. Errors are FINE.',
+    narrative: 'speed > perfection trust me',
     requires: 'gen2x'
   },
   {
     id: 'autocollect',
-    name: 'Abundance Go Brrr',
+    name: 'Abundance Mode',
     cost: 2500,
     effect: (game) => game.autoCollect = true,
-    description: 'When you got plenty, edge failures don\'t matter. Auto-collect when offline.',
-    narrative: 'When upstream is stacked, downstream can be chill about errors.'
+    description: 'Auto-collect. When you got PLENTY, failures don\'t matter.',
+    narrative: 'upstream abundance = chill errors'
   },
   {
     id: 'archaeologist',
-    name: 'Dig Mode',
+    name: 'Dig It Up',
     cost: 15000,
     effect: (game) => game.archaeologyBonus = 1.5,
-    description: 'Dig up old fossilized systems. See what\'s ACTUALLY there.',
-    narrative: 'Old systems can be reverse engineered. Their limits? Optional now.'
+    description: '1.5x production. Dig up fossilized systems. Reverse engineer that shit.',
+    narrative: 'old systems? optional limits now'
   },
   {
     id: 'volatility',
-    name: 'Chaos Mode',
+    name: 'Chaos Injection',
     cost: 30000,
     effect: (game) => game.volatilityMultiplier = 1.3,
-    description: 'Humans are the wildcard. Inject controlled chaos.',
-    narrative: 'You don\'t average out bro. You sync, trend, mutate, COMPOUND.'
+    description: '1.3x production. Humans don\'t AVERAGE out—we COMPOUND.',
+    narrative: 'sync. trend. mutate. COMPOUND.'
   },
   {
     id: 'leapfrog',
     name: 'Skip Levels',
     cost: 75000,
     effect: (game) => game.leapfrogBonus = 2.0,
-    description: 'Change the layer, don\'t grind the same one. Skip obsolete stuff.',
-    narrative: 'Discontinuous jumps baby. Put effort where the leverage is MAXIMUM.'
+    description: '2x production. Change the LAYER. Don\'t grind the same one forever dude.',
+    narrative: 'discontinuous jumps. max leverage.'
   }
 ];
 
