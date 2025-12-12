@@ -1,6 +1,7 @@
 // Main entry point for Idle Clicker Game
 import { showIntroScreen, hideIntroScreen, showSetupScreen, hideSetupScreen } from './intro.js';
 import { ClickerGame, GENERATORS, UPGRADES } from './clicker.js';
+import { audioManager } from './audio.js';
 
 let game = null;
 let lastUpdateTime = Date.now();
@@ -70,12 +71,16 @@ function init() {
   if (!hasSeenIntro) {
     const beginButton = showIntroScreen();
     beginButton.addEventListener('click', () => {
+      // Start background music when user clicks begin
+      audioManager.play();
       hideIntroScreen();
       localStorage.setItem('asymptote_intro_shown', 'true');
       startGame();
     });
   } else {
     // Skip intro, go directly to game
+    // Start music immediately if intro was already seen
+    audioManager.play();
     startGame();
   }
 }
