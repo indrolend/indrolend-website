@@ -5,22 +5,22 @@ const TYPING_DELAY_MS = 30;
 const SCREEN_TRANSITION_DELAY = 500;
 const MAX_RESOURCE_SELECTIONS = 3;
 
-const introText = `Reality is too dense to be held directly.
+const introText = `Yo, reality is WAY too much to hold in your head.
 
-You are a finite mind in an infinite universe.
+You're basically a tiny brain in a massive universe.
 
-To comprehend is to compress.
-To survive is to emulate.
-To understand is to approach an asymptote—
-forever closer, never complete.
+Here's the deal:
+Understanding = squishing stuff down.
+Surviving = copying what works.
+Getting smarter = getting closer but never quite there.
 
 This is The Asymptote Engine.
 
-You will learn to compress reality into runnable models.
-You will discover that humans are emulators, not mirrors.
-You will explore the edges where compression fails and meaning begins.
+You're gonna learn to compress reality into stuff you can actually use.
+Humans don't mirror reality—we run bootleg versions of it.
+We're gonna hit the limits where your brain breaks and meaning kicks in.
 
-Welcome to the framework.`;
+Let's gooooo.`;
 
 let currentCharIndex = 0;
 let typingInterval = null;

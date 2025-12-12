@@ -148,9 +148,9 @@ function handleMainClick(event) {
 function handleEnlighten() {
   if (!game.canEnlighten()) return;
   
-  if (confirm('ENLIGHTENMENT: Push the epistemic edge outward.\n\nYou will reset Understanding and Generators, but gain a permanent +10% multiplier to all production.\n\nThis represents asymptotic progress—understanding grows closer to truth without ever completing.\n\nContinue?')) {
+  if (confirm('ENLIGHTENMENT: Push that brain limit further out.\n\nYou\'ll reset Understanding and Generators, but get a permanent +10% boost to EVERYTHING.\n\nThis is asymptotic progress—you keep getting closer but never actually finish. That\'s the point.\n\nLet\'s go?')) {
     game.enlighten();
-    showNarrative('The edge moves. Your emulator expands. Understanding advances asymptotically.');
+    showNarrative('The edge moved. Your brain expanded. You\'re getting closer but never done.');
     showMessage('Enlightenment achieved! +10% permanent bonus applied.');
     renderGenerators();
   }
@@ -189,7 +189,7 @@ function renderGenerators() {
         renderGenerators();
         // Show narrative on first purchase
         if (genData.count === 1 && genDef.concept) {
-          showNarrative(`You have unlocked: ${genDef.concept}`);
+          showNarrative(`YO YOU UNLOCKED: ${genDef.concept}`);
         }
       }
     });
@@ -284,22 +284,22 @@ function checkNarrativeTriggers() {
   
   if (!narrativeTriggers.understanding100 && u >= 100) {
     narrativeTriggers.understanding100 = true;
-    showNarrative('You begin to see patterns. Reality compresses into forms you can hold.');
+    showNarrative('Yooo you\'re starting to see patterns! Reality is getting squished into stuff you can actually hold.');
   }
   
   if (!narrativeTriggers.understanding1000 && u >= 1000) {
     narrativeTriggers.understanding1000 = true;
-    showNarrative('The asymptote approaches. You can enlighten—push the edge further.');
+    showNarrative('The limit is approaching bro. You can enlighten now—push that edge even further.');
   }
   
   if (!narrativeTriggers.understanding10000 && u >= 10000) {
     narrativeTriggers.understanding10000 = true;
-    showNarrative('Layers upon layers. Your emulator runs emulations of emulations.');
+    showNarrative('Layers on layers on LAYERS. You\'re running bootlegs of bootlegs of bootlegs.');
   }
   
   if (!narrativeTriggers.understanding100000 && u >= 100000) {
     narrativeTriggers.understanding100000 = true;
-    showNarrative('At scale, complexity hides itself. What was once impossible now feels natural.');
+    showNarrative('At this scale, complexity just hides itself. What used to be impossible is casual now.');
   }
   
   // Check if player has at least one of each generator
@@ -313,7 +313,7 @@ function checkNarrativeTriggers() {
     }
     if (hasAll) {
       narrativeTriggers.allGenerators = true;
-      showNarrative('You have internalized all core concepts. The framework is yours to wield.');
+      showNarrative('Damn dude you got ALL the concepts. The framework is yours now.');
     }
   }
 }

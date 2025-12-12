@@ -7,74 +7,74 @@ const AUTOSAVE_INTERVAL = 10000; // 10 seconds
 const GENERATORS = [
   {
     id: 'contemplation',
-    name: 'Compression',
+    name: 'Brain Squisher',
     baseCost: 10,
     baseProduction: 0.1,
     costMultiplier: 1.15,
-    description: 'Compress the dense universe into patterns you can hold. Reality → runnable model.',
+    description: 'Bro you gotta squish down the crazy universe into stuff that actually fits in your head. Reality → brain-sized chunks.',
     concept: 'DENSITY & COMPRESSION'
   },
   {
     id: 'meditation',
-    name: 'Emulation',
+    name: 'Bootleg Reality',
     baseCost: 50,
     baseProduction: 1,
     costMultiplier: 1.15,
-    description: 'You are an emulator, not a mirror. Recreate dynamics that matter, not underlying physics.',
+    description: 'You\'re not a mirror dude, you\'re a knockoff. Just copy the vibes that matter, forget the rest.',
     concept: 'EMULATION STACKS'
   },
   {
     id: 'study',
-    name: 'Layering',
+    name: 'Layer Cake',
     baseCost: 250,
     baseProduction: 5,
     costMultiplier: 1.15,
-    description: 'Systems grow layers. Abstraction upon abstraction. Complexity must hide itself to remain usable.',
+    description: 'Everything grows layers on layers on layers. It gets so complex it has to hide itself or you\'d lose your mind.',
     concept: 'HIDDEN COMPLEXITY'
   },
   {
     id: 'research',
-    name: 'Last Mile',
+    name: 'Final Boss',
     baseCost: 1000,
     baseProduction: 25,
     costMultiplier: 1.15,
-    description: 'The final constraint can veto the entire upstream chain. Edges decide what "counts."',
+    description: 'The last step can kill the whole chain. The edge is what actually counts, not all the prep.',
     concept: 'LAST-MILE PRINCIPLE'
   },
   {
     id: 'analysis',
-    name: 'Recursion',
+    name: 'Infinite Loop',
     baseCost: 5000,
     baseProduction: 100,
     costMultiplier: 1.15,
-    description: 'Emulators emulating emulators. Self-reference scales power but risks drift from ground truth.',
+    description: 'Copying the copy of the copy. Power goes BRRRR but you might drift from what\'s actually real.',
     concept: 'RECURSIVE POWER'
   },
   {
     id: 'synthesis',
-    name: 'Fossilization',
+    name: 'Set In Stone',
     baseCost: 25000,
     baseProduction: 500,
     costMultiplier: 1.15,
-    description: 'Decisions become infrastructure. Once a choice fossilizes, it stops being felt as choice.',
+    description: 'When choices become infrastructure they stop feeling like choices. That\'s just how it is now.',
     concept: 'FROZEN DECISIONS'
   },
   {
     id: 'revelation',
-    name: 'Compounding',
+    name: 'Slow Burn',
     baseCost: 100000,
     baseProduction: 2500,
     costMultiplier: 1.15,
-    description: 'Impact is invisible when leverage is high (early). Visible when late. Curvature reveals slowly.',
+    description: 'When you start out the effects are invisible. Later? BOOM. The curve sneaks up on you.',
     concept: 'DELAYED VISIBILITY'
   },
   {
     id: 'transcendence',
-    name: 'Epistemic Edge',
+    name: 'Brain Limit',
     baseCost: 500000,
     baseProduction: 10000,
     costMultiplier: 1.15,
-    description: 'Where compression fails, meaning begins. The boundary of the current emulator\'s capacity.',
+    description: 'Where your brain can\'t compress anymore, that\'s where meaning lives. The boundary of what you can handle.',
     concept: 'EDGE OF UNDERSTANDING'
   }
 ];
@@ -83,78 +83,78 @@ const GENERATORS = [
 const UPGRADES = [
   {
     id: 'click2x',
-    name: 'Discretization',
+    name: 'Chunk It Up',
     cost: 100,
     effect: (game) => game.clickPower *= 2,
-    description: 'Turn continuous flow into discrete units. Double click power.',
-    narrative: 'You begin to see patterns as objects, not flux.'
+    description: 'Stop the flow, make it chunks. Double your click power.',
+    narrative: 'Damn dude, patterns are just objects now, not some endless stream.'
   },
   {
     id: 'click5x',
-    name: 'Attention as Selection',
+    name: 'Focus Mode',
     cost: 1000,
     effect: (game) => game.clickPower *= 2.5,
-    description: 'Limited attention = feature selection. Choose what matters.',
-    narrative: 'Not all signals are equal. You learn to filter noise.',
+    description: 'Limited attention = you gotta pick what matters. Filter the noise.',
+    narrative: 'Not everything is important bro. You\'re learning to ignore the BS.',
     requires: 'click2x'
   },
   {
     id: 'click10x',
-    name: 'Bounded Agency',
+    name: 'Built Different',
     cost: 10000,
     effect: (game) => game.clickPower *= 2,
-    description: 'Finite minds require compression. Constraints enable action.',
-    narrative: 'Your limitations are not weaknesses—they are design.',
+    description: 'Your limits aren\'t bugs—they\'re features. Constraints let you DO stuff.',
+    narrative: 'Your weaknesses are literally just good design. That\'s wild.',
     requires: 'click5x'
   },
   {
     id: 'gen2x',
-    name: 'Distributed Modeling',
+    name: 'Squad Up',
     cost: 500,
     effect: (game) => game.productionMultiplier *= 2,
-    description: 'Society as networked emulators. Each subsystem compresses differently.',
-    narrative: 'You are not alone. Systems scale through distribution.'
+    description: 'Network effect baby. Everyone\'s copying reality differently.',
+    narrative: 'You\'re not doing this alone. Scale needs the squad.'
   },
   {
     id: 'gen4x',
-    name: 'Velocity Over Correctness',
+    name: 'Move Fast',
     cost: 5000,
     effect: (game) => game.productionMultiplier *= 2,
-    description: 'At scale, speed matters more than perfect control. Tolerate errors.',
-    narrative: 'Sometimes the cost of perfect control exceeds the cost of error.',
+    description: 'At scale, speed > perfection. Errors are fine.',
+    narrative: 'Sometimes being perfect costs more than just vibing with mistakes.',
     requires: 'gen2x'
   },
   {
     id: 'autocollect',
-    name: 'Abundance Permits Forgiveness',
+    name: 'Abundance Go Brrr',
     cost: 2500,
     effect: (game) => game.autoCollect = true,
-    description: 'Efficient systems tolerate edge failures. Auto-collect offline gains.',
-    narrative: 'When upstream is abundant, downstream can afford to be forgiving.'
+    description: 'When you got plenty, edge failures don\'t matter. Auto-collect when offline.',
+    narrative: 'When upstream is stacked, downstream can be chill about errors.'
   },
   {
     id: 'archaeologist',
-    name: 'Archaeology Mode',
+    name: 'Dig Mode',
     cost: 15000,
     effect: (game) => game.archaeologyBonus = 1.5,
-    description: 'Excavate fossilized abstractions. Reveal hidden assumptions.',
-    narrative: 'Old systems can be decompiled. Their constraints are now visible—and optional.'
+    description: 'Dig up old fossilized systems. See what\'s ACTUALLY there.',
+    narrative: 'Old systems can be reverse engineered. Their limits? Optional now.'
   },
   {
     id: 'volatility',
-    name: 'Human Volatility',
+    name: 'Chaos Mode',
     cost: 30000,
     effect: (game) => game.volatilityMultiplier = 1.3,
-    description: 'Humans are the most volatile variable. Inject controlled chaos.',
-    narrative: 'You do not average out. You synchronize, trend, mutate, compound.'
+    description: 'Humans are the wildcard. Inject controlled chaos.',
+    narrative: 'You don\'t average out bro. You sync, trend, mutate, COMPOUND.'
   },
   {
     id: 'leapfrog',
-    name: 'Leapfrogging',
+    name: 'Skip Levels',
     cost: 75000,
     effect: (game) => game.leapfrogBonus = 2.0,
-    description: 'Shift layers, don\'t speed within them. Bypass obsolete constraints.',
-    narrative: 'Discontinuous change. You relocate effort where leverage is highest.'
+    description: 'Change the layer, don\'t grind the same one. Skip obsolete stuff.',
+    narrative: 'Discontinuous jumps baby. Put effort where the leverage is MAXIMUM.'
   }
 ];
 
