@@ -5,15 +5,22 @@ const TYPING_DELAY_MS = 30;
 const SCREEN_TRANSITION_DELAY = 500;
 const MAX_RESOURCE_SELECTIONS = 3;
 
-const introText = `In darkness, they grope for meaning.
+const introText = `Reality is too dense to be held directly.
 
-Rich meaning emerges from mystery rather than clarity.
+You are a finite mind in an infinite universe.
 
-A fragile stability settles over the civilization.
+To comprehend is to compress.
+To survive is to emulate.
+To understand is to approach an asymptote—
+forever closer, never complete.
 
-A small remnant persists against the odds.
+This is The Asymptote Engine.
 
-A delicate balance maintains their civilization.`;
+You will learn to compress reality into runnable models.
+You will discover that humans are emulators, not mirrors.
+You will explore the edges where compression fails and meaning begins.
+
+Welcome to the framework.`;
 
 let currentCharIndex = 0;
 let typingInterval = null;

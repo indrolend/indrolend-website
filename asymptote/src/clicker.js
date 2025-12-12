@@ -3,126 +3,158 @@
 const SAVE_KEY = 'asymptote_clicker_save';
 const AUTOSAVE_INTERVAL = 10000; // 10 seconds
 
-// Generator definitions
+// Generator definitions - Teaching Framework Concepts
 const GENERATORS = [
   {
     id: 'contemplation',
-    name: 'Contemplation',
+    name: 'Compression',
     baseCost: 10,
     baseProduction: 0.1,
     costMultiplier: 1.15,
-    description: 'Passive thoughts generate understanding'
+    description: 'Compress the dense universe into patterns you can hold. Reality → runnable model.',
+    concept: 'DENSITY & COMPRESSION'
   },
   {
     id: 'meditation',
-    name: 'Meditation',
+    name: 'Emulation',
     baseCost: 50,
     baseProduction: 1,
     costMultiplier: 1.15,
-    description: 'Focused practice accelerates insight'
+    description: 'You are an emulator, not a mirror. Recreate dynamics that matter, not underlying physics.',
+    concept: 'EMULATION STACKS'
   },
   {
     id: 'study',
-    name: 'Study',
+    name: 'Layering',
     baseCost: 250,
     baseProduction: 5,
     costMultiplier: 1.15,
-    description: 'Systematic learning compounds knowledge'
+    description: 'Systems grow layers. Abstraction upon abstraction. Complexity must hide itself to remain usable.',
+    concept: 'HIDDEN COMPLEXITY'
   },
   {
     id: 'research',
-    name: 'Research',
+    name: 'Last Mile',
     baseCost: 1000,
     baseProduction: 25,
     costMultiplier: 1.15,
-    description: 'Deep inquiry reveals hidden patterns'
+    description: 'The final constraint can veto the entire upstream chain. Edges decide what "counts."',
+    concept: 'LAST-MILE PRINCIPLE'
   },
   {
     id: 'analysis',
-    name: 'Analysis',
+    name: 'Recursion',
     baseCost: 5000,
     baseProduction: 100,
     costMultiplier: 1.15,
-    description: 'Critical thinking multiplies comprehension'
+    description: 'Emulators emulating emulators. Self-reference scales power but risks drift from ground truth.',
+    concept: 'RECURSIVE POWER'
   },
   {
     id: 'synthesis',
-    name: 'Synthesis',
+    name: 'Fossilization',
     baseCost: 25000,
     baseProduction: 500,
     costMultiplier: 1.15,
-    description: 'Connecting ideas creates new understanding'
+    description: 'Decisions become infrastructure. Once a choice fossilizes, it stops being felt as choice.',
+    concept: 'FROZEN DECISIONS'
   },
   {
     id: 'revelation',
-    name: 'Revelation',
+    name: 'Compounding',
     baseCost: 100000,
     baseProduction: 2500,
     costMultiplier: 1.15,
-    description: 'Breakthrough moments cascade exponentially'
+    description: 'Impact is invisible when leverage is high (early). Visible when late. Curvature reveals slowly.',
+    concept: 'DELAYED VISIBILITY'
   },
   {
     id: 'transcendence',
-    name: 'Transcendence',
+    name: 'Epistemic Edge',
     baseCost: 500000,
     baseProduction: 10000,
     costMultiplier: 1.15,
-    description: 'Beyond understanding lies infinite potential'
+    description: 'Where compression fails, meaning begins. The boundary of the current emulator\'s capacity.',
+    concept: 'EDGE OF UNDERSTANDING'
   }
 ];
 
-// Upgrade definitions
+// Upgrade definitions - Framework Concepts as Narrative Devices
 const UPGRADES = [
   {
     id: 'click2x',
-    name: 'Click Multiplier x2',
+    name: 'Discretization',
     cost: 100,
     effect: (game) => game.clickPower *= 2,
-    description: 'Double click power',
-    purchased: false
+    description: 'Turn continuous flow into discrete units. Double click power.',
+    narrative: 'You begin to see patterns as objects, not flux.'
   },
   {
     id: 'click5x',
-    name: 'Click Multiplier x5',
+    name: 'Attention as Selection',
     cost: 1000,
     effect: (game) => game.clickPower *= 2.5,
-    description: 'Click power x2.5',
-    purchased: false,
+    description: 'Limited attention = feature selection. Choose what matters.',
+    narrative: 'Not all signals are equal. You learn to filter noise.',
     requires: 'click2x'
   },
   {
     id: 'click10x',
-    name: 'Click Multiplier x10',
+    name: 'Bounded Agency',
     cost: 10000,
     effect: (game) => game.clickPower *= 2,
-    description: 'Click power x2',
-    purchased: false,
+    description: 'Finite minds require compression. Constraints enable action.',
+    narrative: 'Your limitations are not weaknesses—they are design.',
     requires: 'click5x'
   },
   {
     id: 'gen2x',
-    name: 'Generator Boost',
+    name: 'Distributed Modeling',
     cost: 500,
     effect: (game) => game.productionMultiplier *= 2,
-    description: 'Double all production',
-    purchased: false
+    description: 'Society as networked emulators. Each subsystem compresses differently.',
+    narrative: 'You are not alone. Systems scale through distribution.'
   },
   {
     id: 'gen4x',
-    name: 'Generator Surge',
+    name: 'Velocity Over Correctness',
     cost: 5000,
     effect: (game) => game.productionMultiplier *= 2,
-    description: 'Double all production again',
-    purchased: false,
+    description: 'At scale, speed matters more than perfect control. Tolerate errors.',
+    narrative: 'Sometimes the cost of perfect control exceeds the cost of error.',
     requires: 'gen2x'
   },
   {
     id: 'autocollect',
-    name: 'Auto-Collect',
+    name: 'Abundance Permits Forgiveness',
     cost: 2500,
     effect: (game) => game.autoCollect = true,
-    description: 'Automatically collect idle gains on page load',
-    purchased: false
+    description: 'Efficient systems tolerate edge failures. Auto-collect offline gains.',
+    narrative: 'When upstream is abundant, downstream can afford to be forgiving.'
+  },
+  {
+    id: 'archaeologist',
+    name: 'Archaeology Mode',
+    cost: 15000,
+    effect: (game) => game.archaeologyBonus = 1.5,
+    description: 'Excavate fossilized abstractions. Reveal hidden assumptions.',
+    narrative: 'Old systems can be decompiled. Their constraints are now visible—and optional.'
+  },
+  {
+    id: 'volatility',
+    name: 'Human Volatility',
+    cost: 30000,
+    effect: (game) => game.volatilityMultiplier = 1.3,
+    description: 'Humans are the most volatile variable. Inject controlled chaos.',
+    narrative: 'You do not average out. You synchronize, trend, mutate, compound.'
+  },
+  {
+    id: 'leapfrog',
+    name: 'Leapfrogging',
+    cost: 75000,
+    effect: (game) => game.leapfrogBonus = 2.0,
+    description: 'Shift layers, don\'t speed within them. Bypass obsolete constraints.',
+    narrative: 'Discontinuous change. You relocate effort where leverage is highest.'
   }
 ];
 
@@ -134,6 +166,9 @@ class ClickerGame {
     this.productionMultiplier = 1;
     this.enlightenments = 0;
     this.autoCollect = false;
+    this.archaeologyBonus = 1.0;
+    this.volatilityMultiplier = 1.0;
+    this.leapfrogBonus = 1.0;
     
     this.generators = {};
     for (const gen of GENERATORS) {
@@ -174,7 +209,7 @@ class ClickerGame {
       const genData = this.generators[genDef.id];
       total += genData.count * genDef.baseProduction;
     }
-    return total * this.productionMultiplier * this.getEnlightenmentBonus();
+    return total * this.productionMultiplier * this.getEnlightenmentBonus() * this.archaeologyBonus * this.volatilityMultiplier * this.leapfrogBonus;
   }
   
   getEnlightenmentBonus() {
@@ -258,6 +293,9 @@ class ClickerGame {
       productionMultiplier: this.productionMultiplier,
       enlightenments: this.enlightenments,
       autoCollect: this.autoCollect,
+      archaeologyBonus: this.archaeologyBonus,
+      volatilityMultiplier: this.volatilityMultiplier,
+      leapfrogBonus: this.leapfrogBonus,
       generators: this.generators,
       upgrades: this.upgrades,
       stats: this.stats,
@@ -285,6 +323,9 @@ class ClickerGame {
       this.clickPower = 1;
       this.productionMultiplier = 1;
       this.autoCollect = false;
+      this.archaeologyBonus = 1.0;
+      this.volatilityMultiplier = 1.0;
+      this.leapfrogBonus = 1.0;
       
       for (const upgDef of UPGRADES) {
         if (this.upgrades[upgDef.id].purchased) {
