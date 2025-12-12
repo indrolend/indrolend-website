@@ -5,15 +5,22 @@ const TYPING_DELAY_MS = 30;
 const SCREEN_TRANSITION_DELAY = 500;
 const MAX_RESOURCE_SELECTIONS = 3;
 
-const introText = `In darkness, they grope for meaning.
+const introText = `Yo, reality is WAY too much to hold in your head.
 
-Rich meaning emerges from mystery rather than clarity.
+You're basically a tiny brain in a massive universe.
 
-A fragile stability settles over the civilization.
+Here's the deal:
+Understanding = squishing stuff down.
+Surviving = copying what works.
+Getting smarter = getting closer but never quite there.
 
-A small remnant persists against the odds.
+This is The Asymptote Engine.
 
-A delicate balance maintains their civilization.`;
+You're gonna learn to compress reality into stuff you can actually use.
+Humans don't mirror reality—we run bootleg versions of it.
+We're gonna hit the limits where your brain breaks and meaning kicks in.
+
+Let's gooooo.`;
 
 let currentCharIndex = 0;
 let typingInterval = null;

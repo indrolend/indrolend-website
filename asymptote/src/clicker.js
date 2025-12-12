@@ -3,126 +3,158 @@
 const SAVE_KEY = 'asymptote_clicker_save';
 const AUTOSAVE_INTERVAL = 10000; // 10 seconds
 
-// Generator definitions
+// Generator definitions - Teaching Framework Concepts
 const GENERATORS = [
   {
     id: 'contemplation',
-    name: 'Contemplation',
+    name: 'Brain Squisher',
     baseCost: 10,
     baseProduction: 0.1,
     costMultiplier: 1.15,
-    description: 'Passive thoughts generate understanding'
+    description: 'Bro you gotta squish down the crazy universe into stuff that actually fits in your head. Reality → brain-sized chunks.',
+    concept: 'DENSITY & COMPRESSION'
   },
   {
     id: 'meditation',
-    name: 'Meditation',
+    name: 'Bootleg Reality',
     baseCost: 50,
     baseProduction: 1,
     costMultiplier: 1.15,
-    description: 'Focused practice accelerates insight'
+    description: 'You\'re not a mirror dude, you\'re a knockoff. Just copy the vibes that matter, forget the rest.',
+    concept: 'EMULATION STACKS'
   },
   {
     id: 'study',
-    name: 'Study',
+    name: 'Layer Cake',
     baseCost: 250,
     baseProduction: 5,
     costMultiplier: 1.15,
-    description: 'Systematic learning compounds knowledge'
+    description: 'Everything grows layers on layers on layers. It gets so complex it has to hide itself or you\'d lose your mind.',
+    concept: 'HIDDEN COMPLEXITY'
   },
   {
     id: 'research',
-    name: 'Research',
+    name: 'Final Boss',
     baseCost: 1000,
     baseProduction: 25,
     costMultiplier: 1.15,
-    description: 'Deep inquiry reveals hidden patterns'
+    description: 'The last step can kill the whole chain. The edge is what actually counts, not all the prep.',
+    concept: 'LAST-MILE PRINCIPLE'
   },
   {
     id: 'analysis',
-    name: 'Analysis',
+    name: 'Infinite Loop',
     baseCost: 5000,
     baseProduction: 100,
     costMultiplier: 1.15,
-    description: 'Critical thinking multiplies comprehension'
+    description: 'Copying the copy of the copy. Power goes BRRRR but you might drift from what\'s actually real.',
+    concept: 'RECURSIVE POWER'
   },
   {
     id: 'synthesis',
-    name: 'Synthesis',
+    name: 'Set In Stone',
     baseCost: 25000,
     baseProduction: 500,
     costMultiplier: 1.15,
-    description: 'Connecting ideas creates new understanding'
+    description: 'When choices become infrastructure they stop feeling like choices. That\'s just how it is now.',
+    concept: 'FROZEN DECISIONS'
   },
   {
     id: 'revelation',
-    name: 'Revelation',
+    name: 'Slow Burn',
     baseCost: 100000,
     baseProduction: 2500,
     costMultiplier: 1.15,
-    description: 'Breakthrough moments cascade exponentially'
+    description: 'When you start out the effects are invisible. Later? BOOM. The curve sneaks up on you.',
+    concept: 'DELAYED VISIBILITY'
   },
   {
     id: 'transcendence',
-    name: 'Transcendence',
+    name: 'Brain Limit',
     baseCost: 500000,
     baseProduction: 10000,
     costMultiplier: 1.15,
-    description: 'Beyond understanding lies infinite potential'
+    description: 'Where your brain can\'t compress anymore, that\'s where meaning lives. The boundary of what you can handle.',
+    concept: 'EDGE OF UNDERSTANDING'
   }
 ];
 
-// Upgrade definitions
+// Upgrade definitions - Framework Concepts as Narrative Devices
 const UPGRADES = [
   {
     id: 'click2x',
-    name: 'Click Multiplier x2',
+    name: 'Chunk It Up',
     cost: 100,
     effect: (game) => game.clickPower *= 2,
-    description: 'Double click power',
-    purchased: false
+    description: 'Stop the flow, make it chunks. Double your click power.',
+    narrative: 'Damn dude, patterns are just objects now, not some endless stream.'
   },
   {
     id: 'click5x',
-    name: 'Click Multiplier x5',
+    name: 'Focus Mode',
     cost: 1000,
     effect: (game) => game.clickPower *= 2.5,
-    description: 'Click power x2.5',
-    purchased: false,
+    description: 'Limited attention = you gotta pick what matters. Filter the noise.',
+    narrative: 'Not everything is important bro. You\'re learning to ignore the BS.',
     requires: 'click2x'
   },
   {
     id: 'click10x',
-    name: 'Click Multiplier x10',
+    name: 'Built Different',
     cost: 10000,
     effect: (game) => game.clickPower *= 2,
-    description: 'Click power x2',
-    purchased: false,
+    description: 'Your limits aren\'t bugs—they\'re features. Constraints let you DO stuff.',
+    narrative: 'Your weaknesses are literally just good design. That\'s wild.',
     requires: 'click5x'
   },
   {
     id: 'gen2x',
-    name: 'Generator Boost',
+    name: 'Squad Up',
     cost: 500,
     effect: (game) => game.productionMultiplier *= 2,
-    description: 'Double all production',
-    purchased: false
+    description: 'Network effect baby. Everyone\'s copying reality differently.',
+    narrative: 'You\'re not doing this alone. Scale needs the squad.'
   },
   {
     id: 'gen4x',
-    name: 'Generator Surge',
+    name: 'Move Fast',
     cost: 5000,
     effect: (game) => game.productionMultiplier *= 2,
-    description: 'Double all production again',
-    purchased: false,
+    description: 'At scale, speed > perfection. Errors are fine.',
+    narrative: 'Sometimes being perfect costs more than just vibing with mistakes.',
     requires: 'gen2x'
   },
   {
     id: 'autocollect',
-    name: 'Auto-Collect',
+    name: 'Abundance Go Brrr',
     cost: 2500,
     effect: (game) => game.autoCollect = true,
-    description: 'Automatically collect idle gains on page load',
-    purchased: false
+    description: 'When you got plenty, edge failures don\'t matter. Auto-collect when offline.',
+    narrative: 'When upstream is stacked, downstream can be chill about errors.'
+  },
+  {
+    id: 'archaeologist',
+    name: 'Dig Mode',
+    cost: 15000,
+    effect: (game) => game.archaeologyBonus = 1.5,
+    description: 'Dig up old fossilized systems. See what\'s ACTUALLY there.',
+    narrative: 'Old systems can be reverse engineered. Their limits? Optional now.'
+  },
+  {
+    id: 'volatility',
+    name: 'Chaos Mode',
+    cost: 30000,
+    effect: (game) => game.volatilityMultiplier = 1.3,
+    description: 'Humans are the wildcard. Inject controlled chaos.',
+    narrative: 'You don\'t average out bro. You sync, trend, mutate, COMPOUND.'
+  },
+  {
+    id: 'leapfrog',
+    name: 'Skip Levels',
+    cost: 75000,
+    effect: (game) => game.leapfrogBonus = 2.0,
+    description: 'Change the layer, don\'t grind the same one. Skip obsolete stuff.',
+    narrative: 'Discontinuous jumps baby. Put effort where the leverage is MAXIMUM.'
   }
 ];
 
@@ -134,6 +166,9 @@ class ClickerGame {
     this.productionMultiplier = 1;
     this.enlightenments = 0;
     this.autoCollect = false;
+    this.archaeologyBonus = 1.0;
+    this.volatilityMultiplier = 1.0;
+    this.leapfrogBonus = 1.0;
     
     this.generators = {};
     for (const gen of GENERATORS) {
@@ -174,7 +209,7 @@ class ClickerGame {
       const genData = this.generators[genDef.id];
       total += genData.count * genDef.baseProduction;
     }
-    return total * this.productionMultiplier * this.getEnlightenmentBonus();
+    return total * this.productionMultiplier * this.getEnlightenmentBonus() * this.archaeologyBonus * this.volatilityMultiplier * this.leapfrogBonus;
   }
   
   getEnlightenmentBonus() {
@@ -258,6 +293,9 @@ class ClickerGame {
       productionMultiplier: this.productionMultiplier,
       enlightenments: this.enlightenments,
       autoCollect: this.autoCollect,
+      archaeologyBonus: this.archaeologyBonus,
+      volatilityMultiplier: this.volatilityMultiplier,
+      leapfrogBonus: this.leapfrogBonus,
       generators: this.generators,
       upgrades: this.upgrades,
       stats: this.stats,
@@ -285,6 +323,9 @@ class ClickerGame {
       this.clickPower = 1;
       this.productionMultiplier = 1;
       this.autoCollect = false;
+      this.archaeologyBonus = 1.0;
+      this.volatilityMultiplier = 1.0;
+      this.leapfrogBonus = 1.0;
       
       for (const upgDef of UPGRADES) {
         if (this.upgrades[upgDef.id].purchased) {

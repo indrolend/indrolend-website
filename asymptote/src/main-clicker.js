@@ -5,6 +5,16 @@ import { ClickerGame, GENERATORS, UPGRADES } from './clicker.js';
 let game = null;
 let lastUpdateTime = Date.now();
 let autoSaveInterval = null;
+let narrativeTriggers = {
+  understanding100: false,
+  understanding1000: false,
+  understanding10000: false,
+  understanding100000: false,
+  firstGenerator: false,
+  firstUpgrade: false,
+  firstEnlightenment: false,
+  allGenerators: false
+};
 
 function init() {
   // Hide unnecessary UI elements
@@ -138,8 +148,9 @@ function handleMainClick(event) {
 function handleEnlighten() {
   if (!game.canEnlighten()) return;
   
-  if (confirm('Enlightenment will reset your Understanding and Generators, but grant a permanent +10% bonus to all production. Continue?')) {
+  if (confirm('ENLIGHTENMENT: Push that brain limit further out.\n\nYou\'ll reset Understanding and Generators, but get a permanent +10% boost to EVERYTHING.\n\nThis is asymptotic progress—you keep getting closer but never actually finish. That\'s the point.\n\nLet\'s go?')) {
     game.enlighten();
+    showNarrative('The edge moved. Your brain expanded. You\'re getting closer but never done.');
     showMessage('Enlightenment achieved! +10% permanent bonus applied.');
     renderGenerators();
   }
@@ -158,13 +169,14 @@ function renderGenerators() {
     div.className = 'generator-item';
     if (!canAfford) div.classList.add('disabled');
     
-    const production = genData.count * genDef.baseProduction * game.productionMultiplier * game.getEnlightenmentBonus();
+    const production = genData.count * genDef.baseProduction * game.productionMultiplier * game.getEnlightenmentBonus() * game.archaeologyBonus * game.volatilityMultiplier * game.leapfrogBonus;
     
     div.innerHTML = `
       <div class="gen-header">
         <span class="gen-name">${genDef.name}</span>
         <span class="gen-count">${genData.count}</span>
       </div>
+      ${genDef.concept ? `<div class="gen-concept">[${genDef.concept}]</div>` : ''}
       <div class="gen-production">+${formatNumber(production)}/sec</div>
       <div class="gen-desc">${genDef.description}</div>
       <button class="gen-buy-btn" data-gen-id="${genDef.id}" ${!canAfford ? 'disabled' : ''}>
@@ -175,6 +187,10 @@ function renderGenerators() {
     div.querySelector('.gen-buy-btn').addEventListener('click', () => {
       if (game.buyGenerator(genDef.id)) {
         renderGenerators();
+        // Show narrative on first purchase
+        if (genData.count === 1 && genDef.concept) {
+          showNarrative(`YO YOU UNLOCKED: ${genDef.concept}`);
+        }
       }
     });
     
@@ -200,6 +216,7 @@ function renderUpgrades() {
     div.innerHTML = `
       <div class="upg-name">${upgDef.name}</div>
       <div class="upg-desc">${upgDef.description}</div>
+      ${upgDef.narrative ? `<div class="upg-narrative">"${upgDef.narrative}"</div>` : ''}
       <button class="upg-buy-btn" data-upg-id="${upgDef.id}" ${!canAfford ? 'disabled' : ''}>
         Purchase for ${formatNumber(upgDef.cost)}
       </button>
@@ -207,6 +224,9 @@ function renderUpgrades() {
     
     div.querySelector('.upg-buy-btn').addEventListener('click', () => {
       if (game.buyUpgrade(upgDef.id)) {
+        if (upgDef.narrative) {
+          showNarrative(upgDef.narrative);
+        }
         showMessage(`Purchased: ${upgDef.name}`);
         renderUpgrades();
         renderGenerators(); // Update in case it affects production
@@ -252,6 +272,48 @@ function updateUI() {
       const canAfford = game.canBuyUpgrade(upgDef.id);
       btn.disabled = !canAfford;
       btn.parentElement.classList.toggle('disabled', !canAfford);
+    }
+  }
+  
+  // Trigger narrative milestones
+  checkNarrativeTriggers();
+}
+
+function checkNarrativeTriggers() {
+  const u = game.understanding;
+  
+  if (!narrativeTriggers.understanding100 && u >= 100) {
+    narrativeTriggers.understanding100 = true;
+    showNarrative('Yooo you\'re starting to see patterns! Reality is getting squished into stuff you can actually hold.');
+  }
+  
+  if (!narrativeTriggers.understanding1000 && u >= 1000) {
+    narrativeTriggers.understanding1000 = true;
+    showNarrative('The limit is approaching bro. You can enlighten now—push that edge even further.');
+  }
+  
+  if (!narrativeTriggers.understanding10000 && u >= 10000) {
+    narrativeTriggers.understanding10000 = true;
+    showNarrative('Layers on layers on LAYERS. You\'re running bootlegs of bootlegs of bootlegs.');
+  }
+  
+  if (!narrativeTriggers.understanding100000 && u >= 100000) {
+    narrativeTriggers.understanding100000 = true;
+    showNarrative('At this scale, complexity just hides itself. What used to be impossible is casual now.');
+  }
+  
+  // Check if player has at least one of each generator
+  if (!narrativeTriggers.allGenerators) {
+    let hasAll = true;
+    for (const genDef of GENERATORS) {
+      if (game.generators[genDef.id].count === 0) {
+        hasAll = false;
+        break;
+      }
+    }
+    if (hasAll) {
+      narrativeTriggers.allGenerators = true;
+      showNarrative('Damn dude you got ALL the concepts. The framework is yours now.');
     }
   }
 }
@@ -311,6 +373,51 @@ function showMessage(text) {
   setTimeout(() => {
     msgBox.style.display = 'none';
   }, 3000);
+}
+
+function showNarrative(text) {
+  let narrativeBox = document.getElementById('narrative-box');
+  if (!narrativeBox) {
+    narrativeBox = document.createElement('div');
+    narrativeBox.id = 'narrative-box';
+    narrativeBox.style.cssText = `
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 26, 0, 0.95);
+      color: #0f0;
+      border: 2px solid #0f0;
+      padding: 20px 40px;
+      z-index: 10000;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      max-width: 600px;
+      text-align: center;
+      font-style: italic;
+      box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+    `;
+    document.body.appendChild(narrativeBox);
+  }
+  
+  narrativeBox.textContent = text;
+  narrativeBox.style.display = 'block';
+  narrativeBox.style.opacity = '0';
+  
+  // Fade in
+  setTimeout(() => {
+    narrativeBox.style.transition = 'opacity 0.5s';
+    narrativeBox.style.opacity = '1';
+  }, 10);
+  
+  // Fade out and hide
+  setTimeout(() => {
+    narrativeBox.style.opacity = '0';
+    setTimeout(() => {
+      narrativeBox.style.display = 'none';
+    }, 500);
+  }, 5000);
 }
 
 function showStats() {
@@ -517,6 +624,28 @@ function addStyles() {
       color: #0a0;
       margin-bottom: 10px;
       font-style: italic;
+    }
+    
+    .gen-concept {
+      font-size: 0.75rem;
+      color: #0f0;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+      opacity: 0.8;
+      text-transform: uppercase;
+    }
+    
+    .upg-narrative {
+      font-size: 0.85rem;
+      color: #0f0;
+      margin-top: 8px;
+      margin-bottom: 10px;
+      font-style: italic;
+      opacity: 0.9;
+      padding: 8px;
+      background-color: rgba(0, 255, 0, 0.05);
+      border-left: 2px solid #0f0;
     }
     
     .gen-buy-btn, .upg-buy-btn {
