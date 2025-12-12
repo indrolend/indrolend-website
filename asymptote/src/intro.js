@@ -5,22 +5,15 @@ const TYPING_DELAY_MS = 30;
 const SCREEN_TRANSITION_DELAY = 500;
 const MAX_RESOURCE_SELECTIONS = 3;
 
-const introText = `Yo, reality is WAY too much to hold in your head.
+const introText = `Reality's too big for your brain.
 
-You're basically a tiny brain in a massive universe.
-
-Here's the deal:
-Understanding = squishing stuff down.
-Surviving = copying what works.
-Getting smarter = getting closer but never quite there.
+So you compress it.
+Copy what works.
+Get closer, but never quite there.
 
 This is The Asymptote Engine.
 
-You're gonna learn to compress reality into stuff you can actually use.
-Humans don't mirror reality—we run bootleg versions of it.
-We're gonna hit the limits where your brain breaks and meaning kicks in.
-
-Let's gooooo.`;
+Let's go.`;
 
 let currentCharIndex = 0;
 let typingInterval = null;
@@ -117,11 +110,11 @@ export function showSetupScreen(onComplete) {
   setupContent.className = 'setup-content';
   
   const title = document.createElement('h2');
-  title.textContent = 'Choose Your Starting Resources';
+  title.textContent = 'Choose 3 Resources';
   title.className = 'setup-title';
   
   const subtitle = document.createElement('p');
-  subtitle.textContent = 'Select 3 resource types to begin your civilization';
+  subtitle.textContent = 'Pick what you start with';
   subtitle.className = 'setup-subtitle';
   
   const resourcesContainer = document.createElement('div');
@@ -131,26 +124,26 @@ export function showSetupScreen(onComplete) {
     { 
       id: 'wood', 
       name: 'Wood', 
-      description: 'Renewable building material. Good for early structures and fuel.',
-      effect: '+Framework, +Population growth'
+      description: 'Build structures',
+      effect: '+Growth'
     },
     { 
       id: 'stone', 
       name: 'Stone', 
-      description: 'Durable building material. Essential for lasting monuments.',
-      effect: '+Framework, +Complexity'
+      description: 'Lasting monuments',
+      effect: '+Stability'
     },
     { 
       id: 'food', 
       name: 'Food', 
-      description: 'Sustains population. Enables growth and health.',
-      effect: '+Health, +Population'
+      description: 'Feed your people',
+      effect: '+Health'
     },
     { 
       id: 'metal', 
       name: 'Metal', 
-      description: 'Advanced material. Enables tools and technology.',
-      effect: '+Knowledge, +Complexity'
+      description: 'Tools and tech',
+      effect: '+Knowledge'
     }
   ];
   
@@ -194,7 +187,7 @@ export function showSetupScreen(onComplete) {
   
   const startButton = document.createElement('button');
   startButton.className = 'start-btn';
-  startButton.innerHTML = wrapLettersInSpans('Begin Civilization');
+  startButton.innerHTML = wrapLettersInSpans('Begin');
   startButton.disabled = true;
   startButton.id = 'start-btn';
   
