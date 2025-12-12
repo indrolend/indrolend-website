@@ -187,7 +187,7 @@ function renderGenerators() {
     div.querySelector('.gen-buy-btn').addEventListener('click', () => {
       if (game.buyGenerator(genDef.id)) {
         renderGenerators();
-        // Show narrative on first purchase - subtle hint
+        // Show narrative on first purchase - subtle hint.
         if (genData.count === 1 && genDef.concept) {
           showNarrative(genDef.concept);
         }
