@@ -7,75 +7,75 @@ const AUTOSAVE_INTERVAL = 10000; // 10 seconds
 const GENERATORS = [
   {
     id: 'contemplation',
-    name: 'Thought',
+    name: 'Brain Squisher',
     baseCost: 10,
     baseProduction: 0.1,
     costMultiplier: 1.15,
-    description: 'Compress the chaos',
-    concept: 'density'
+    description: 'OK so like... you squish the BIG thing into a small thing that FITS in your head, yeah?',
+    concept: '*gestures wildly* DENSITY'
   },
   {
     id: 'meditation',
-    name: 'Mirror',
+    name: 'The Copy Machine',
     baseCost: 50,
     baseProduction: 1,
     costMultiplier: 1.15,
-    description: 'Copy what works',
-    concept: 'emulation'
+    description: 'Dude you just copy the VIBES that work. Forget the rest. Bootleg reality baby.',
+    concept: 'wait no—EMULATION'
   },
   {
     id: 'study',
-    name: 'Layers',
+    name: 'Layer Cake',
     baseCost: 250,
     baseProduction: 5,
     costMultiplier: 1.15,
-    description: 'Complexity hides itself',
-    concept: 'hidden depth'
+    description: 'It stacks bro. Layers on layers on... *counts on fingers* ...MORE layers.',
+    concept: 'complexity hides itself!!!'
   },
   {
     id: 'research',
-    name: 'Edge',
+    name: 'The Last Step',
     baseCost: 1000,
     baseProduction: 25,
     costMultiplier: 1.15,
-    description: 'The final step matters most',
-    concept: 'last mile'
+    description: 'The LAST bit is what kills you. Or saves you. The edge man, THE EDGE.',
+    concept: 'last mile principle *taps head*'
   },
   {
     id: 'analysis',
-    name: 'Loop',
+    name: 'Infinite Loop',
     baseCost: 5000,
     baseProduction: 100,
     costMultiplier: 1.15,
-    description: 'Copy the copy',
-    concept: 'recursion'
+    description: 'Copy the copy of the COPY—it goes BRRRR but you drift from what\'s real...',
+    concept: 'recursion babyyyy'
   },
   {
     id: 'synthesis',
-    name: 'Lock',
+    name: 'Frozen Choice',
     baseCost: 25000,
     baseProduction: 500,
     costMultiplier: 1.15,
-    description: 'Choices become structure',
-    concept: 'frozen paths'
+    description: 'When choices become the FLOOR you walk on. They ain\'t choices no more.',
+    concept: 'path dependence or whatever'
   },
   {
     id: 'revelation',
-    name: 'Curve',
+    name: 'Slow Then BOOM',
     baseCost: 100000,
     baseProduction: 2500,
     costMultiplier: 1.15,
-    description: 'Effects compound slowly, then fast',
-    concept: 'delayed visibility'
+    description: 'Nothing nothing nothing then WHAM. Exponential stuff. Sneaky curves.',
+    concept: 'delayed effects *makes explosion sound*'
   },
   {
     id: 'transcendence',
-    name: 'Limit',
+    name: 'Brain Limit',
     baseCost: 500000,
     baseProduction: 10000,
     costMultiplier: 1.15,
-    description: 'The boundary where meaning lives',
-    concept: 'edge of understanding'
+    description: 'Where your brain CAN\'T compress anymore—that\'s where meaning LIVES dude.',
+    concept: 'the EDGE. the asymptote. *chef kiss*'
   }
 ];
 
@@ -86,75 +86,75 @@ const UPGRADES = [
     name: 'Chunking',
     cost: 100,
     effect: (game) => game.clickPower *= 2,
-    description: '2x click power',
-    narrative: 'patterns become objects'
+    description: '2x clicks. You stop the FLOW and make it CHUNKS.',
+    narrative: 'patterns r objects now not streams'
   },
   {
     id: 'click5x',
-    name: 'Focus',
+    name: 'Focus Mode',
     cost: 1000,
     effect: (game) => game.clickPower *= 2.5,
-    description: '2.5x click power',
-    narrative: 'filter the noise',
+    description: '2.5x clicks. Limited attention so you GOTTA pick what matters bro.',
+    narrative: 'ignore the BS. focus.',
     requires: 'click2x'
   },
   {
     id: 'click10x',
-    name: 'Constraint',
+    name: 'Constraints',
     cost: 10000,
     effect: (game) => game.clickPower *= 2,
-    description: '2x click power',
-    narrative: 'limits enable action',
+    description: '2x clicks. Your limits aren\'t bugs—they\'re FEATURES man.',
+    narrative: 'constraints = action. wild right?',
     requires: 'click5x'
   },
   {
     id: 'gen2x',
-    name: 'Network',
+    name: 'Network Effect',
     cost: 500,
     effect: (game) => game.productionMultiplier *= 2,
-    description: '2x all production',
-    narrative: 'many mirrors, many views'
+    description: '2x production. Everyone copies reality DIFFERENTLY. Squad up.',
+    narrative: 'you need the SQUAD for scale'
   },
   {
     id: 'gen4x',
-    name: 'Velocity',
+    name: 'Move Fast',
     cost: 5000,
     effect: (game) => game.productionMultiplier *= 2,
-    description: '2x all production',
-    narrative: 'speed beats perfection',
+    description: '2x production. Speed beats perfect. Errors are FINE.',
+    narrative: 'speed > perfection trust me',
     requires: 'gen2x'
   },
   {
     id: 'autocollect',
-    name: 'Abundance',
+    name: 'Abundance Mode',
     cost: 2500,
     effect: (game) => game.autoCollect = true,
-    description: 'Auto-collect offline',
-    narrative: 'plenty cushions failure'
+    description: 'Auto-collect. When you got PLENTY, failures don\'t matter.',
+    narrative: 'upstream abundance = chill errors'
   },
   {
     id: 'archaeologist',
-    name: 'Excavation',
+    name: 'Dig It Up',
     cost: 15000,
     effect: (game) => game.archaeologyBonus = 1.5,
-    description: '1.5x production',
-    narrative: 'reverse engineer the old'
+    description: '1.5x production. Dig up fossilized systems. Reverse engineer that shit.',
+    narrative: 'old systems? optional limits now'
   },
   {
     id: 'volatility',
-    name: 'Chaos',
+    name: 'Chaos Injection',
     cost: 30000,
     effect: (game) => game.volatilityMultiplier = 1.3,
-    description: '1.3x production',
-    narrative: 'sync, trend, compound'
+    description: '1.3x production. Humans don\'t AVERAGE out—we COMPOUND.',
+    narrative: 'sync. trend. mutate. COMPOUND.'
   },
   {
     id: 'leapfrog',
-    name: 'Discontinuity',
+    name: 'Skip Levels',
     cost: 75000,
     effect: (game) => game.leapfrogBonus = 2.0,
-    description: '2x production',
-    narrative: 'jump layers, skip the grind'
+    description: '2x production. Change the LAYER. Don\'t grind the same one forever dude.',
+    narrative: 'discontinuous jumps. max leverage.'
   }
 ];
 

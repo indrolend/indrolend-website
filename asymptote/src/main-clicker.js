@@ -58,7 +58,7 @@ function init() {
     <div class="prestige-panel">
       <button id="enlighten-btn" class="enlighten-button" disabled>
         <span class="enlighten-title">ENLIGHTEN</span>
-        <span class="enlighten-desc">Reset for +10% (requires 1000)</span>
+        <span class="enlighten-desc">Reset for +10% (need 1000 bro)</span>
       </button>
     </div>
     
@@ -148,10 +148,10 @@ function handleMainClick(event) {
 function handleEnlighten() {
   if (!game.canEnlighten()) return;
   
-  if (confirm('ENLIGHTENMENT\n\nReset to push the limit further.\n+10% permanent boost.\n\nContinue?')) {
+  if (confirm('ENLIGHTENMENT BRO\n\nOK so you reset but you push the limit FURTHER.\n+10% permanent. Forever.\n\nThat\'s the asymptote thing—closer but never done.\n\nYou ready?')) {
     game.enlighten();
-    showNarrative('The edge moved. Closer, but never done.');
-    showMessage('Enlightenment achieved! +10% permanent bonus.');
+    showNarrative('The edge MOVED. You\'re closer but never done. *hiccup*');
+    showMessage('ENLIGHTENED! +10% forever bro!');
     renderGenerators();
   }
 }
@@ -281,22 +281,22 @@ function checkNarrativeTriggers() {
   
   if (!narrativeTriggers.understanding100 && u >= 100) {
     narrativeTriggers.understanding100 = true;
-    showNarrative('patterns emerge');
+    showNarrative('YO you\'re seeing PATTERNS now! Reality getting squished into brain-sized chunks!');
   }
   
   if (!narrativeTriggers.understanding1000 && u >= 1000) {
     narrativeTriggers.understanding1000 = true;
-    showNarrative('the limit approaches');
+    showNarrative('The limit is RIGHT THERE man. You can enlighten now. Push that edge FURTHER.');
   }
   
   if (!narrativeTriggers.understanding10000 && u >= 10000) {
     narrativeTriggers.understanding10000 = true;
-    showNarrative('layers compound');
+    showNarrative('Layers on layers on LAYERS. Bootlegs of bootlegs of bootlegs bro.');
   }
   
   if (!narrativeTriggers.understanding100000 && u >= 100000) {
     narrativeTriggers.understanding100000 = true;
-    showNarrative('complexity hides itself');
+    showNarrative('At this scale complexity just HIDES itself. What was impossible is casual now.');
   }
   
   // Check if player has at least one of each generator
@@ -310,7 +310,7 @@ function checkNarrativeTriggers() {
     }
     if (hasAll) {
       narrativeTriggers.allGenerators = true;
-      showNarrative('the framework reveals itself');
+      showNarrative('DUDE you got ALL the concepts. The framework is YOURS now. I love you man.');
     }
   }
 }
