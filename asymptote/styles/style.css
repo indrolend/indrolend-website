@@ -588,3 +588,70 @@ footer {
 .inventory-item span {
   font-weight: bold;
 }
+
+/* Audio Controls */
+.audio-controls {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #001a00;
+  border: 2px solid #0f0;
+  border-radius: 8px;
+  padding: 10px 15px;
+  z-index: 999;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
+.audio-btn {
+  background: none;
+  border: none;
+  color: #0f0;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.2s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  line-height: 1;
+}
+
+.audio-btn:hover {
+  transform: scale(1.1);
+}
+
+.audio-btn:active {
+  transform: scale(0.95);
+}
+
+.volume-slider {
+  width: 100px;
+  accent-color: #0f0;
+  cursor: pointer;
+}
+
+.volume-value {
+  color: #0a0;
+  font-size: 0.9rem;
+  min-width: 35px;
+  text-align: right;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+}
+
+@media (max-width: 768px) {
+  .audio-controls {
+    bottom: 10px;
+    right: 10px;
+    padding: 8px 12px;
+  }
+
+  .volume-slider {
+    width: 80px;
+  }
+
+  .audio-btn {
+    font-size: 1.3rem;
+  }
+}
