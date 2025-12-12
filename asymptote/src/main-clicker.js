@@ -58,7 +58,7 @@ function init() {
     <div class="prestige-panel">
       <button id="enlighten-btn" class="enlighten-button" disabled>
         <span class="enlighten-title">ENLIGHTEN</span>
-        <span class="enlighten-desc">Reset for +10% boost (requires 1000)</span>
+        <span class="enlighten-desc">Reset for +10% (requires 1000)</span>
       </button>
     </div>
     
@@ -148,10 +148,10 @@ function handleMainClick(event) {
 function handleEnlighten() {
   if (!game.canEnlighten()) return;
   
-  if (confirm('ENLIGHTENMENT: Push that brain limit further out.\n\nYou\'ll reset Understanding and Generators, but get a permanent +10% boost to EVERYTHING.\n\nThis is asymptotic progress—you keep getting closer but never actually finish. That\'s the point.\n\nLet\'s go?')) {
+  if (confirm('ENLIGHTENMENT\n\nReset to push the limit further.\n+10% permanent boost.\n\nContinue?')) {
     game.enlighten();
-    showNarrative('The edge moved. Your brain expanded. You\'re getting closer but never done.');
-    showMessage('Enlightenment achieved! +10% permanent bonus applied.');
+    showNarrative('The edge moved. Closer, but never done.');
+    showMessage('Enlightenment achieved! +10% permanent bonus.');
     renderGenerators();
   }
 }
@@ -176,7 +176,7 @@ function renderGenerators() {
         <span class="gen-name">${genDef.name}</span>
         <span class="gen-count">${genData.count}</span>
       </div>
-      ${genDef.concept ? `<div class="gen-concept">[${genDef.concept}]</div>` : ''}
+      ${genDef.concept ? `<div class="gen-concept">${genDef.concept}</div>` : ''}
       <div class="gen-production">+${formatNumber(production)}/sec</div>
       <div class="gen-desc">${genDef.description}</div>
       <button class="gen-buy-btn" data-gen-id="${genDef.id}" ${!canAfford ? 'disabled' : ''}>
@@ -187,9 +187,9 @@ function renderGenerators() {
     div.querySelector('.gen-buy-btn').addEventListener('click', () => {
       if (game.buyGenerator(genDef.id)) {
         renderGenerators();
-        // Show narrative on first purchase
+        // Show narrative on first purchase - subtle hint
         if (genData.count === 1 && genDef.concept) {
-          showNarrative(`YO YOU UNLOCKED: ${genDef.concept}`);
+          showNarrative(genDef.concept);
         }
       }
     });
@@ -216,7 +216,7 @@ function renderUpgrades() {
     div.innerHTML = `
       <div class="upg-name">${upgDef.name}</div>
       <div class="upg-desc">${upgDef.description}</div>
-      ${upgDef.narrative ? `<div class="upg-narrative">"${upgDef.narrative}"</div>` : ''}
+      ${upgDef.narrative ? `<div class="upg-narrative">${upgDef.narrative}</div>` : ''}
       <button class="upg-buy-btn" data-upg-id="${upgDef.id}" ${!canAfford ? 'disabled' : ''}>
         Purchase for ${formatNumber(upgDef.cost)}
       </button>
@@ -224,9 +224,6 @@ function renderUpgrades() {
     
     div.querySelector('.upg-buy-btn').addEventListener('click', () => {
       if (game.buyUpgrade(upgDef.id)) {
-        if (upgDef.narrative) {
-          showNarrative(upgDef.narrative);
-        }
         showMessage(`Purchased: ${upgDef.name}`);
         renderUpgrades();
         renderGenerators(); // Update in case it affects production
@@ -284,22 +281,22 @@ function checkNarrativeTriggers() {
   
   if (!narrativeTriggers.understanding100 && u >= 100) {
     narrativeTriggers.understanding100 = true;
-    showNarrative('Yooo you\'re starting to see patterns! Reality is getting squished into stuff you can actually hold.');
+    showNarrative('patterns emerge');
   }
   
   if (!narrativeTriggers.understanding1000 && u >= 1000) {
     narrativeTriggers.understanding1000 = true;
-    showNarrative('The limit is approaching bro. You can enlighten now—push that edge even further.');
+    showNarrative('the limit approaches');
   }
   
   if (!narrativeTriggers.understanding10000 && u >= 10000) {
     narrativeTriggers.understanding10000 = true;
-    showNarrative('Layers on layers on LAYERS. You\'re running bootlegs of bootlegs of bootlegs.');
+    showNarrative('layers compound');
   }
   
   if (!narrativeTriggers.understanding100000 && u >= 100000) {
     narrativeTriggers.understanding100000 = true;
-    showNarrative('At this scale, complexity just hides itself. What used to be impossible is casual now.');
+    showNarrative('complexity hides itself');
   }
   
   // Check if player has at least one of each generator
@@ -313,7 +310,7 @@ function checkNarrativeTriggers() {
     }
     if (hasAll) {
       narrativeTriggers.allGenerators = true;
-      showNarrative('Damn dude you got ALL the concepts. The framework is yours now.');
+      showNarrative('the framework reveals itself');
     }
   }
 }
