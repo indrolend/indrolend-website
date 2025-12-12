@@ -1,10 +1,14 @@
 // Audio management for background music
 
+// Configuration
+const MUSIC_FILE = 'asymptote music loop.mp3';
+const DEFAULT_VOLUME = 0.5; // 50%
+
 class AudioManager {
   constructor() {
     this.audio = null;
     this.isMuted = false;
-    this.volume = 0.5; // Default 50%
+    this.volume = DEFAULT_VOLUME;
     this.isInitialized = false;
   }
 
@@ -12,7 +16,7 @@ class AudioManager {
     if (this.isInitialized) return;
 
     // Create audio element
-    this.audio = new Audio('asymptote music loop.mp3');
+    this.audio = new Audio(MUSIC_FILE);
     this.audio.loop = true;
     this.audio.volume = this.volume;
     
@@ -29,7 +33,12 @@ class AudioManager {
     const muteIcon = document.getElementById('mute-icon');
 
     if (!muteBtn || !volumeSlider || !volumeValue || !muteIcon) {
-      console.error('Audio controls not found in DOM');
+      const missing = [];
+      if (!muteBtn) missing.push('mute-btn');
+      if (!volumeSlider) missing.push('volume-slider');
+      if (!volumeValue) missing.push('volume-value');
+      if (!muteIcon) missing.push('mute-icon');
+      console.error(`Audio controls not found in DOM. Missing elements: ${missing.join(', ')}`);
       return;
     }
 
