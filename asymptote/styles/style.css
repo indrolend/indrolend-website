@@ -9,7 +9,7 @@
 body {
   font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
   background-color: #000;
-  color: #0f0;
+  color: #6dd9e8;
   padding: 20px;
   min-height: 100vh;
   /* Prevent double-tap zoom on mobile */
@@ -24,7 +24,7 @@ body {
 header {
   text-align: center;
   margin-bottom: 30px;
-  border-bottom: 2px solid #0f0;
+  border-bottom: 2px solid #6dd9e8;
   padding-bottom: 20px;
 }
 
@@ -41,8 +41,8 @@ h1 {
   justify-content: space-around;
   margin-bottom: 20px;
   padding: 20px;
-  border: 1px solid #0f0;
-  background-color: #001a00;
+  border: 1px solid #6dd9e8;
+  background-color: #001a33;
 }
 
 .slider-group {
@@ -60,12 +60,12 @@ h1 {
 
 input[type="range"] {
   width: 200px;
-  accent-color: #0f0;
+  accent-color: #6dd9e8;
 }
 
 .slider-group span {
   font-size: 0.85rem;
-  color: #0a0;
+  color: #3bb8cc;
 }
 
 .mode-controls {
@@ -77,9 +77,9 @@ input[type="range"] {
 
 .mode-btn {
   padding: 10px 20px;
-  background-color: #001a00;
-  color: #0f0;
-  border: 2px solid #0f0;
+  background-color: #001a33;
+  color: #6dd9e8;
+  border: 2px solid #6dd9e8;
   cursor: pointer;
   font-family: 'Courier New', monospace;
   font-size: 1rem;
@@ -90,11 +90,11 @@ input[type="range"] {
 }
 
 .mode-btn:hover {
-  background-color: #003300;
+  background-color: #003355;
 }
 
 .mode-btn.active {
-  background-color: #0f0;
+  background-color: #6dd9e8;
   color: #000;
 }
 
@@ -102,7 +102,7 @@ input[type="range"] {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
-  border: 2px solid #0f0;
+  border: 2px solid #6dd9e8;
   background-color: #000;
 }
 
@@ -114,15 +114,15 @@ canvas {
 
 .narrative-container {
   margin-bottom: 20px;
-  border: 1px solid #0f0;
-  background-color: #001a00;
+  border: 1px solid #6dd9e8;
+  background-color: #001a33;
   padding: 20px;
   min-height: 100px;
 }
 
 #narrative {
   font-family: 'Courier New', monospace;
-  color: #0f0;
+  color: #6dd9e8;
   font-size: 0.9rem;
   line-height: 1.6;
   white-space: pre-wrap;
@@ -135,41 +135,41 @@ canvas {
   gap: 15px;
   margin-bottom: 20px;
   padding: 20px;
-  border: 1px solid #0f0;
-  background-color: #001a00;
+  border: 1px solid #6dd9e8;
+  background-color: #001a33;
 }
 
 .stat-item {
   display: flex;
   justify-content: space-between;
   padding: 8px;
-  border-bottom: 1px solid #0a0;
+  border-bottom: 1px solid #3bb8cc;
 }
 
 .stat-label {
   font-weight: bold;
-  color: #0f0;
+  color: #6dd9e8;
 }
 
 footer {
   text-align: center;
   padding-top: 20px;
-  border-top: 2px solid #0f0;
+  border-top: 2px solid #6dd9e8;
 }
 
 .back-link {
-  color: #0f0;
+  color: #6dd9e8;
   text-decoration: none;
   font-size: 1rem;
   text-transform: uppercase;
   padding: 10px 20px;
-  border: 2px solid #0f0;
+  border: 2px solid #6dd9e8;
   display: inline-block;
   transition: all 0.3s;
 }
 
 .back-link:hover {
-  background-color: #0f0;
+  background-color: #6dd9e8;
   color: #000;
 }
 
@@ -189,9 +189,9 @@ footer {
 
 .rpg-move-btn {
   padding: 10px 15px;
-  background-color: #001a00;
-  color: #0f0;
-  border: 2px solid #0f0;
+  background-color: #001a33;
+  color: #6dd9e8;
+  border: 2px solid #6dd9e8;
   cursor: pointer;
   font-family: 'Courier New', monospace;
   font-size: 0.9rem;
@@ -201,7 +201,7 @@ footer {
 }
 
 .rpg-move-btn:hover:not(:disabled) {
-  background-color: #0f0;
+  background-color: #6dd9e8;
   color: #000;
 }
 
@@ -258,7 +258,7 @@ footer {
 .intro-text {
   font-size: 1.2rem;
   line-height: 2;
-  color: #0f0;
+  color: #6dd9e8;
   margin-bottom: 40px;
   white-space: pre-wrap;
 }
@@ -266,8 +266,8 @@ footer {
 .begin-btn, .start-btn {
   padding: 15px 40px;
   background-color: #000;
-  color: #0f0;
-  border: 2px solid #0f0;
+  color: #6dd9e8;
+  border: 2px solid #6dd9e8;
   font-family: 'Courier New', monospace;
   font-size: 1.2rem;
   cursor: pointer;
@@ -283,9 +283,9 @@ footer {
 }
 
 .begin-btn:hover, .start-btn:hover:not(:disabled) {
-  background-color: #0f0;
+  background-color: #6dd9e8;
   color: #000;
-  box-shadow: 0 0 20px #0f0;
+  box-shadow: 0 0 20px #6dd9e8;
 }
 
 .start-btn:disabled {
@@ -319,20 +319,20 @@ footer {
 .setup-title {
   font-size: 2rem;
   margin-bottom: 10px;
-  color: #0f0;
+  color: #6dd9e8;
   text-transform: uppercase;
 }
 
 .setup-subtitle {
   font-size: 1rem;
   margin-bottom: 30px;
-  color: #0a0;
+  color: #3bb8cc;
 }
 
 .selection-counter {
   font-size: 1.1rem;
   margin-bottom: 20px;
-  color: #0f0;
+  color: #6dd9e8;
 }
 
 .resources-container {
@@ -343,29 +343,29 @@ footer {
 }
 
 .resource-card {
-  border: 2px solid #0f0;
+  border: 2px solid #6dd9e8;
   padding: 20px;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.2s;
-  background-color: #001a00;
+  background-color: #001a33;
   box-shadow: none;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
 .resource-card:hover {
-  background-color: #003300;
+  background-color: #003355;
   transform: scale(1.02);
 }
 
 .resource-card:not(.selected):hover {
-  box-shadow: 0 0 10px #0f0;
+  box-shadow: 0 0 10px #6dd9e8;
 }
 
 .resource-card.selected {
-  background-color: #0f0;
+  background-color: #6dd9e8;
   color: #000;
-  border-color: #0f0;
+  border-color: #6dd9e8;
 }
 
 .resource-card.selected h3,
@@ -387,12 +387,12 @@ footer {
 
 .resource-effect {
   font-size: 0.85rem;
-  color: #0a0;
+  color: #3bb8cc;
   font-style: italic;
 }
 
 .resource-card.selected .resource-effect {
-  color: #003300;
+  color: #003355;
   font-weight: bold;
 }
 
@@ -423,11 +423,11 @@ footer {
 /* Fluctuating letter animation */
 @keyframes letterFluctuate {
   0%, 100% {
-    text-shadow: 0 0 8px #0f0, 0 0 16px #0f080;
+    text-shadow: 0 0 8px #6dd9e8, 0 0 16px #3bb8cc;
     transform: translateY(0);
   }
   50% {
-    text-shadow: 0 0 20px #0f0, 0 0 40px #0f080;
+    text-shadow: 0 0 20px #6dd9e8, 0 0 40px #3bb8cc;
     transform: translateY(-2px);
   }
 }
@@ -500,8 +500,8 @@ footer {
 
 .resource-node {
   padding: 30px;
-  border: 3px solid #0f0;
-  background-color: #001a00;
+  border: 3px solid #6dd9e8;
+  background-color: #001a33;
   cursor: pointer;
   transition: all 0.2s;
   position: relative;
@@ -514,8 +514,8 @@ footer {
 }
 
 .resource-node:hover {
-  background-color: #003300;
-  box-shadow: 0 0 20px #0f0;
+  background-color: #003355;
+  box-shadow: 0 0 20px #6dd9e8;
   transform: scale(1.05);
 }
 
@@ -534,20 +534,20 @@ footer {
   width: 100%;
   height: 10px;
   background-color: #000;
-  border: 1px solid #0f0;
+  border: 1px solid #6dd9e8;
   margin-top: 10px;
   position: relative;
 }
 
 .resource-node .resource-progress-bar {
   height: 100%;
-  background-color: #0f0;
+  background-color: #6dd9e8;
   transition: width 0.1s linear;
 }
 
 .resource-node .resource-count {
   font-size: 0.9rem;
-  color: #0a0;
+  color: #3bb8cc;
   margin-top: 5px;
 }
 
@@ -561,9 +561,9 @@ footer {
 }
 
 .inventory-display {
-  border: 2px solid #0f0;
+  border: 2px solid #6dd9e8;
   padding: 20px;
-  background-color: #001a00;
+  background-color: #001a33;
   margin-bottom: 20px;
 }
 

@@ -336,7 +336,7 @@ function drawHex(ctx, hex, isSelected) {
   
   // Fill based on owner
   if (hex.owner === 'player') {
-    ctx.fillStyle = '#00ff0030';
+    ctx.fillStyle = '#6dd9e830';
   } else if (hex.owner === 'enemy') {
     ctx.fillStyle = '#ff000030';
   } else {
@@ -357,7 +357,7 @@ function drawHex(ctx, hex, isSelected) {
   
   // Building level
   if (hex.buildingLevel > 0) {
-    ctx.fillStyle = '#0f0';
+    ctx.fillStyle = '#6dd9e8';
     ctx.font = 'bold 14px Arial';
     ctx.fillText('★'.repeat(hex.buildingLevel), 0, 10);
   }
@@ -367,7 +367,7 @@ function drawHex(ctx, hex, isSelected) {
 
 function drawUI(ctx, board, canvas) {
   // Resources
-  ctx.fillStyle = '#0f0';
+  ctx.fillStyle = '#6dd9e8';
   ctx.font = '16px "EB Garamond", serif';
   ctx.textAlign = 'left';
   
@@ -391,7 +391,7 @@ function drawUI(ctx, board, canvas) {
   
   // Instructions
   ctx.textAlign = 'right';
-  ctx.fillStyle = '#0a0';
+  ctx.fillStyle = '#3bb8cc';
   ctx.font = '14px Arial';
   let instrY = canvas.height - 80;
   ctx.fillText('Click hex to select', canvas.width - 10, instrY);

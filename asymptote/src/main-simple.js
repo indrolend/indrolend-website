@@ -111,9 +111,9 @@ function createActionButtons() {
   style.textContent = `
     .board-action-btn {
       padding: 12px 20px;
-      background-color: #001a00;
-      color: #0f0;
-      border: 2px solid #0f0;
+      background-color: #001a33;
+      color: #6dd9e8;
+      border: 2px solid #6dd9e8;
       cursor: pointer;
       font-family: 'EB Garamond', Georgia, serif;
       font-size: 1rem;
@@ -121,7 +121,7 @@ function createActionButtons() {
       border-radius: 4px;
     }
     .board-action-btn:hover {
-      background-color: #0f0;
+      background-color: #6dd9e8;
       color: #000;
       transform: scale(1.05);
     }
@@ -135,9 +135,9 @@ function createActionButtons() {
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background-color: #001a00;
-      color: #0f0;
-      border: 2px solid #0f0;
+      background-color: #001a33;
+      color: #6dd9e8;
+      border: 2px solid #6dd9e8;
       padding: 15px 30px;
       z-index: 1000;
       font-family: 'EB Garamond', Georgia, serif;
