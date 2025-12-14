@@ -568,7 +568,7 @@ html, body {
 .story-inputs-full textarea {
   background: #020612;
   border-radius: 8px;
-  border: 1px solid rgba(109,252,232,0.3);
+  border: 1px solid rgba(109,217,232,0.3);
   padding: 6px 8px;
   color: var(--text-main);
   font-size: 12px;

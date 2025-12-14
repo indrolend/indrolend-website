@@ -468,7 +468,7 @@ function addStyles() {
     
     .enlightenment-info {
       font-size: 1rem !important;
-      color: #6dd9e880 !important;
+      color: rgba(109, 217, 232, 0.5) !important;
     }
     
     .click-area {
