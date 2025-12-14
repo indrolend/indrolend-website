@@ -15,7 +15,7 @@ export function renderRPG() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   
   // Draw player
-  drawCharacter(rpgState.player, 150, 300, '#0f0');
+  drawCharacter(rpgState.player, 150, 300, '#6dd9e8');
   
   // Draw enemy
   drawCharacter(rpgState.enemy, 650, 300, '#f00');
@@ -46,7 +46,7 @@ function drawCharacter(character, x, y, color) {
   ctx.strokeRect(x - 50, y - 80, barWidth, barHeight);
   
   // HP bar fill
-  ctx.fillStyle = hpPercent > 0.5 ? '#0f0' : hpPercent > 0.25 ? '#ff0' : '#f00';
+  ctx.fillStyle = hpPercent > 0.5 ? '#6dd9e8' : hpPercent > 0.25 ? '#ff0' : '#f00';
   ctx.fillRect(x - 50, y - 80, barWidth * hpPercent, barHeight);
   
   // HP text
@@ -104,7 +104,7 @@ function drawCharacter(character, x, y, color) {
 
 function drawBattleLog() {
   ctx.font = '12px Courier New';
-  ctx.fillStyle = '#0f0';
+  ctx.fillStyle = '#6dd9e8';
   ctx.textAlign = 'left';
   
   const startY = 500;
@@ -121,7 +121,7 @@ function drawBattleLog() {
   
   // Draw turn indicator
   ctx.font = '14px Courier New';
-  ctx.fillStyle = rpgState.turn === 'player' ? '#0f0' : '#f00';
+  ctx.fillStyle = rpgState.turn === 'player' ? '#6dd9e8' : '#f00';
   ctx.textAlign = 'center';
   ctx.fillText(`${rpgState.turn === 'player' ? 'Your' : 'Enemy'} Turn`, canvas.width / 2, 50);
 }
