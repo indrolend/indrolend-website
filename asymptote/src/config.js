@@ -77,9 +77,9 @@ export const gridConfig = {
 // Rendering configuration
 export const renderConfig = {
   backgroundColor: '#000',
-  foregroundColor: '#0f0',
-  populationColor: '#0f0',
-  frameworkColor: '#0a0',
+  foregroundColor: '#6dd9e8',
+  populationColor: '#6dd9e8',
+  frameworkColor: '#3bb8cc',
   instabilityColor: '#f00',
   knowledgeColor: '#00f'
 };

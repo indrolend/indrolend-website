@@ -226,7 +226,7 @@ export function renderGatheringUI(gatheringSystem, container) {
   const instructions = document.createElement('div');
   instructions.style.textAlign = 'center';
   instructions.style.marginTop = '20px';
-  instructions.style.color = '#0a0';
+  instructions.style.color = '#3bb8cc';
   instructions.innerHTML = '<p>Click resources to gather them. Resources respawn after 10 seconds when depleted.</p>';
   container.appendChild(instructions);
 }

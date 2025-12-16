@@ -350,9 +350,9 @@ function showMessage(text) {
       top: 80px;
       left: 50%;
       transform: translateX(-50%);
-      background-color: #001a00;
-      color: #0f0;
-      border: 2px solid #0f0;
+      background-color: #001a33;
+      color: #6dd9e8;
+      border: 2px solid #6dd9e8;
       padding: 15px 30px;
       z-index: 10000;
       font-family: 'EB Garamond', Georgia, serif;
@@ -382,9 +382,9 @@ function showNarrative(text) {
       bottom: 100px;
       left: 50%;
       transform: translateX(-50%);
-      background-color: rgba(0, 26, 0, 0.95);
-      color: #0f0;
-      border: 2px solid #0f0;
+      background-color: rgba(0, 26, 51, 0.95);
+      color: #6dd9e8;
+      border: 2px solid #6dd9e8;
       padding: 20px 40px;
       z-index: 10000;
       font-family: 'EB Garamond', Georgia, serif;
@@ -451,19 +451,19 @@ function addStyles() {
     
     .clicker-header h2 {
       font-size: 2.5rem;
-      color: #0f0;
+      color: #6dd9e8;
       margin: 10px 0;
     }
     
     .clicker-header p {
       font-size: 1.2rem;
-      color: #0a0;
+      color: #3bb8cc;
       margin: 5px 0;
     }
     
     .enlightenment-info {
       font-size: 1rem !important;
-      color: #0f08 !important;
+      color: rgba(109, 217, 232, 0.5) !important;
     }
     
     .click-area {
@@ -476,9 +476,9 @@ function addStyles() {
       width: 280px;
       height: 280px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #003300, #001a00);
-      border: 4px solid #0f0;
-      color: #0f0;
+      background: linear-gradient(135deg, #003355, #001a33);
+      border: 4px solid #6dd9e8;
+      color: #6dd9e8;
       font-family: 'EB Garamond', Georgia, serif;
       cursor: pointer;
       transition: all 0.1s;
@@ -487,7 +487,7 @@ function addStyles() {
       align-items: center;
       justify-content: center;
       gap: 10px;
-      box-shadow: 0 0 30px #0f040;
+      box-shadow: 0 0 30px #6dd9e840;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
@@ -496,7 +496,7 @@ function addStyles() {
     
     .main-click-button:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 50px #0f060;
+      box-shadow: 0 0 50px #6dd9e860;
     }
     
     .main-click-button:active {
@@ -529,7 +529,7 @@ function addStyles() {
     
     .click-popup {
       position: absolute;
-      color: #0f0;
+      color: #6dd9e8;
       font-size: 1.5rem;
       font-weight: bold;
       animation: popup-rise 1s ease-out forwards;
@@ -561,22 +561,22 @@ function addStyles() {
     }
     
     .panel {
-      background-color: #001a00;
-      border: 2px solid #0f0;
+      background-color: #001a33;
+      border: 2px solid #6dd9e8;
       border-radius: 8px;
       padding: 20px;
     }
     
     .panel h3 {
-      color: #0f0;
+      color: #6dd9e8;
       margin-top: 0;
       margin-bottom: 15px;
       font-size: 1.5rem;
     }
     
     .generator-item, .upgrade-item {
-      background-color: #002200;
-      border: 1px solid #0a0;
+      background-color: #002244;
+      border: 1px solid #3bb8cc;
       border-radius: 4px;
       padding: 15px;
       margin-bottom: 10px;
@@ -584,8 +584,8 @@ function addStyles() {
     }
     
     .generator-item:hover, .upgrade-item:hover {
-      background-color: #003300;
-      border-color: #0f0;
+      background-color: #003355;
+      border-color: #6dd9e8;
     }
     
     .generator-item.disabled, .upgrade-item.disabled {
@@ -602,30 +602,30 @@ function addStyles() {
     .gen-name, .upg-name {
       font-size: 1.2rem;
       font-weight: bold;
-      color: #0f0;
+      color: #6dd9e8;
     }
     
     .gen-count {
       font-size: 1.5rem;
-      color: #0f0;
+      color: #6dd9e8;
     }
     
     .gen-production {
       font-size: 1rem;
-      color: #0a0;
+      color: #3bb8cc;
       margin-bottom: 5px;
     }
     
     .gen-desc, .upg-desc {
       font-size: 0.9rem;
-      color: #0a0;
+      color: #3bb8cc;
       margin-bottom: 10px;
       font-style: italic;
     }
     
     .gen-concept {
       font-size: 0.75rem;
-      color: #0f0;
+      color: #6dd9e8;
       font-weight: bold;
       letter-spacing: 0.5px;
       margin-bottom: 5px;
@@ -641,16 +641,16 @@ function addStyles() {
       font-style: italic;
       opacity: 0.9;
       padding: 8px;
-      background-color: rgba(0, 255, 0, 0.05);
-      border-left: 2px solid #0f0;
+      background-color: rgba(109, 217, 232, 0.05);
+      border-left: 2px solid #6dd9e8;
     }
     
     .gen-buy-btn, .upg-buy-btn {
       width: 100%;
       padding: 10px;
-      background-color: #001a00;
-      border: 2px solid #0f0;
-      color: #0f0;
+      background-color: #001a33;
+      border: 2px solid #6dd9e8;
+      color: #6dd9e8;
       font-family: 'EB Garamond', Georgia, serif;
       font-size: 1rem;
       cursor: pointer;
@@ -661,7 +661,7 @@ function addStyles() {
     }
     
     .gen-buy-btn:hover:not(:disabled), .upg-buy-btn:hover:not(:disabled) {
-      background-color: #0f0;
+      background-color: #6dd9e8;
       color: #000;
     }
     
@@ -672,7 +672,7 @@ function addStyles() {
     
     .no-upgrades {
       text-align: center;
-      color: #0a0;
+      color: #3bb8cc;
       font-style: italic;
     }
     
@@ -683,15 +683,15 @@ function addStyles() {
     
     .enlighten-button {
       padding: 20px 40px;
-      background: linear-gradient(135deg, #004400, #002200);
-      border: 3px solid #0f0;
-      color: #0f0;
+      background: linear-gradient(135deg, #004466, #002244);
+      border: 3px solid #6dd9e8;
+      color: #6dd9e8;
       font-family: 'EB Garamond', Georgia, serif;
       font-size: 1.5rem;
       cursor: pointer;
       border-radius: 8px;
       transition: all 0.3s;
-      box-shadow: 0 0 20px #0f040;
+      box-shadow: 0 0 20px #6dd9e840;
       display: flex;
       flex-direction: column;
       gap: 5px;
@@ -703,7 +703,7 @@ function addStyles() {
     
     .enlighten-button:hover:not(:disabled) {
       transform: scale(1.05);
-      box-shadow: 0 0 40px #0f060;
+      box-shadow: 0 0 40px #6dd9e860;
     }
     
     .enlighten-button:disabled {
@@ -731,9 +731,9 @@ function addStyles() {
     
     .small-btn {
       padding: 10px 20px;
-      background-color: #001a00;
-      border: 2px solid #0a0;
-      color: #0a0;
+      background-color: #001a33;
+      border: 2px solid #3bb8cc;
+      color: #3bb8cc;
       font-family: 'EB Garamond', Georgia, serif;
       font-size: 1rem;
       cursor: pointer;
@@ -744,7 +744,7 @@ function addStyles() {
     }
     
     .small-btn:hover {
-      background-color: #0a0;
+      background-color: #3bb8cc;
       color: #000;
     }
   `;

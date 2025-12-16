@@ -2,11 +2,11 @@
 :root {
   --bg-main: #020612;
   --bg-panel: rgba(5, 12, 28, 0.96);
-  --terminal-green: #9afc8b;
-  --terminal-green-soft: #5ee87d;
+  --terminal-green: #6dd9e8;
+  --terminal-green-soft: #3bb8cc;
   --text-main: #f5f7ff;
   --text-muted: #8a92b3;
-  --border-subtle: rgba(154, 252, 139, 0.3);
+  --border-subtle: rgba(109, 217, 232, 0.3);
 }
 
 /* RESET */
@@ -270,7 +270,7 @@ html, body {
 #story-inputs textarea {
   background: rgba(3, 10, 18, 0.9);
   border-radius: 9px;
-  border: 1px solid rgba(120, 255, 180, 0.15);
+  border: 1px solid rgba(109, 217, 232, 0.15);
   padding: 6px 8px;
   color: var(--text-main);
   font-size: 12px;
@@ -387,7 +387,7 @@ html, body {
   width: min(540px, 100%);
   border-radius: 18px;
   overflow: hidden;
-  border: 1px solid rgba(154,252,139,0.35);
+  border: 1px solid rgba(109,217,232,0.35);
   box-shadow: 0 20px 60px rgba(0,0,0,0.7);
 }
 
@@ -415,7 +415,7 @@ html, body {
 .embed-wrapper {
   border-radius: 18px;
   overflow: hidden;
-  border: 1px solid rgba(154,252,139,0.35);
+  border: 1px solid rgba(109,217,232,0.35);
   box-shadow: 0 16px 40px rgba(0,0,0,0.8);
 }
 
@@ -568,7 +568,7 @@ html, body {
 .story-inputs-full textarea {
   background: #020612;
   border-radius: 8px;
-  border: 1px solid rgba(154,252,139,0.3);
+  border: 1px solid rgba(109,217,232,0.3);
   padding: 6px 8px;
   color: var(--text-main);
   font-size: 12px;
@@ -1191,7 +1191,7 @@ html, body {
 
 @keyframes colorCycle {
   0% { color: var(--terminal-green); }
-  16% { color: #5ee87d; }
+  16% { color: #3bb8cc; }
   33% { color: #4dd9e0; }
   50% { color: #7b93db; }
   66% { color: #a77ddb; }
@@ -1237,7 +1237,7 @@ html, body {
     box-shadow: 0 14px 40px rgba(0,0,0,0.8);
   }
   50% {
-    box-shadow: 0 18px 50px rgba(94, 232, 125, 0.15), 0 14px 40px rgba(0,0,0,0.8);
+    box-shadow: 0 18px 50px rgba(59, 184, 204, 0.15), 0 14px 40px rgba(0,0,0,0.8);
   }
 }
 
