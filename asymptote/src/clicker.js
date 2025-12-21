@@ -3,6 +3,14 @@
 const SAVE_KEY = 'asymptote_clicker_save';
 const AUTOSAVE_INTERVAL = 10000; // 10 seconds
 
+// Idle Game Constants
+const TICKS_PER_SECOND = 10; // How fast ticks accumulate
+const SACRIFICE_RATIOS = {
+  ticksToUnderstanding: 10, // 10 ticks = 1 Understanding
+  understandingToTicks: 5,  // 1 Understanding = 5 ticks
+  ticksForMultiplier: 100   // 100 ticks = +1% multiplier (one-time)
+};
+
 // Generator definitions - Teaching Framework Concepts
 const GENERATORS = [
   {
@@ -170,6 +178,12 @@ class ClickerGame {
     this.volatilityMultiplier = 1.0;
     this.leapfrogBonus = 1.0;
     
+    // New idle game mechanics
+    this.ticks = 0;  // Accumulates passively over time
+    this.sacrificeMultiplier = 1.0;  // Permanent bonus from tick sacrifices
+    this.temporalCollapses = 0;  // Count of mini-resets
+    this.hasFirstSacrifice = false;  // Tutorial flag
+    
     this.generators = {};
     for (const gen of GENERATORS) {
       this.generators[gen.id] = {
@@ -190,6 +204,8 @@ class ClickerGame {
       totalUnderstanding: 0,
       totalClicks: 0,
       totalGeneratorsPurchased: 0,
+      totalTicksSacrificed: 0,
+      totalTemporalCollapses: 0,
       gameStartTime: Date.now()
     };
   }
@@ -283,6 +299,68 @@ class ClickerGame {
     const production = this.getProductionPerSecond() * (deltaTime / 1000);
     this.understanding += production;
     this.stats.totalUnderstanding += production;
+    
+    // Accumulate ticks passively (idle game mechanic)
+    const ticksGenerated = (TICKS_PER_SECOND * (deltaTime / 1000));
+    this.ticks += ticksGenerated;
+  }
+  
+  // New idle game methods
+  
+  // Sacrifice ticks for Understanding
+  sacrificeTicksForUnderstanding(amount) {
+    const ticksNeeded = amount * SACRIFICE_RATIOS.ticksToUnderstanding;
+    if (this.ticks < ticksNeeded) return false;
+    
+    this.ticks -= ticksNeeded;
+    this.understanding += amount;
+    this.stats.totalTicksSacrificed += ticksNeeded;
+    this.hasFirstSacrifice = true;
+    return true;
+  }
+  
+  // Convert Understanding back to ticks (strategic choice)
+  convertUnderstandingToTicks(amount) {
+    if (this.understanding < amount) return false;
+    
+    this.understanding -= amount;
+    this.ticks += amount * SACRIFICE_RATIOS.understandingToTicks;
+    return true;
+  }
+  
+  // Sacrifice ticks for permanent multiplier (one-time boosts)
+  sacrificeTicksForMultiplier() {
+    const ticksNeeded = SACRIFICE_RATIOS.ticksForMultiplier;
+    if (this.ticks < ticksNeeded) return false;
+    
+    this.ticks -= ticksNeeded;
+    this.sacrificeMultiplier += 0.01; // +1% permanent bonus
+    this.stats.totalTicksSacrificed += ticksNeeded;
+    return true;
+  }
+  
+  // Temporal Collapse: mini-reset that resets ticks & understanding but gives bonus
+  temporalCollapse() {
+    // Require at least some progress
+    if (this.understanding < 50 && this.ticks < 100) return false;
+    
+    // Calculate bonus based on what's being sacrificed
+    const bonus = Math.floor((this.understanding * 0.1) + (this.ticks * 0.05));
+    
+    // Reset resources
+    this.understanding = 0;
+    this.ticks = 0;
+    
+    // Grant bonus ticks or click power
+    this.clickPower += Math.max(1, Math.floor(bonus / 10));
+    this.temporalCollapses++;
+    this.stats.totalTemporalCollapses++;
+    
+    return true;
+  }
+  
+  getTicksPerSecond() {
+    return TICKS_PER_SECOND * this.sacrificeMultiplier;
   }
   
   save() {
@@ -296,6 +374,11 @@ class ClickerGame {
       archaeologyBonus: this.archaeologyBonus,
       volatilityMultiplier: this.volatilityMultiplier,
       leapfrogBonus: this.leapfrogBonus,
+      // New idle game properties
+      ticks: this.ticks,
+      sacrificeMultiplier: this.sacrificeMultiplier,
+      temporalCollapses: this.temporalCollapses,
+      hasFirstSacrifice: this.hasFirstSacrifice,
       generators: this.generators,
       upgrades: this.upgrades,
       stats: this.stats,
@@ -319,6 +402,12 @@ class ClickerGame {
       this.upgrades = saveData.upgrades || this.upgrades;
       this.stats = saveData.stats || this.stats;
       
+      // Load new idle game properties
+      this.ticks = saveData.ticks || 0;
+      this.sacrificeMultiplier = saveData.sacrificeMultiplier || 1.0;
+      this.temporalCollapses = saveData.temporalCollapses || 0;
+      this.hasFirstSacrifice = saveData.hasFirstSacrifice || false;
+      
       // Reapply all purchased upgrades to restore clickPower and productionMultiplier
       this.clickPower = 1;
       this.productionMultiplier = 1;
@@ -334,17 +423,26 @@ class ClickerGame {
       }
       
       // Calculate offline progress
-      if (this.autoCollect && saveData.lastSaveTime) {
+      if (saveData.lastSaveTime) {
         const offlineTime = Date.now() - saveData.lastSaveTime;
         const maxOfflineTime = 24 * 60 * 60 * 1000; // 24 hours
         const actualOfflineTime = Math.min(offlineTime, maxOfflineTime);
         
-        const offlineProduction = this.getProductionPerSecond() * (actualOfflineTime / 1000);
-        this.understanding += offlineProduction;
+        // Offline ticks always accumulate
+        const offlineTicks = this.getTicksPerSecond() * (actualOfflineTime / 1000);
+        this.ticks += offlineTicks;
+        
+        // Offline Understanding only if autoCollect is enabled
+        let offlineProduction = 0;
+        if (this.autoCollect) {
+          offlineProduction = this.getProductionPerSecond() * (actualOfflineTime / 1000);
+          this.understanding += offlineProduction;
+        }
         
         return {
           offlineTime: actualOfflineTime,
-          offlineProduction: offlineProduction
+          offlineProduction: offlineProduction,
+          offlineTicks: offlineTicks
         };
       }
       
@@ -363,4 +461,4 @@ class ClickerGame {
   }
 }
 
-export { ClickerGame, GENERATORS, UPGRADES };
+export { ClickerGame, GENERATORS, UPGRADES, SACRIFICE_RATIOS, TICKS_PER_SECOND };

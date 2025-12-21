@@ -1,6 +1,6 @@
 // Main entry point for Idle Clicker Game
 import { showIntroScreen, hideIntroScreen, showSetupScreen, hideSetupScreen } from './intro.js';
-import { ClickerGame, GENERATORS, UPGRADES } from './clicker.js';
+import { ClickerGame, GENERATORS, UPGRADES, SACRIFICE_RATIOS, TICKS_PER_SECOND } from './clicker.js';
 import { audioManager } from './audio.js';
 
 let game = null;
@@ -14,7 +14,10 @@ let narrativeTriggers = {
   firstGenerator: false,
   firstUpgrade: false,
   firstEnlightenment: false,
-  allGenerators: false
+  allGenerators: false,
+  firstTicks: false,
+  firstSacrifice: false,
+  firstCollapse: false
 };
 
 function init() {
@@ -33,6 +36,25 @@ function init() {
       <h2>Understanding: <span id="understanding">0</span></h2>
       <p>Per Second: <span id="production">0</span></p>
       <p class="enlightenment-info">Enlightenments: <span id="enlightenments">0</span> (+<span id="enlightenment-bonus">0</span>%)</p>
+    </div>
+    
+    <div class="idle-resources">
+      <div class="ticks-display">
+        <span class="ticks-label">Ticks:</span>
+        <span id="ticks-count">0</span>
+        <span class="ticks-rate">(+<span id="ticks-rate">10</span>/s)</span>
+      </div>
+      <div class="sacrifice-actions">
+        <button id="sacrifice-ticks-btn" class="sacrifice-btn" title="Sacrifice 10 Ticks for 1 Understanding">
+          Convert Ticks → Understanding
+        </button>
+        <button id="convert-understanding-btn" class="sacrifice-btn" title="Convert 1 Understanding to 5 Ticks">
+          Convert Understanding → Ticks
+        </button>
+        <button id="sacrifice-multiplier-btn" class="sacrifice-btn" title="Sacrifice 100 Ticks for +1% permanent tick rate">
+          Sacrifice for +1% Rate (100 ticks)
+        </button>
+      </div>
     </div>
     
     <div class="click-area">
@@ -57,6 +79,10 @@ function init() {
     </div>
     
     <div class="prestige-panel">
+      <button id="temporal-collapse-btn" class="collapse-button" title="Mini-reset: Trade Understanding & Ticks for Click Power boost">
+        <span class="collapse-title">TEMPORAL COLLAPSE</span>
+        <span class="collapse-desc">Mini-reset for permanent power (need 50+ Understanding OR 100+ Ticks)</span>
+      </button>
       <button id="enlighten-btn" class="enlighten-button" disabled>
         <span class="enlighten-title">ENLIGHTEN</span>
         <span class="enlighten-desc">Reset for +10% (need 1000 bro)</span>
@@ -100,15 +126,28 @@ function startGame() {
   
   // Try to load save
   const loadResult = game.load();
-  if (loadResult && loadResult.offlineProduction) {
+  if (loadResult) {
     const hours = Math.floor(loadResult.offlineTime / (1000 * 60 * 60));
     const minutes = Math.floor((loadResult.offlineTime % (1000 * 60 * 60)) / (1000 * 60));
-    showMessage(`Welcome back! You earned ${formatNumber(loadResult.offlineProduction)} Understanding while away (${hours}h ${minutes}m)`);
+    let message = `Welcome back! (${hours}h ${minutes}m)`;
+    if (loadResult.offlineProduction > 0) {
+      message += `\nUnderstanding: +${formatNumber(loadResult.offlineProduction)}`;
+    }
+    if (loadResult.offlineTicks > 0) {
+      message += `\nTicks: +${formatNumber(loadResult.offlineTicks)}`;
+    }
+    if (loadResult.offlineProduction > 0 || loadResult.offlineTicks > 0) {
+      showMessage(message);
+    }
   }
   
   // Set up event listeners
   document.getElementById('main-click-btn').addEventListener('click', handleMainClick);
   document.getElementById('enlighten-btn').addEventListener('click', handleEnlighten);
+  document.getElementById('temporal-collapse-btn').addEventListener('click', handleTemporalCollapse);
+  document.getElementById('sacrifice-ticks-btn').addEventListener('click', handleSacrificeTicks);
+  document.getElementById('convert-understanding-btn').addEventListener('click', handleConvertUnderstanding);
+  document.getElementById('sacrifice-multiplier-btn').addEventListener('click', handleSacrificeMultiplier);
   document.getElementById('stats-btn').addEventListener('click', showStats);
   document.getElementById('save-btn').addEventListener('click', () => {
     game.save();
@@ -148,6 +187,89 @@ function handleMainClick(event) {
   const btn = event.currentTarget;
   btn.style.transform = 'scale(0.95)';
   setTimeout(() => btn.style.transform = '', 100);
+}
+
+function handleSacrificeTicks() {
+  // Let user input amount to convert
+  const maxAmount = Math.floor(game.ticks / SACRIFICE_RATIOS.ticksToUnderstanding);
+  if (maxAmount === 0) {
+    showMessage('Not enough ticks! Need at least 10 ticks.');
+    return;
+  }
+  
+  const amount = prompt(`How much Understanding to gain?\n(You have ${Math.floor(game.ticks)} ticks)\n(10 ticks = 1 Understanding)\n\nMax: ${maxAmount}`, '1');
+  if (!amount) return;
+  
+  const amountNum = parseInt(amount);
+  if (isNaN(amountNum) || amountNum <= 0) {
+    showMessage('Invalid amount!');
+    return;
+  }
+  
+  if (game.sacrificeTicksForUnderstanding(amountNum)) {
+    showMessage(`Sacrificed ${amountNum * SACRIFICE_RATIOS.ticksToUnderstanding} ticks for ${amountNum} Understanding!`);
+    if (!game.hasFirstSacrifice) {
+      showNarrative('Yo you TRADED time for knowledge. Strategic choice bro. That\'s the LOOP.');
+    }
+  } else {
+    showMessage('Not enough ticks!');
+  }
+}
+
+function handleConvertUnderstanding() {
+  const maxAmount = Math.floor(game.understanding);
+  if (maxAmount === 0) {
+    showMessage('Need at least 1 Understanding!');
+    return;
+  }
+  
+  const amount = prompt(`How much Understanding to convert to Ticks?\n(You have ${Math.floor(game.understanding)} Understanding)\n(1 Understanding = 5 ticks)\n\nMax: ${maxAmount}`, '1');
+  if (!amount) return;
+  
+  const amountNum = parseInt(amount);
+  if (isNaN(amountNum) || amountNum <= 0) {
+    showMessage('Invalid amount!');
+    return;
+  }
+  
+  if (game.convertUnderstandingToTicks(amountNum)) {
+    showMessage(`Converted ${amountNum} Understanding to ${amountNum * SACRIFICE_RATIOS.understandingToTicks} ticks!`);
+    showNarrative('Backwards conversion? You\'re playing with TIME itself man.');
+  } else {
+    showMessage('Not enough Understanding!');
+  }
+}
+
+function handleSacrificeMultiplier() {
+  if (game.ticks < SACRIFICE_RATIOS.ticksForMultiplier) {
+    showMessage(`Need ${SACRIFICE_RATIOS.ticksForMultiplier} ticks!`);
+    return;
+  }
+  
+  if (confirm(`Sacrifice ${SACRIFICE_RATIOS.ticksForMultiplier} ticks for +1% PERMANENT tick rate?\n\nThis stacks and lasts forever bro.`)) {
+    if (game.sacrificeTicksForMultiplier()) {
+      showMessage('Permanent +1% tick rate acquired!');
+      showNarrative('You COMPRESSED time itself. Path dependency at work.');
+    }
+  }
+}
+
+function handleTemporalCollapse() {
+  if (game.understanding < 50 && game.ticks < 100) {
+    showMessage('Need at least 50 Understanding OR 100 Ticks to collapse!');
+    return;
+  }
+  
+  const bonus = Math.floor((game.understanding * 0.1) + (game.ticks * 0.05));
+  const clickBonus = Math.max(1, Math.floor(bonus / 10));
+  
+  if (confirm(`TEMPORAL COLLAPSE\n\nYou'll reset Understanding & Ticks but gain:\n+${clickBonus} permanent Click Power\n\nThis is like Enlightenment but SMALLER. Mini-reset for tactical gains.\n\nCollapse?`)) {
+    if (game.temporalCollapse()) {
+      showMessage(`Collapsed! +${clickBonus} Click Power forever!`);
+      showNarrative('Time FOLDED on itself. You kept the PATTERN, ditched the noise.');
+      renderGenerators();
+    }
+  }
 }
 
 function handleEnlighten() {
@@ -252,9 +374,29 @@ function updateUI() {
   document.getElementById('enlightenments').textContent = game.enlightenments;
   document.getElementById('enlightenment-bonus').textContent = Math.floor(game.enlightenments * 10);
   
+  // Update idle game UI
+  document.getElementById('ticks-count').textContent = formatNumber(Math.floor(game.ticks));
+  document.getElementById('ticks-rate').textContent = formatNumber(game.getTicksPerSecond(), 1);
+  
   // Update enlighten button
   const enlightenBtn = document.getElementById('enlighten-btn');
   enlightenBtn.disabled = !game.canEnlighten();
+  
+  // Update temporal collapse button
+  const collapseBtn = document.getElementById('temporal-collapse-btn');
+  const canCollapse = game.understanding >= 50 || game.ticks >= 100;
+  collapseBtn.disabled = !canCollapse;
+  collapseBtn.classList.toggle('disabled', !canCollapse);
+  
+  // Update sacrifice buttons
+  const sacrificeTicksBtn = document.getElementById('sacrifice-ticks-btn');
+  sacrificeTicksBtn.disabled = game.ticks < SACRIFICE_RATIOS.ticksToUnderstanding;
+  
+  const convertBtn = document.getElementById('convert-understanding-btn');
+  convertBtn.disabled = game.understanding < 1;
+  
+  const sacrificeMultBtn = document.getElementById('sacrifice-multiplier-btn');
+  sacrificeMultBtn.disabled = game.ticks < SACRIFICE_RATIOS.ticksForMultiplier;
   
   // Update generator buttons
   for (const genDef of GENERATORS) {
@@ -283,6 +425,22 @@ function updateUI() {
 
 function checkNarrativeTriggers() {
   const u = game.understanding;
+  
+  // New idle game triggers
+  if (!narrativeTriggers.firstTicks && game.ticks >= 10) {
+    narrativeTriggers.firstTicks = true;
+    showNarrative('Yo ticks are stacking up. That\'s PASSIVE accumulation bro. Time itself working FOR you.');
+  }
+  
+  if (!narrativeTriggers.firstSacrifice && game.hasFirstSacrifice) {
+    narrativeTriggers.firstSacrifice = true;
+    // Message already shown in sacrifice handler
+  }
+  
+  if (!narrativeTriggers.firstCollapse && game.temporalCollapses > 0) {
+    narrativeTriggers.firstCollapse = true;
+    // Message already shown in collapse handler
+  }
   
   if (!narrativeTriggers.understanding100 && u >= 100) {
     narrativeTriggers.understanding100 = true;
@@ -434,7 +592,15 @@ Statistics:
 Total Understanding: ${formatNumber(game.stats.totalUnderstanding)}
 Total Clicks: ${formatNumber(game.stats.totalClicks)}
 Total Generators: ${game.stats.totalGeneratorsPurchased}
+━━━━━━━━━━━━━━━━━━━━━━
+Current Ticks: ${formatNumber(Math.floor(game.ticks))}
+Ticks Rate: ${formatNumber(game.getTicksPerSecond(), 1)}/sec
+Ticks Sacrificed: ${formatNumber(game.stats.totalTicksSacrificed || 0)}
+Sacrifice Multiplier: ${((game.sacrificeMultiplier - 1) * 100).toFixed(1)}%
+━━━━━━━━━━━━━━━━━━━━━━
 Enlightenments: ${game.enlightenments}
+Temporal Collapses: ${game.temporalCollapses}
+━━━━━━━━━━━━━━━━━━━━━━
 Play Time: ${hours}h ${minutes}m
 Current Production: ${formatNumber(game.getProductionPerSecond())}/sec
   `.trim());
@@ -452,7 +618,7 @@ function addStyles() {
     
     .clicker-header {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
     
     .clicker-header h2 {
@@ -470,6 +636,71 @@ function addStyles() {
     .enlightenment-info {
       font-size: 1rem !important;
       color: rgba(109, 217, 232, 0.5) !important;
+    }
+    
+    /* Idle Game Resources Section */
+    .idle-resources {
+      background-color: #001a33;
+      border: 2px solid #6dd9e8;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    
+    .ticks-display {
+      text-align: center;
+      font-size: 1.5rem;
+      color: #6dd9e8;
+      margin-bottom: 15px;
+    }
+    
+    .ticks-label {
+      font-weight: bold;
+      margin-right: 10px;
+    }
+    
+    .ticks-rate {
+      font-size: 1rem;
+      color: #3bb8cc;
+      margin-left: 10px;
+    }
+    
+    .sacrifice-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    @media (max-width: 768px) {
+      .sacrifice-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .sacrifice-btn {
+      padding: 10px 15px;
+      background-color: #002244;
+      border: 2px solid #3bb8cc;
+      color: #3bb8cc;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .sacrifice-btn:hover:not(:disabled) {
+      background-color: #3bb8cc;
+      color: #000;
+      transform: translateY(-2px);
+    }
+    
+    .sacrifice-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
     }
     
     .click-area {
@@ -707,6 +938,54 @@ function addStyles() {
     .prestige-panel {
       text-align: center;
       margin: 40px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      align-items: center;
+    }
+    
+    .collapse-button {
+      padding: 15px 30px;
+      background: linear-gradient(135deg, #443300, #221100);
+      border: 3px solid #ff8800;
+      color: #ff8800;
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.3s;
+      box-shadow: 0 0 20px rgba(255, 136, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      align-items: center;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      max-width: 500px;
+    }
+    
+    .collapse-button:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: 0 0 40px rgba(255, 136, 0, 0.5);
+    }
+    
+    .collapse-button:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    
+    .collapse-button.disabled {
+      opacity: 0.3;
+    }
+    
+    .collapse-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    
+    .collapse-desc {
+      font-size: 0.75rem;
+      opacity: 0.8;
     }
     
     .enlighten-button {
