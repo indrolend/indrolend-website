@@ -399,6 +399,7 @@ function showNarrative(text) {
       text-align: center;
       font-style: italic;
       box-shadow: 0 0 30px rgba(109, 217, 232, 0.3);
+      box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
     `;
     document.body.appendChild(narrativeBox);
   }
@@ -641,6 +642,28 @@ function addStyles() {
     .upg-narrative {
       font-size: 0.85rem;
       color: #6dd9e8;
+      margin-top: 8px;
+      margin-bottom: 10px;
+      font-style: italic;
+      opacity: 0.9;
+      padding: 8px;
+      background-color: rgba(109, 217, 232, 0.05);
+      border-left: 2px solid #6dd9e8;
+    }
+    
+    .gen-concept {
+      font-size: 0.75rem;
+      color: #6dd9e8;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+      opacity: 0.8;
+      text-transform: uppercase;
+    }
+    
+    .upg-narrative {
+      font-size: 0.85rem;
+      color: #0f0;
       margin-top: 8px;
       margin-bottom: 10px;
       font-style: italic;
