@@ -1,6 +1,7 @@
 // Main entry point for Idle Clicker Game
 import { showIntroScreen, hideIntroScreen, showSetupScreen, hideSetupScreen } from './intro.js';
 import { ClickerGame, GENERATORS, UPGRADES } from './clicker.js';
+import { audioManager } from './audio.js';
 
 let game = null;
 let lastUpdateTime = Date.now();
@@ -80,12 +81,16 @@ function init() {
   if (!hasSeenIntro) {
     const beginButton = showIntroScreen();
     beginButton.addEventListener('click', () => {
+      // Start background music when user clicks begin
+      audioManager.play();
       hideIntroScreen();
       localStorage.setItem('asymptote_intro_shown', 'true');
       startGame();
     });
   } else {
     // Skip intro, go directly to game
+    // Start music immediately if intro was already seen
+    audioManager.play();
     startGame();
   }
 }
@@ -393,6 +398,7 @@ function showNarrative(text) {
       max-width: 600px;
       text-align: center;
       font-style: italic;
+      box-shadow: 0 0 30px rgba(109, 217, 232, 0.3);
       box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
     `;
     document.body.appendChild(narrativeBox);
@@ -621,6 +627,28 @@ function addStyles() {
       color: #3bb8cc;
       margin-bottom: 10px;
       font-style: italic;
+    }
+    
+    .gen-concept {
+      font-size: 0.75rem;
+      color: #6dd9e8;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+      opacity: 0.8;
+      text-transform: uppercase;
+    }
+    
+    .upg-narrative {
+      font-size: 0.85rem;
+      color: #6dd9e8;
+      margin-top: 8px;
+      margin-bottom: 10px;
+      font-style: italic;
+      opacity: 0.9;
+      padding: 8px;
+      background-color: rgba(109, 217, 232, 0.05);
+      border-left: 2px solid #6dd9e8;
     }
     
     .gen-concept {
