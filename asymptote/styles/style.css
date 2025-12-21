@@ -597,18 +597,18 @@ footer {
   display: flex;
   align-items: center;
   gap: 10px;
-  background-color: #001a00;
-  border: 2px solid #0f0;
+  background-color: #001a33;
+  border: 2px solid #6dd9e8;
   border-radius: 8px;
   padding: 10px 15px;
   z-index: 999;
-  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+  box-shadow: 0 0 10px rgba(109, 217, 232, 0.3);
 }
 
 .audio-btn {
   background: none;
   border: none;
-  color: #0f0;
+  color: #6dd9e8;
   font-size: 1.5rem;
   cursor: pointer;
   padding: 5px;
@@ -628,12 +628,12 @@ footer {
 
 .volume-slider {
   width: 100px;
-  accent-color: #0f0;
+  accent-color: #6dd9e8;
   cursor: pointer;
 }
 
 .volume-value {
-  color: #0a0;
+  color: #3bb8cc;
   font-size: 0.9rem;
   min-width: 35px;
   text-align: right;
