@@ -398,7 +398,7 @@ function showNarrative(text) {
       max-width: 600px;
       text-align: center;
       font-style: italic;
-      box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+      box-shadow: 0 0 30px rgba(109, 217, 232, 0.3);
     `;
     document.body.appendChild(narrativeBox);
   }
@@ -640,7 +640,7 @@ function addStyles() {
     
     .upg-narrative {
       font-size: 0.85rem;
-      color: #0f0;
+      color: #6dd9e8;
       margin-top: 8px;
       margin-bottom: 10px;
       font-style: italic;
