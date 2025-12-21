@@ -11,14 +11,17 @@ export const clickerFragments = {
   
   // Understanding emulation
   emulator_insight: {
-    condition: (game) => game.understanding >= 100 && game.getTotalProduction() > 10 && !game.discoveredFragments?.emulator_insight,
+    condition: (game) => game.understanding >= 100 && game.getProductionPerSecond() > 10 && !game.discoveredFragments?.emulator_insight,
     title: "EMULATOR MODE",
     text: "Your generators aren't producing truth—they're running compressed models. Like software emulating hardware: not the real physics, just enough behavior to get results. Bounded approximation beats impossible perfection."
   },
   
   // Layering discovery
   layers_visible: {
-    condition: (game) => game.generators.filter(g => g.count > 0).length >= 3 && !game.discoveredFragments?.layers_visible,
+    condition: (game) => {
+      const genCount = Object.values(game.generators).filter(g => g.count > 0).length;
+      return genCount >= 3 && !game.discoveredFragments?.layers_visible;
+    },
     title: "LAYERS EMERGE",
     text: "See how they stack? Each generator builds on the last. Systems hide complexity behind interfaces. You don't see the gears—just the button that says 'click.' This is how anything scales."
   },
@@ -26,7 +29,7 @@ export const clickerFragments = {
   // Recursion with loops
   recursion_loop: {
     condition: (game) => {
-      const infiniteLoop = game.generators.find(g => g.id === 'analysis');
+      const infiniteLoop = game.generators['analysis'];
       return infiniteLoop && infiniteLoop.count > 0 && !game.discoveredFragments?.recursion_loop;
     },
     title: "RECURSIVE DEPTH",
@@ -36,7 +39,7 @@ export const clickerFragments = {
   // Fossilization
   frozen_paths: {
     condition: (game) => {
-      const frozenChoice = game.generators.find(g => g.id === 'synthesis');
+      const frozenChoice = game.generators['synthesis'];
       return frozenChoice && frozenChoice.count > 0 && !game.discoveredFragments?.frozen_paths;
     },
     title: "FOSSILIZED CHOICES",
@@ -46,7 +49,7 @@ export const clickerFragments = {
   // Last mile principle
   last_mile_power: {
     condition: (game) => {
-      const lastStep = game.generators.find(g => g.id === 'research');
+      const lastStep = game.generators['research'];
       return lastStep && lastStep.count >= 5 && !game.discoveredFragments?.last_mile_power;
     },
     title: "THE LAST MILE",
@@ -62,14 +65,14 @@ export const clickerFragments = {
   
   // Asymptotic approach
   approaching_limit: {
-    condition: (game) => game.understanding >= 500 && game.getTotalProduction() > 100 && !game.discoveredFragments?.approaching_limit,
+    condition: (game) => game.understanding >= 500 && game.getProductionPerSecond() > 100 && !game.discoveredFragments?.approaching_limit,
     title: "ASYMPTOTIC CURVE",
     text: "You're climbing fast but the curve bends. Each unit gets harder. This isn't a bug—it's structure. Bounded agents approach truth asymptotically. Convergence without completion. This is the game."
   },
   
   // High production meaning
   meaning_emergence: {
-    condition: (game) => game.getTotalProduction() >= 500 && !game.discoveredFragments?.meaning_emergence,
+    condition: (game) => game.getProductionPerSecond() >= 500 && !game.discoveredFragments?.meaning_emergence,
     title: "EMERGENT SIGNIFICANCE",
     text: "Look at these numbers climbing. What do they mean? Meaning isn't in the math—it's what you built around it. Significance emerges from bounded agents acting at their limits, not from the universe."
   },
@@ -83,7 +86,10 @@ export const clickerFragments = {
   
   // Many generators
   distributed_system: {
-    condition: (game) => game.generators.filter(g => g.count >= 10).length >= 4 && !game.discoveredFragments?.distributed_system,
+    condition: (game) => {
+      const genCount = Object.values(game.generators).filter(g => g.count >= 10).length;
+      return genCount >= 4 && !game.discoveredFragments?.distributed_system;
+    },
     title: "DISTRIBUTED APPROXIMATION",
     text: "Multiple systems, each compressing differently. No single generator holds truth—together they cover more ground. Like human civilization: science, art, faith—different emulators for different domains."
   },
@@ -97,7 +103,10 @@ export const clickerFragments = {
   
   // Many upgrades
   capacity_without_purpose: {
-    condition: (game) => game.upgrades.filter(u => u.purchased).length >= 5 && !game.discoveredFragments?.capacity_without_purpose,
+    condition: (game) => {
+      const upgradesCount = Object.values(game.upgrades).filter(u => u.purchased).length;
+      return upgradesCount >= 5 && !game.discoveredFragments?.capacity_without_purpose;
+    },
     title: "CAPACITY ≠ PURPOSE",
     text: "All these upgrades. So much ability. But capacity isn't direction. You can do more, but 'can' isn't 'should.' Energy explores states indiscriminately. Intent is separate work."
   },
