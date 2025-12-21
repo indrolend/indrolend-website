@@ -1,5 +1,6 @@
 import { state, recordHistory } from './state.js';
 import { params } from './config.js';
+import { checkFragments } from './fragments.js';
 
 // Clamp function
 function clamp(value, min, max) {
@@ -152,6 +153,16 @@ export function tick() {
   updateFramework();
   updateComplexityAndInstability();
   updateUnderstandingAndMeaning();
+  
+  // Check for new narrative fragments to unlock
+  const newFragments = checkFragments(state);
+  if (newFragments.length > 0) {
+    // Store for UI to display
+    if (!state.pendingFragments) {
+      state.pendingFragments = [];
+    }
+    state.pendingFragments.push(...newFragments);
+  }
   
   recordHistory();
 }

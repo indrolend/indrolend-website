@@ -1,7 +1,7 @@
 import { state } from './state.js';
 import { tick } from './update.js';
 import { initRender, renderSimulation } from './render.js';
-import { initUI, updateStatsDisplay, setMode } from './ui.js';
+import { initUI, updateStatsDisplay, setMode, initFragmentCollection } from './ui.js';
 import { updateNarrative } from './narrative.js';
 import { initRPGFromCivState } from './rpg/rpgState.js';
 import { initRPGRender, renderRPG } from './rpg/rpgRender.js';
@@ -26,6 +26,7 @@ function init() {
   // Initialize UI
   initUI();
   initRPGUI();
+  initFragmentCollection(); // Initialize fragment collection button
   
   // Create gathering container
   gatheringContainer = document.createElement('div');
