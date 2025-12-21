@@ -1,6 +1,6 @@
 // Main entry point for Idle Clicker Game
 import { showIntroScreen, hideIntroScreen, showSetupScreen, hideSetupScreen } from './intro.js';
-import { ClickerGame, GENERATORS, UPGRADES, SACRIFICE_RATIOS, TICKS_PER_SECOND } from './clicker.js';
+import { ClickerGame, GENERATORS, UPGRADES, SACRIFICE_RATIOS, TICKS_PER_SECOND, TEMPORAL_COLLAPSE_CONFIG } from './clicker.js';
 import { audioManager } from './audio.js';
 
 let game = null;
@@ -193,11 +193,11 @@ function handleSacrificeTicks() {
   // Let user input amount to convert
   const maxAmount = Math.floor(game.ticks / SACRIFICE_RATIOS.ticksToUnderstanding);
   if (maxAmount === 0) {
-    showMessage('Not enough ticks! Need at least 10 ticks.');
+    showMessage(`Not enough ticks! Need at least ${SACRIFICE_RATIOS.ticksToUnderstanding} ticks.`);
     return;
   }
   
-  const amount = prompt(`How much Understanding to gain?\n(You have ${Math.floor(game.ticks)} ticks)\n(10 ticks = 1 Understanding)\n\nMax: ${maxAmount}`, '1');
+  const amount = prompt(`How much Understanding to gain?\n(You have ${Math.floor(game.ticks)} ticks)\n(${SACRIFICE_RATIOS.ticksToUnderstanding} ticks = 1 Understanding)\n\nMax: ${maxAmount}`, '1');
   if (!amount) return;
   
   const amountNum = parseInt(amount);
@@ -223,7 +223,7 @@ function handleConvertUnderstanding() {
     return;
   }
   
-  const amount = prompt(`How much Understanding to convert to Ticks?\n(You have ${Math.floor(game.understanding)} Understanding)\n(1 Understanding = 5 ticks)\n\nMax: ${maxAmount}`, '1');
+  const amount = prompt(`How much Understanding to convert to Ticks?\n(You have ${Math.floor(game.understanding)} Understanding)\n(1 Understanding = ${SACRIFICE_RATIOS.understandingToTicks} ticks)\n\nMax: ${maxAmount}`, '1');
   if (!amount) return;
   
   const amountNum = parseInt(amount);
@@ -260,8 +260,11 @@ function handleTemporalCollapse() {
     return;
   }
   
-  const bonus = Math.floor((game.understanding * 0.1) + (game.ticks * 0.05));
-  const clickBonus = Math.max(1, Math.floor(bonus / 10));
+  const bonus = Math.floor(
+    (game.understanding * TEMPORAL_COLLAPSE_CONFIG.understandingToBonus) + 
+    (game.ticks * TEMPORAL_COLLAPSE_CONFIG.ticksToBonus)
+  );
+  const clickBonus = Math.max(1, Math.floor(bonus / TEMPORAL_COLLAPSE_CONFIG.bonusToClikPower));
   
   if (confirm(`TEMPORAL COLLAPSE\n\nYou'll reset Understanding & Ticks but gain:\n+${clickBonus} permanent Click Power\n\nThis is like Enlightenment but SMALLER. Mini-reset for tactical gains.\n\nCollapse?`)) {
     if (game.temporalCollapse()) {

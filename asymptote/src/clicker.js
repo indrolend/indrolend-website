@@ -11,6 +11,12 @@ const SACRIFICE_RATIOS = {
   ticksForMultiplier: 100   // 100 ticks = +1% multiplier (one-time)
 };
 
+const TEMPORAL_COLLAPSE_CONFIG = {
+  understandingToBonus: 0.1,  // 10% of Understanding counts toward bonus
+  ticksToBonus: 0.05,         // 5% of Ticks counts toward bonus
+  bonusToClikPower: 10        // Divide total bonus by 10 to get Click Power
+};
+
 // Generator definitions - Teaching Framework Concepts
 const GENERATORS = [
   {
@@ -345,14 +351,17 @@ class ClickerGame {
     if (this.understanding < 50 && this.ticks < 100) return false;
     
     // Calculate bonus based on what's being sacrificed
-    const bonus = Math.floor((this.understanding * 0.1) + (this.ticks * 0.05));
+    const bonus = Math.floor(
+      (this.understanding * TEMPORAL_COLLAPSE_CONFIG.understandingToBonus) + 
+      (this.ticks * TEMPORAL_COLLAPSE_CONFIG.ticksToBonus)
+    );
     
     // Reset resources
     this.understanding = 0;
     this.ticks = 0;
     
     // Grant bonus ticks or click power
-    this.clickPower += Math.max(1, Math.floor(bonus / 10));
+    this.clickPower += Math.max(1, Math.floor(bonus / TEMPORAL_COLLAPSE_CONFIG.bonusToClikPower));
     this.temporalCollapses++;
     this.stats.totalTemporalCollapses++;
     
@@ -428,8 +437,8 @@ class ClickerGame {
         const maxOfflineTime = 24 * 60 * 60 * 1000; // 24 hours
         const actualOfflineTime = Math.min(offlineTime, maxOfflineTime);
         
-        // Offline ticks always accumulate
-        const offlineTicks = this.getTicksPerSecond() * (actualOfflineTime / 1000);
+        // Offline ticks accumulate at base rate (without multiplier to avoid inconsistency)
+        const offlineTicks = TICKS_PER_SECOND * (actualOfflineTime / 1000);
         this.ticks += offlineTicks;
         
         // Offline Understanding only if autoCollect is enabled
@@ -461,4 +470,4 @@ class ClickerGame {
   }
 }
 
-export { ClickerGame, GENERATORS, UPGRADES, SACRIFICE_RATIOS, TICKS_PER_SECOND };
+export { ClickerGame, GENERATORS, UPGRADES, SACRIFICE_RATIOS, TICKS_PER_SECOND, TEMPORAL_COLLAPSE_CONFIG };
