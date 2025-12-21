@@ -764,16 +764,19 @@ function addStyles() {
     .click-text {
       font-size: 1.2rem;
       opacity: 0.8;
+      pointer-events: none;
     }
     
     .click-value {
       font-size: 3rem;
       font-weight: bold;
+      pointer-events: none;
     }
     
     .click-subtext {
       font-size: 1rem;
       opacity: 0.8;
+      pointer-events: none;
     }
     
     #click-feedback {
