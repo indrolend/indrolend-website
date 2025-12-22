@@ -5,22 +5,17 @@ const TYPING_DELAY_MS = 30;
 const SCREEN_TRANSITION_DELAY = 500;
 const MAX_RESOURCE_SELECTIONS = 3;
 
-const introText = `OK OK OK listen—
+const introText = `OK OK listen—
 
-Your brain is like... *hiccup* ...it's too SMALL, right?
+Your brain? Too SMALL for the universe.
 
-The universe is DENSE. Too much to hold.
+So you SQUISH reality down. Build models.
 
-So you just... you SQUISH stuff. Compress it down.
-Copy the good bits. Build a model. Run that instead.
+You get CLOSER but never GET there.
 
-You get CLOSER but you never... you never GET there.
+That's the asymptote thingy.
 
-That's... that's the whole thing. The asymptote thingy.
-
-Models all the way down, man. Emulators running emulators.
-
-I love you man. Let's DO this.`;
+Let's DO this.`;
 
 let currentCharIndex = 0;
 let typingInterval = null;

@@ -3,6 +3,7 @@ import { showIntroScreen, hideIntroScreen, showSetupScreen, hideSetupScreen } fr
 import { ClickerGame, GENERATORS, UPGRADES, SACRIFICE_RATIOS, TICKS_PER_SECOND, TEMPORAL_COLLAPSE_CONFIG } from './clicker.js';
 import { audioManager } from './audio.js';
 import { checkClickerFragments, getDiscoveredClickerFragments } from './clicker-fragments.js';
+import { settingsManager, showSettingsPopup, initSettings } from './settings.js';
 
 let game = null;
 let lastUpdateTime = Date.now();
@@ -24,6 +25,9 @@ let narrativeTriggers = {
 };
 
 function init() {
+  // Initialize settings first
+  initSettings();
+  
   // Hide unnecessary UI elements
   document.querySelector('.controls')?.remove();
   document.querySelector('.mode-controls')?.remove();
@@ -93,6 +97,7 @@ function init() {
     </div>
     
     <div class="stats-footer">
+      <button id="settings-btn" class="small-btn">⚙️ Settings</button>
       <button id="stats-btn" class="small-btn">Stats</button>
       <button id="save-btn" class="small-btn">Save</button>
       <button id="reset-btn" class="small-btn">Reset</button>
@@ -154,6 +159,7 @@ function startGame() {
   document.getElementById('sacrifice-ticks-btn').addEventListener('click', handleSacrificeTicks);
   document.getElementById('convert-understanding-btn').addEventListener('click', handleConvertUnderstanding);
   document.getElementById('sacrifice-multiplier-btn').addEventListener('click', handleSacrificeMultiplier);
+  document.getElementById('settings-btn').addEventListener('click', showSettingsPopup);
   document.getElementById('stats-btn').addEventListener('click', showStats);
   document.getElementById('save-btn').addEventListener('click', () => {
     game.save();
@@ -178,16 +184,19 @@ function startGame() {
 function handleMainClick(event) {
   const amount = game.click();
   
-  // Visual feedback
-  const feedback = document.getElementById('click-feedback');
-  const span = document.createElement('span');
-  span.className = 'click-popup';
-  span.textContent = `+${formatNumber(amount)}`;
-  span.style.left = (event.clientX - feedback.getBoundingClientRect().left) + 'px';
-  span.style.top = (event.clientY - feedback.getBoundingClientRect().top) + 'px';
-  feedback.appendChild(span);
-  
-  setTimeout(() => span.remove(), 1000);
+  // Check if click animation is enabled
+  if (settingsManager.get('clickAnimation')) {
+    // Visual feedback
+    const feedback = document.getElementById('click-feedback');
+    const span = document.createElement('span');
+    span.className = 'click-popup';
+    span.textContent = `+${formatNumber(amount)}`;
+    span.style.left = (event.clientX - feedback.getBoundingClientRect().left) + 'px';
+    span.style.top = (event.clientY - feedback.getBoundingClientRect().top) + 'px';
+    feedback.appendChild(span);
+    
+    setTimeout(() => span.remove(), 1000);
+  }
   
   // Button animation
   const btn = event.currentTarget;
@@ -307,12 +316,14 @@ function renderGenerators() {
     
     const production = genData.count * genDef.baseProduction * game.productionMultiplier * game.getEnlightenmentBonus() * game.archaeologyBonus * game.volatilityMultiplier * game.leapfrogBonus;
     
+    const showConcepts = settingsManager.get('showConcepts');
+    
     div.innerHTML = `
       <div class="gen-header">
         <span class="gen-name">${genDef.name}</span>
         <span class="gen-count">${genData.count}</span>
       </div>
-      ${genDef.concept ? `<div class="gen-concept">${genDef.concept}</div>` : ''}
+      ${showConcepts && genDef.concept ? `<div class="gen-concept">${genDef.concept}</div>` : ''}
       <div class="gen-production">+${formatNumber(production)}/sec</div>
       <div class="gen-desc">${genDef.description}</div>
       <button class="gen-buy-btn" data-gen-id="${genDef.id}" ${!canAfford ? 'disabled' : ''}>
@@ -511,6 +522,15 @@ function gameLoop() {
 }
 
 function formatNumber(num, decimals = 0) {
+  // Check if large numbers setting is enabled
+  if (settingsManager.get('largeNumbers')) {
+    return num.toLocaleString('en-US', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    });
+  }
+  
+  // Use abbreviated format
   if (num < 1000) {
     return num.toFixed(decimals);
   } else if (num < 1000000) {
@@ -1084,6 +1104,11 @@ function addStyles() {
 
 // Fragment notification system
 function displayFragmentNotification(fragment) {
+  // Check if fragments are enabled in settings
+  if (!settingsManager.get('fragmentsEnabled')) {
+    return;
+  }
+  
   // Remove any existing notification
   const existing = document.getElementById('fragment-notification');
   if (existing) {

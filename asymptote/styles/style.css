@@ -8,8 +8,8 @@
 
 body {
   font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
-  background-color: #000;
-  color: #6dd9e8;
+  background-color: var(--bg-color);
+  color: var(--primary-color);
   padding: 20px;
   min-height: 100vh;
   /* Prevent double-tap zoom on mobile */
@@ -253,6 +253,12 @@ footer {
   max-width: 800px;
   padding: 40px;
   text-align: center;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .intro-text {
@@ -405,10 +411,20 @@ footer {
 @media (max-width: 768px) {
   .intro-content, .setup-content {
     padding: 20px;
+    max-height: 100vh;
+    overflow-y: auto;
   }
   
   .intro-text {
     font-size: 1rem;
+    margin-bottom: 30px;
+  }
+
+  .begin-btn {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 10;
   }
   
   .setup-title {
@@ -853,5 +869,261 @@ footer {
   .fragment-collection-content {
     padding: 20px;
     max-height: 85vh;
+  }
+}
+
+/* Settings Popup Styles */
+:root {
+  --primary-color: #6dd9e8;
+  --secondary-color: #3bb8cc;
+  --bg-color: #000;
+  --bg-secondary: #001a33;
+}
+
+.settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.settings-overlay.fade-out {
+  animation: fadeOut 0.3s ease-in forwards;
+}
+
+.settings-popup {
+  position: relative;
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, #002244 100%);
+  border: 3px solid var(--primary-color);
+  padding: 40px;
+  max-width: 600px;
+  max-height: 80vh;
+  width: 90%;
+  overflow-y: auto;
+  box-shadow: 0 0 50px rgba(109, 217, 232, 0.5);
+  border-radius: 8px;
+}
+
+.settings-title {
+  text-align: center;
+  color: var(--primary-color);
+  font-size: 2rem;
+  margin-bottom: 30px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+}
+
+.settings-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-size: 2.5rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, transform 0.2s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.settings-close:hover {
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: rgba(0, 26, 51, 0.5);
+  border: 1px solid var(--secondary-color);
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.setting-item:hover {
+  background: rgba(0, 51, 85, 0.5);
+  border-color: var(--primary-color);
+}
+
+.setting-label-container {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.setting-label {
+  color: var(--primary-color);
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+}
+
+.setting-description {
+  color: var(--secondary-color);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #002244;
+  border: 2px solid var(--secondary-color);
+  transition: 0.3s;
+  border-radius: 34px;
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 4px;
+  bottom: 4px;
+  background-color: var(--secondary-color);
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+  background-color: var(--bg-color);
+}
+
+/* Select Dropdown */
+.setting-select {
+  padding: 8px 12px;
+  background-color: #002244;
+  border: 2px solid var(--secondary-color);
+  color: var(--primary-color);
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 150px;
+}
+
+.setting-select:hover {
+  border-color: var(--primary-color);
+  background-color: #003355;
+}
+
+.setting-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 10px rgba(109, 217, 232, 0.3);
+}
+
+.setting-select option {
+  background-color: #001a33;
+  color: var(--primary-color);
+}
+
+/* Reset Button */
+.settings-reset-btn {
+  margin-top: 20px;
+  padding: 12px 24px;
+  background-color: #330000;
+  border: 2px solid #ff6b6b;
+  color: #ff6b6b;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.settings-reset-btn:hover {
+  background-color: #ff6b6b;
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+}
+
+/* Mobile adjustments for settings */
+@media (max-width: 768px) {
+  .settings-popup {
+    padding: 20px;
+    max-height: 90vh;
+  }
+
+  .settings-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+
+  .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .setting-label-container {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .toggle-switch,
+  .setting-select {
+    align-self: stretch;
+    width: 100%;
+  }
+
+  .setting-select {
+    min-width: unset;
   }
 }
