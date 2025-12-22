@@ -6,8 +6,6 @@
   --secondary-color: #3bb8cc;
   --bg-color: #000;
   --bg-secondary: #001a33;
-  --bg-hover: var(--bg-hover);
-  --bg-panel: var(--bg-panel);
 }
 
 * {
@@ -34,7 +32,7 @@ body {
 header {
   text-align: center;
   margin-bottom: 30px;
-  border-bottom: 2px solid var(--primary-color);
+  border-bottom: 2px solid #6dd9e8;
   padding-bottom: 20px;
 }
 
@@ -51,8 +49,8 @@ h1 {
   justify-content: space-around;
   margin-bottom: 20px;
   padding: 20px;
-  border: 1px solid var(--primary-color);
-  background-color: var(--bg-secondary);
+  border: 1px solid #6dd9e8;
+  background-color: #001a33;
 }
 
 .slider-group {
@@ -70,12 +68,12 @@ h1 {
 
 input[type="range"] {
   width: 200px;
-  accent-color: var(--primary-color);
+  accent-color: #6dd9e8;
 }
 
 .slider-group span {
   font-size: 0.85rem;
-  color: var(--secondary-color);
+  color: #3bb8cc;
 }
 
 .mode-controls {
@@ -87,9 +85,9 @@ input[type="range"] {
 
 .mode-btn {
   padding: 10px 20px;
-  background-color: var(--bg-secondary);
-  color: var(--primary-color);
-  border: 2px solid var(--primary-color);
+  background-color: #001a33;
+  color: #6dd9e8;
+  border: 2px solid #6dd9e8;
   cursor: pointer;
   font-family: 'Courier New', monospace;
   font-size: 1rem;
@@ -100,20 +98,20 @@ input[type="range"] {
 }
 
 .mode-btn:hover {
-  background-color: var(--bg-hover);
+  background-color: #003355;
 }
 
 .mode-btn.active {
-  background-color: var(--primary-color);
-  color: var(--bg-color);
+  background-color: #6dd9e8;
+  color: #000;
 }
 
 .canvas-container {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
-  border: 2px solid var(--primary-color);
-  background-color: var(--bg-color);
+  border: 2px solid #6dd9e8;
+  background-color: #000;
 }
 
 canvas {
@@ -124,15 +122,15 @@ canvas {
 
 .narrative-container {
   margin-bottom: 20px;
-  border: 1px solid var(--primary-color);
-  background-color: var(--bg-secondary);
+  border: 1px solid #6dd9e8;
+  background-color: #001a33;
   padding: 20px;
   min-height: 100px;
 }
 
 #narrative {
   font-family: 'Courier New', monospace;
-  color: var(--primary-color);
+  color: #6dd9e8;
   font-size: 0.9rem;
   line-height: 1.6;
   white-space: pre-wrap;
@@ -145,42 +143,42 @@ canvas {
   gap: 15px;
   margin-bottom: 20px;
   padding: 20px;
-  border: 1px solid var(--primary-color);
-  background-color: var(--bg-secondary);
+  border: 1px solid #6dd9e8;
+  background-color: #001a33;
 }
 
 .stat-item {
   display: flex;
   justify-content: space-between;
   padding: 8px;
-  border-bottom: 1px solid var(--secondary-color);
+  border-bottom: 1px solid #3bb8cc;
 }
 
 .stat-label {
   font-weight: bold;
-  color: var(--primary-color);
+  color: #6dd9e8;
 }
 
 footer {
   text-align: center;
   padding-top: 20px;
-  border-top: 2px solid var(--primary-color);
+  border-top: 2px solid #6dd9e8;
 }
 
 .back-link {
-  color: var(--primary-color);
+  color: #6dd9e8;
   text-decoration: none;
   font-size: 1rem;
   text-transform: uppercase;
   padding: 10px 20px;
-  border: 2px solid var(--primary-color);
+  border: 2px solid #6dd9e8;
   display: inline-block;
   transition: all 0.3s;
 }
 
 .back-link:hover {
-  background-color: var(--primary-color);
-  color: var(--bg-color);
+  background-color: #6dd9e8;
+  color: #000;
 }
 
 /* RPG specific styles */
@@ -199,9 +197,9 @@ footer {
 
 .rpg-move-btn {
   padding: 10px 15px;
-  background-color: var(--bg-secondary);
-  color: var(--primary-color);
-  border: 2px solid var(--primary-color);
+  background-color: #001a33;
+  color: #6dd9e8;
+  border: 2px solid #6dd9e8;
   cursor: pointer;
   font-family: 'Courier New', monospace;
   font-size: 0.9rem;
@@ -211,8 +209,8 @@ footer {
 }
 
 .rpg-move-btn:hover:not(:disabled) {
-  background-color: var(--primary-color);
-  color: var(--bg-color);
+  background-color: #6dd9e8;
+  color: #000;
 }
 
 .rpg-move-btn:disabled {
@@ -251,7 +249,7 @@ footer {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--bg-color);
+  background-color: #000;
   z-index: 1000;
   display: flex;
   justify-content: center;
@@ -274,16 +272,16 @@ footer {
 .intro-text {
   font-size: 1.2rem;
   line-height: 2;
-  color: var(--primary-color);
+  color: #6dd9e8;
   margin-bottom: 40px;
   white-space: pre-wrap;
 }
 
 .begin-btn, .start-btn {
   padding: 15px 40px;
-  background-color: var(--bg-color);
-  color: var(--primary-color);
-  border: 2px solid var(--primary-color);
+  background-color: #000;
+  color: #6dd9e8;
+  border: 2px solid #6dd9e8;
   font-family: 'Courier New', monospace;
   font-size: 1.2rem;
   cursor: pointer;
@@ -299,9 +297,9 @@ footer {
 }
 
 .begin-btn:hover, .start-btn:hover:not(:disabled) {
-  background-color: var(--primary-color);
-  color: var(--bg-color);
-  box-shadow: 0 0 20px var(--primary-color);
+  background-color: #6dd9e8;
+  color: #000;
+  box-shadow: 0 0 20px #6dd9e8;
 }
 
 .start-btn:disabled {
@@ -335,20 +333,20 @@ footer {
 .setup-title {
   font-size: 2rem;
   margin-bottom: 10px;
-  color: var(--primary-color);
+  color: #6dd9e8;
   text-transform: uppercase;
 }
 
 .setup-subtitle {
   font-size: 1rem;
   margin-bottom: 30px;
-  color: var(--secondary-color);
+  color: #3bb8cc;
 }
 
 .selection-counter {
   font-size: 1.1rem;
   margin-bottom: 20px;
-  color: var(--primary-color);
+  color: #6dd9e8;
 }
 
 .resources-container {
@@ -359,34 +357,34 @@ footer {
 }
 
 .resource-card {
-  border: 2px solid var(--primary-color);
+  border: 2px solid #6dd9e8;
   padding: 20px;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.2s;
-  background-color: var(--bg-secondary);
+  background-color: #001a33;
   box-shadow: none;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 
 .resource-card:hover {
-  background-color: var(--bg-hover);
+  background-color: #003355;
   transform: scale(1.02);
 }
 
 .resource-card:not(.selected):hover {
-  box-shadow: 0 0 10px var(--primary-color);
+  box-shadow: 0 0 10px #6dd9e8;
 }
 
 .resource-card.selected {
-  background-color: var(--primary-color);
-  color: var(--bg-color);
-  border-color: var(--primary-color);
+  background-color: #6dd9e8;
+  color: #000;
+  border-color: #6dd9e8;
 }
 
 .resource-card.selected h3,
 .resource-card.selected p {
-  color: var(--bg-color);
+  color: #000;
 }
 
 .resource-card h3 {
@@ -403,12 +401,12 @@ footer {
 
 .resource-effect {
   font-size: 0.85rem;
-  color: var(--secondary-color);
+  color: #3bb8cc;
   font-style: italic;
 }
 
 .resource-card.selected .resource-effect {
-  color: var(--bg-hover);
+  color: #003355;
   font-weight: bold;
 }
 
@@ -449,11 +447,11 @@ footer {
 /* Fluctuating letter animation */
 @keyframes letterFluctuate {
   0%, 100% {
-    text-shadow: 0 0 8px var(--primary-color), 0 0 16px var(--secondary-color);
+    text-shadow: 0 0 8px #6dd9e8, 0 0 16px #3bb8cc;
     transform: translateY(0);
   }
   50% {
-    text-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--secondary-color);
+    text-shadow: 0 0 20px #6dd9e8, 0 0 40px #3bb8cc;
     transform: translateY(-2px);
   }
 }
@@ -526,8 +524,8 @@ footer {
 
 .resource-node {
   padding: 30px;
-  border: 3px solid var(--primary-color);
-  background-color: var(--bg-secondary);
+  border: 3px solid #6dd9e8;
+  background-color: #001a33;
   cursor: pointer;
   transition: all 0.2s;
   position: relative;
@@ -540,8 +538,8 @@ footer {
 }
 
 .resource-node:hover {
-  background-color: var(--bg-hover);
-  box-shadow: 0 0 20px var(--primary-color);
+  background-color: #003355;
+  box-shadow: 0 0 20px #6dd9e8;
   transform: scale(1.05);
 }
 
@@ -559,21 +557,21 @@ footer {
 .resource-node .resource-progress {
   width: 100%;
   height: 10px;
-  background-color: var(--bg-color);
-  border: 1px solid var(--primary-color);
+  background-color: #000;
+  border: 1px solid #6dd9e8;
   margin-top: 10px;
   position: relative;
 }
 
 .resource-node .resource-progress-bar {
   height: 100%;
-  background-color: var(--primary-color);
+  background-color: #6dd9e8;
   transition: width 0.1s linear;
 }
 
 .resource-node .resource-count {
   font-size: 0.9rem;
-  color: var(--secondary-color);
+  color: #3bb8cc;
   margin-top: 5px;
 }
 
@@ -587,9 +585,9 @@ footer {
 }
 
 .inventory-display {
-  border: 2px solid var(--primary-color);
+  border: 2px solid #6dd9e8;
   padding: 20px;
-  background-color: var(--bg-secondary);
+  background-color: #001a33;
   margin-bottom: 20px;
 }
 
@@ -623,8 +621,8 @@ footer {
   display: flex;
   align-items: center;
   gap: 10px;
-  background-color: var(--bg-secondary);
-  border: 2px solid var(--primary-color);
+  background-color: #001a33;
+  border: 2px solid #6dd9e8;
   border-radius: 8px;
   padding: 10px 15px;
   z-index: 999;
@@ -634,7 +632,7 @@ footer {
 .audio-btn {
   background: none;
   border: none;
-  color: var(--primary-color);
+  color: #6dd9e8;
   font-size: 1.5rem;
   cursor: pointer;
   padding: 5px;
@@ -654,12 +652,12 @@ footer {
 
 .volume-slider {
   width: 100px;
-  accent-color: var(--primary-color);
+  accent-color: #6dd9e8;
   cursor: pointer;
 }
 
 .volume-value {
-  color: var(--secondary-color);
+  color: #3bb8cc;
   font-size: 0.9rem;
   min-width: 35px;
   text-align: right;
@@ -688,8 +686,8 @@ footer {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-hover) 100%);
-  border: 3px solid var(--primary-color);
+  background: linear-gradient(135deg, #001a33 0%, #003355 100%);
+  border: 3px solid #6dd9e8;
   padding: 30px;
   max-width: 600px;
   width: 90%;
@@ -723,7 +721,7 @@ footer {
 .fragment-title {
   font-size: 1.8rem;
   text-align: center;
-  color: var(--primary-color);
+  color: #6dd9e8;
   font-weight: bold;
   margin-bottom: 20px;
   letter-spacing: 0.15em;
@@ -733,7 +731,7 @@ footer {
 .fragment-text {
   font-size: 1.1rem;
   line-height: 1.6;
-  color: var(--secondary-color);
+  color: #3bb8cc;
   text-align: left;
   font-style: italic;
 }
@@ -744,7 +742,7 @@ footer {
   right: 15px;
   background: none;
   border: none;
-  color: var(--primary-color);
+  color: #6dd9e8;
   font-size: 2rem;
   cursor: pointer;
   line-height: 1;
@@ -768,9 +766,9 @@ footer {
   top: 50%;
   transform: translateY(-50%);
   padding: 8px 15px;
-  background-color: var(--bg-secondary);
-  color: var(--primary-color);
-  border: 2px solid var(--primary-color);
+  background-color: #001a33;
+  color: #6dd9e8;
+  border: 2px solid #6dd9e8;
   cursor: pointer;
   font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
   font-size: 1rem;
@@ -779,7 +777,7 @@ footer {
 }
 
 .fragments-btn:hover {
-  background-color: var(--bg-hover);
+  background-color: #003355;
   box-shadow: 0 0 10px rgba(109, 217, 232, 0.5);
 }
 
@@ -819,8 +817,8 @@ footer {
 
 .fragment-collection-content {
   position: relative;
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-panel) 100%);
-  border: 3px solid var(--primary-color);
+  background: linear-gradient(135deg, #001a33 0%, #002244 100%);
+  border: 3px solid #6dd9e8;
   padding: 40px;
   max-width: 800px;
   max-height: 80vh;
@@ -839,7 +837,7 @@ footer {
 .fragment-item {
   padding: 20px;
   background: rgba(0, 26, 51, 0.5);
-  border-left: 4px solid var(--primary-color);
+  border-left: 4px solid #6dd9e8;
 }
 
 .fragment-item h3 {
@@ -903,7 +901,7 @@ footer {
 
 .settings-popup {
   position: relative;
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-panel) 100%);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, #002244 100%);
   border: 3px solid var(--primary-color);
   padding: 40px;
   max-width: 600px;
@@ -1014,7 +1012,7 @@ footer {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--bg-panel);
+  background-color: #002244;
   border: 2px solid var(--secondary-color);
   transition: 0.3s;
   border-radius: 34px;
@@ -1045,7 +1043,7 @@ footer {
 /* Select Dropdown */
 .setting-select {
   padding: 8px 12px;
-  background-color: var(--bg-panel);
+  background-color: #002244;
   border: 2px solid var(--secondary-color);
   color: var(--primary-color);
   font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
@@ -1058,7 +1056,7 @@ footer {
 
 .setting-select:hover {
   border-color: var(--primary-color);
-  background-color: var(--bg-hover);
+  background-color: #003355;
 }
 
 .setting-select:focus {
@@ -1068,7 +1066,7 @@ footer {
 }
 
 .setting-select option {
-  background-color: var(--bg-secondary);
+  background-color: #001a33;
   color: var(--primary-color);
 }
 
@@ -1092,7 +1090,7 @@ footer {
 
 .settings-reset-btn:hover {
   background-color: #ff6b6b;
-  color: var(--bg-color);
+  color: #000;
   transform: translateY(-2px);
   box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
 }

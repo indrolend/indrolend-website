@@ -74,7 +74,19 @@ class SettingsManager {
   // Apply settings to the game
   applySettings() {
     // Apply music setting
-    audioManager.setMuted(!this.settings.musicEnabled);
+    if (this.settings.musicEnabled) {
+      // Unmute and try to play if not already playing
+      audioManager.setMuted(false);
+      if (audioManager.audio && audioManager.audio.paused) {
+        audioManager.play().catch(err => {
+          // Autoplay might be blocked - this is expected
+          console.log('Audio autoplay blocked:', err);
+        });
+      }
+    } else {
+      // Mute the audio
+      audioManager.setMuted(true);
+    }
 
     // Apply color theme
     this.applyColorTheme(this.settings.colorTheme);
@@ -90,20 +102,26 @@ class SettingsManager {
       case 'red':
         root.style.setProperty('--primary-color', '#ff6b6b');
         root.style.setProperty('--secondary-color', '#c92a2a');
-        root.style.setProperty('--bg-color', '#1a0000');
-        root.style.setProperty('--bg-secondary', '#330000');
+        root.style.setProperty('--bg-color', '#000');
+        root.style.setProperty('--bg-secondary', '#1a0000');
+        root.style.setProperty('--bg-hover', '#330000');
+        root.style.setProperty('--bg-panel', '#220000');
         break;
       case 'green':
         root.style.setProperty('--primary-color', '#51cf66');
         root.style.setProperty('--secondary-color', '#2b8a3e');
-        root.style.setProperty('--bg-color', '#001a00');
-        root.style.setProperty('--bg-secondary', '#003300');
+        root.style.setProperty('--bg-color', '#000');
+        root.style.setProperty('--bg-secondary', '#001a00');
+        root.style.setProperty('--bg-hover', '#003300');
+        root.style.setProperty('--bg-panel', '#002200');
         break;
       case 'purple':
         root.style.setProperty('--primary-color', '#cc5de8');
         root.style.setProperty('--secondary-color', '#9c36b5');
-        root.style.setProperty('--bg-color', '#1a001a');
-        root.style.setProperty('--bg-secondary', '#330033');
+        root.style.setProperty('--bg-color', '#000');
+        root.style.setProperty('--bg-secondary', '#1a001a');
+        root.style.setProperty('--bg-hover', '#330033');
+        root.style.setProperty('--bg-panel', '#220022');
         break;
       case 'default':
       default:
@@ -111,6 +129,8 @@ class SettingsManager {
         root.style.setProperty('--secondary-color', '#3bb8cc');
         root.style.setProperty('--bg-color', '#000');
         root.style.setProperty('--bg-secondary', '#001a33');
+        root.style.setProperty('--bg-hover', '#003355');
+        root.style.setProperty('--bg-panel', '#002244');
         break;
     }
   }
@@ -161,15 +181,6 @@ export function showSettingsPopup() {
     settingsManager.get('musicEnabled'),
     (value) => {
       settingsManager.set('musicEnabled', value);
-      // Play or pause based on setting
-      if (value && !audioManager.audio) {
-        audioManager.init();
-      }
-      if (value && audioManager.audio && audioManager.audio.paused) {
-        audioManager.play();
-      } else if (!value && audioManager.audio && !audioManager.audio.paused) {
-        audioManager.pause();
-      }
     }
   );
   settingsContainer.appendChild(musicSetting);

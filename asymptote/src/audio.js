@@ -70,10 +70,9 @@ class AudioManager {
     }
 
     if (this.audio) {
-      this.audio.play().catch(err => {
-        console.error('Failed to play audio:', err);
-      });
+      return this.audio.play();
     }
+    return Promise.reject('Audio not initialized');
   }
 
   pause() {
