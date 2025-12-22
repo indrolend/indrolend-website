@@ -93,24 +93,28 @@ export class GatheringSystem {
   collectResource(resourceType) {
     this.inventory[resourceType]++;
     
-    // Apply resource effects to civilization state
+    // Apply resource effects to civilization state with narrative flavor
     switch (resourceType) {
       case 'wood':
         this.state.F = Math.min(this.state.F + 0.02, 1.0);
         this.state.P += 10;
+        // Subtle narrative: wood = structure = framework
         break;
       case 'stone':
         this.state.F = Math.min(this.state.F + 0.03, 1.0);
         this.state.C += 0.02;
+        // Subtle narrative: stone = permanence = fossilization
         break;
       case 'food':
         this.state.H = Math.min(this.state.H + 0.03, 1.0);
         this.state.P += 15;
         this.state.R += 0.2;
+        // Subtle narrative: food = sustenance = thermodynamic constraint
         break;
       case 'metal':
         this.state.K += 0.02;
         this.state.C += 0.03;
+        // Subtle narrative: metal = tools = emulation of nature's processes
         break;
     }
   }
@@ -227,6 +231,6 @@ export function renderGatheringUI(gatheringSystem, container) {
   instructions.style.textAlign = 'center';
   instructions.style.marginTop = '20px';
   instructions.style.color = '#3bb8cc';
-  instructions.innerHTML = '<p>Click resources to gather them. Resources respawn after 10 seconds when depleted.</p>';
+  instructions.innerHTML = '<p>Click resources to gather them. Each click compresses reality into something usable.<br/>Resources respawn after depletion—patterns persist, forms change.</p>';
   container.appendChild(instructions);
 }

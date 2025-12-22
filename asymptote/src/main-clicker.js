@@ -2,10 +2,13 @@
 import { showIntroScreen, hideIntroScreen, showSetupScreen, hideSetupScreen } from './intro.js';
 import { ClickerGame, GENERATORS, UPGRADES, SACRIFICE_RATIOS, TICKS_PER_SECOND, TEMPORAL_COLLAPSE_CONFIG } from './clicker.js';
 import { audioManager } from './audio.js';
+import { checkClickerFragments, getDiscoveredClickerFragments } from './clicker-fragments.js';
 
 let game = null;
 let lastUpdateTime = Date.now();
 let autoSaveInterval = null;
+let pendingFragments = [];
+let fragmentNotificationTimeout = null;
 let narrativeTriggers = {
   understanding100: false,
   understanding1000: false,
@@ -123,6 +126,9 @@ function init() {
 
 function startGame() {
   game = new ClickerGame();
+  
+  // Initialize fragment collection button
+  initFragmentButton();
   
   // Try to load save
   const loadResult = game.load();
@@ -489,6 +495,18 @@ function gameLoop() {
   game.update(deltaTime);
   updateUI();
   
+  // Check for new fragments
+  const newFragments = checkClickerFragments(game);
+  if (newFragments.length > 0) {
+    pendingFragments.push(...newFragments);
+  }
+  
+  // Display pending fragments one at a time
+  if (pendingFragments.length > 0 && !document.getElementById('fragment-notification')) {
+    const fragment = pendingFragments.shift();
+    displayFragmentNotification(fragment);
+  }
+  
   requestAnimationFrame(gameLoop);
 }
 
@@ -746,16 +764,19 @@ function addStyles() {
     .click-text {
       font-size: 1.2rem;
       opacity: 0.8;
+      pointer-events: none;
     }
     
     .click-value {
       font-size: 3rem;
       font-weight: bold;
+      pointer-events: none;
     }
     
     .click-subtext {
       font-size: 1rem;
       opacity: 0.8;
+      pointer-events: none;
     }
     
     #click-feedback {
@@ -1059,6 +1080,140 @@ function addStyles() {
     }
   `;
   document.head.appendChild(style);
+}
+
+// Fragment notification system
+function displayFragmentNotification(fragment) {
+  // Remove any existing notification
+  const existing = document.getElementById('fragment-notification');
+  if (existing) {
+    existing.remove();
+  }
+  
+  // Create notification
+  const notification = document.createElement('div');
+  notification.id = 'fragment-notification';
+  notification.className = 'fragment-notification';
+  
+  const title = document.createElement('div');
+  title.className = 'fragment-title';
+  title.textContent = `◆ ${fragment.title} ◆`;
+  
+  const text = document.createElement('div');
+  text.className = 'fragment-text';
+  text.textContent = fragment.text;
+  
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'fragment-close';
+  closeBtn.textContent = '×';
+  closeBtn.addEventListener('click', () => {
+    notification.classList.add('fragment-fade-out');
+    setTimeout(() => notification.remove(), 300);
+  });
+  
+  notification.appendChild(closeBtn);
+  notification.appendChild(title);
+  notification.appendChild(text);
+  
+  document.body.appendChild(notification);
+  
+  // Auto-dismiss after 12 seconds
+  if (fragmentNotificationTimeout) {
+    clearTimeout(fragmentNotificationTimeout);
+  }
+  fragmentNotificationTimeout = setTimeout(() => {
+    if (notification.parentElement) {
+      notification.classList.add('fragment-fade-out');
+      setTimeout(() => notification.remove(), 300);
+    }
+  }, 12000);
+}
+
+function showFragmentCollection() {
+  const discovered = getDiscoveredClickerFragments(game);
+  
+  // Create overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'fragment-collection-overlay';
+  
+  const content = document.createElement('div');
+  content.className = 'fragment-collection-content';
+  
+  const title = document.createElement('h2');
+  title.textContent = 'DISCOVERED FRAGMENTS';
+  title.style.textAlign = 'center';
+  title.style.color = '#6dd9e8';
+  
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'fragment-close';
+  closeBtn.textContent = '×';
+  closeBtn.style.position = 'absolute';
+  closeBtn.style.right = '20px';
+  closeBtn.style.top = '20px';
+  closeBtn.addEventListener('click', () => {
+    overlay.classList.add('fragment-fade-out');
+    setTimeout(() => overlay.remove(), 300);
+  });
+  
+  content.appendChild(closeBtn);
+  content.appendChild(title);
+  
+  if (discovered.length === 0) {
+    const emptyMsg = document.createElement('p');
+    emptyMsg.textContent = 'No fragments discovered yet. Keep playing to uncover hidden insights...';
+    emptyMsg.style.textAlign = 'center';
+    emptyMsg.style.color = '#6dd9e8';
+    emptyMsg.style.marginTop = '40px';
+    content.appendChild(emptyMsg);
+  } else {
+    const list = document.createElement('div');
+    list.className = 'fragment-list';
+    
+    discovered.forEach(frag => {
+      const item = document.createElement('div');
+      item.className = 'fragment-item';
+      
+      const itemTitle = document.createElement('h3');
+      itemTitle.textContent = `◆ ${frag.title}`;
+      itemTitle.style.color = '#6dd9e8';
+      
+      const itemText = document.createElement('p');
+      itemText.textContent = frag.text;
+      itemText.style.color = '#3bb8cc';
+      itemText.style.marginTop = '10px';
+      
+      item.appendChild(itemTitle);
+      item.appendChild(itemText);
+      list.appendChild(item);
+    });
+    
+    content.appendChild(list);
+  }
+  
+  overlay.appendChild(content);
+  document.body.appendChild(overlay);
+  
+  // Click outside to close
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.classList.add('fragment-fade-out');
+      setTimeout(() => overlay.remove(), 300);
+    }
+  });
+}
+
+function initFragmentButton() {
+  const header = document.querySelector('header');
+  if (!header) return;
+  
+  const fragmentBtn = document.createElement('button');
+  fragmentBtn.id = 'fragments-btn';
+  fragmentBtn.className = 'fragments-btn';
+  fragmentBtn.textContent = '◆ Fragments';
+  fragmentBtn.title = 'View discovered fragments';
+  
+  fragmentBtn.addEventListener('click', showFragmentCollection);
+  header.appendChild(fragmentBtn);
 }
 
 // Start the application when DOM is ready

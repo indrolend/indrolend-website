@@ -1,8 +1,10 @@
 import { state } from './state.js';
+import { getDiscoveredFragments } from './fragments.js';
 
 let sliderElements = {};
 let valueDisplays = {};
 let statDisplays = {};
+let fragmentNotificationTimeout = null;
 
 export function initUI() {
   // Get slider elements
@@ -69,6 +71,9 @@ export function updateStatsDisplay() {
   statDisplays.understanding.textContent = (state.U * 100).toFixed(1) + '%';
   statDisplays.meaning.textContent = (state.M * 100).toFixed(1) + '%';
   statDisplays.instability.textContent = state.I.toFixed(2);
+  
+  // Check for pending fragments
+  checkAndDisplayFragments();
 }
 
 export function setMode(mode, onModeChange) {
@@ -103,3 +108,146 @@ export function setMode(mode, onModeChange) {
     onModeChange(mode);
   }
 }
+
+// Fragment notification system
+function checkAndDisplayFragments() {
+  if (state.pendingFragments && state.pendingFragments.length > 0) {
+    const fragment = state.pendingFragments.shift();
+    displayFragmentNotification(fragment);
+  }
+}
+
+function displayFragmentNotification(fragment) {
+  // Remove any existing notification
+  const existing = document.getElementById('fragment-notification');
+  if (existing) {
+    existing.remove();
+  }
+  
+  // Create notification
+  const notification = document.createElement('div');
+  notification.id = 'fragment-notification';
+  notification.className = 'fragment-notification';
+  
+  const title = document.createElement('div');
+  title.className = 'fragment-title';
+  title.textContent = `◆ ${fragment.title} ◆`;
+  
+  const text = document.createElement('div');
+  text.className = 'fragment-text';
+  text.textContent = fragment.text;
+  
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'fragment-close';
+  closeBtn.textContent = '×';
+  closeBtn.addEventListener('click', () => {
+    notification.classList.add('fragment-fade-out');
+    setTimeout(() => notification.remove(), 300);
+  });
+  
+  notification.appendChild(closeBtn);
+  notification.appendChild(title);
+  notification.appendChild(text);
+  
+  document.body.appendChild(notification);
+  
+  // Auto-dismiss after 12 seconds
+  if (fragmentNotificationTimeout) {
+    clearTimeout(fragmentNotificationTimeout);
+  }
+  fragmentNotificationTimeout = setTimeout(() => {
+    if (notification.parentElement) {
+      notification.classList.add('fragment-fade-out');
+      setTimeout(() => notification.remove(), 300);
+    }
+  }, 12000);
+}
+
+// Add a button to view collected fragments
+export function initFragmentCollection() {
+  const header = document.querySelector('header');
+  if (!header) return;
+  
+  const fragmentBtn = document.createElement('button');
+  fragmentBtn.id = 'fragments-btn';
+  fragmentBtn.className = 'fragments-btn';
+  fragmentBtn.textContent = '◆ Fragments';
+  fragmentBtn.title = 'View discovered fragments';
+  
+  fragmentBtn.addEventListener('click', showFragmentCollection);
+  header.appendChild(fragmentBtn);
+}
+
+function showFragmentCollection() {
+  const discovered = getDiscoveredFragments(state);
+  
+  // Create overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'fragment-collection-overlay';
+  
+  const content = document.createElement('div');
+  content.className = 'fragment-collection-content';
+  
+  const title = document.createElement('h2');
+  title.textContent = 'DISCOVERED FRAGMENTS';
+  title.style.textAlign = 'center';
+  title.style.color = '#6dd9e8';
+  
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'fragment-close';
+  closeBtn.textContent = '×';
+  closeBtn.style.position = 'absolute';
+  closeBtn.style.right = '20px';
+  closeBtn.style.top = '20px';
+  closeBtn.addEventListener('click', () => {
+    overlay.classList.add('fragment-fade-out');
+    setTimeout(() => overlay.remove(), 300);
+  });
+  
+  content.appendChild(closeBtn);
+  content.appendChild(title);
+  
+  if (discovered.length === 0) {
+    const emptyMsg = document.createElement('p');
+    emptyMsg.textContent = 'No fragments discovered yet. Continue exploring...';
+    emptyMsg.style.textAlign = 'center';
+    emptyMsg.style.color = '#6dd9e8';
+    emptyMsg.style.marginTop = '40px';
+    content.appendChild(emptyMsg);
+  } else {
+    const list = document.createElement('div');
+    list.className = 'fragment-list';
+    
+    discovered.forEach(frag => {
+      const item = document.createElement('div');
+      item.className = 'fragment-item';
+      
+      const itemTitle = document.createElement('h3');
+      itemTitle.textContent = `◆ ${frag.title}`;
+      itemTitle.style.color = '#6dd9e8';
+      
+      const itemText = document.createElement('p');
+      itemText.textContent = frag.text;
+      itemText.style.color = '#3bb8cc';
+      itemText.style.marginTop = '10px';
+      
+      item.appendChild(itemTitle);
+      item.appendChild(itemText);
+      list.appendChild(item);
+    });
+    
+    content.appendChild(list);
+  }
+  
+  overlay.appendChild(content);
+  document.body.appendChild(overlay);
+  
+  // Click outside to close
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.classList.add('fragment-fade-out');
+      setTimeout(() => overlay.remove(), 300);
+    }
+  });
+}
+

@@ -9,10 +9,16 @@ const introText = `OK OK OK listen—
 
 Your brain is like... *hiccup* ...it's too SMALL, right?
 
-So you just... you SQUISH stuff. Copy the good bits.
+The universe is DENSE. Too much to hold.
+
+So you just... you SQUISH stuff. Compress it down.
+Copy the good bits. Build a model. Run that instead.
+
 You get CLOSER but you never... you never GET there.
 
 That's... that's the whole thing. The asymptote thingy.
+
+Models all the way down, man. Emulators running emulators.
 
 I love you man. Let's DO this.`;
 
@@ -125,26 +131,26 @@ export function showSetupScreen(onComplete) {
     { 
       id: 'wood', 
       name: 'Wood', 
-      description: 'Makes... structures and stuff',
-      effect: 'idk it grows back tho'
+      description: 'Builds frameworks, grows back',
+      effect: 'structures that hold together'
     },
     { 
       id: 'stone', 
       name: 'Stone', 
-      description: 'Lasts forever basically',
-      effect: 'real sturdy bro'
+      description: 'Decisions that fossilize',
+      effect: 'permanent but inflexible'
     },
     { 
       id: 'food', 
       name: 'Food', 
-      description: 'People gotta eat man',
-      effect: 'keeps em alive'
+      description: 'Thermodynamic constraint',
+      effect: 'bodies need energy to run'
     },
     { 
       id: 'metal', 
       name: 'Metal', 
-      description: 'The GOOD stuff',
-      effect: 'tools n shit'
+      description: 'Tools that emulate nature',
+      effect: 'reproducing effects, not essence'
     }
   ];
   
