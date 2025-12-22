@@ -74,15 +74,7 @@ class SettingsManager {
   // Apply settings to the game
   applySettings() {
     // Apply music setting
-    if (this.settings.musicEnabled) {
-      if (audioManager.getMuted()) {
-        audioManager.toggleMute();
-      }
-    } else {
-      if (!audioManager.getMuted()) {
-        audioManager.toggleMute();
-      }
-    }
+    audioManager.setMuted(!this.settings.musicEnabled);
 
     // Apply color theme
     this.applyColorTheme(this.settings.colorTheme);
@@ -169,9 +161,13 @@ export function showSettingsPopup() {
     settingsManager.get('musicEnabled'),
     (value) => {
       settingsManager.set('musicEnabled', value);
-      if (value) {
+      // Play or pause based on setting
+      if (value && !audioManager.audio) {
+        audioManager.init();
+      }
+      if (value && audioManager.audio && audioManager.audio.paused) {
         audioManager.play();
-      } else {
+      } else if (!value && audioManager.audio && !audioManager.audio.paused) {
         audioManager.pause();
       }
     }

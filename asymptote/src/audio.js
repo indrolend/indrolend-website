@@ -96,6 +96,13 @@ class AudioManager {
     }
   }
 
+  setMuted(muted) {
+    this.isMuted = muted;
+    if (this.audio) {
+      this.audio.volume = this.isMuted ? 0 : this.volume;
+    }
+  }
+
   updateUI() {
     const muteIcon = document.getElementById('mute-icon');
     const volumeSlider = document.getElementById('volume-slider');

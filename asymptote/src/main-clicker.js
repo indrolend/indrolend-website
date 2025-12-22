@@ -10,6 +10,7 @@ let lastUpdateTime = Date.now();
 let autoSaveInterval = null;
 let pendingFragments = [];
 let fragmentNotificationTimeout = null;
+let cachedLargeNumbersSetting = false; // Cache for performance
 let narrativeTriggers = {
   understanding100: false,
   understanding1000: false,
@@ -27,6 +28,12 @@ let narrativeTriggers = {
 function init() {
   // Initialize settings first
   initSettings();
+  
+  // Cache settings for performance
+  cachedLargeNumbersSetting = settingsManager.get('largeNumbers');
+  settingsManager.onChange(() => {
+    cachedLargeNumbersSetting = settingsManager.get('largeNumbers');
+  });
   
   // Hide unnecessary UI elements
   document.querySelector('.controls')?.remove();
@@ -522,8 +529,8 @@ function gameLoop() {
 }
 
 function formatNumber(num, decimals = 0) {
-  // Check if large numbers setting is enabled
-  if (settingsManager.get('largeNumbers')) {
+  // Use cached setting value for performance
+  if (cachedLargeNumbersSetting) {
     return num.toLocaleString('en-US', {
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals
