@@ -153,15 +153,11 @@ function isMobileDevice() {
   // Check screen size first (most reliable for responsive design)
   const isSmallScreen = window.innerWidth <= MOBILE_BREAKPOINT;
   
-  // Check for touch support
-  const hasTouchScreen = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  
-  // Also check user agent for mobile devices
+  // Check user agent for mobile devices
   const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
   const isMobileUA = mobileRegex.test(navigator.userAgent);
   
-  // Consider it mobile if screen is small, regardless of touch support
-  // This handles cases where touch isn't detected (like in some browsers/emulators)
+  // Consider it mobile if screen is small or user agent indicates mobile
   isMobileDeviceCached = isSmallScreen || isMobileUA;
   return isMobileDeviceCached;
 }
