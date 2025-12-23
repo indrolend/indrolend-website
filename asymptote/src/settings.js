@@ -139,10 +139,19 @@ class SettingsManager {
 // Create singleton instance
 export const settingsManager = new SettingsManager();
 
-// Detect if device is mobile
+// Mobile breakpoint constant (matches CSS @media breakpoint)
+const MOBILE_BREAKPOINT = 768;
+
+// Detect if device is mobile (cached for performance)
+let isMobileDeviceCached = null;
 function isMobileDevice() {
+  // Return cached result if available (device characteristics don't change during session)
+  if (isMobileDeviceCached !== null) {
+    return isMobileDeviceCached;
+  }
+  
   // Check screen size first (most reliable for responsive design)
-  const isSmallScreen = window.innerWidth <= 768;
+  const isSmallScreen = window.innerWidth <= MOBILE_BREAKPOINT;
   
   // Check for touch support
   const hasTouchScreen = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -153,7 +162,8 @@ function isMobileDevice() {
   
   // Consider it mobile if screen is small, regardless of touch support
   // This handles cases where touch isn't detected (like in some browsers/emulators)
-  return isSmallScreen || isMobileUA;
+  isMobileDeviceCached = isSmallScreen || isMobileUA;
+  return isMobileDeviceCached;
 }
 
 // Settings UI
