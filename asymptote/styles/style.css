@@ -764,7 +764,7 @@ footer {
 /* Fragment Collection Button */
 .fragments-btn {
   position: absolute;
-  right: 20px;
+  right: 180px;
   top: 50%;
   transform: translateY(-50%);
   padding: 8px 15px;
@@ -781,6 +781,28 @@ footer {
 .fragments-btn:hover {
   background-color: var(--bg-hover);
   box-shadow: 0 0 10px rgba(109, 217, 232, 0.5);
+}
+
+/* Achievements Collection Button */
+.achievements-btn {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 8px 15px;
+  background-color: var(--bg-secondary);
+  color: #FFD700;
+  border: 2px solid #FFD700;
+  cursor: pointer;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  font-size: 1rem;
+  transition: all 0.3s;
+  letter-spacing: 0.1em;
+}
+
+.achievements-btn:hover {
+  background-color: var(--bg-hover);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 /* Fragment Collection Overlay */
@@ -868,12 +890,14 @@ footer {
     font-size: 0.95rem;
   }
   
-  .fragments-btn {
+  .fragments-btn,
+  .achievements-btn {
     position: static;
     transform: none;
     margin-top: 10px;
-    display: block;
-    width: 100%;
+    display: inline-block;
+    width: auto;
+    margin-right: 10px;
   }
   
   .fragment-collection-content {
@@ -1131,3 +1155,134 @@ footer {
     min-width: unset;
   }
 }
+
+/* Achievement Notification System */
+.achievement-notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #221100 0%, #443300 100%);
+  border: 3px solid #FFD700;
+  padding: 30px;
+  max-width: 600px;
+  width: 90%;
+  z-index: 10000;
+  animation: achievementAppear 0.5s ease-out;
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.6), 0 0 80px rgba(255, 215, 0, 0.3);
+}
+
+@keyframes achievementAppear {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8) rotateY(90deg);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+  }
+}
+
+.achievement-notification.achievement-fade-out {
+  animation: achievementDisappear 0.3s ease-in forwards;
+}
+
+@keyframes achievementDisappear {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+}
+
+.achievement-title-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.achievement-unlocked {
+  font-size: 0.9rem;
+  color: #FFD700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 10px;
+  opacity: 0.8;
+}
+
+.achievement-title {
+  font-size: 1.8rem;
+  color: #FFD700;
+  font-weight: bold;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.achievement-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #FFA500;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.achievement-narrative {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #FFD700;
+  text-align: center;
+  font-style: italic;
+  padding: 15px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-left: 3px solid #FFD700;
+}
+
+/* Achievement List Styles */
+.achievement-list {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.achievement-item {
+  padding: 20px;
+  background: rgba(34, 17, 0, 0.5);
+  border-left: 4px solid #FFD700;
+  transition: all 0.2s;
+}
+
+.achievement-item:hover {
+  background: rgba(68, 51, 0, 0.5);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+.achievement-item h3 {
+  margin-bottom: 10px;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+}
+
+.achievement-progress {
+  font-weight: bold;
+}
+
+/* Mobile adjustments for achievements */
+@media (max-width: 768px) {
+  .achievement-notification {
+    max-width: 90%;
+    padding: 20px;
+  }
+  
+  .achievement-title {
+    font-size: 1.3rem;
+  }
+  
+  .achievement-description {
+    font-size: 0.9rem;
+  }
+  
+  .achievement-narrative {
+    font-size: 0.95rem;
+  }
+}
+
