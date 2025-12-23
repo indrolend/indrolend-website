@@ -141,15 +141,19 @@ export const settingsManager = new SettingsManager();
 
 // Detect if device is mobile
 function isMobileDevice() {
-  // Check for touch support and small screen
-  const hasTouchScreen = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  // Check screen size first (most reliable for responsive design)
   const isSmallScreen = window.innerWidth <= 768;
+  
+  // Check for touch support
+  const hasTouchScreen = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   
   // Also check user agent for mobile devices
   const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
   const isMobileUA = mobileRegex.test(navigator.userAgent);
   
-  return (hasTouchScreen && isSmallScreen) || isMobileUA;
+  // Consider it mobile if screen is small, regardless of touch support
+  // This handles cases where touch isn't detected (like in some browsers/emulators)
+  return isSmallScreen || isMobileUA;
 }
 
 // Settings UI
