@@ -75,8 +75,7 @@ class SettingsManager {
   applySettings() {
     // Apply music setting
     if (this.settings.musicEnabled) {
-      // Unmute and try to play if not already playing
-      audioManager.setMuted(false);
+      // Try to play if not already playing (don't change mute state)
       if (audioManager.audio && audioManager.audio.paused) {
         audioManager.play().catch(err => {
           // Autoplay might be blocked - this is expected
@@ -84,8 +83,8 @@ class SettingsManager {
         });
       }
     } else {
-      // Mute the audio
-      audioManager.setMuted(true);
+      // Pause the audio when music is disabled
+      audioManager.pause();
     }
 
     // Apply color theme
