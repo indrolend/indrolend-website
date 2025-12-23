@@ -65,6 +65,18 @@ export class GatheringSystem {
     
     if (!node || !node.available) return false;
     
+    // Track click stats
+    if (!this.state.gatheringStats) {
+      this.state.gatheringStats = {
+        resourceClicks: { wood: 0, stone: 0, food: 0, metal: 0 },
+        resourcesCollected: { wood: 0, stone: 0, food: 0, metal: 0 }
+      };
+    }
+    if (!this.state.gatheringStats.resourceClicks[resourceType]) {
+      this.state.gatheringStats.resourceClicks[resourceType] = 0;
+    }
+    this.state.gatheringStats.resourceClicks[resourceType]++;
+    
     // Increment progress
     node.progress += (100 / config.clicksNeeded);
     
@@ -92,6 +104,18 @@ export class GatheringSystem {
   
   collectResource(resourceType) {
     this.inventory[resourceType]++;
+    
+    // Track collection stats
+    if (!this.state.gatheringStats) {
+      this.state.gatheringStats = {
+        resourceClicks: { wood: 0, stone: 0, food: 0, metal: 0 },
+        resourcesCollected: { wood: 0, stone: 0, food: 0, metal: 0 }
+      };
+    }
+    if (!this.state.gatheringStats.resourcesCollected[resourceType]) {
+      this.state.gatheringStats.resourcesCollected[resourceType] = 0;
+    }
+    this.state.gatheringStats.resourcesCollected[resourceType]++;
     
     // Apply resource effects to civilization state with narrative flavor
     switch (resourceType) {

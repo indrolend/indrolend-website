@@ -1,5 +1,6 @@
 import { state } from './state.js';
 import { getDiscoveredFragments } from './fragments.js';
+import { getUnlockedAchievements, getAchievementStats } from './achievements.js';
 
 let sliderElements = {};
 let valueDisplays = {};
@@ -74,6 +75,9 @@ export function updateStatsDisplay() {
   
   // Check for pending fragments
   checkAndDisplayFragments();
+  
+  // Check for pending achievements
+  checkAndDisplayAchievements();
 }
 
 export function setMode(mode, onModeChange) {
@@ -114,6 +118,14 @@ function checkAndDisplayFragments() {
   if (state.pendingFragments && state.pendingFragments.length > 0) {
     const fragment = state.pendingFragments.shift();
     displayFragmentNotification(fragment);
+  }
+}
+
+// Achievement notification system
+function checkAndDisplayAchievements() {
+  if (state.pendingAchievements && state.pendingAchievements.length > 0) {
+    const achievement = state.pendingAchievements.shift();
+    displayAchievementNotification(achievement);
   }
 }
 
@@ -176,6 +188,16 @@ export function initFragmentCollection() {
   
   fragmentBtn.addEventListener('click', showFragmentCollection);
   header.appendChild(fragmentBtn);
+  
+  // Add achievements button
+  const achievementsBtn = document.createElement('button');
+  achievementsBtn.id = 'achievements-btn';
+  achievementsBtn.className = 'achievements-btn';
+  achievementsBtn.textContent = '★ Achievements';
+  achievementsBtn.title = 'View unlocked achievements';
+  
+  achievementsBtn.addEventListener('click', showAchievementCollection);
+  header.appendChild(achievementsBtn);
 }
 
 function showFragmentCollection() {
@@ -233,6 +255,158 @@ function showFragmentCollection() {
       
       item.appendChild(itemTitle);
       item.appendChild(itemText);
+      list.appendChild(item);
+    });
+    
+    content.appendChild(list);
+  }
+  
+  overlay.appendChild(content);
+  document.body.appendChild(overlay);
+  
+  // Click outside to close
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.classList.add('fragment-fade-out');
+      setTimeout(() => overlay.remove(), 300);
+    }
+  });
+}
+
+// Achievement notification display
+function displayAchievementNotification(achievement) {
+  // Remove any existing notification
+  const existing = document.getElementById('achievement-notification');
+  if (existing) {
+    existing.remove();
+  }
+  
+  // Create notification
+  const notification = document.createElement('div');
+  notification.id = 'achievement-notification';
+  notification.className = 'achievement-notification';
+  
+  const titleContainer = document.createElement('div');
+  titleContainer.className = 'achievement-title-container';
+  
+  const unlocked = document.createElement('div');
+  unlocked.className = 'achievement-unlocked';
+  unlocked.textContent = 'ACHIEVEMENT UNLOCKED';
+  
+  const title = document.createElement('div');
+  title.className = 'achievement-title';
+  title.textContent = `★ ${achievement.title} ★`;
+  
+  titleContainer.appendChild(unlocked);
+  titleContainer.appendChild(title);
+  
+  const description = document.createElement('div');
+  description.className = 'achievement-description';
+  description.textContent = achievement.description;
+  
+  const narrative = document.createElement('div');
+  narrative.className = 'achievement-narrative';
+  narrative.textContent = achievement.narrative;
+  
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'fragment-close';
+  closeBtn.textContent = '×';
+  closeBtn.addEventListener('click', () => {
+    notification.classList.add('achievement-fade-out');
+    setTimeout(() => notification.remove(), 300);
+  });
+  
+  notification.appendChild(closeBtn);
+  notification.appendChild(titleContainer);
+  notification.appendChild(description);
+  notification.appendChild(narrative);
+  
+  document.body.appendChild(notification);
+  
+  // Auto-dismiss after 10 seconds
+  setTimeout(() => {
+    if (notification.parentElement) {
+      notification.classList.add('achievement-fade-out');
+      setTimeout(() => notification.remove(), 300);
+    }
+  }, 10000);
+}
+
+// Achievement collection overlay
+function showAchievementCollection() {
+  const unlocked = getUnlockedAchievements(state);
+  const stats = getAchievementStats(state);
+  
+  // Create overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'fragment-collection-overlay';
+  
+  const content = document.createElement('div');
+  content.className = 'fragment-collection-content';
+  
+  const title = document.createElement('h2');
+  title.textContent = 'ACHIEVEMENTS';
+  title.style.textAlign = 'center';
+  title.style.color = '#6dd9e8';
+  
+  const progress = document.createElement('p');
+  progress.className = 'achievement-progress';
+  progress.textContent = `Unlocked: ${stats.unlocked}/${stats.total} (${stats.percentage}%)`;
+  progress.style.textAlign = 'center';
+  progress.style.color = '#3bb8cc';
+  progress.style.fontSize = '1.2rem';
+  progress.style.marginTop = '10px';
+  
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'fragment-close';
+  closeBtn.textContent = '×';
+  closeBtn.style.position = 'absolute';
+  closeBtn.style.right = '20px';
+  closeBtn.style.top = '20px';
+  closeBtn.addEventListener('click', () => {
+    overlay.classList.add('fragment-fade-out');
+    setTimeout(() => overlay.remove(), 300);
+  });
+  
+  content.appendChild(closeBtn);
+  content.appendChild(title);
+  content.appendChild(progress);
+  
+  if (unlocked.length === 0) {
+    const emptyMsg = document.createElement('p');
+    emptyMsg.textContent = 'No achievements unlocked yet. Keep playing to unlock them...';
+    emptyMsg.style.textAlign = 'center';
+    emptyMsg.style.color = '#6dd9e8';
+    emptyMsg.style.marginTop = '40px';
+    content.appendChild(emptyMsg);
+  } else {
+    const list = document.createElement('div');
+    list.className = 'achievement-list';
+    
+    unlocked.forEach(ach => {
+      const item = document.createElement('div');
+      item.className = 'achievement-item';
+      
+      const itemTitle = document.createElement('h3');
+      itemTitle.textContent = `★ ${ach.title}`;
+      itemTitle.style.color = '#6dd9e8';
+      
+      const itemDesc = document.createElement('p');
+      itemDesc.textContent = ach.description;
+      itemDesc.style.color = '#3bb8cc';
+      itemDesc.style.marginTop = '5px';
+      itemDesc.style.fontSize = '0.9rem';
+      
+      const itemNarrative = document.createElement('p');
+      itemNarrative.textContent = ach.narrative;
+      itemNarrative.style.color = '#3bb8cc';
+      itemNarrative.style.marginTop = '8px';
+      itemNarrative.style.fontStyle = 'italic';
+      itemNarrative.style.fontSize = '0.95rem';
+      
+      item.appendChild(itemTitle);
+      item.appendChild(itemDesc);
+      item.appendChild(itemNarrative);
       list.appendChild(item);
     });
     

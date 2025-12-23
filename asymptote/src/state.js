@@ -36,6 +36,22 @@ export const state = {
     U: [],
     M: [],
     I: []
+  },
+  
+  // Achievement and stat tracking
+  unlockedAchievements: {},
+  gatheringStats: {
+    resourceClicks: { wood: 0, stone: 0, food: 0, metal: 0 },
+    resourcesCollected: { wood: 0, stone: 0, food: 0, metal: 0 }
+  },
+  clickerStats: {
+    totalTicksSacrificed: 0,
+    totalGeneratorsPurchased: 0,
+    totalTemporalCollapses: 0
+  },
+  rpgStats: {
+    battlesWon: 0,
+    battlesLost: 0
   }
 };
 

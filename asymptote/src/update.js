@@ -1,6 +1,7 @@
 import { state, recordHistory } from './state.js';
 import { params } from './config.js';
 import { checkFragments } from './fragments.js';
+import { checkAchievements } from './achievements.js';
 
 // Clamp function
 function clamp(value, min, max) {
@@ -162,6 +163,16 @@ export function tick() {
       state.pendingFragments = [];
     }
     state.pendingFragments.push(...newFragments);
+  }
+  
+  // Check for new achievements to unlock
+  const newAchievements = checkAchievements(state);
+  if (newAchievements.length > 0) {
+    // Store for UI to display
+    if (!state.pendingAchievements) {
+      state.pendingAchievements = [];
+    }
+    state.pendingAchievements.push(...newAchievements);
   }
   
   recordHistory();

@@ -56,11 +56,21 @@ export function checkBattleEnd() {
   if (rpgState.player.currentHP <= 0) {
     rpgState.battleActive = false;
     addToBattleLog('You have been defeated...');
+    // Track battle loss
+    if (!state.rpgStats) {
+      state.rpgStats = { battlesWon: 0, battlesLost: 0 };
+    }
+    state.rpgStats.battlesLost++;
     return 'defeat';
   }
   if (rpgState.enemy.currentHP <= 0) {
     rpgState.battleActive = false;
     addToBattleLog('Victory! The shadow dissipates.');
+    // Track battle win
+    if (!state.rpgStats) {
+      state.rpgStats = { battlesWon: 0, battlesLost: 0 };
+    }
+    state.rpgStats.battlesWon++;
     return 'victory';
   }
   return null;
