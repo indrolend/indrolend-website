@@ -75,6 +75,9 @@ class SettingsManager {
   applySettings() {
     // Apply music setting
     if (this.settings.musicEnabled) {
+      // Show audio controls on PC (hidden on mobile via CSS)
+      audioManager.showControls();
+      
       // Try to play if not already playing (don't change mute state)
       if (audioManager.audio && audioManager.audio.paused) {
         audioManager.play().catch(err => {
@@ -83,6 +86,9 @@ class SettingsManager {
         });
       }
     } else {
+      // Hide audio controls when music is disabled
+      audioManager.hideControls();
+      
       // Pause the audio when music is disabled
       audioManager.pause();
     }
@@ -196,7 +202,7 @@ export function showSettingsPopup() {
   const settingsContainer = document.createElement('div');
   settingsContainer.className = 'settings-container';
 
-  // Music toggle
+  // Music toggle (available on both PC and mobile)
   const musicSetting = createToggleSetting(
     'Music',
     'Enable/disable background music',
@@ -206,17 +212,6 @@ export function showSettingsPopup() {
     }
   );
   settingsContainer.appendChild(musicSetting);
-
-  // Volume slider (PC only)
-  const isMobile = isMobileDevice();
-  if (!isMobile) {
-    const volumeSetting = createVolumeSetting(
-      'Music Volume',
-      'Adjust background music volume',
-      audioManager.getVolume()
-    );
-    settingsContainer.appendChild(volumeSetting);
-  }
 
   // Color theme selector
   const themeSetting = createSelectSetting(

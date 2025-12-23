@@ -26,6 +26,51 @@ class AudioManager {
     this.audio.preload = 'auto';
     
     this.isInitialized = true;
+
+    // Set up UI controls
+    this.setupControls();
+  }
+
+  setupControls() {
+    const muteBtn = document.getElementById('mute-btn');
+    const volumeSlider = document.getElementById('volume-slider');
+    const volumeValue = document.getElementById('volume-value');
+    const muteIcon = document.getElementById('mute-icon');
+
+    if (!muteBtn || !volumeSlider || !volumeValue || !muteIcon) {
+      // Controls might not exist on mobile or not yet loaded
+      return;
+    }
+
+    // Mute button handler
+    muteBtn.addEventListener('click', () => {
+      this.toggleMute();
+      this.updateUI();
+    });
+
+    // Volume slider handler
+    volumeSlider.addEventListener('input', (e) => {
+      const value = parseInt(e.target.value);
+      this.setVolume(value / 100);
+      this.updateUI();
+    });
+
+    // Initialize UI
+    this.updateUI();
+  }
+
+  showControls() {
+    const controls = document.getElementById('audio-controls');
+    if (controls) {
+      controls.classList.remove('hidden');
+    }
+  }
+
+  hideControls() {
+    const controls = document.getElementById('audio-controls');
+    if (controls) {
+      controls.classList.add('hidden');
+    }
   }
 
   play() {
