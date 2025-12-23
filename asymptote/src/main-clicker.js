@@ -31,8 +31,12 @@ function init() {
   
   // Cache settings for performance
   cachedLargeNumbersSetting = settingsManager.get('largeNumbers');
-  settingsManager.onChange(() => {
-    cachedLargeNumbersSetting = settingsManager.get('largeNumbers');
+  settingsManager.onChange((settings) => {
+    cachedLargeNumbersSetting = settings.largeNumbers;
+    // Re-render generators when showConcepts changes
+    if (game) {
+      renderGenerators();
+    }
   });
   
   // Hide unnecessary UI elements
@@ -561,9 +565,9 @@ function showMessage(text) {
       top: 80px;
       left: 50%;
       transform: translateX(-50%);
-      background-color: #001a33;
-      color: #6dd9e8;
-      border: 2px solid #6dd9e8;
+      background-color: var(--bg-secondary);
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
       padding: 15px 30px;
       z-index: 10000;
       font-family: 'EB Garamond', Georgia, serif;
@@ -593,9 +597,10 @@ function showNarrative(text) {
       bottom: 100px;
       left: 50%;
       transform: translateX(-50%);
-      background-color: rgba(0, 26, 51, 0.95);
-      color: #6dd9e8;
-      border: 2px solid #6dd9e8;
+      background-color: var(--bg-secondary);
+      opacity: 0.95;
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
       padding: 20px 40px;
       z-index: 10000;
       font-family: 'EB Garamond', Georgia, serif;
@@ -604,8 +609,7 @@ function showNarrative(text) {
       max-width: 600px;
       text-align: center;
       font-style: italic;
-      box-shadow: 0 0 30px rgba(109, 217, 232, 0.3);
-      box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+      box-shadow: 0 0 30px var(--primary-color);
     `;
     document.body.appendChild(narrativeBox);
   }
@@ -671,25 +675,26 @@ function addStyles() {
     
     .clicker-header h2 {
       font-size: 2.5rem;
-      color: #6dd9e8;
+      color: var(--primary-color);
       margin: 10px 0;
     }
     
     .clicker-header p {
       font-size: 1.2rem;
-      color: #3bb8cc;
+      color: var(--secondary-color);
       margin: 5px 0;
     }
     
     .enlightenment-info {
       font-size: 1rem !important;
-      color: rgba(109, 217, 232, 0.5) !important;
+      color: var(--secondary-color);
+      opacity: 0.5;
     }
     
     /* Idle Game Resources Section */
     .idle-resources {
-      background-color: #001a33;
-      border: 2px solid #6dd9e8;
+      background-color: var(--bg-secondary);
+      border: 2px solid var(--primary-color);
       border-radius: 8px;
       padding: 15px;
       margin: 20px 0;
@@ -698,7 +703,7 @@ function addStyles() {
     .ticks-display {
       text-align: center;
       font-size: 1.5rem;
-      color: #6dd9e8;
+      color: var(--primary-color);
       margin-bottom: 15px;
     }
     
@@ -709,7 +714,7 @@ function addStyles() {
     
     .ticks-rate {
       font-size: 1rem;
-      color: #3bb8cc;
+      color: var(--secondary-color);
       margin-left: 10px;
     }
     
@@ -728,9 +733,9 @@ function addStyles() {
     
     .sacrifice-btn {
       padding: 10px 15px;
-      background-color: #002244;
-      border: 2px solid #3bb8cc;
-      color: #3bb8cc;
+      background-color: var(--bg-panel);
+      border: 2px solid var(--secondary-color);
+      color: var(--secondary-color);
       font-family: 'EB Garamond', Georgia, serif;
       font-size: 0.9rem;
       cursor: pointer;
@@ -741,7 +746,7 @@ function addStyles() {
     }
     
     .sacrifice-btn:hover:not(:disabled) {
-      background-color: #3bb8cc;
+      background-color: var(--secondary-color);
       color: #000;
       transform: translateY(-2px);
     }
@@ -761,9 +766,9 @@ function addStyles() {
       width: 280px;
       height: 280px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #003355, #001a33);
-      border: 4px solid #6dd9e8;
-      color: #6dd9e8;
+      background: linear-gradient(135deg, var(--bg-hover), var(--bg-secondary));
+      border: 4px solid var(--primary-color);
+      color: var(--primary-color);
       font-family: 'EB Garamond', Georgia, serif;
       cursor: pointer;
       transition: all 0.1s;
@@ -772,7 +777,7 @@ function addStyles() {
       align-items: center;
       justify-content: center;
       gap: 10px;
-      box-shadow: 0 0 30px #6dd9e840;
+      box-shadow: 0 0 30px var(--primary-color)40;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
@@ -781,7 +786,7 @@ function addStyles() {
     
     .main-click-button:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 50px #6dd9e860;
+      box-shadow: 0 0 50px var(--primary-color)60;
     }
     
     .main-click-button:active {
@@ -817,7 +822,7 @@ function addStyles() {
     
     .click-popup {
       position: absolute;
-      color: #6dd9e8;
+      color: var(--primary-color);
       font-size: 1.5rem;
       font-weight: bold;
       animation: popup-rise 1s ease-out forwards;
@@ -849,22 +854,22 @@ function addStyles() {
     }
     
     .panel {
-      background-color: #001a33;
-      border: 2px solid #6dd9e8;
+      background-color: var(--bg-secondary);
+      border: 2px solid var(--primary-color);
       border-radius: 8px;
       padding: 20px;
     }
     
     .panel h3 {
-      color: #6dd9e8;
+      color: var(--primary-color);
       margin-top: 0;
       margin-bottom: 15px;
       font-size: 1.5rem;
     }
     
     .generator-item, .upgrade-item {
-      background-color: #002244;
-      border: 1px solid #3bb8cc;
+      background-color: var(--bg-panel);
+      border: 1px solid var(--secondary-color);
       border-radius: 4px;
       padding: 15px;
       margin-bottom: 10px;
@@ -872,8 +877,8 @@ function addStyles() {
     }
     
     .generator-item:hover, .upgrade-item:hover {
-      background-color: #003355;
-      border-color: #6dd9e8;
+      background-color: var(--bg-hover);
+      border-color: var(--primary-color);
     }
     
     .generator-item.disabled, .upgrade-item.disabled {
@@ -890,30 +895,30 @@ function addStyles() {
     .gen-name, .upg-name {
       font-size: 1.2rem;
       font-weight: bold;
-      color: #6dd9e8;
+      color: var(--primary-color);
     }
     
     .gen-count {
       font-size: 1.5rem;
-      color: #6dd9e8;
+      color: var(--primary-color);
     }
     
     .gen-production {
       font-size: 1rem;
-      color: #3bb8cc;
+      color: var(--secondary-color);
       margin-bottom: 5px;
     }
     
     .gen-desc, .upg-desc {
       font-size: 0.9rem;
-      color: #3bb8cc;
+      color: var(--secondary-color);
       margin-bottom: 10px;
       font-style: italic;
     }
     
     .gen-concept {
       font-size: 0.75rem;
-      color: #6dd9e8;
+      color: var(--primary-color);
       font-weight: bold;
       letter-spacing: 0.5px;
       margin-bottom: 5px;
@@ -923,44 +928,32 @@ function addStyles() {
     
     .upg-narrative {
       font-size: 0.85rem;
-      color: #6dd9e8;
+      color: var(--primary-color);
       margin-top: 8px;
       margin-bottom: 10px;
       font-style: italic;
       opacity: 0.9;
       padding: 8px;
-      background-color: rgba(109, 217, 232, 0.05);
-      border-left: 2px solid #6dd9e8;
+      background-color: var(--bg-secondary);
+      border-left: 2px solid var(--primary-color);
     }
     
     .gen-concept {
       font-size: 0.75rem;
-      color: #6dd9e8;
+      color: var(--primary-color);
       font-weight: bold;
       letter-spacing: 0.5px;
       margin-bottom: 5px;
       opacity: 0.8;
       text-transform: uppercase;
-    }
-    
-    .upg-narrative {
-      font-size: 0.85rem;
-      color: #0f0;
-      margin-top: 8px;
-      margin-bottom: 10px;
-      font-style: italic;
-      opacity: 0.9;
-      padding: 8px;
-      background-color: rgba(109, 217, 232, 0.05);
-      border-left: 2px solid #6dd9e8;
     }
     
     .gen-buy-btn, .upg-buy-btn {
       width: 100%;
       padding: 10px;
-      background-color: #001a33;
-      border: 2px solid #6dd9e8;
-      color: #6dd9e8;
+      background-color: var(--bg-secondary);
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
       font-family: 'EB Garamond', Georgia, serif;
       font-size: 1rem;
       cursor: pointer;
@@ -971,7 +964,7 @@ function addStyles() {
     }
     
     .gen-buy-btn:hover:not(:disabled), .upg-buy-btn:hover:not(:disabled) {
-      background-color: #6dd9e8;
+      background-color: var(--primary-color);
       color: #000;
     }
     
@@ -982,7 +975,7 @@ function addStyles() {
     
     .no-upgrades {
       text-align: center;
-      color: #3bb8cc;
+      color: var(--secondary-color);
       font-style: italic;
     }
     
@@ -1041,15 +1034,15 @@ function addStyles() {
     
     .enlighten-button {
       padding: 20px 40px;
-      background: linear-gradient(135deg, #004466, #002244);
-      border: 3px solid #6dd9e8;
-      color: #6dd9e8;
+      background: linear-gradient(135deg, #004466, var(--bg-panel));
+      border: 3px solid var(--primary-color);
+      color: var(--primary-color);
       font-family: 'EB Garamond', Georgia, serif;
       font-size: 1.5rem;
       cursor: pointer;
       border-radius: 8px;
       transition: all 0.3s;
-      box-shadow: 0 0 20px #6dd9e840;
+      box-shadow: 0 0 20px var(--primary-color)40;
       display: flex;
       flex-direction: column;
       gap: 5px;
@@ -1061,7 +1054,7 @@ function addStyles() {
     
     .enlighten-button:hover:not(:disabled) {
       transform: scale(1.05);
-      box-shadow: 0 0 40px #6dd9e860;
+      box-shadow: 0 0 40px var(--primary-color)60;
     }
     
     .enlighten-button:disabled {
@@ -1089,9 +1082,9 @@ function addStyles() {
     
     .small-btn {
       padding: 10px 20px;
-      background-color: #001a33;
-      border: 2px solid #3bb8cc;
-      color: #3bb8cc;
+      background-color: var(--bg-secondary);
+      border: 2px solid var(--secondary-color);
+      color: var(--secondary-color);
       font-family: 'EB Garamond', Georgia, serif;
       font-size: 1rem;
       cursor: pointer;
@@ -1102,7 +1095,7 @@ function addStyles() {
     }
     
     .small-btn:hover {
-      background-color: #3bb8cc;
+      background-color: var(--secondary-color);
       color: #000;
     }
   `;
@@ -1174,7 +1167,7 @@ function showFragmentCollection() {
   const title = document.createElement('h2');
   title.textContent = 'DISCOVERED FRAGMENTS';
   title.style.textAlign = 'center';
-  title.style.color = '#6dd9e8';
+  title.style.color = 'var(--primary-color)';
   
   const closeBtn = document.createElement('button');
   closeBtn.className = 'fragment-close';
@@ -1194,7 +1187,7 @@ function showFragmentCollection() {
     const emptyMsg = document.createElement('p');
     emptyMsg.textContent = 'No fragments discovered yet. Keep playing to uncover hidden insights...';
     emptyMsg.style.textAlign = 'center';
-    emptyMsg.style.color = '#6dd9e8';
+    emptyMsg.style.color = 'var(--primary-color)';
     emptyMsg.style.marginTop = '40px';
     content.appendChild(emptyMsg);
   } else {
@@ -1207,11 +1200,11 @@ function showFragmentCollection() {
       
       const itemTitle = document.createElement('h3');
       itemTitle.textContent = `◆ ${frag.title}`;
-      itemTitle.style.color = '#6dd9e8';
+      itemTitle.style.color = 'var(--primary-color)';
       
       const itemText = document.createElement('p');
       itemText.textContent = frag.text;
-      itemText.style.color = '#3bb8cc';
+      itemText.style.color = 'var(--secondary-color)';
       itemText.style.marginTop = '10px';
       
       item.appendChild(itemTitle);
