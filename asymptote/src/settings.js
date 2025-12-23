@@ -139,6 +139,19 @@ class SettingsManager {
 // Create singleton instance
 export const settingsManager = new SettingsManager();
 
+// Detect if device is mobile
+function isMobileDevice() {
+  // Check for touch support and small screen
+  const hasTouchScreen = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const isSmallScreen = window.innerWidth <= 768;
+  
+  // Also check user agent for mobile devices
+  const mobileRegex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+  const isMobileUA = mobileRegex.test(navigator.userAgent);
+  
+  return (hasTouchScreen && isSmallScreen) || isMobileUA;
+}
+
 // Settings UI
 export function showSettingsPopup() {
   // Remove existing popup if any
@@ -184,6 +197,17 @@ export function showSettingsPopup() {
     }
   );
   settingsContainer.appendChild(musicSetting);
+
+  // Volume slider (PC only)
+  const isMobile = isMobileDevice();
+  if (!isMobile) {
+    const volumeSetting = createVolumeSetting(
+      'Music Volume',
+      'Adjust background music volume',
+      audioManager.getVolume()
+    );
+    settingsContainer.appendChild(volumeSetting);
+  }
 
   // Color theme selector
   const themeSetting = createSelectSetting(
@@ -347,6 +371,93 @@ function createSelectSetting(label, description, initialValue, options, onChange
 
   container.appendChild(labelContainer);
   container.appendChild(select);
+
+  return container;
+}
+
+function createVolumeSetting(label, description, initialValue) {
+  const container = document.createElement('div');
+  container.className = 'setting-item';
+
+  const labelContainer = document.createElement('div');
+  labelContainer.className = 'setting-label-container';
+
+  const labelEl = document.createElement('div');
+  labelEl.className = 'setting-label';
+  labelEl.textContent = label;
+
+  const descEl = document.createElement('div');
+  descEl.className = 'setting-description';
+  descEl.textContent = description;
+
+  labelContainer.appendChild(labelEl);
+  labelContainer.appendChild(descEl);
+
+  // Volume control container
+  const volumeControl = document.createElement('div');
+  volumeControl.className = 'volume-control';
+  volumeControl.style.display = 'flex';
+  volumeControl.style.alignItems = 'center';
+  volumeControl.style.gap = '10px';
+  volumeControl.style.minWidth = '200px';
+
+  // Mute button
+  const muteBtn = document.createElement('button');
+  muteBtn.id = 'mute-btn';
+  muteBtn.className = 'volume-mute-btn';
+  muteBtn.innerHTML = '<span id="mute-icon">🔊</span>';
+  muteBtn.title = 'Mute/Unmute';
+  muteBtn.style.background = 'none';
+  muteBtn.style.border = 'none';
+  muteBtn.style.color = 'var(--primary-color)';
+  muteBtn.style.fontSize = '1.5rem';
+  muteBtn.style.cursor = 'pointer';
+  muteBtn.style.padding = '5px';
+  muteBtn.style.lineHeight = '1';
+
+  // Volume slider
+  const slider = document.createElement('input');
+  slider.type = 'range';
+  slider.id = 'volume-slider';
+  slider.className = 'volume-slider-control';
+  slider.min = '0';
+  slider.max = '100';
+  slider.value = Math.round(initialValue * 100);
+  slider.style.flex = '1';
+  slider.style.accentColor = 'var(--primary-color)';
+  slider.style.cursor = 'pointer';
+
+  // Volume value display
+  const valueDisplay = document.createElement('span');
+  valueDisplay.id = 'volume-value';
+  valueDisplay.className = 'volume-value-display';
+  valueDisplay.textContent = Math.round(initialValue * 100) + '%';
+  valueDisplay.style.color = 'var(--secondary-color)';
+  valueDisplay.style.fontSize = '0.9rem';
+  valueDisplay.style.minWidth = '40px';
+  valueDisplay.style.textAlign = 'right';
+
+  // Event listeners
+  muteBtn.addEventListener('click', () => {
+    audioManager.toggleMute();
+    audioManager.updateUI();
+  });
+
+  slider.addEventListener('input', (e) => {
+    const value = parseInt(e.target.value);
+    audioManager.setVolume(value / 100);
+    audioManager.updateUI();
+  });
+
+  volumeControl.appendChild(muteBtn);
+  volumeControl.appendChild(slider);
+  volumeControl.appendChild(valueDisplay);
+
+  container.appendChild(labelContainer);
+  container.appendChild(volumeControl);
+
+  // Initialize UI
+  audioManager.updateUI();
 
   return container;
 }

@@ -26,42 +26,6 @@ class AudioManager {
     this.audio.preload = 'auto';
     
     this.isInitialized = true;
-
-    // Set up UI controls
-    this.setupControls();
-  }
-
-  setupControls() {
-    const muteBtn = document.getElementById('mute-btn');
-    const volumeSlider = document.getElementById('volume-slider');
-    const volumeValue = document.getElementById('volume-value');
-    const muteIcon = document.getElementById('mute-icon');
-
-    if (!muteBtn || !volumeSlider || !volumeValue || !muteIcon) {
-      const missing = [];
-      if (!muteBtn) missing.push('mute-btn');
-      if (!volumeSlider) missing.push('volume-slider');
-      if (!volumeValue) missing.push('volume-value');
-      if (!muteIcon) missing.push('mute-icon');
-      console.error(`Audio controls not found in DOM. Missing elements: ${missing.join(', ')}`);
-      return;
-    }
-
-    // Mute button handler
-    muteBtn.addEventListener('click', () => {
-      this.toggleMute();
-      this.updateUI();
-    });
-
-    // Volume slider handler
-    volumeSlider.addEventListener('input', (e) => {
-      const value = parseInt(e.target.value);
-      this.setVolume(value / 100);
-      this.updateUI();
-    });
-
-    // Initialize UI
-    this.updateUI();
   }
 
   play() {
@@ -103,6 +67,7 @@ class AudioManager {
   }
 
   updateUI() {
+    // Update UI elements if they exist (they may not exist on page, but in settings popup)
     const muteIcon = document.getElementById('mute-icon');
     const volumeSlider = document.getElementById('volume-slider');
     const volumeValue = document.getElementById('volume-value');
