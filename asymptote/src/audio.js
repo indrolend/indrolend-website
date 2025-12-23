@@ -20,6 +20,11 @@ class AudioManager {
     this.audio.loop = true;
     this.audio.volume = this.volume;
     
+    // Prevent Safari from opening native audio player
+    this.audio.setAttribute('playsinline', 'true');
+    this.audio.setAttribute('webkit-playsinline', 'true');
+    this.audio.preload = 'auto';
+    
     this.isInitialized = true;
 
     // Set up UI controls
@@ -65,10 +70,9 @@ class AudioManager {
     }
 
     if (this.audio) {
-      this.audio.play().catch(err => {
-        console.error('Failed to play audio:', err);
-      });
+      return this.audio.play();
     }
+    return Promise.reject('Audio not initialized');
   }
 
   pause() {
@@ -91,6 +95,13 @@ class AudioManager {
     }
   }
 
+  setMuted(muted) {
+    this.isMuted = muted;
+    if (this.audio) {
+      this.audio.volume = this.isMuted ? 0 : this.volume;
+    }
+  }
+
   updateUI() {
     const muteIcon = document.getElementById('mute-icon');
     const volumeSlider = document.getElementById('volume-slider');
@@ -107,6 +118,14 @@ class AudioManager {
     if (volumeValue) {
       volumeValue.textContent = this.isMuted ? '0%' : Math.round(this.volume * 100) + '%';
     }
+  }
+
+  getMuted() {
+    return this.isMuted;
+  }
+
+  getVolume() {
+    return this.volume;
   }
 }
 
