@@ -38,12 +38,7 @@ class AudioManager {
     const muteIcon = document.getElementById('mute-icon');
 
     if (!muteBtn || !volumeSlider || !volumeValue || !muteIcon) {
-      const missing = [];
-      if (!muteBtn) missing.push('mute-btn');
-      if (!volumeSlider) missing.push('volume-slider');
-      if (!volumeValue) missing.push('volume-value');
-      if (!muteIcon) missing.push('mute-icon');
-      console.error(`Audio controls not found in DOM. Missing elements: ${missing.join(', ')}`);
+      // Controls might not exist on mobile or not yet loaded
       return;
     }
 
@@ -62,6 +57,20 @@ class AudioManager {
 
     // Initialize UI
     this.updateUI();
+  }
+
+  showControls() {
+    const controls = document.getElementById('audio-controls');
+    if (controls) {
+      controls.classList.remove('hidden');
+    }
+  }
+
+  hideControls() {
+    const controls = document.getElementById('audio-controls');
+    if (controls) {
+      controls.classList.add('hidden');
+    }
   }
 
   play() {
@@ -103,6 +112,7 @@ class AudioManager {
   }
 
   updateUI() {
+    // Update UI elements if they exist (they may not exist on page, but in settings popup)
     const muteIcon = document.getElementById('mute-icon');
     const volumeSlider = document.getElementById('volume-slider');
     const volumeValue = document.getElementById('volume-value');
