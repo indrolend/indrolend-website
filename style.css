@@ -1266,3 +1266,114 @@ html, body {
 .app-card.vibrating {
   animation: vibrate 0.3s ease-in-out;
 }
+
+/* ---- SPOTIFY STATS PAGE ---- */
+.stats-title {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--terminal-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.stats-back-link {
+  color: var(--terminal-green);
+  text-decoration: none;
+  font-size: 24px;
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+
+.stats-back-link:hover {
+  transform: translateX(-4px);
+}
+
+.stats-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: 20px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  max-width: 900px;
+  width: 100%;
+}
+
+.stat-box {
+  background: var(--bg-panel);
+  border: 2px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(109, 217, 232, 0.15);
+}
+
+.stat-box:hover {
+  border-color: var(--terminal-green-soft);
+  box-shadow: 0 0 25px rgba(109, 217, 232, 0.3);
+  transform: translateY(-4px);
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+  filter: grayscale(0.3) brightness(1.2);
+}
+
+.stat-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
+  margin-bottom: 6px;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  color: var(--terminal-green);
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+
+  .stat-box {
+    padding: 20px;
+  }
+
+  .stat-icon {
+    font-size: 2rem;
+  }
+
+  .stat-value {
+    font-size: 1.3rem;
+  }
+
+  .stats-title {
+    font-size: 16px;
+  }
+}
