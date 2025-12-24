@@ -7,6 +7,16 @@
 // 3. Log in with your Spotify account
 // 4. Copy the access token and replace YOUR_SPOTIFY_ACCESS_TOKEN_HERE below
 // 
+// SECURITY WARNING: Storing access tokens in client-side JavaScript exposes them
+// to all users and is not recommended for production. This is acceptable for:
+// - Development/testing purposes
+// - Public data (like artist stats which are publicly visible on Spotify)
+// 
+// For production, consider:
+// - Implementing a backend proxy that handles authentication
+// - Using environment variables and build-time token injection
+// - Implementing OAuth flow with token refresh
+// 
 // Note: Access tokens expire after 1 hour. For production use, implement OAuth flow
 // or use Spotify's Client Credentials Flow for server-side authentication.
 
@@ -40,10 +50,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await response.json();
 
+      // Validate response data
+      if (!data || typeof data !== 'object') {
+        throw new Error('Invalid response data');
+      }
+
       // Update the DOM with fetched data
       artistNameEl.textContent = data.name || "Unknown";
-      artistFollowersEl.textContent = formatNumber(data.followers.total);
-      artistPopularityEl.textContent = data.popularity + "/100";
+      artistFollowersEl.textContent = formatNumber(data.followers?.total ?? 0);
+      artistPopularityEl.textContent = (data.popularity ?? 0) + "/100";
 
       // Re-initialize the important word effect from script.js
       initImportantWordsForStats();
@@ -107,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Cycle font variants randomly for each letter
     if (allLetterSpans.length > 0) {
-      setInterval(() => {
+      const intervalId = setInterval(() => {
         const numToChange = Math.max(1, Math.floor(allLetterSpans.length * 0.15));
         for (let i = 0; i < numToChange; i++) {
           const randomSpan = allLetterSpans[Math.floor(Math.random() * allLetterSpans.length)];
@@ -116,6 +131,11 @@ document.addEventListener("DOMContentLoaded", () => {
           randomSpan.style.fontStyle = variant.style;
         }
       }, 400);
+
+      // Clean up interval when page is unloaded to prevent memory leaks
+      window.addEventListener('beforeunload', () => {
+        clearInterval(intervalId);
+      });
     }
   }
 
