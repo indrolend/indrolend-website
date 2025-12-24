@@ -121,7 +121,9 @@ document.addEventListener("DOMContentLoaded", () => {
       updateUI();
       
       // Check if any data was loaded successfully
-      const hasData = Object.values(statsData).some(v => v !== null && v !== statsData.lastUpdate);
+      const hasData = Object.entries(statsData).some(([key, value]) => 
+        key !== 'lastUpdate' && value !== null
+      );
       if (!hasData) {
         setupNotice?.classList.remove("hidden");
       }

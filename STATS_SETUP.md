@@ -24,6 +24,10 @@ You have several options for hosting the backend API:
 
 Vercel provides free serverless functions that work great with static sites.
 
+**Requirements:**
+- Node.js 18+ (for built-in fetch support)
+- Vercel account (free tier available)
+
 1. **Install Vercel CLI**
    ```bash
    npm install -g vercel

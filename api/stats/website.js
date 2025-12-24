@@ -1,6 +1,10 @@
 // api/stats/website.js
 // Vercel Serverless Function for fetching website analytics
 
+// Note: Vercel provides fetch globally in Node.js 18+
+// For older versions, uncomment the next line:
+// const fetch = require('node-fetch');
+
 module.exports = async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
