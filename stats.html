@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spotify Stats / Indrolend</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&display=swap" rel="stylesheet">
+  <script defer src="script.js"></script>
+  <script defer src="spotify-stats.js"></script>
+</head>
+<body class="gallery-bg">
+  <div class="gallery-container">
+    <header class="gallery-header">
+      <h1>spotify stats</h1>
+      <a href="home.html" class="gallery-back">← back</a>
+    </header>
+    <main class="gallery-main">
+      <div class="gallery-content">
+        <div class="spotify-stats-container">
+          <div class="spotify-stat-item">
+            <span class="spotify-stat-label">Artist Name</span>
+            <span id="artistName" class="important-word spotify-stat-value">Loading...</span>
+          </div>
+          <div class="spotify-stat-item">
+            <span class="spotify-stat-label">Followers</span>
+            <span id="artistFollowers" class="important-word spotify-stat-value">Loading...</span>
+          </div>
+          <div class="spotify-stat-item">
+            <span class="spotify-stat-label">Popularity</span>
+            <span id="artistPopularity" class="important-word spotify-stat-value">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
