@@ -1,6 +1,15 @@
 // Spotify Artist Stats Fetcher
 // Artist ID: 59X3431NBfd6xWMc3Zlh0v (Indrolend)
 
+// HOW TO GET A SPOTIFY ACCESS TOKEN:
+// 1. Go to https://developer.spotify.com/console/get-artist/
+// 2. Click "Get Token" button
+// 3. Log in with your Spotify account
+// 4. Copy the access token and replace YOUR_SPOTIFY_ACCESS_TOKEN_HERE below
+// 
+// Note: Access tokens expire after 1 hour. For production use, implement OAuth flow
+// or use Spotify's Client Credentials Flow for server-side authentication.
+
 document.addEventListener("DOMContentLoaded", () => {
   // Only run on stats.html page
   const artistNameEl = document.getElementById("artistName");
