@@ -9,26 +9,40 @@
   <script defer src="script.js"></script>
   <script defer src="spotify-stats.js"></script>
 </head>
-<body class="gallery-bg">
-  <div class="gallery-container">
-    <header class="gallery-header">
-      <h1>spotify stats</h1>
-      <a href="home.html" class="gallery-back">← back</a>
+<body class="home-bg">
+  <canvas id="particles-bg"></canvas>
+  
+  <div class="home-container">
+    <header class="home-header">
+      <h1 class="stats-title">
+        <a href="home.html" class="stats-back-link">←</a>
+        <span class="important-word">spotify artist stats</span>
+      </h1>
     </header>
-    <main class="gallery-main">
-      <div class="gallery-content">
-        <div class="spotify-stats-container">
-          <div class="spotify-stat-item">
-            <span class="spotify-stat-label">Artist Name</span>
-            <span id="artistName" class="important-word spotify-stat-value">Loading...</span>
+
+    <main class="stats-main">
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-icon">🎤</div>
+          <div class="stat-content">
+            <div class="stat-label">Artist</div>
+            <div id="artistName" class="important-word stat-value">Loading...</div>
           </div>
-          <div class="spotify-stat-item">
-            <span class="spotify-stat-label">Followers</span>
-            <span id="artistFollowers" class="important-word spotify-stat-value">Loading...</span>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-icon">👥</div>
+          <div class="stat-content">
+            <div class="stat-label">Followers</div>
+            <div id="artistFollowers" class="important-word stat-value">Loading...</div>
           </div>
-          <div class="spotify-stat-item">
-            <span class="spotify-stat-label">Popularity</span>
-            <span id="artistPopularity" class="important-word spotify-stat-value">Loading...</span>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-content">
+            <div class="stat-label">Popularity</div>
+            <div id="artistPopularity" class="important-word stat-value">Loading...</div>
           </div>
         </div>
       </div>

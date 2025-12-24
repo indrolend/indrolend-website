@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize important word effect for the stats values
   function initImportantWordsForStats() {
-    const importantWords = document.querySelectorAll(".spotify-stat-value");
+    const importantWords = document.querySelectorAll(".stat-value");
     
     // Font variants available in EB Garamond
     const fontVariants = [
