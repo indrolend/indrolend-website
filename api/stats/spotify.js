@@ -1,10 +1,7 @@
 // api/stats/spotify.js
 // Vercel Serverless Function for fetching Spotify stats
 // Deploy with: vercel
-
-// Note: Vercel provides fetch globally in Node.js 18+
-// For older versions, uncomment the next line:
-// const fetch = require('node-fetch');
+// Requires: Node.js 18+ (uses built-in fetch)
 
 module.exports = async (req, res) => {
   // Enable CORS

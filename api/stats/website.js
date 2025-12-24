@@ -1,9 +1,6 @@
 // api/stats/website.js
 // Vercel Serverless Function for fetching website analytics
-
-// Note: Vercel provides fetch globally in Node.js 18+
-// For older versions, uncomment the next line:
-// const fetch = require('node-fetch');
+// Requires: Node.js 18+ (uses built-in fetch)
 
 module.exports = async (req, res) => {
   // Enable CORS
@@ -97,6 +94,12 @@ async function fetchCloudflareStats() {
   }
 
   const data = await response.json();
+  
+  // Validate response structure
+  if (!data.data?.viewer?.zones?.[0]?.httpRequests1dGroups?.[0]) {
+    throw new Error('Invalid Cloudflare response structure');
+  }
+  
   const stats = data.data.viewer.zones[0].httpRequests1dGroups[0];
 
   return {

@@ -46,7 +46,7 @@ Vercel provides free serverless functions that work great with static sites.
 3. **Create a Vercel function** (example: `/api/stats/spotify.js`):
    ```javascript
    // api/stats/spotify.js
-   const fetch = require('node-fetch');
+   // Note: Uses built-in fetch in Node.js 18+ (default on Vercel)
 
    module.exports = async (req, res) => {
      // Enable CORS
