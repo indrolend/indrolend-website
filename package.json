@@ -1,0 +1,14 @@
+{
+  "name": "indrolend-website-api",
+  "version": "1.0.0",
+  "description": "Backend API for Indrolend website stats",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.x"
+  },
+  "scripts": {
+    "dev": "vercel dev"
+  }
+}

@@ -351,6 +351,17 @@ if (galleryCard) {
     setInterval(setRandomChar, 180);
   }
 
+  // --- Stats icon animation (home) ---
+  const statsIcon = document.getElementById("statsIcon");
+  if (statsIcon) {
+    const icons = ["📊", "📈", "📉", "💹", "🔢"];
+    let currentIndex = 0;
+    setInterval(() => {
+      currentIndex = (currentIndex + 1) % icons.length;
+      statsIcon.textContent = icons[currentIndex];
+    }, 2000);
+  }
+
   // --- Word game / story engine on wordgame.html ---
   const storyRoot = document.getElementById("wordgame-root");
   const textEl = document.getElementById("story-text");
