@@ -1266,3 +1266,225 @@ html, body {
 .app-card.vibrating {
   animation: vibrate 0.3s ease-in-out;
 }
+
+/* ---- STATS PAGE ---- */
+.stats-bg {
+  background: radial-gradient(circle at top, #040916 0, #01030a 45%, #000 100%);
+  color: var(--text-main);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.stats-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px 16px 40px;
+}
+
+.stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 20px;
+}
+
+.stats-header h1 {
+  margin: 0;
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--terminal-green);
+}
+
+.stats-back {
+  font-size: 13px;
+  color: var(--terminal-green-soft);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.stats-back:hover {
+  color: var(--terminal-green);
+  text-decoration: underline;
+}
+
+.stats-main {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.stats-refresh-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(5, 12, 28, 0.96);
+}
+
+.stats-refresh-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--terminal-green-soft);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.stats-refresh-btn:hover {
+  background: rgba(8, 30, 24, 0.95);
+  border-color: var(--terminal-green-soft);
+}
+
+.stats-refresh-btn:active {
+  transform: scale(0.95);
+}
+
+.stats-refresh-btn.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.stats-refresh-btn.loading::before {
+  content: '↻ ';
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.stats-last-update {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.stats-section {
+  border-radius: 16px;
+  border: 1px solid var(--border-subtle);
+  padding: 20px 18px;
+  background: rgba(5, 12, 28, 0.96);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.8);
+}
+
+.stats-section-title {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--terminal-green);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stats-icon {
+  font-size: 20px;
+  display: inline-block;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.stats-card {
+  border-radius: 12px;
+  border: 1px solid rgba(109, 217, 232, 0.2);
+  padding: 14px 16px;
+  background: rgba(2, 6, 18, 0.9);
+  transition: border-color 0.2s ease, transform 0.15s ease;
+}
+
+.stats-card:hover {
+  border-color: var(--terminal-green-soft);
+  transform: translateY(-2px);
+}
+
+.stats-card-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.stats-card-value {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--terminal-green);
+  font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
+}
+
+.stats-loading {
+  display: inline-block;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.stats-error {
+  color: #ff6b6b;
+  font-size: 13px;
+}
+
+.stats-setup-notice {
+  border-radius: 12px;
+  border: 1px solid rgba(255, 171, 64, 0.4);
+  padding: 20px 22px;
+  background: rgba(40, 30, 10, 0.6);
+  color: var(--text-main);
+}
+
+.stats-setup-notice h3 {
+  margin: 0 0 12px 0;
+  font-size: 15px;
+  color: #ffab40;
+}
+
+.stats-setup-notice p {
+  margin: 8px 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.stats-setup-notice code {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  color: var(--terminal-green-soft);
+}
+
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .stats-refresh-bar {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+}

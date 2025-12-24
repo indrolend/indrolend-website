@@ -17,11 +17,19 @@ Thumbs.db
 # Node (if you add dependencies later)
 node_modules/
 npm-debug.log
+yarn.lock
+package-lock.json
 
 # Build outputs
 dist/
 build/
+.vercel
 
 # Temporary files
 *.tmp
 *.temp
+
+# Environment variables (NEVER commit!)
+.env
+.env.local
+.env.production

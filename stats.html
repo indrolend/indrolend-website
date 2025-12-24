@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stats | Indrolend</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="stats.js"></script>
+</head>
+<body class="stats-bg">
+  <div class="stats-container">
+    <header class="stats-header">
+      <h1>statistics</h1>
+      <a href="home.html" class="stats-back">← back to home</a>
+    </header>
+
+    <div class="stats-main">
+      <div class="stats-refresh-bar">
+        <button id="statsRefresh" class="stats-refresh-btn">↻ refresh</button>
+        <span id="statsLastUpdate" class="stats-last-update">Loading...</span>
+      </div>
+
+      <!-- Website Analytics Section -->
+      <section class="stats-section">
+        <h2 class="stats-section-title">
+          <span class="stats-icon">🌐</span>
+          Website Analytics
+        </h2>
+        <div class="stats-grid">
+          <div class="stats-card">
+            <div class="stats-card-label">Unique Visitors</div>
+            <div class="stats-card-value" id="webUniqueVisitors">
+              <span class="stats-loading">...</span>
+            </div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-label">Total Requests</div>
+            <div class="stats-card-value" id="webTotalRequests">
+              <span class="stats-loading">...</span>
+            </div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-label">Data Cached</div>
+            <div class="stats-card-value" id="webDataCached">
+              <span class="stats-loading">...</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Spotify Section -->
+      <section class="stats-section">
+        <h2 class="stats-section-title">
+          <span class="stats-icon">🎵</span>
+          Spotify Audience
+        </h2>
+        <div class="stats-grid">
+          <div class="stats-card">
+            <div class="stats-card-label">Monthly Listeners</div>
+            <div class="stats-card-value" id="spotifyListeners">
+              <span class="stats-loading">...</span>
+            </div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-label">Total Plays</div>
+            <div class="stats-card-value" id="spotifyPlays">
+              <span class="stats-loading">...</span>
+            </div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-label">Saves</div>
+            <div class="stats-card-value" id="spotifySaves">
+              <span class="stats-loading">...</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Apple Music Section -->
+      <section class="stats-section">
+        <h2 class="stats-section-title">
+          <span class="stats-icon">🍎</span>
+          Apple Music
+        </h2>
+        <div class="stats-grid">
+          <div class="stats-card">
+            <div class="stats-card-label">Plays</div>
+            <div class="stats-card-value" id="applePlays">
+              <span class="stats-loading">...</span>
+            </div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-label">Listeners</div>
+            <div class="stats-card-value" id="appleListeners">
+              <span class="stats-loading">...</span>
+            </div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-label">Shazams</div>
+            <div class="stats-card-value" id="appleShazams">
+              <span class="stats-loading">...</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TikTok Section -->
+      <section class="stats-section">
+        <h2 class="stats-section-title">
+          <span class="stats-icon">🎬</span>
+          TikTok
+        </h2>
+        <div class="stats-grid">
+          <div class="stats-card">
+            <div class="stats-card-label">Followers</div>
+            <div class="stats-card-value" id="tiktokFollowers">
+              <span class="stats-loading">...</span>
+            </div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-label">Total Likes</div>
+            <div class="stats-card-value" id="tiktokLikes">
+              <span class="stats-loading">...</span>
+            </div>
+          </div>
+          <div class="stats-card">
+            <div class="stats-card-label">Video Views</div>
+            <div class="stats-card-value" id="tiktokViews">
+              <span class="stats-loading">...</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Setup Instructions (shown when API not configured) -->
+      <div id="statsSetupNotice" class="stats-setup-notice hidden">
+        <h3>⚙️ Setup Required</h3>
+        <p>To display live statistics, you need to configure the backend API endpoints.</p>
+        <p>See <code>STATS_SETUP.md</code> for detailed instructions.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
