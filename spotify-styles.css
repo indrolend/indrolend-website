@@ -1,0 +1,267 @@
+/* Spotify Integration Styles */
+
+.spotify-data-container {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: rgba(30, 215, 96, 0.05);
+  border: 1px solid rgba(30, 215, 96, 0.2);
+  border-radius: 12px;
+  font-family: 'EB Garamond', serif;
+  color: #5ee87d;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.spotify-section-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem 0;
+  color: #5ee87d;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* Artist Info Section */
+.spotify-artist-info {
+  margin-bottom: 2rem;
+}
+
+.spotify-stats {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+
+.spotify-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.spotify-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1ed760;
+}
+
+.spotify-stat-label {
+  font-size: 0.9rem;
+  color: rgba(94, 232, 125, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.spotify-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.spotify-genre-tag {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  background: rgba(30, 215, 96, 0.1);
+  border: 1px solid rgba(30, 215, 96, 0.3);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #5ee87d;
+}
+
+/* Top Tracks Section */
+.spotify-tracks {
+  margin-top: 2rem;
+}
+
+.spotify-tracks-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: #5ee87d;
+  text-align: center;
+}
+
+.spotify-tracks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.spotify-track-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem;
+  background: rgba(30, 215, 96, 0.03);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.spotify-track-item:hover {
+  background: rgba(30, 215, 96, 0.08);
+  transform: translateX(4px);
+}
+
+.spotify-track-number {
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(94, 232, 125, 0.5);
+  min-width: 20px;
+  text-align: center;
+}
+
+.spotify-track-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.spotify-track-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.spotify-track-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #5ee87d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spotify-track-album {
+  font-size: 0.85rem;
+  color: rgba(94, 232, 125, 0.6);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spotify-track-duration {
+  font-size: 0.9rem;
+  color: rgba(94, 232, 125, 0.5);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Loading State */
+.spotify-loading {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spotify-loading-content {
+  text-align: center;
+  color: rgba(94, 232, 125, 0.7);
+}
+
+.spotify-loading-spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 1rem;
+  border: 3px solid rgba(30, 215, 96, 0.2);
+  border-top-color: #1ed760;
+  border-radius: 50%;
+  animation: spotify-spin 1s linear infinite;
+}
+
+@keyframes spotify-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error State */
+.spotify-error {
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spotify-error-content {
+  text-align: center;
+  color: rgba(94, 232, 125, 0.7);
+}
+
+.spotify-error-content p {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+}
+
+.spotify-retry-button {
+  padding: 0.6rem 1.5rem;
+  background: rgba(30, 215, 96, 0.1);
+  border: 1px solid rgba(30, 215, 96, 0.3);
+  border-radius: 6px;
+  color: #5ee87d;
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.spotify-retry-button:hover {
+  background: rgba(30, 215, 96, 0.2);
+  border-color: rgba(30, 215, 96, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .spotify-data-container {
+    padding: 1rem;
+    margin: 1rem 0.5rem;
+  }
+  
+  .spotify-section-title {
+    font-size: 1.5rem;
+  }
+  
+  .spotify-stats {
+    gap: 2rem;
+  }
+  
+  .spotify-stat-value {
+    font-size: 1.6rem;
+  }
+  
+  .spotify-track-item {
+    gap: 0.6rem;
+    padding: 0.6rem;
+  }
+  
+  .spotify-track-image {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .spotify-track-name {
+    font-size: 0.9rem;
+  }
+  
+  .spotify-track-album {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .spotify-stats {
+    gap: 1.5rem;
+  }
+  
+  .spotify-track-number {
+    display: none;
+  }
+  
+  .spotify-track-duration {
+    font-size: 0.8rem;
+  }
+}

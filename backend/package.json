@@ -1,0 +1,20 @@
+{
+  "name": "indrolend-spotify-backend",
+  "version": "1.0.0",
+  "description": "Backend service for fetching Spotify artist data",
+  "main": "spotify-backend.js",
+  "type": "module",
+  "scripts": {
+    "start": "node spotify-backend.js",
+    "dev": "node --watch spotify-backend.js"
+  },
+  "keywords": ["spotify", "api", "backend"],
+  "author": "Indrolend",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "node-fetch": "^3.3.2"
+  }
+}
