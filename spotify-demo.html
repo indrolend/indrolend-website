@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spotify Integration Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="spotify-styles.css" />
+  <style>
+    body {
+      background-color: #1a1a1a;
+      color: #5ee87d;
+      font-family: 'EB Garamond', serif;
+      padding: 2rem;
+      margin: 0;
+    }
+    .demo-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      color: #5ee87d;
+      margin-bottom: 2rem;
+    }
+    .demo-note {
+      background: rgba(30, 215, 96, 0.1);
+      border: 1px solid rgba(30, 215, 96, 0.3);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <h1>Spotify Integration Demo - Mock Data</h1>
+    
+    <div class="demo-note">
+      <p><strong>Note:</strong> This demo shows what the Spotify integration will look like with mock data.</p>
+      <p>To see live data, configure your Spotify API credentials and run the backend server.</p>
+    </div>
+
+    <div id="spotify-data-demo"></div>
+  </div>
+
+  <script>
+    // Mock Spotify data for demonstration
+    const mockData = {
+      artist: {
+        name: "Indrolend",
+        followers: 12847,
+        popularity: 42,
+        genres: ["indie", "electronic", "alternative"],
+        spotifyUrl: "https://open.spotify.com/artist/59X3431NBfd6xWMc3Zlh0v"
+      },
+      topTracks: [
+        {
+          name: "Someday",
+          album: "Someday - Single",
+          albumImage: "https://via.placeholder.com/300x300/1ed760/ffffff?text=Someday",
+          duration: 208000
+        },
+        {
+          name: "Another Track",
+          album: "EP Release",
+          albumImage: "https://via.placeholder.com/300x300/1ed760/ffffff?text=Track+2",
+          duration: 195000
+        },
+        {
+          name: "Demo Song",
+          album: "Demo Album",
+          albumImage: "https://via.placeholder.com/300x300/1ed760/ffffff?text=Track+3",
+          duration: 223000
+        },
+        {
+          name: "Live Recording",
+          album: "Live Sessions",
+          albumImage: "https://via.placeholder.com/300x300/1ed760/ffffff?text=Track+4",
+          duration: 267000
+        },
+        {
+          name: "Acoustic Version",
+          album: "Acoustic Sessions",
+          albumImage: "https://via.placeholder.com/300x300/1ed760/ffffff?text=Track+5",
+          duration: 189000
+        }
+      ]
+    };
+
+    // Format functions from spotify-integration.js
+    function formatNumber(num) {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    function formatDuration(ms) {
+      const minutes = Math.floor(ms / 60000);
+      const seconds = Math.floor((ms % 60000) / 1000);
+      return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    // Create display HTML
+    function createDisplay(data) {
+      const { artist, topTracks } = data;
+      
+      return `
+        <div class="spotify-data-container">
+          <div class="spotify-artist-info">
+            <h2 class="spotify-section-title">Live from Spotify</h2>
+            <div class="spotify-stats">
+              <div class="spotify-stat">
+                <span class="spotify-stat-value">${formatNumber(artist.followers)}</span>
+                <span class="spotify-stat-label">Followers</span>
+              </div>
+              <div class="spotify-stat">
+                <span class="spotify-stat-value">${artist.popularity}</span>
+                <span class="spotify-stat-label">Popularity</span>
+              </div>
+            </div>
+            ${artist.genres && artist.genres.length > 0 ? `
+              <div class="spotify-genres">
+                ${artist.genres.map(genre => `<span class="spotify-genre-tag">${genre}</span>`).join('')}
+              </div>
+            ` : ''}
+          </div>
+          
+          ${topTracks && topTracks.length > 0 ? `
+            <div class="spotify-tracks">
+              <h3 class="spotify-tracks-title">Top Tracks</h3>
+              <div class="spotify-tracks-list">
+                ${topTracks.map((track, index) => `
+                  <div class="spotify-track-item">
+                    <span class="spotify-track-number">${index + 1}</span>
+                    ${track.albumImage ? `
+                      <img src="${track.albumImage}" alt="${track.album}" class="spotify-track-image" />
+                    ` : ''}
+                    <div class="spotify-track-info">
+                      <div class="spotify-track-name">${track.name}</div>
+                      <div class="spotify-track-album">${track.album}</div>
+                    </div>
+                    <span class="spotify-track-duration">${formatDuration(track.duration)}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    // Render the demo
+    document.getElementById('spotify-data-demo').innerHTML = createDisplay(mockData);
+  </script>
+</body>
+</html>

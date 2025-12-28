@@ -17,6 +17,12 @@ Thumbs.db
 # Node (if you add dependencies later)
 node_modules/
 npm-debug.log
+package-lock.json
+
+# Environment variables
+.env
+.env.local
+.env.*.local
 
 # Build outputs
 dist/
