@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e  # Exit immediately if any command fails
 # Local Testing Script for Spotify Backend
 # This script helps test the backend before deploying
 

@@ -70,8 +70,10 @@ Now that your backend is deployed, update your website to use it:
 
 1. **Edit `spotify-integration.js`**
    
-   Open `/spotify-integration.js` and find this line near the top:
+   Open `/spotify-integration.js` and find this line near the top (around line 9):
    ```javascript
+   // Set your deployed backend URL here after deployment
+   // Leave as empty string to use local development server
    const PRODUCTION_BACKEND_URL = ''; // Example: 'https://indrolend-spotify-backend.onrender.com'
    ```
 
