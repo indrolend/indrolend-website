@@ -820,6 +820,11 @@ Dr. Wei's voice lingers at the edge of the memory:
     }
   }
 
+  // --- Initialize Spotify Data ---
+  // Check if spotify integration is loaded and initialize
+  if (typeof window.initSpotifyData === 'function') {
+    window.initSpotifyData();
+  }
 });
 
 
@@ -939,10 +944,3 @@ function closeVerifyWindow() {
 function isVerifyWindowVisible() {
     return verifyWindow.style.display !== "none" && verifyWindow.style.display !== "";
 }
-
-  // --- Initialize Spotify Data ---
-  // Check if spotify integration is loaded and initialize
-  if (typeof window.initSpotifyData === 'function') {
-    window.initSpotifyData();
-  }
-});
