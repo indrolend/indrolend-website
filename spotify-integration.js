@@ -4,7 +4,10 @@
  */
 
 // Configuration
-const SPOTIFY_API_BASE = 'http://localhost:3000'; // Update this to your deployed backend URL
+// Use environment-appropriate URL - HTTPS in production, HTTP only for localhost
+const SPOTIFY_API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:3000'
+  : 'https://your-backend-url.com'; // Update this to your deployed backend URL
 const CACHE_DURATION = 5 * 60 * 1000; // Cache data for 5 minutes
 
 // Cache object

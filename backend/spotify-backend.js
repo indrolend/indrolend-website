@@ -16,7 +16,9 @@ app.use(express.json());
 // Spotify API credentials from environment variables
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
-const ARTIST_ID = process.env.SPOTIFY_ARTIST_ID || '59X3431NBfd6xWMc3Zlh0v'; // Default to Indrolend's artist ID
+// Default to Indrolend's artist ID from the Spotify URL in the website
+// This is the public artist ID visible in the Spotify link on home.html
+const ARTIST_ID = process.env.SPOTIFY_ARTIST_ID || '59X3431NBfd6xWMc3Zlh0v';
 
 // Cache for access token
 let accessToken = null;
@@ -141,7 +143,7 @@ app.get('/api/spotify', async (req, res) => {
       topTracks: topTracksData.tracks.slice(0, 5).map(track => ({
         name: track.name,
         album: track.album.name,
-        albumImage: track.album.images[0]?.url,
+        albumImage: track.album.images && track.album.images.length > 0 ? track.album.images[0].url : null,
         previewUrl: track.preview_url,
         spotifyUrl: track.external_urls.spotify,
         duration: track.duration_ms
