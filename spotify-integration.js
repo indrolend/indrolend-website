@@ -4,10 +4,14 @@
  */
 
 // Configuration
-// Use environment-appropriate URL - HTTPS in production, HTTP only for localhost
+// Set your deployed backend URL here after deployment
+// Leave as empty string to use local development server
+const PRODUCTION_BACKEND_URL = ''; // Example: 'https://indrolend-spotify-backend.onrender.com'
+
+// Automatically use localhost for development, production URL when deployed
 const SPOTIFY_API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:3000'
-  : 'https://your-backend-url.com'; // Update this to your deployed backend URL
+  : PRODUCTION_BACKEND_URL || 'http://localhost:3000'; // Fallback to localhost if not set
 const CACHE_DURATION = 5 * 60 * 1000; // Cache data for 5 minutes
 
 // Cache object

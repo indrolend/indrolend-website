@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spotify Integration Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="spotify-styles.css">
+  <style>
+    body {
+      font-family: 'EB Garamond', serif;
+      background: #0a0a0a;
+      color: #5ee87d;
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .test-info {
+      background: rgba(94, 232, 125, 0.05);
+      border: 1px solid rgba(94, 232, 125, 0.2);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 2rem;
+    }
+    .test-info h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+    }
+    .test-info ul {
+      margin: 0.5rem 0;
+      padding-left: 1.5rem;
+    }
+    .status {
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      margin: 0.5rem 0;
+      font-weight: 600;
+    }
+    .status.checking {
+      background: rgba(255, 193, 7, 0.1);
+      border: 1px solid rgba(255, 193, 7, 0.3);
+      color: #ffc107;
+    }
+    .status.success {
+      background: rgba(76, 175, 80, 0.1);
+      border: 1px solid rgba(76, 175, 80, 0.3);
+      color: #4caf50;
+    }
+    .status.error {
+      background: rgba(244, 67, 54, 0.1);
+      border: 1px solid rgba(244, 67, 54, 0.3);
+      color: #f44336;
+    }
+    .backend-check {
+      margin-top: 1rem;
+    }
+    code {
+      background: rgba(94, 232, 125, 0.1);
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎵 Spotify Integration Test Page</h1>
+  
+  <div class="test-info">
+    <h2>Test Instructions</h2>
+    <p>This page tests the Spotify integration. For it to work:</p>
+    <ul>
+      <li>Backend server must be running on <code>http://localhost:3000</code></li>
+      <li>Backend must have valid Spotify credentials in <code>.env</code> file</li>
+      <li>Or you must have deployed backend and updated <code>PRODUCTION_BACKEND_URL</code></li>
+    </ul>
+    <div class="backend-check">
+      <strong>Backend Status:</strong>
+      <div id="backend-status" class="status checking">Checking backend...</div>
+    </div>
+  </div>
+
+  <div id="spotify-data-placeholder"></div>
+
+  <script src="spotify-integration.js"></script>
+  <script>
+    // Check backend health first
+    async function checkBackend() {
+      const statusEl = document.getElementById('backend-status');
+      
+      // Determine which backend URL to check
+      // This mirrors the logic in spotify-integration.js
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+      const PRODUCTION_BACKEND_URL = ''; // Update this to match spotify-integration.js
+      const backendUrl = isLocal ? 'http://localhost:3000' : (PRODUCTION_BACKEND_URL || 'http://localhost:3000');
+      
+      try {
+        const response = await fetch(`${backendUrl}/health`);
+        if (response.ok) {
+          const data = await response.json();
+          statusEl.className = 'status success';
+          statusEl.textContent = `✅ Backend is running! (${data.service})`;
+          
+          // Backend is healthy, initialize Spotify data
+          setTimeout(() => {
+            if (typeof window.initSpotifyData === 'function') {
+              window.initSpotifyData();
+            }
+          }, 500);
+        } else {
+          throw new Error(`HTTP ${response.status}`);
+        }
+      } catch (error) {
+        statusEl.className = 'status error';
+        statusEl.innerHTML = `❌ Backend not accessible: ${error.message}<br>
+          <small>Make sure backend is running: cd backend && npm start</small>`;
+      }
+    }
+
+    // Run backend check on page load
+    checkBackend();
+  </script>
+</body>
+</html>
