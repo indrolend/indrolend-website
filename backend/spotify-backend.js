@@ -145,9 +145,9 @@ async function getMonthlyListeners(artistId) {
     // Pattern 1: Standard format with comma-separated numbers
     let monthlyListenersMatch = pageText.match(/([\d,]+)\s+monthly\s+listeners/i);
     
-    // Pattern 2: Some locales might not use commas
+    // Pattern 2: Some locales might use spaces instead of commas
     if (!monthlyListenersMatch) {
-      monthlyListenersMatch = pageText.match(/([\d\s]+)\s+monthly\s+listeners/i);
+      monthlyListenersMatch = pageText.match(/([\d]+(?:\s[\d]+)*)\s+monthly\s+listeners/i);
     }
     
     if (monthlyListenersMatch && monthlyListenersMatch[1]) {
