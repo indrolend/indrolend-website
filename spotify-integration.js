@@ -60,6 +60,26 @@ function formatDuration(ms) {
 }
 
 /**
+ * Sanitize and validate Spotify URL
+ * Ensures the URL is from spotify.com domain to prevent XSS
+ */
+function sanitizeSpotifyUrl(url) {
+  if (!url) return '#';
+  
+  try {
+    const parsedUrl = new URL(url);
+    // Only allow spotify.com and open.spotify.com domains
+    if (parsedUrl.hostname === 'open.spotify.com' || parsedUrl.hostname === 'spotify.com') {
+      return url;
+    }
+  } catch (e) {
+    // Invalid URL
+  }
+  
+  return '#';
+}
+
+/**
  * Create the Spotify data display HTML
  */
 function createSpotifyDisplay(data) {
@@ -93,7 +113,7 @@ function createSpotifyDisplay(data) {
         <h3 class="spotify-tracks-title">Top Tracks</h3>
         <div class="spotify-tracks-list">
           ${topTracks.map((track, index) => `
-            <a href="${track.spotifyUrl}" target="_blank" rel="noopener noreferrer" class="spotify-track-link">
+            <a href="${sanitizeSpotifyUrl(track.spotifyUrl)}" target="_blank" rel="noopener noreferrer" class="spotify-track-link">
               <div class="spotify-track-item">
                 <span class="spotify-track-number">${index + 1}</span>
                 ${track.albumImage ? `
