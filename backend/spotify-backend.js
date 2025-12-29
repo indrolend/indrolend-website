@@ -125,7 +125,7 @@ async function getMonthlyListeners(artistId) {
     const url = `https://open.spotify.com/artist/${artistId}`;
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
       }
     });
 
@@ -139,13 +139,23 @@ async function getMonthlyListeners(artistId) {
     
     // Find the monthly listeners text in the page
     // Spotify typically shows it in a format like "1,234,567 monthly listeners"
+    // Try multiple patterns for robustness
     const pageText = $('body').text();
-    const monthlyListenersMatch = pageText.match(/([\d,]+)\s+monthly\s+listeners/i);
+    
+    // Pattern 1: Standard format with comma-separated numbers
+    let monthlyListenersMatch = pageText.match(/([\d,]+)\s+monthly\s+listeners/i);
+    
+    // Pattern 2: Some locales might not use commas
+    if (!monthlyListenersMatch) {
+      monthlyListenersMatch = pageText.match(/([\d\s]+)\s+monthly\s+listeners/i);
+    }
     
     if (monthlyListenersMatch && monthlyListenersMatch[1]) {
-      // Remove commas and convert to number
-      const listeners = parseInt(monthlyListenersMatch[1].replace(/,/g, ''), 10);
-      return listeners;
+      // Remove commas and spaces, then convert to number
+      const listeners = parseInt(monthlyListenersMatch[1].replace(/[,\s]/g, ''), 10);
+      if (!isNaN(listeners) && listeners > 0) {
+        return listeners;
+      }
     }
     
     console.warn('Could not find monthly listeners on artist page');
