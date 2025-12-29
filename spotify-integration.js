@@ -61,7 +61,7 @@ function formatDuration(ms) {
 
 /**
  * Sanitize and validate Spotify URL
- * Ensures the URL is from spotify.com domain to prevent XSS
+ * Ensures the URL is from spotify.com domain to prevent malicious redirects
  */
 function sanitizeSpotifyUrl(url) {
   if (!url) return '#';
