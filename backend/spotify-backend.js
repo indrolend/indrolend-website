@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import fetch from 'node-fetch';
+import * as cheerio from 'cheerio';
 
 // Load environment variables
 dotenv.config();
@@ -116,18 +117,59 @@ async function getArtistTopTracks(artistId, market = 'US') {
 }
 
 /**
+ * Scrape monthly listeners from public Spotify artist page
+ * Note: This scrapes the public page as the official API doesn't provide this data
+ */
+async function getMonthlyListeners(artistId) {
+  try {
+    const url = `https://open.spotify.com/artist/${artistId}`;
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+      }
+    });
+
+    if (!response.ok) {
+      console.warn(`Failed to fetch artist page for monthly listeners: ${response.status}`);
+      return null;
+    }
+
+    const html = await response.text();
+    const $ = cheerio.load(html);
+    
+    // Find the monthly listeners text in the page
+    // Spotify typically shows it in a format like "1,234,567 monthly listeners"
+    const pageText = $('body').text();
+    const monthlyListenersMatch = pageText.match(/([\d,]+)\s+monthly\s+listeners/i);
+    
+    if (monthlyListenersMatch && monthlyListenersMatch[1]) {
+      // Remove commas and convert to number
+      const listeners = parseInt(monthlyListenersMatch[1].replace(/,/g, ''), 10);
+      return listeners;
+    }
+    
+    console.warn('Could not find monthly listeners on artist page');
+    return null;
+  } catch (error) {
+    console.error('Error scraping monthly listeners:', error);
+    return null;
+  }
+}
+
+/**
  * API endpoint to get Spotify artist data
  * GET /api/spotify
- * Returns artist information including followers, genres, popularity, and top tracks
+ * Returns artist information including followers, genres, monthly listeners, and top tracks
  */
 app.get('/api/spotify', async (req, res) => {
   try {
     const artistId = req.query.artistId || ARTIST_ID;
     
-    // Fetch both artist data and top tracks in parallel
-    const [artistData, topTracksData] = await Promise.all([
+    // Fetch artist data, top tracks, and monthly listeners in parallel
+    const [artistData, topTracksData, monthlyListeners] = await Promise.all([
       getArtistData(artistId),
-      getArtistTopTracks(artistId)
+      getArtistTopTracks(artistId),
+      getMonthlyListeners(artistId)
     ]);
 
     // Format the response
@@ -135,6 +177,7 @@ app.get('/api/spotify', async (req, res) => {
       artist: {
         name: artistData.name,
         followers: artistData.followers.total,
+        monthlyListeners: monthlyListeners,
         popularity: artistData.popularity,
         genres: artistData.genres,
         images: artistData.images,

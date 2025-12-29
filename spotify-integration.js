@@ -76,10 +76,12 @@ function createSpotifyDisplay(data) {
           <span class="spotify-stat-value">${formatNumber(artist.followers)}</span>
           <span class="spotify-stat-label">Followers</span>
         </div>
-        <div class="spotify-stat">
-          <span class="spotify-stat-value">${artist.popularity}</span>
-          <span class="spotify-stat-label">Popularity</span>
-        </div>
+        ${artist.monthlyListeners ? `
+          <div class="spotify-stat">
+            <span class="spotify-stat-value">${formatNumber(artist.monthlyListeners)}</span>
+            <span class="spotify-stat-label">Monthly Listeners</span>
+          </div>
+        ` : ''}
       </div>
       ${artist.genres && artist.genres.length > 0 ? `
         <div class="spotify-genres">
