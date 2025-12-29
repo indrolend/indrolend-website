@@ -92,6 +92,12 @@
   gap: 0.8rem;
 }
 
+.spotify-track-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
 .spotify-track-item {
   display: flex;
   align-items: center;
@@ -100,9 +106,10 @@
   background: rgba(30, 215, 96, 0.03);
   border-radius: 8px;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
-.spotify-track-item:hover {
+.spotify-track-link:hover .spotify-track-item {
   background: rgba(30, 215, 96, 0.08);
   transform: translateX(4px);
 }
