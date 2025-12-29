@@ -93,17 +93,19 @@ function createSpotifyDisplay(data) {
         <h3 class="spotify-tracks-title">Top Tracks</h3>
         <div class="spotify-tracks-list">
           ${topTracks.map((track, index) => `
-            <div class="spotify-track-item">
-              <span class="spotify-track-number">${index + 1}</span>
-              ${track.albumImage ? `
-                <img src="${track.albumImage}" alt="${track.album}" class="spotify-track-image" />
-              ` : ''}
-              <div class="spotify-track-info">
-                <div class="spotify-track-name">${track.name}</div>
-                <div class="spotify-track-album">${track.album}</div>
+            <a href="${track.spotifyUrl}" target="_blank" rel="noopener noreferrer" class="spotify-track-link">
+              <div class="spotify-track-item">
+                <span class="spotify-track-number">${index + 1}</span>
+                ${track.albumImage ? `
+                  <img src="${track.albumImage}" alt="${track.album}" class="spotify-track-image" />
+                ` : ''}
+                <div class="spotify-track-info">
+                  <div class="spotify-track-name">${track.name}</div>
+                  <div class="spotify-track-album">${track.album}</div>
+                </div>
+                <span class="spotify-track-duration">${formatDuration(track.duration)}</span>
               </div>
-              <span class="spotify-track-duration">${formatDuration(track.duration)}</span>
-            </div>
+            </a>
           `).join('')}
         </div>
       </div>
