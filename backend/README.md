@@ -99,7 +99,8 @@ curl http://localhost:3000/api/spotify
       "albumImage": "https://...",
       "previewUrl": "https://...",
       "spotifyUrl": "https://...",
-      "duration": 180000
+      "duration": 180000,
+      "popularity": 75
     },
     ...
   ]
