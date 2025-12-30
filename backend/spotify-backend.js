@@ -146,7 +146,8 @@ app.get('/api/spotify', async (req, res) => {
         albumImage: track.album.images && track.album.images.length > 0 ? track.album.images[0].url : null,
         previewUrl: track.preview_url,
         spotifyUrl: track.external_urls.spotify,
-        duration: track.duration_ms
+        duration: track.duration_ms,
+        popularity: track.popularity
       }))
     };
 

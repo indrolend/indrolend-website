@@ -131,11 +131,14 @@ Then commit and push your changes.
 - ✅ Music genres
 - ✅ Top 5 tracks with album art
 - ✅ Track durations
+- ✅ Track popularity scores (0-100, based on recent plays)
 - ✅ Loading states
 - ✅ Error handling
 - ✅ Data caching (5 minutes)
 - ✅ Responsive design
 - ✅ Matches website's aesthetic
+
+**Note on Popularity vs Stream Counts:** The Spotify Web API does not provide actual stream counts or play counts for tracks. Instead, we display the "popularity" score (0-100) for each track, which is calculated by Spotify based on recent plays and is the closest available metric to represent a track's performance.
 
 ### Potential Enhancements
 - Add recently played tracks

@@ -123,7 +123,12 @@ function createSpotifyDisplay(data) {
                   <div class="spotify-track-name">${track.name}</div>
                   <div class="spotify-track-album">${track.album}</div>
                 </div>
-                <span class="spotify-track-duration">${formatDuration(track.duration)}</span>
+                <div class="spotify-track-stats">
+                  ${track.popularity !== undefined ? `
+                    <span class="spotify-track-popularity" title="Popularity score based on recent plays">${track.popularity}</span>
+                  ` : ''}
+                  <span class="spotify-track-duration">${formatDuration(track.duration)}</span>
+                </div>
               </div>
             </a>
           `).join('')}
