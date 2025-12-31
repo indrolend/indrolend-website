@@ -4,7 +4,6 @@ Screenshot Parser for Spotify Stats
 Extracts stats like Playlist Adds, Followers, Streams, and Listeners from screenshots using OCR.
 """
 
-import os
 import re
 import json
 from datetime import datetime, timezone
@@ -57,7 +56,7 @@ def parse_spotify_stats(text):
             stats['followers'] = int(followers_matches[-1].group(1))
     
     # Pattern for "Streams" - be careful not to match "Streams / Listener"
-    streams_match = re.search(r'(?:^|\n)\s*Streams[^\d/]*?(\d+)', text, re.IGNORECASE | re.MULTILINE)
+    streams_match = re.search(r'(?:^|\n)\s*Streams[^\d/]*(\d+)', text, re.IGNORECASE | re.MULTILINE)
     if streams_match:
         stats['streams'] = int(streams_match.group(1))
     
