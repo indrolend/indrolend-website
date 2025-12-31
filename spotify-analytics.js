@@ -110,12 +110,30 @@ function createDemographicsDisplay(demographics) {
               </div>
               <span class="analytics-demographic-value">${demographics.gender.female}%</span>
             </div>
+            ${demographics.gender.notSpecified > 0 ? `
+            <div class="analytics-demographic-bar">
+              <span class="analytics-demographic-label">Not Specified</span>
+              <div class="analytics-demographic-bar-bg">
+                <div class="analytics-demographic-bar-fill" style="width: ${demographics.gender.notSpecified}%"></div>
+              </div>
+              <span class="analytics-demographic-value">${demographics.gender.notSpecified}%</span>
+            </div>
+            ` : ''}
           </div>
         </div>
         
         <div class="analytics-demographic-category">
           <h4 class="analytics-demographic-subtitle">Age Distribution</h4>
           <div class="analytics-demographic-bars">
+            ${demographics.age.under18 > 0 ? `
+            <div class="analytics-demographic-bar">
+              <span class="analytics-demographic-label">&lt;18</span>
+              <div class="analytics-demographic-bar-bg">
+                <div class="analytics-demographic-bar-fill" style="width: ${demographics.age.under18}%"></div>
+              </div>
+              <span class="analytics-demographic-value">${demographics.age.under18}%</span>
+            </div>
+            ` : ''}
             <div class="analytics-demographic-bar">
               <span class="analytics-demographic-label">18-24</span>
               <div class="analytics-demographic-bar-bg">
@@ -137,6 +155,15 @@ function createDemographicsDisplay(demographics) {
               </div>
               <span class="analytics-demographic-value">${demographics.age["35-44"]}%</span>
             </div>
+            ${demographics.age["45-54"] > 0 ? `
+            <div class="analytics-demographic-bar">
+              <span class="analytics-demographic-label">45-54</span>
+              <div class="analytics-demographic-bar-bg">
+                <div class="analytics-demographic-bar-fill" style="width: ${demographics.age["45-54"]}%"></div>
+              </div>
+              <span class="analytics-demographic-value">${demographics.age["45-54"]}%</span>
+            </div>
+            ` : ''}
           </div>
         </div>
       </div>
@@ -172,7 +199,7 @@ function createGeographyDisplay(countries, cities) {
               <div class="analytics-location-item">
                 <span class="analytics-location-rank">${idx + 1}</span>
                 <span class="analytics-location-name">${city.name}</span>
-                <span class="analytics-location-value">${city.listeners}</span>
+                <span class="analytics-location-value">${formatAnalyticsNumber(city.listeners)}</span>
               </div>
             `).join('')}
           </div>
