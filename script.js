@@ -825,6 +825,12 @@ Dr. Wei's voice lingers at the edge of the memory:
   if (typeof window.initSpotifyData === 'function') {
     window.initSpotifyData();
   }
+  
+  // --- Initialize Spotify Analytics ---
+  // Check if spotify analytics is loaded and initialize
+  if (typeof window.initSpotifyAnalytics === 'function') {
+    window.initSpotifyAnalytics();
+  }
 });
 
 

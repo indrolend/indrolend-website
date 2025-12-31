@@ -9,8 +9,11 @@
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="spotify-styles.css" />
+  <link rel="stylesheet" href="spotify-analytics-styles.css" />
   <script defer src="script.js"></script>
   <script defer src="spotify-integration.js"></script>
+  <script defer src="spotify-analytics-data.js"></script>
+  <script defer src="spotify-analytics.js"></script>
 </head>
 <body class="home-bg">
   <canvas id="particles-bg"></canvas>
@@ -25,6 +28,9 @@
     <section class="home-main">
       <!-- Spotify Data Integration -->
       <div id="spotify-data-placeholder"></div>
+
+      <!-- Spotify Analytics Dashboard -->
+      <div id="spotify-analytics-placeholder"></div>
 
       <div class="embed-wrapper">
         <iframe style="border: 0; width: 350px; height: 442px;" src="https://bandcamp.com/EmbeddedPlayer/track=205486241/size=large/bgcol=333333/linkcol=0f91ff/tracklist=false/transparent=true/" seamless><a href="https://indrolend.bandcamp.com/track/someday">Someday by Indrolend</a></iframe>
