@@ -33,15 +33,28 @@ def parse_spotify_stats(text):
     """
     stats = {}
     
-    # Pattern for "Playlist Adds" followed by number
-    playlist_adds_match = re.search(r'Playlist\s+Adds[^\d]*(\d+)', text, re.IGNORECASE)
-    if playlist_adds_match:
-        stats['playlist_adds'] = int(playlist_adds_match.group(1))
-    
-    # Pattern for "Followers" followed by number
-    followers_match = re.search(r'Followers[^\d]*(\d+)', text, re.IGNORECASE)
-    if followers_match:
-        stats['followers'] = int(followers_match.group(1))
+    # Look for "Playlist Adds Followers" pattern with two numbers on the next line
+    # This handles the case where both metrics appear together
+    playlist_followers_match = re.search(
+        r'Playlist\s+Adds\s+Followers[^\d]*(\d+)\s+(\d+)',
+        text,
+        re.IGNORECASE
+    )
+    if playlist_followers_match:
+        stats['playlist_adds'] = int(playlist_followers_match.group(1))
+        stats['followers'] = int(playlist_followers_match.group(2))
+    else:
+        # Try individual patterns if the combined pattern doesn't match
+        # Pattern for "Playlist Adds" followed by number
+        playlist_adds_match = re.search(r'Playlist\s+Adds[^\d]*(\d+)', text, re.IGNORECASE)
+        if playlist_adds_match:
+            stats['playlist_adds'] = int(playlist_adds_match.group(1))
+        
+        # Pattern for "Followers" followed by number (last occurrence to avoid header)
+        followers_matches = list(re.finditer(r'Followers[^\d]*(\d+)', text, re.IGNORECASE))
+        if followers_matches:
+            # Use the last match to avoid matching headers
+            stats['followers'] = int(followers_matches[-1].group(1))
     
     # Pattern for "Streams" - be careful not to match "Streams / Listener"
     streams_match = re.search(r'(?:^|\n)\s*Streams[^\d/]*?(\d+)', text, re.IGNORECASE | re.MULTILINE)
