@@ -111,6 +111,14 @@ def process_screenshots_folder(screenshots_dir, output_file):
             results['screenshots'].append(result_entry)
             print(f"  ✓ Extracted {len(stats)} stat(s): {', '.join(stats.keys())}")
         else:
+            # Still record files that were processed but had no extractable stats
+            result_entry = {
+                'filename': image_file.name,
+                'stats': {},
+                'extracted_text_preview': text[:200].replace('\n', ' ') if text else 'No text extracted',
+                'note': 'No stats found in this screenshot'
+            }
+            results['screenshots'].append(result_entry)
             print(f"  ⚠ No stats found in {image_file.name}")
     
     # Save results to JSON
@@ -121,7 +129,20 @@ def process_screenshots_folder(screenshots_dir, output_file):
         json.dump(results, f, indent=2)
     
     print(f"\n✓ Results saved to {output_file}")
-    print(f"Total screenshots processed: {len(results['screenshots'])}")
+    print(f"Total screenshots processed: {len(image_files)}")
+    stats_found = sum(1 for item in results['screenshots'] if item['stats'])
+    print(f"Screenshots with extractable stats: {stats_found}")
+    
+    # Delete all processed screenshots to prevent conflicting data in future runs
+    if image_files:
+        print(f"\nCleaning up {len(image_files)} processed screenshot(s)...")
+        for image_file in image_files:
+            try:
+                image_file.unlink()
+                print(f"  ✓ Deleted: {image_file.name}")
+            except Exception as e:
+                print(f"  ⚠ Failed to delete {image_file.name}: {e}")
+        print("✓ Screenshot cleanup complete")
     
     return results
 
