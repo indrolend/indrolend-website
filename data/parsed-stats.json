@@ -1,4 +1,107 @@
 {
-  "processed_at": "2026-01-01T17:59:38.469944+00:00",
-  "screenshots": []
+  "processed_at": "2026-01-01T18:00:32.513676+00:00",
+  "screenshots": [
+    {
+      "filename": "IMG_0714.png",
+      "stats": {
+        "listeners": 427
+      },
+      "extracted_text_preview": "9:38 a > @&  Audience  Last 28 days v Listeners Listeners Streams Strea 427 2,471 5.8 & 39% & 1% 100 50 ! (0)  Dec 04 Dec 31 Last period This period 310 427 Source of streams  Listeners - Last 28 days"
+    },
+    {
+      "filename": "IMG_0715.png",
+      "stats": {
+        "listeners": 28
+      },
+      "extracted_text_preview": "\u2019 B  9:38 o  Audience  Last 28 days v  Streams  ers Streams Streams / Listen  2,471 5.8  400  200  me) Dec 04 Dec 31  Last period This period 1,772 2,471  Source of streams  Listeners - Last 28 days  "
+    },
+    {
+      "filename": "IMG_0716.png",
+      "stats": {
+        "listeners": 28,
+        "streams_per_listener": 1.0,
+        "saves": 1
+      },
+      "extracted_text_preview": "9:38 uF  Audience  Last 28 days v  Streams / Listener  ms Streams / Listener Saves 1 5.8 335  % & 179%  \u201c0  Dec 04 Dec 31 Last period This period 5.7 5.8 Source of streams  Listeners - Last 28 days  A"
+    },
+    {
+      "filename": "IMG_0717.png",
+      "stats": {
+        "playlist_adds": 232,
+        "listeners": 28,
+        "saves": 232
+      },
+      "extracted_text_preview": "9:38 wo + @\u00ae Audience Last 28 days v Saves ms / Listener Playlist Adds 232 & 57% 50 25 So Dec 04 Dec 31 Last period This period 120 335 Source of streams  Listeners - Last 28 days  All active sources "
+    },
+    {
+      "filename": "IMG_0718.png",
+      "stats": {
+        "playlist_adds": 232,
+        "followers": 243,
+        "listeners": 28
+      },
+      "extracted_text_preview": "9:38 uF  Audience Last 28 days v  Playlist Adds  Playlist Adds Followers 232 243  \u201c0  Dec 04 Dec 31 Last period This period 148 232 Source of streams  Listeners - Last 28 days  All active sources - 83"
+    },
+    {
+      "filename": "IMG_0719.png",
+      "stats": {
+        "playlist_adds": 232,
+        "followers": 243,
+        "listeners": 28
+      },
+      "extracted_text_preview": "9:38 a > @&  Audience Last 28 days v Followers Playlist Adds Followers 232 243 & 57% & 2%  \u201c0  Dec 04 Dec 31 Last period This period 239 243 Source of streams  Listeners - Last 28 days  All active sou"
+    },
+    {
+      "filename": "IMG_0720.png",
+      "stats": {
+        "listeners": 28
+      },
+      "extracted_text_preview": "Audience  Source of streams  Listeners - Last 28 days  All active sources - 83%  Artist profile and catalog a  Listener\u2019s own playlists and library as  Listener\u2019s queue a  All programmed sources - 12%"
+    },
+    {
+      "filename": "IMG_0721.png",
+      "stats": {
+        "listeners": 5
+      },
+      "extracted_text_preview": "9:38 al  Audience  All programmed sources - 12% Editorial playlists 0  Algorithmic playlists and mixes BS  Personalized editorial playlists t  Other listeners\u2019 playlists a  Radio and autoplay =  Chart"
+    },
+    {
+      "filename": "IMG_0722.png",
+      "stats": {},
+      "extracted_text_preview": "9:39 al > GD  Audience  Their gender  Last 28 days  \u00bb 55% Male e 38% Female  0% Non-binary e 7% Not specified  Their age  Last 28 days  <18 6% =  18-24 28% a  25-34 42% a 35-44 a  13%  ",
+      "note": "No stats found in this screenshot"
+    },
+    {
+      "filename": "IMG_0723.png",
+      "stats": {},
+      "extracted_text_preview": "9:39 al > GD  Audience  e 38% Female 0% Non-binary e 7% Not specified  Their age  Last 28 days  <18 6% =  18-24 28% fe  25-34 42% Pe  35-44 13% =  45-54 6% =  55-64 2% 8  65+ 2%  ",
+      "note": "No stats found in this screenshot"
+    },
+    {
+      "filename": "IMG_0724.png",
+      "stats": {
+        "listeners": 402
+      },
+      "extracted_text_preview": "9:39  Top countries Last 28 days  1. United States 2 Australia  3 United Kingdom  Top cities Last 28 days , Dallas United States 2 Los Angeles United States 3 Atlanta United States 4 Phoenix United St"
+    },
+    {
+      "filename": "IMG_0725.png",
+      "stats": {
+        "listeners": 14
+      },
+      "extracted_text_preview": "9:39 al > GD  Top cities  Last 28 days Listeners  Dallas 14 United States  2 Los Angeles 13 United States  3 Atlanta 8 United States  4 Phoenix 8 United States  5 Houston 8 United States  6 Chicago 8 "
+    },
+    {
+      "filename": "IMG_0726.png",
+      "stats": {},
+      "extracted_text_preview": "11  12  13  14  15  16  17  18  19  20  21  9:39  Jacksonville United States Miami  United States  Kansas City United States  McKinney United States  Austin United States  Orlando United States  Fort ",
+      "note": "No stats found in this screenshot"
+    },
+    {
+      "filename": "IMG_0727.png",
+      "stats": {},
+      "extracted_text_preview": "9:39 al > GD  < Top cities a4 Montgomery 4 United States Seattle 4 22 United States 23 Memphis 3 United States Arlington 3 24 United States 25 Oakland 3 United States 26 Lexington 3 United States Miss",
+      "note": "No stats found in this screenshot"
+    }
+  ]
 }
