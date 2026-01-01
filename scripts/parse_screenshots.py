@@ -11,6 +11,11 @@ from pathlib import Path
 import pytesseract
 from PIL import Image
 
+# Constants for geography parsing
+MIN_CITY_NAME_LENGTH = 2
+MIN_COUNTRY_NAME_LENGTH = 3
+MIN_LISTENERS_COUNT = 1
+
 def extract_text_from_image(image_path):
     """Extract text from an image using Tesseract OCR."""
     try:
@@ -123,35 +128,52 @@ def parse_spotify_stats(text):
     
     # Parse top cities with listener counts
     # Look for city names followed by numbers
+    # This is a heuristic approach - city names typically start with capital letter
+    # and are followed by a number representing listener count
     cities = []
     # Common pattern: "City Name    123" or "City, State    123"
-    city_matches = re.finditer(
-        r'([A-Z][a-zA-Z\s,]+?)\s+(\d+)(?:\s+listeners)?',
-        text
-    )
-    for match in city_matches:
-        city_name = match.group(1).strip()
-        listeners = int(match.group(2))
-        # Filter out likely false positives (very short names, numbers in name, etc.)
-        if len(city_name) > 2 and listeners > 0 and not re.search(r'\d', city_name):
-            cities.append({'name': city_name, 'listeners': listeners})
+    # Look for patterns in sections likely to contain city/country data
+    if re.search(r'(top\s+cities|cities|locations)', text, re.IGNORECASE):
+        city_matches = re.finditer(
+            r'([A-Z][a-zA-Z\s,\-\']+?)\s+(\d+)(?:\s+listeners)?',
+            text
+        )
+        for match in city_matches:
+            city_name = match.group(1).strip()
+            listeners = int(match.group(2))
+            # Filter out likely false positives
+            # - Name must be at least MIN_CITY_NAME_LENGTH characters
+            # - Must have listeners >= MIN_LISTENERS_COUNT
+            # - Must not contain digits in the name
+            # - Must not be a generic word like "Active", "Total", etc.
+            generic_words = {'Active', 'Total', 'Streams', 'Male', 'Female', 'Age'}
+            if (len(city_name) > MIN_CITY_NAME_LENGTH and 
+                listeners >= MIN_LISTENERS_COUNT and 
+                not re.search(r'\d', city_name) and
+                city_name not in generic_words):
+                cities.append({'name': city_name, 'listeners': listeners})
     
     if cities:
         # Sort by listeners and take top 10
         cities.sort(key=lambda x: x['listeners'], reverse=True)
         stats['top_cities'] = cities[:10]
     
-    # Parse countries (similar approach)
+    # Parse countries (similar approach but more strict on name length)
     countries = []
-    country_matches = re.finditer(
-        r'([A-Z][a-zA-Z\s]+?)\s+(\d+)(?:\s+listeners)?',
-        text
-    )
-    for match in country_matches:
-        country_name = match.group(1).strip()
-        listeners = int(match.group(2))
-        if len(country_name) > 3 and listeners > 0 and not re.search(r'\d', country_name):
-            countries.append({'name': country_name, 'listeners': listeners})
+    if re.search(r'(top\s+countries|countries)', text, re.IGNORECASE):
+        country_matches = re.finditer(
+            r'([A-Z][a-zA-Z\s\-\']+?)\s+(\d+)(?:\s+listeners)?',
+            text
+        )
+        for match in country_matches:
+            country_name = match.group(1).strip()
+            listeners = int(match.group(2))
+            generic_words = {'Active', 'Total', 'Streams', 'Male', 'Female', 'Age'}
+            if (len(country_name) > MIN_COUNTRY_NAME_LENGTH and 
+                listeners >= MIN_LISTENERS_COUNT and 
+                not re.search(r'\d', country_name) and
+                country_name not in generic_words):
+                countries.append({'name': country_name, 'listeners': listeners})
     
     if countries:
         countries.sort(key=lambda x: x['listeners'], reverse=True)
@@ -336,10 +358,17 @@ def generate_insights(stats):
     """
     insights = []
     
+    # Helper function to safely parse percentage change
+    def parse_change(change_str):
+        try:
+            return int(change_str.replace('+', '').replace('-', '').replace('%', ''))
+        except (ValueError, AttributeError):
+            return 0
+    
     # Analyze listener growth
     listeners_change = stats.get('listeners_change', '+0%')
     if listeners_change.startswith('+'):
-        change_val = int(listeners_change.replace('+', '').replace('%', ''))
+        change_val = parse_change(listeners_change)
         if change_val > 30:
             insights.append("Listener growth is accelerating")
         elif change_val > 10:
@@ -351,16 +380,20 @@ def generate_insights(stats):
     
     # Analyze streams per listener
     spl_change = stats.get('streams_per_listener_change', '+0%')
-    if abs(int(spl_change.replace('+', '').replace('-', '').replace('%', ''))) < 5:
-        insights.append("Streams per listener are stable (repeat engagement)")
+    if spl_change:
+        change_val = abs(parse_change(spl_change))
+        if change_val < 5:
+            insights.append("Streams per listener are stable (repeat engagement)")
     
     # Analyze saves and playlist adds
-    saves_change = stats.get('saves_change', '+0%').replace('+', '').replace('-', '').replace('%', '')
-    playlist_change = stats.get('playlist_adds_change', '+0%').replace('+', '').replace('-', '').replace('%', '')
+    saves_change = stats.get('saves_change', '+0%')
+    playlist_change = stats.get('playlist_adds_change', '+0%')
     
-    if saves_change and playlist_change:
-        if int(saves_change) > 50 or int(playlist_change) > 50:
-            insights.append("Saves and playlist adds are outpacing listener growth")
+    saves_val = parse_change(saves_change)
+    playlist_val = parse_change(playlist_change)
+    
+    if saves_val > 50 or playlist_val > 50:
+        insights.append("Saves and playlist adds are outpacing listener growth")
     
     # Analyze discovery sources
     active_total = stats.get('discovery_active_total', 0)

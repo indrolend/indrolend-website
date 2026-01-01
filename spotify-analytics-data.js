@@ -117,14 +117,36 @@ function hasValidData(analytics) {
   return hasMetrics;
 }
 
-// Initialize the data
-loadSpotifyAnalyticsData().then(data => {
-  window.spotifyAnalyticsData = data;
-  
+/**
+ * Initialize analytics with loaded data
+ */
+function initializeAnalytics() {
   // Trigger initialization if the init function is already loaded
   if (typeof window.initSpotifyAnalytics === 'function') {
     window.initSpotifyAnalytics();
+  } else {
+    // If not loaded yet, set up a listener for when it becomes available
+    console.log('⏳ Waiting for spotify-analytics.js to load...');
+    // Retry a few times in case the script is still loading
+    let retryCount = 0;
+    const maxRetries = 10;
+    const retryInterval = setInterval(() => {
+      retryCount++;
+      if (typeof window.initSpotifyAnalytics === 'function') {
+        clearInterval(retryInterval);
+        window.initSpotifyAnalytics();
+      } else if (retryCount >= maxRetries) {
+        clearInterval(retryInterval);
+        console.error('❌ spotify-analytics.js failed to load');
+      }
+    }, 100);
   }
+}
+
+// Initialize the data
+loadSpotifyAnalyticsData().then(data => {
+  window.spotifyAnalyticsData = data;
+  initializeAnalytics();
 });
 
 // Export for use in other scripts
