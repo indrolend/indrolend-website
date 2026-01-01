@@ -123,6 +123,17 @@ def process_screenshots_folder(screenshots_dir, output_file):
     print(f"\n✓ Results saved to {output_file}")
     print(f"Total screenshots processed: {len(results['screenshots'])}")
     
+    # Delete all processed screenshots to prevent conflicting data in future runs
+    if image_files:
+        print(f"\nCleaning up {len(image_files)} processed screenshot(s)...")
+        for image_file in image_files:
+            try:
+                image_file.unlink()
+                print(f"  ✓ Deleted: {image_file.name}")
+            except Exception as e:
+                print(f"  ⚠ Failed to delete {image_file.name}: {e}")
+        print("✓ Screenshot cleanup complete")
+    
     return results
 
 def main():
