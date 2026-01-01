@@ -15,6 +15,7 @@ from PIL import Image
 MIN_CITY_NAME_LENGTH = 2
 MIN_COUNTRY_NAME_LENGTH = 3
 MIN_LISTENERS_COUNT = 1
+GENERIC_WORDS = {'Active', 'Total', 'Streams', 'Male', 'Female', 'Age', 'Sources', 'Listeners'}
 
 def extract_text_from_image(image_path):
     """Extract text from an image using Tesseract OCR."""
@@ -146,11 +147,10 @@ def parse_spotify_stats(text):
             # - Must have listeners >= MIN_LISTENERS_COUNT
             # - Must not contain digits in the name
             # - Must not be a generic word like "Active", "Total", etc.
-            generic_words = {'Active', 'Total', 'Streams', 'Male', 'Female', 'Age'}
             if (len(city_name) > MIN_CITY_NAME_LENGTH and 
                 listeners >= MIN_LISTENERS_COUNT and 
                 not re.search(r'\d', city_name) and
-                city_name not in generic_words):
+                city_name not in GENERIC_WORDS):
                 cities.append({'name': city_name, 'listeners': listeners})
     
     if cities:
@@ -168,11 +168,10 @@ def parse_spotify_stats(text):
         for match in country_matches:
             country_name = match.group(1).strip()
             listeners = int(match.group(2))
-            generic_words = {'Active', 'Total', 'Streams', 'Male', 'Female', 'Age'}
             if (len(country_name) > MIN_COUNTRY_NAME_LENGTH and 
                 listeners >= MIN_LISTENERS_COUNT and 
                 not re.search(r'\d', country_name) and
-                country_name not in generic_words):
+                country_name not in GENERIC_WORDS):
                 countries.append({'name': country_name, 'listeners': listeners})
     
     if countries:

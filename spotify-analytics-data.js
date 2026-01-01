@@ -3,6 +3,10 @@
  * Loads analytics data from parsed screenshots or falls back to default data
  */
 
+// Configuration constants
+const INIT_RETRY_MAX_ATTEMPTS = 10;
+const INIT_RETRY_INTERVAL_MS = 100;
+
 // Default/fallback data
 const defaultSpotifyAnalyticsData = {
   period: "Last 28 Days",
@@ -129,17 +133,16 @@ function initializeAnalytics() {
     console.log('⏳ Waiting for spotify-analytics.js to load...');
     // Retry a few times in case the script is still loading
     let retryCount = 0;
-    const maxRetries = 10;
     const retryInterval = setInterval(() => {
       retryCount++;
       if (typeof window.initSpotifyAnalytics === 'function') {
         clearInterval(retryInterval);
         window.initSpotifyAnalytics();
-      } else if (retryCount >= maxRetries) {
+      } else if (retryCount >= INIT_RETRY_MAX_ATTEMPTS) {
         clearInterval(retryInterval);
         console.error('❌ spotify-analytics.js failed to load');
       }
-    }, 100);
+    }, INIT_RETRY_INTERVAL_MS);
   }
 }
 
