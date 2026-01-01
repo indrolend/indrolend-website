@@ -46,6 +46,7 @@ jobs:
             # Pull with rebase to handle concurrent changes, then push
             # Retry up to 3 times in case of concurrent updates
             for i in {1..3}; do
+              git fetch origin ${{ github.ref_name }}
               git pull --rebase origin ${{ github.ref_name }} && git push && break || {
                 if [ $i -eq 3 ]; then
                   echo "Failed to push after 3 attempts"
