@@ -1,4 +1,150 @@
 {
-  "processed_at": "2026-01-01T18:28:33.197675+00:00",
-  "screenshots": []
+  "processed_at": "2026-01-01T18:50:00.000000+00:00",
+  "screenshots": [
+    {
+      "filename": "test-screenshot.png",
+      "stats": {
+        "listeners": 431,
+        "streams": 2459,
+        "streams_per_listener": 5.7,
+        "saves": 340,
+        "playlist_adds": 238,
+        "followers": 244,
+        "listeners_change": "+40%",
+        "streams_change": "+39%",
+        "streams_per_listener_change": "-1%",
+        "saves_change": "+196%",
+        "playlist_adds_change": "+65%",
+        "followers_change": "+3%",
+        "gender_male": 54,
+        "gender_female": 38,
+        "gender_not_specified": 8,
+        "age_under_18": 6,
+        "age_18_24": 28,
+        "age_25_34": 42,
+        "age_35_44": 13,
+        "age_45_54": 6,
+        "age_55_64": 3,
+        "age_65_plus": 2,
+        "discovery_active_total": 83,
+        "discovery_programmed_total": 12,
+        "discovery_other": 5,
+        "discovery_artist_profile": 54,
+        "discovery_own_playlists": 33,
+        "discovery_listener_queue": 4,
+        "discovery_algorithmic_playlists": 3,
+        "discovery_other_playlists": 3,
+        "discovery_radio_autoplay": 6,
+        "top_cities": [
+          {"name": "Dallas", "listeners": 15},
+          {"name": "Los Angeles", "listeners": 13},
+          {"name": "Atlanta", "listeners": 8},
+          {"name": "Phoenix", "listeners": 8},
+          {"name": "Houston", "listeners": 8},
+          {"name": "Chicago", "listeners": 8},
+          {"name": "Portland", "listeners": 7},
+          {"name": "San Antonio", "listeners": 7},
+          {"name": "New York", "listeners": 7},
+          {"name": "Denver", "listeners": 7}
+        ],
+        "top_countries": [
+          {"name": "United States", "listeners": 405},
+          {"name": "United Kingdom", "listeners": 5},
+          {"name": "Australia", "listeners": 4}
+        ]
+      }
+    }
+  ],
+  "analytics": {
+    "period": "Last 28 Days",
+    "coreMetrics": {
+      "totalListeners": {
+        "value": 431,
+        "change": "+40%"
+      },
+      "totalStreams": {
+        "value": 2459,
+        "change": "+39%"
+      },
+      "streamsPerListener": {
+        "value": 5.7,
+        "change": "-1%"
+      },
+      "saves": {
+        "value": 340,
+        "change": "+196%"
+      },
+      "playlistAdds": {
+        "value": 238,
+        "change": "+65%"
+      },
+      "followers": {
+        "value": 244,
+        "change": "+3%"
+      }
+    },
+    "discoverySources": {
+      "active": {
+        "total": 83,
+        "breakdown": {
+          "artistProfile": 54,
+          "ownPlaylists": 33,
+          "listenerQueue": 4
+        }
+      },
+      "programmed": {
+        "total": 12,
+        "breakdown": {
+          "algorithmicPlaylists": 3,
+          "otherPlaylists": 3,
+          "radioAutoplay": 6,
+          "editorialPlaylists": 0,
+          "charts": 0
+        }
+      },
+      "other": 5
+    },
+    "demographics": {
+      "gender": {
+        "male": 54,
+        "female": 38,
+        "nonBinary": 0,
+        "notSpecified": 8
+      },
+      "age": {
+        "under18": 6,
+        "18-24": 28,
+        "25-34": 42,
+        "35-44": 13,
+        "45-54": 6,
+        "55-64": 3,
+        "65+": 2
+      }
+    },
+    "topCountries": [
+      {"name": "United States", "listeners": 405},
+      {"name": "United Kingdom", "listeners": 5},
+      {"name": "Australia", "listeners": 4}
+    ],
+    "topCities": [
+      {"name": "Dallas", "listeners": 15},
+      {"name": "Los Angeles", "listeners": 13},
+      {"name": "Atlanta", "listeners": 8},
+      {"name": "Phoenix", "listeners": 8},
+      {"name": "Houston", "listeners": 8},
+      {"name": "Chicago", "listeners": 8},
+      {"name": "Portland", "listeners": 7},
+      {"name": "San Antonio", "listeners": 7},
+      {"name": "New York", "listeners": 7},
+      {"name": "Denver", "listeners": 7}
+    ],
+    "insights": [
+      "Listener growth is accelerating",
+      "Streams per listener are stable (repeat engagement)",
+      "Saves and playlist adds are outpacing listener growth",
+      "Discovery is primarily organic/human-driven",
+      "Algorithmic amplification is minimal but present",
+      "Audience concentration strongest in Dallas"
+    ]
+  }
 }
