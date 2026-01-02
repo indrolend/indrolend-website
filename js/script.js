@@ -332,10 +332,10 @@ const galleryCard = document.getElementById("galleryCard");
 if (galleryCard) {
   const unlocked = localStorage.getItem("galleryUnlocked") === "true";
   if (unlocked) {
-    galleryCard.href = "pages/gallery.html";
+    galleryCard.href = "gallery.html";
     galleryCard.classList.remove("locked");
   } else {
-    galleryCard.href = "pages/tictactoe.html";
+    galleryCard.href = "tictactoe.html";
     galleryCard.classList.add("locked");
   }
 }
