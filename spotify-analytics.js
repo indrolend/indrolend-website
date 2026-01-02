@@ -261,12 +261,6 @@ function createAnalyticsDisplay(data) {
     ? `<div class="analytics-date-generated">Last updated: ${formatDateGenerated(data.dateGenerated)}</div>`
     : '';
   
-  // Get top tracks HTML if available
-  let topTracksHTML = '';
-  if (window.spotifyLiveData && window.spotifyLiveData.topTracks && window.createTopTracksHTML) {
-    topTracksHTML = window.createTopTracksHTML(window.spotifyLiveData.topTracks);
-  }
-  
   container.innerHTML = `
     <div class="analytics-header">
       <h2 class="analytics-main-title">Spotify Snapshot</h2>
@@ -289,8 +283,6 @@ function createAnalyticsDisplay(data) {
     ${createDiscoverySourcesDisplay(data.discoverySources)}
     ${createDemographicsDisplay(data.demographics)}
     ${createGeographyDisplay(data.topCountries, data.topCities)}
-    ${createInsightsDisplay(data.insights)}
-    ${topTracksHTML}
   `;
   
   return container;
@@ -314,49 +306,9 @@ function initSpotifyAnalytics() {
   
   targetElement.innerHTML = '';
   targetElement.appendChild(createAnalyticsDisplay(window.spotifyAnalyticsData));
-  
-  // Set up callback to append tracks when Spotify data loads
-  // Always set the callback to handle re-initialization
-  window.onSpotifyDataLoaded = function() {
-    appendTopTracksToAnalytics();
-  };
-  
-  // If data is already available, append tracks immediately
-  if (window.spotifyLiveData) {
-    appendTopTracksToAnalytics();
-  }
-}
-
-/**
- * Append top tracks to the analytics display if not already present
- */
-function appendTopTracksToAnalytics() {
-  const targetElement = document.getElementById('spotify-analytics-placeholder');
-  
-  if (!targetElement) {
-    return;
-  }
-  
-  // Check if tracks are already displayed
-  const existingTracks = targetElement.querySelector('.spotify-tracks');
-  if (existingTracks) {
-    return; // Tracks already displayed
-  }
-  
-  // Append tracks if data is available
-  if (window.spotifyLiveData && window.spotifyLiveData.topTracks && window.createTopTracksHTML) {
-    const tracksHTML = window.createTopTracksHTML(window.spotifyLiveData.topTracks);
-    if (tracksHTML) {
-      const container = targetElement.querySelector('.spotify-analytics-container');
-      if (container) {
-        container.insertAdjacentHTML('beforeend', tracksHTML);
-      }
-    }
-  }
 }
 
 // Export for use in other scripts
 if (typeof window !== 'undefined') {
   window.initSpotifyAnalytics = initSpotifyAnalytics;
-  window.appendTopTracksToAnalytics = appendTopTracksToAnalytics;
 }
