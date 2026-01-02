@@ -280,6 +280,7 @@ def aggregate_analytics_data(screenshots_results):
     # Build the analytics object in the format expected by the frontend
     analytics = {
         'period': 'Last 28 Days',
+        'dateGenerated': datetime.now(timezone.utc).isoformat(),
         'coreMetrics': {
             'totalListeners': {
                 'value': merged_stats.get('listeners', 0),

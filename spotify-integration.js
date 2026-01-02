@@ -8,7 +8,7 @@
 const SPOTIFY_API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:3000'
   : 'https://spotify-stats-backend-y8hb.onrender.com';
-const CACHE_DURATION = 5 * 60 * 1000; // Cache data for 5 minutes
+const CACHE_DURATION = 24 * 60 * 60 * 1000; // Cache data for 24 hours (backend caches for 24 hours)
 
 // Cache object
 let cachedSpotifyData = null;
