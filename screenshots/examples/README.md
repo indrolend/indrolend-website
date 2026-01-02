@@ -241,7 +241,43 @@ When improving the OCR parser:
 screenshots/examples/
 ├── README.md (this file)
 ├── TEMPLATE.json (empty template for new examples)
+├── CONTRIBUTING.md (contribution guidelines)
+├── example_text (ground truth data in text format)
 │
+├── IMG_0736.png ... IMG_0749.png (14 example screenshots)
+├── IMG_0736.json ... IMG_0749.json (corresponding ground truth JSON files)
+│
+└── example-core-metrics.json (sample ground truth file)
+```
+
+## Current Setup: Example Screenshots with Ground Truth
+
+This repository currently includes 14 example screenshots (IMG_0736.png through IMG_0749.png) with corresponding ground truth data:
+
+- **Example Images**: 14 PNG files showing various Spotify analytics screens
+- **Ground Truth Source**: `example_text` file containing all correct values in plain text format
+- **Generated JSON Files**: Individual JSON files for each screenshot generated from example_text
+
+### About the Generated JSON Files
+
+The JSON files (IMG_0736.json through IMG_0749.json) were automatically generated from the `example_text` file using the script `scripts/generate_ground_truth_json.py`. These files currently contain **all available metrics** from example_text.
+
+**Important**: Since each screenshot likely shows only a subset of the metrics, you may want to:
+1. Run OCR validation to see which metrics are actually extractable from each image
+2. Edit individual JSON files to remove metrics not visible in that specific screenshot
+3. This will improve validation accuracy by only checking for metrics that should be present
+
+To regenerate the JSON files from example_text:
+```bash
+python scripts/generate_ground_truth_json.py
+```
+
+### Legacy File Organization Example
+
+For new screenshots, you can use descriptive naming:
+
+```
+screenshots/examples/
 ├── core-metrics-example-1.png
 ├── core-metrics-example-1.json
 │

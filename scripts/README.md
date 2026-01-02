@@ -34,6 +34,7 @@ This system automatically processes Spotify stats screenshots using OCR (Optical
 ├── scripts/
 │   ├── parse_screenshots.py         # OCR parsing script
 │   ├── validate_ocr_examples.py     # Validation script for examples
+│   ├── generate_ground_truth_json.py # Generate JSON files from example_text
 │   └── requirements.txt             # Python dependencies
 ├── data/
 │   ├── parsed-stats.json            # Output: parsed statistics and analytics
@@ -56,6 +57,9 @@ python scripts/parse_screenshots.py
 
 # Validate OCR accuracy against example screenshots (optional)
 python scripts/validate_ocr_examples.py
+
+# Generate ground truth JSON files from example_text (if needed)
+python scripts/generate_ground_truth_json.py
 ```
 
 ## Validation and Testing
@@ -81,6 +85,22 @@ This will:
 - Compare extracted values against ground truth
 - Report accuracy metrics and discrepancies
 - Save detailed results to `data/validation-results.json`
+
+### Generating Ground Truth JSON Files
+
+If you have a text file with ground truth data (like `example_text`), you can automatically generate JSON files for all example screenshots:
+
+```bash
+python scripts/generate_ground_truth_json.py
+```
+
+This script:
+- Reads the `screenshots/examples/example_text` file
+- Parses all metrics from the text format
+- Generates individual JSON files for each example image
+- Places JSON files alongside their corresponding PNG files
+
+The generated JSON files contain comprehensive ground truth data that can be refined later to match what's actually visible in each specific screenshot.
 
 Example output:
 ```
