@@ -80,10 +80,10 @@ function sanitizeSpotifyUrl(url) {
 }
 
 /**
- * Create the Spotify data display HTML
+ * Create the Spotify data display HTML (artist info only)
  */
 function createSpotifyDisplay(data) {
-  const { artist, topTracks } = data;
+  const { artist } = data;
   
   // Create the main container
   const container = document.createElement('div');
@@ -107,32 +107,41 @@ function createSpotifyDisplay(data) {
         </div>
       ` : ''}
     </div>
-    
-    ${topTracks && topTracks.length > 0 ? `
-      <div class="spotify-tracks">
-        <h3 class="spotify-tracks-title">Top Tracks</h3>
-        <div class="spotify-tracks-list">
-          ${topTracks.map((track, index) => `
-            <a href="${sanitizeSpotifyUrl(track.spotifyUrl)}" target="_blank" rel="noopener noreferrer" class="spotify-track-link">
-              <div class="spotify-track-item">
-                <span class="spotify-track-number">${index + 1}</span>
-                ${track.albumImage ? `
-                  <img src="${track.albumImage}" alt="${track.album}" class="spotify-track-image" />
-                ` : ''}
-                <div class="spotify-track-info">
-                  <div class="spotify-track-name">${track.name}</div>
-                  <div class="spotify-track-album">${track.album}</div>
-                </div>
-                <span class="spotify-track-duration">${formatDuration(track.duration)}</span>
-              </div>
-            </a>
-          `).join('')}
-        </div>
-      </div>
-    ` : ''}
   `;
   
   return container;
+}
+
+/**
+ * Create top tracks HTML
+ */
+function createTopTracksHTML(topTracks) {
+  if (!topTracks || topTracks.length === 0) {
+    return '';
+  }
+  
+  return `
+    <div class="spotify-tracks">
+      <h3 class="spotify-tracks-title">Top Tracks</h3>
+      <div class="spotify-tracks-list">
+        ${topTracks.map((track, index) => `
+          <a href="${sanitizeSpotifyUrl(track.spotifyUrl)}" target="_blank" rel="noopener noreferrer" class="spotify-track-link">
+            <div class="spotify-track-item">
+              <span class="spotify-track-number">${index + 1}</span>
+              ${track.albumImage ? `
+                <img src="${track.albumImage}" alt="${track.album}" class="spotify-track-image" />
+              ` : ''}
+              <div class="spotify-track-info">
+                <div class="spotify-track-name">${track.name}</div>
+                <div class="spotify-track-album">${track.album}</div>
+              </div>
+              <span class="spotify-track-duration">${formatDuration(track.duration)}</span>
+            </div>
+          </a>
+        `).join('')}
+      </div>
+    </div>
+  `;
 }
 
 /**
@@ -183,6 +192,9 @@ async function initSpotifyData() {
   try {
     const data = await fetchSpotifyData();
     
+    // Store data globally for use by other modules
+    window.spotifyLiveData = data;
+    
     // Clear loading and show data
     targetElement.innerHTML = '';
     targetElement.appendChild(createSpotifyDisplay(data));
@@ -199,4 +211,7 @@ async function initSpotifyData() {
 if (typeof window !== 'undefined') {
   window.initSpotifyData = initSpotifyData;
   window.fetchSpotifyData = fetchSpotifyData;
+  window.createTopTracksHTML = createTopTracksHTML;
+  window.formatDuration = formatDuration;
+  window.sanitizeSpotifyUrl = sanitizeSpotifyUrl;
 }

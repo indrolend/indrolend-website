@@ -261,9 +261,15 @@ function createAnalyticsDisplay(data) {
     ? `<div class="analytics-date-generated">Last updated: ${formatDateGenerated(data.dateGenerated)}</div>`
     : '';
   
+  // Get top tracks HTML if available
+  let topTracksHTML = '';
+  if (window.spotifyLiveData && window.spotifyLiveData.topTracks && window.createTopTracksHTML) {
+    topTracksHTML = window.createTopTracksHTML(window.spotifyLiveData.topTracks);
+  }
+  
   container.innerHTML = `
     <div class="analytics-header">
-      <h2 class="analytics-main-title">Business Snapshot</h2>
+      <h2 class="analytics-main-title">Spotify Snapshot</h2>
       <div class="analytics-period">${data.period}</div>
       ${dateGeneratedText}
     </div>
@@ -284,6 +290,7 @@ function createAnalyticsDisplay(data) {
     ${createDemographicsDisplay(data.demographics)}
     ${createGeographyDisplay(data.topCountries, data.topCities)}
     ${createInsightsDisplay(data.insights)}
+    ${topTracksHTML}
   `;
   
   return container;
