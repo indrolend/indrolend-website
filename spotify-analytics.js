@@ -316,10 +316,14 @@ function initSpotifyAnalytics() {
   targetElement.appendChild(createAnalyticsDisplay(window.spotifyAnalyticsData));
   
   // Set up callback to append tracks when Spotify data loads
-  if (!window.spotifyLiveData) {
-    window.onSpotifyDataLoaded = function() {
-      appendTopTracksToAnalytics();
-    };
+  // Always set the callback to handle re-initialization
+  window.onSpotifyDataLoaded = function() {
+    appendTopTracksToAnalytics();
+  };
+  
+  // If data is already available, append tracks immediately
+  if (window.spotifyLiveData) {
+    appendTopTracksToAnalytics();
   }
 }
 
@@ -345,9 +349,7 @@ function appendTopTracksToAnalytics() {
     if (tracksHTML) {
       const container = targetElement.querySelector('.spotify-analytics-container');
       if (container) {
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = tracksHTML;
-        container.appendChild(tempDiv.firstChild);
+        container.insertAdjacentHTML('beforeend', tracksHTML);
       }
     }
   }
