@@ -36,36 +36,63 @@ If you want to help improve the OCR parsing accuracy:
 
 ## Directory Structure
 
+**Current organized structure** (see [STRUCTURE.md](STRUCTURE.md) for detailed documentation):
+
 ```
 .
-├── index.html                    # Landing page
-├── home.html                     # Main homepage
-├── gallery.html                  # Photo gallery
-├── spotify-demo.html             # Spotify analytics demo
+├── index.html                    # Landing page (fake captcha)
+├── pages/                        # All HTML pages
+│   ├── home.html                # Main homepage
+│   ├── gallery.html             # Photo gallery
+│   ├── tictactoe.html           # Gallery unlock game
+│   ├── wordgame.html            # Redirect to asymptote
+│   └── spotify-demo.html        # Spotify analytics demo
+│
+├── css/                          # Stylesheets
+│   ├── style.css                # Main styles (with vendor prefixes)
+│   ├── spotify-styles.css       # Spotify component styles
+│   └── spotify-analytics-styles.css
+│
+├── js/                           # JavaScript files
+│   ├── script.js                # Main application logic
+│   ├── spotify-integration.js
+│   ├── spotify-analytics.js
+│   └── spotify-analytics-data.js
+│
+├── assets/                       # Static assets
+│   ├── icons/                   # Animated GIF icons (7 files)
+│   └── images/                  # Static images
+│
+├── images/                       # Gallery images (53 files)
 │
 ├── screenshots/                  # Screenshots for processing
 │   ├── README.md
-│   └── examples/                 # Example screenshots for validation
-│       ├── README.md             # Detailed instructions
-│       ├── CONTRIBUTING.md       # Contribution guide
-│       ├── TEMPLATE.json         # Ground truth template
-│       └── *.png + *.json        # Example screenshots + annotations
+│   └── examples/                # Example screenshots for validation
+│       ├── README.md            # Detailed instructions
+│       ├── CONTRIBUTING.md      # Contribution guide
+│       ├── TEMPLATE.json        # Ground truth template
+│       └── *.png + *.json       # Example screenshots + annotations
 │
 ├── scripts/                      # Automation scripts
-│   ├── parse_screenshots.py      # OCR parser
-│   ├── validate_ocr_examples.py  # Validation script
-│   ├── requirements.txt          # Python dependencies
-│   └── README.md                 # Detailed documentation
+│   ├── parse_screenshots.py     # OCR parser
+│   ├── validate_ocr_examples.py # Validation script
+│   ├── requirements.txt         # Python dependencies
+│   └── README.md                # Detailed documentation
 │
 ├── data/                         # Data files
-│   ├── parsed-stats.json         # Parsed statistics
-│   └── validation-results.json   # Validation results (optional)
+│   ├── parsed-stats.json        # Parsed statistics
+│   └── validation-results.json  # Validation results (optional)
 │
-├── spotify-analytics.js          # Analytics rendering
-├── spotify-analytics-data.js     # Data loading
-├── spotify-integration.js        # Spotify API integration
+├── backend/                      # Node.js backend
+│   ├── spotify-backend.js
+│   ├── package.json
+│   └── README.md
 │
-├── asymptote/                    # Idle game
+├── asymptote/                    # Idle game engine
+│   ├── index.html
+│   ├── src/
+│   └── styles/
+│
 └── .github/workflows/            # GitHub Actions
     └── parse-screenshots.yml     # Automated parsing workflow
 ```
@@ -106,11 +133,23 @@ If you want to help improve the OCR parsing accuracy:
 
 ## Documentation
 
+- **Repository Structure**: [STRUCTURE.md](STRUCTURE.md) - Complete directory organization and guidelines
 - **Spotify Integration**: [SPOTIFY_INTEGRATION.md](SPOTIFY_INTEGRATION.md)
 - **Screenshot Parsing**: [scripts/README.md](scripts/README.md)
 - **OCR Examples Quick Start**: [OCR_EXAMPLES_QUICK_START.md](OCR_EXAMPLES_QUICK_START.md)
 - **OCR Examples Detailed Guide**: [screenshots/examples/README.md](screenshots/examples/README.md)
 - **Contributing OCR Examples**: [screenshots/examples/CONTRIBUTING.md](screenshots/examples/CONTRIBUTING.md)
+
+## Browser Compatibility
+
+The website is optimized for maximum browser compatibility:
+
+- ✅ Modern browsers (Chrome, Firefox, Safari, Edge)
+- ✅ Older browsers with vendor prefix support (IE11+)
+- ✅ CSS Grid with flexbox fallbacks
+- ✅ Progressive enhancement with @supports
+- ✅ Preloaded critical assets for fast loading
+- ✅ No lazy loading (all animations load immediately)
 
 ## Technologies
 

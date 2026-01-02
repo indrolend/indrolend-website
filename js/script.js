@@ -662,7 +662,7 @@ Dr. Wei's voice lingers at the edge of the memory:
     // If already unlocked, go straight to gallery
     const alreadyUnlocked = localStorage.getItem("galleryUnlocked") === "true";
     if (alreadyUnlocked) {
-      window.location.href = "gallery.html";
+      window.location.href = "pages/gallery.html";
     } else {
       let board = Array(9).fill(null); // 'X' for player, 'O' for computer
       let gameOver = false;
@@ -758,7 +758,7 @@ Dr. Wei's voice lingers at the edge of the memory:
       function updateDisplay() {
         const name = images[currentIndex];
         galleryFileName.textContent = name;
-        galleryFileLink.href = "images/" + name;
+        galleryFileLink.href = "../images/" + name;
         galleryCounter.textContent = (currentIndex + 1) + " / " + images.length;
         
         // Re-initialize important-word effect for the filename
@@ -839,7 +839,7 @@ Dr. Wei's voice lingers at the edge of the memory:
 // Function triggered when client clicks [Verify]
 function verifyCaptcha() {
     // On verify, go to main site
-    window.location.href = "home.html";
+    window.location.href = "pages/home.html";
 }
 
 
