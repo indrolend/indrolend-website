@@ -10,8 +10,7 @@ import json
 import sys
 from pathlib import Path
 from typing import Dict, List, Tuple, Any
-import pytesseract
-from PIL import Image
+from datetime import datetime, timezone
 
 # Import the parsing function from the main script
 from parse_screenshots import extract_text_from_image, parse_spotify_stats
@@ -336,7 +335,7 @@ def main():
     
     with open(output_file, 'w') as f:
         json.dump({
-            'validation_date': Path(__file__).stat().st_mtime,
+            'validation_date': datetime.now(timezone.utc).isoformat(),
             'examples_validated': len(all_results),
             'results': all_results
         }, f, indent=2)
