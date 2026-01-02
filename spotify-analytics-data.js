@@ -1,9 +1,14 @@
 /**
  * Spotify Analytics Data (Last 28 Days)
- * Business snapshot showing core metrics and audience insights
+ * Loads analytics data from parsed screenshots or falls back to default data
  */
 
-const spotifyAnalyticsData = {
+// Configuration constants
+const INIT_RETRY_MAX_ATTEMPTS = 10;
+const INIT_RETRY_INTERVAL_MS = 100;
+
+// Default/fallback data
+const defaultSpotifyAnalyticsData = {
   period: "Last 28 Days",
   coreMetrics: {
     totalListeners: { value: 431, change: "+40%" },
@@ -78,7 +83,76 @@ const spotifyAnalyticsData = {
   ]
 };
 
+/**
+ * Load analytics data from parsed-stats.json
+ */
+async function loadSpotifyAnalyticsData() {
+  try {
+    const response = await fetch('/data/parsed-stats.json');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    
+    // Check if we have analytics data from parsed screenshots
+    if (data.analytics && hasValidData(data.analytics)) {
+      console.log('✓ Loaded analytics from parsed screenshots');
+      return data.analytics;
+    } else {
+      console.log('⚠ No valid analytics data in parsed screenshots, using default data');
+      return defaultSpotifyAnalyticsData;
+    }
+  } catch (error) {
+    console.warn('Failed to load parsed stats, using default data:', error);
+    return defaultSpotifyAnalyticsData;
+  }
+}
+
+/**
+ * Check if analytics data has valid values
+ */
+function hasValidData(analytics) {
+  // Check if at least one core metric has a non-zero value
+  const coreMetrics = analytics.coreMetrics || {};
+  const hasMetrics = Object.values(coreMetrics).some(metric => {
+    return metric && metric.value && metric.value > 0;
+  });
+  
+  return hasMetrics;
+}
+
+/**
+ * Initialize analytics with loaded data
+ */
+function initializeAnalytics() {
+  // Trigger initialization if the init function is already loaded
+  if (typeof window.initSpotifyAnalytics === 'function') {
+    window.initSpotifyAnalytics();
+  } else {
+    // If not loaded yet, set up a listener for when it becomes available
+    console.log('⏳ Waiting for spotify-analytics.js to load...');
+    // Retry a few times in case the script is still loading
+    let retryCount = 0;
+    const retryInterval = setInterval(() => {
+      retryCount++;
+      if (typeof window.initSpotifyAnalytics === 'function') {
+        clearInterval(retryInterval);
+        window.initSpotifyAnalytics();
+      } else if (retryCount >= INIT_RETRY_MAX_ATTEMPTS) {
+        clearInterval(retryInterval);
+        console.error('❌ spotify-analytics.js failed to load');
+      }
+    }, INIT_RETRY_INTERVAL_MS);
+  }
+}
+
+// Initialize the data
+loadSpotifyAnalyticsData().then(data => {
+  window.spotifyAnalyticsData = data;
+  initializeAnalytics();
+});
+
 // Export for use in other scripts
 if (typeof window !== 'undefined') {
-  window.spotifyAnalyticsData = spotifyAnalyticsData;
+  window.loadSpotifyAnalyticsData = loadSpotifyAnalyticsData;
 }
