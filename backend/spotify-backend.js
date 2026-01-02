@@ -121,6 +121,32 @@ async function getArtistTopTracks(artistId, market = 'US') {
 }
 
 /**
+ * Format artist and track data into the response format
+ */
+function formatSpotifyResponse(artistData, topTracksData) {
+  return {
+    artist: {
+      name: artistData.name,
+      followers: artistData.followers.total,
+      popularity: artistData.popularity,
+      genres: artistData.genres,
+      images: artistData.images,
+      spotifyUrl: artistData.external_urls.spotify
+    },
+    topTracks: topTracksData.tracks.slice(0, 5).map(track => ({
+      name: track.name,
+      album: track.album.name,
+      albumImage: track.album.images && track.album.images.length > 0 ? track.album.images[0].url : null,
+      previewUrl: track.preview_url,
+      spotifyUrl: track.external_urls.spotify,
+      duration: track.duration_ms
+    })),
+    cached: false,
+    lastFetched: new Date().toISOString()
+  };
+}
+
+/**
  * API endpoint to get Spotify artist data
  * GET /api/spotify
  * Returns artist information including followers, genres, popularity, and top tracks
@@ -148,26 +174,7 @@ app.get('/api/spotify', async (req, res) => {
     ]);
 
     // Format the response
-    const response = {
-      artist: {
-        name: artistData.name,
-        followers: artistData.followers.total,
-        popularity: artistData.popularity,
-        genres: artistData.genres,
-        images: artistData.images,
-        spotifyUrl: artistData.external_urls.spotify
-      },
-      topTracks: topTracksData.tracks.slice(0, 5).map(track => ({
-        name: track.name,
-        album: track.album.name,
-        albumImage: track.album.images && track.album.images.length > 0 ? track.album.images[0].url : null,
-        previewUrl: track.preview_url,
-        spotifyUrl: track.external_urls.spotify,
-        duration: track.duration_ms
-      })),
-      cached: false,
-      lastFetched: new Date().toISOString()
-    };
+    const response = formatSpotifyResponse(artistData, topTracksData);
 
     // Update cache
     cachedArtistData = response;
@@ -200,26 +207,7 @@ app.post('/api/spotify/refresh-cache', async (req, res) => {
     ]);
 
     // Format the response
-    const response = {
-      artist: {
-        name: artistData.name,
-        followers: artistData.followers.total,
-        popularity: artistData.popularity,
-        genres: artistData.genres,
-        images: artistData.images,
-        spotifyUrl: artistData.external_urls.spotify
-      },
-      topTracks: topTracksData.tracks.slice(0, 5).map(track => ({
-        name: track.name,
-        album: track.album.name,
-        albumImage: track.album.images && track.album.images.length > 0 ? track.album.images[0].url : null,
-        previewUrl: track.preview_url,
-        spotifyUrl: track.external_urls.spotify,
-        duration: track.duration_ms
-      })),
-      cached: false,
-      lastFetched: new Date().toISOString()
-    };
+    const response = formatSpotifyResponse(artistData, topTracksData);
 
     // Update cache
     cachedArtistData = response;
