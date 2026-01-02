@@ -1,0 +1,2 @@
+# This file ensures the examples directory is tracked by git even when empty
+# Example screenshots and their ground truth JSON files should be committed here
