@@ -36,6 +36,18 @@ def parse_spotify_stats(text):
     
     # === CORE METRICS ===
     
+    # Try to extract all three main metrics from a single line pattern first
+    # Pattern: "Listeners Streams ... 427 2,476 5.8" or similar
+    triple_metrics_match = re.search(
+        r'Listeners\s+Streams\s+(?:Strea|Stream)[^\d]*(\d{1,3}(?:,?\d{3})*)\s+(\d{1,3}(?:,\d{3})*)\s+(\d+\.?\d*)',
+        text,
+        re.IGNORECASE
+    )
+    if triple_metrics_match:
+        stats['listeners'] = int(triple_metrics_match.group(1).replace(',', ''))
+        stats['streams'] = int(triple_metrics_match.group(2).replace(',', ''))
+        stats['streams_per_listener'] = float(triple_metrics_match.group(3))
+    
     # Look for "Playlist Adds Followers" pattern with two numbers on the next line
     # This handles the case where both metrics appear together
     playlist_followers_match = re.search(
@@ -60,39 +72,51 @@ def parse_spotify_stats(text):
             stats['followers'] = int(followers_matches[-1].group(1))
     
     # Pattern for "Streams" - be careful not to match "Streams / Listener"
-    streams_match = re.search(r'(?:^|\n)\s*Streams[^\d/]*(\d+,?\d*)', text, re.IGNORECASE | re.MULTILINE)
-    if streams_match:
-        stats['streams'] = int(streams_match.group(1).replace(',', ''))
+    # Handle comma-separated numbers like 2,476
+    # Only use this if we didn't get streams from the triple match above
+    if 'streams' not in stats:
+        streams_match = re.search(r'(?:^|\n)\s*Streams[^\d/]*(\d{1,3}(?:,\d{3})*)', text, re.IGNORECASE | re.MULTILINE)
+        if streams_match:
+            stats['streams'] = int(streams_match.group(1).replace(',', ''))
     
     # Pattern for "Listeners" followed by number
-    listeners_match = re.search(r'Listeners[^\d]*(\d+,?\d*)', text, re.IGNORECASE)
-    if listeners_match:
-        stats['listeners'] = int(listeners_match.group(1).replace(',', ''))
+    # Only use this if we didn't get listeners from the triple match above
+    if 'listeners' not in stats:
+        listeners_match = re.search(r'Listeners[^\d]*(\d{1,3}(?:,?\d{3})*)', text, re.IGNORECASE)
+        if listeners_match:
+            stats['listeners'] = int(listeners_match.group(1).replace(',', ''))
     
     # Pattern for "Streams / Listener" ratio
-    streams_per_listener_match = re.search(r'Streams\s*/\s*Listener[^\d]*(\d+(?:\.\d+)?)', text, re.IGNORECASE)
-    if streams_per_listener_match:
-        stats['streams_per_listener'] = float(streams_per_listener_match.group(1))
+    # Only use this if we didn't get it from the triple match above
+    if 'streams_per_listener' not in stats:
+        streams_per_listener_match = re.search(r'Streams\s*/\s*Listener[^\d]*(\d+(?:\.\d+)?)', text, re.IGNORECASE)
+        if streams_per_listener_match:
+            stats['streams_per_listener'] = float(streams_per_listener_match.group(1))
     
     # Pattern for "Saves"
-    saves_match = re.search(r'Saves[^\d]*(\d+,?\d*)', text, re.IGNORECASE)
+    saves_match = re.search(r'Saves[^\d]*(\d{1,3}(?:,?\d{3})*)', text, re.IGNORECASE)
     if saves_match:
         stats['saves'] = int(saves_match.group(1).replace(',', ''))
     
-    # Parse change percentages (e.g., "+40%", "-5%")
+    # Parse change percentages (e.g., "+40%", "-5%", "38%")
+    # These appear right after the main values in the screenshots
     change_patterns = [
-        (r'Listeners[^\d]*([\+\-]\d+)%', 'listeners_change'),
-        (r'Streams[^\d/]*([\+\-]\d+)%', 'streams_change'),
-        (r'Streams\s*/\s*Listener[^\d]*([\+\-]\d+)%', 'streams_per_listener_change'),
-        (r'Saves[^\d]*([\+\-]\d+)%', 'saves_change'),
-        (r'Playlist\s+Adds[^\d]*([\+\-]\d+)%', 'playlist_adds_change'),
-        (r'Followers[^\d]*([\+\-]\d+)%', 'followers_change'),
+        (r'Listeners[^\d]*\d+[^\d]*([\+\-]?\d+)%', 'listeners_change'),
+        (r'Streams[^\d/]*\d+[^\d]*([\+\-]?\d+)%', 'streams_change'),
+        (r'Streams\s*/\s*Listener[^\d]*\d+(?:\.\d+)?[^\d]*([\+\-]?\d+)%', 'streams_per_listener_change'),
+        (r'Saves[^\d]*\d+[^\d]*([\+\-]?\d+)%', 'saves_change'),
+        (r'Playlist\s+Adds[^\d]*\d+[^\d]*([\+\-]?\d+)%', 'playlist_adds_change'),
+        (r'Followers[^\d]*\d+[^\d]*([\+\-]?\d+)%', 'followers_change'),
     ]
     
     for pattern, key in change_patterns:
         match = re.search(pattern, text, re.IGNORECASE)
         if match:
-            stats[key] = match.group(1) + '%'
+            change_val = match.group(1)
+            # Add + sign if not present
+            if not change_val.startswith(('+', '-')):
+                change_val = '+' + change_val
+            stats[key] = change_val + '%'
     
     # === DEMOGRAPHICS ===
     
@@ -196,15 +220,19 @@ def parse_spotify_stats(text):
         stats['discovery_other'] = int(other_sources_match.group(1))
     
     # Active source breakdowns
-    artist_profile_match = re.search(r'Artist\s+profile[^\d]*(\d+)%', text, re.IGNORECASE)
+    # Look for more specific patterns that include "and catalog" or "and library"
+    artist_profile_match = re.search(r'Artist\s+profile\s+(?:and\s+catalog)?[^\d]*(\d+)%', text, re.IGNORECASE)
     if artist_profile_match:
         stats['discovery_artist_profile'] = int(artist_profile_match.group(1))
     
-    own_playlists_match = re.search(r'(?:Own|Your)\s+playlists[^\d]*(\d+)%', text, re.IGNORECASE)
+    # Match "Listener's own playlists and library" specifically
+    # Handle both straight quote (') and curly quote (')
+    own_playlists_match = re.search(r"Listener(?:'|\u2019)?s?\s+own\s+playlists?\s+(?:and\s+library)?[^\d]*(\d+)%", text, re.IGNORECASE)
     if own_playlists_match:
         stats['discovery_own_playlists'] = int(own_playlists_match.group(1))
     
-    listener_queue_match = re.search(r'Listener\s+queue[^\d]*(\d+)%', text, re.IGNORECASE)
+    # Match "Listener's queue" specifically
+    listener_queue_match = re.search(r"Listener(?:'|\u2019)?s?\s+queue[^\d]*(\d+)%", text, re.IGNORECASE)
     if listener_queue_match:
         stats['discovery_listener_queue'] = int(listener_queue_match.group(1))
     
@@ -229,6 +257,7 @@ def aggregate_analytics_data(screenshots_results):
     that matches the format expected by the frontend.
     """
     # Merge all stats from different screenshots
+    # Strategy: Use FIRST value found for each metric (first screenshot usually has the overview)
     merged_stats = {}
     
     for screenshot in screenshots_results:
@@ -240,8 +269,10 @@ def aggregate_analytics_data(screenshots_results):
                     merged_stats[key] = []
                 merged_stats[key].extend(value)
             else:
-                # For simple values, take the most recent (last in list)
-                merged_stats[key] = value
+                # For simple values, use FIRST occurrence (not last)
+                # This prioritizes the overview screenshots which appear first
+                if key not in merged_stats:
+                    merged_stats[key] = value
     
     # Consolidate city and country lists
     if 'top_cities' in merged_stats:

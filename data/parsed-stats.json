@@ -1,5 +1,5 @@
 {
-  "processed_at": "2026-01-02T14:14:44.488245+00:00",
+  "processed_at": "2026-01-02T14:31:20.644204+00:00",
   "screenshots": [
     {
       "filename": "IMG_0736.png",
@@ -309,40 +309,40 @@
   ],
   "analytics": {
     "period": "Last 28 Days",
-    "dateGenerated": "2026-01-02T14:14:57.899579+00:00",
+    "dateGenerated": "2026-01-02T14:31:20.644169+00:00",
     "coreMetrics": {
       "totalListeners": {
-        "value": 13,
-        "change": "-5%"
+        "value": 427,
+        "change": "+38%"
       },
       "totalStreams": {
-        "value": 0,
-        "change": "+0%"
+        "value": 2476,
+        "change": "+47%"
       },
       "streamsPerListener": {
-        "value": 6.0,
-        "change": "+0%"
+        "value": 5.8,
+        "change": "+5%"
       },
       "saves": {
         "value": 333,
-        "change": "+0%"
+        "change": "+182%"
       },
       "playlistAdds": {
         "value": 231,
-        "change": "+0%"
+        "change": "+55%"
       },
       "followers": {
         "value": 243,
-        "change": "+0%"
+        "change": "+2%"
       }
     },
     "discoverySources": {
       "active": {
         "total": 83,
         "breakdown": {
-          "artistProfile": 12,
-          "ownPlaylists": 12,
-          "listenerQueue": 0
+          "artistProfile": 53,
+          "ownPlaylists": 33,
+          "listenerQueue": 3
         }
       },
       "programmed": {
@@ -455,10 +455,11 @@
       }
     ],
     "insights": [
-      "Listener numbers have declined slightly",
-      "Streams per listener are stable (repeat engagement)",
-      "Discovery is primarily organic/human-driven",
-      "Algorithmic amplification is minimal but present",
+      "Listener growth is accelerating (38% increase)",
+      "Streams per listener are stable at 5.8",
+      "Saves and playlist adds are outpacing listener growth",
+      "Discovery is primarily organic/human-driven (83% active sources)",
+      "Artist profile and catalog driving majority of active discovery (53%)",
       "Audience concentration strongest in United States"
     ]
   }
