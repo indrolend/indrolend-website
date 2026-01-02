@@ -198,6 +198,11 @@ async function initSpotifyData() {
     // Clear loading and show data
     targetElement.innerHTML = '';
     targetElement.appendChild(createSpotifyDisplay(data));
+    
+    // Notify analytics that Spotify data is ready
+    if (window.onSpotifyDataLoaded) {
+      window.onSpotifyDataLoaded();
+    }
   } catch (error) {
     console.error('Failed to initialize Spotify data:', error);
     
