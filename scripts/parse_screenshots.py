@@ -39,7 +39,7 @@ def parse_spotify_stats(text):
     # Try to extract all three main metrics from a single line pattern first
     # Pattern: "Listeners Streams ... 427 2,476 5.8" or similar
     triple_metrics_match = re.search(
-        r'Listeners\s+Streams\s+(?:Strea|Stream)[^\d]*(\d{1,3}(?:,?\d{3})*)\s+(\d{1,3}(?:,\d{3})*)\s+(\d+\.?\d*)',
+        r'Listeners\s+Streams\s+(?:Strea|Stream)[^\d]*(\d{1,3}(?:,\d{3})*)\s+(\d{1,3}(?:,\d{3})*)\s+(\d+\.?\d*)',
         text,
         re.IGNORECASE
     )
