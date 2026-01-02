@@ -1,0 +1,18 @@
+{
+  "description": "Example: Core metrics page showing listeners, streams, and followers - December 2025",
+  "expected_stats": {
+    "listeners": 427,
+    "listeners_change": "+40%",
+    "streams": 2476,
+    "streams_change": "+39%",
+    "streams_per_listener": 5.8,
+    "streams_per_listener_change": "-1%",
+    "saves": 333,
+    "saves_change": "+182%",
+    "playlist_adds": 231,
+    "playlist_adds_change": "+55%",
+    "followers": 243,
+    "followers_change": "+2%"
+  },
+  "notes": "This is a template example. Replace this with your actual screenshot and correct values. High quality screenshot from Spotify for Artists mobile app."
+}
