@@ -80,7 +80,7 @@ function sanitizeSpotifyUrl(url) {
 }
 
 /**
- * Create the Spotify data display HTML
+ * Create the Spotify data display HTML (artist info and top tracks)
  */
 function createSpotifyDisplay(data) {
   const { artist, topTracks } = data;
@@ -182,6 +182,9 @@ async function initSpotifyData() {
   
   try {
     const data = await fetchSpotifyData();
+    
+    // Store data globally for use by other modules
+    window.spotifyLiveData = data;
     
     // Clear loading and show data
     targetElement.innerHTML = '';

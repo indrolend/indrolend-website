@@ -210,25 +210,6 @@ function createGeographyDisplay(countries, cities) {
 }
 
 /**
- * Create insights display
- */
-function createInsightsDisplay(insights) {
-  return `
-    <div class="analytics-section">
-      <h3 class="analytics-section-title">Key Insights</h3>
-      <div class="analytics-insights">
-        ${insights.map(insight => `
-          <div class="analytics-insight-item">
-            <span class="analytics-insight-bullet">•</span>
-            <span class="analytics-insight-text">${insight}</span>
-          </div>
-        `).join('')}
-      </div>
-    </div>
-  `;
-}
-
-/**
  * Format date string for display
  */
 function formatDateGenerated(isoDateString) {
@@ -263,7 +244,7 @@ function createAnalyticsDisplay(data) {
   
   container.innerHTML = `
     <div class="analytics-header">
-      <h2 class="analytics-main-title">Business Snapshot</h2>
+      <h2 class="analytics-main-title">Spotify Snapshot</h2>
       <div class="analytics-period">${data.period}</div>
       ${dateGeneratedText}
     </div>
@@ -283,7 +264,6 @@ function createAnalyticsDisplay(data) {
     ${createDiscoverySourcesDisplay(data.discoverySources)}
     ${createDemographicsDisplay(data.demographics)}
     ${createGeographyDisplay(data.topCountries, data.topCities)}
-    ${createInsightsDisplay(data.insights)}
   `;
   
   return container;
