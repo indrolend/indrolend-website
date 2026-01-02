@@ -24,6 +24,11 @@ const ARTIST_ID = process.env.SPOTIFY_ARTIST_ID || '59X3431NBfd6xWMc3Zlh0v';
 let accessToken = null;
 let tokenExpirationTime = null;
 
+// Cache for artist data (24-hour cache)
+let cachedArtistData = null;
+let artistDataCacheTime = null;
+const ARTIST_DATA_CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
 /**
  * Get Spotify access token using Client Credentials Flow
  * This is secure as the client secret never leaves the backend
@@ -119,9 +124,21 @@ async function getArtistTopTracks(artistId, market = 'US') {
  * API endpoint to get Spotify artist data
  * GET /api/spotify
  * Returns artist information including followers, genres, popularity, and top tracks
+ * Data is cached for 24 hours to reduce API calls
  */
 app.get('/api/spotify', async (req, res) => {
   try {
+    // Check if we have valid cached data
+    if (cachedArtistData && artistDataCacheTime && (Date.now() - artistDataCacheTime < ARTIST_DATA_CACHE_DURATION)) {
+      console.log('Serving cached Spotify data');
+      return res.json({
+        ...cachedArtistData,
+        cached: true,
+        cacheAge: Math.floor((Date.now() - artistDataCacheTime) / 1000) // age in seconds
+      });
+    }
+    
+    console.log('Fetching fresh Spotify data');
     const artistId = req.query.artistId || ARTIST_ID;
     
     // Fetch both artist data and top tracks in parallel
@@ -147,14 +164,76 @@ app.get('/api/spotify', async (req, res) => {
         previewUrl: track.preview_url,
         spotifyUrl: track.external_urls.spotify,
         duration: track.duration_ms
-      }))
+      })),
+      cached: false,
+      lastFetched: new Date().toISOString()
     };
+
+    // Update cache
+    cachedArtistData = response;
+    artistDataCacheTime = Date.now();
 
     res.json(response);
   } catch (error) {
     console.error('Error in /api/spotify endpoint:', error);
     res.status(500).json({ 
       error: 'Failed to fetch Spotify data',
+      message: error.message 
+    });
+  }
+});
+
+/**
+ * Endpoint to manually refresh the cache
+ * POST /api/spotify/refresh-cache
+ * This can be used by GitHub Actions to refresh cache on demand
+ */
+app.post('/api/spotify/refresh-cache', async (req, res) => {
+  try {
+    console.log('Manual cache refresh requested');
+    const artistId = req.query.artistId || ARTIST_ID;
+    
+    // Fetch both artist data and top tracks in parallel
+    const [artistData, topTracksData] = await Promise.all([
+      getArtistData(artistId),
+      getArtistTopTracks(artistId)
+    ]);
+
+    // Format the response
+    const response = {
+      artist: {
+        name: artistData.name,
+        followers: artistData.followers.total,
+        popularity: artistData.popularity,
+        genres: artistData.genres,
+        images: artistData.images,
+        spotifyUrl: artistData.external_urls.spotify
+      },
+      topTracks: topTracksData.tracks.slice(0, 5).map(track => ({
+        name: track.name,
+        album: track.album.name,
+        albumImage: track.album.images && track.album.images.length > 0 ? track.album.images[0].url : null,
+        previewUrl: track.preview_url,
+        spotifyUrl: track.external_urls.spotify,
+        duration: track.duration_ms
+      })),
+      cached: false,
+      lastFetched: new Date().toISOString()
+    };
+
+    // Update cache
+    cachedArtistData = response;
+    artistDataCacheTime = Date.now();
+
+    res.json({
+      success: true,
+      message: 'Cache refreshed successfully',
+      data: response
+    });
+  } catch (error) {
+    console.error('Error refreshing cache:', error);
+    res.status(500).json({ 
+      error: 'Failed to refresh cache',
       message: error.message 
     });
   }

@@ -229,15 +229,43 @@ function createInsightsDisplay(insights) {
 }
 
 /**
+ * Format date string for display
+ */
+function formatDateGenerated(isoDateString) {
+  if (!isoDateString) return '';
+  
+  try {
+    const date = new Date(isoDateString);
+    const options = { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: 'UTC'
+    };
+    return date.toLocaleString('en-US', options) + ' UTC';
+  } catch (e) {
+    return '';
+  }
+}
+
+/**
  * Create the complete analytics display
  */
 function createAnalyticsDisplay(data) {
   const container = document.createElement('div');
   container.className = 'spotify-analytics-container';
+  
+  const dateGeneratedText = data.dateGenerated 
+    ? `<div class="analytics-date-generated">Last updated: ${formatDateGenerated(data.dateGenerated)}</div>`
+    : '';
+  
   container.innerHTML = `
     <div class="analytics-header">
       <h2 class="analytics-main-title">Business Snapshot</h2>
       <div class="analytics-period">${data.period}</div>
+      ${dateGeneratedText}
     </div>
     
     <div class="analytics-section">
