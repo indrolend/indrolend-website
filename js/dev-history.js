@@ -59,6 +59,7 @@ function markdownToHtml(markdown) {
   const lines = html.split('\n');
   let result = [];
   let inList = false;
+  let inOrderedList = false;
   let inCodeBlock = false;
   let listItems = [];
   
@@ -72,6 +73,11 @@ function markdownToHtml(markdown) {
         listItems = [];
         inList = false;
       }
+      if (inOrderedList) {
+        result.push('<ol>' + listItems.join('') + '</ol>');
+        listItems = [];
+        inOrderedList = false;
+      }
       continue;
     }
     
@@ -82,12 +88,22 @@ function markdownToHtml(markdown) {
         listItems = [];
         inList = false;
       }
+      if (inOrderedList) {
+        result.push('<ol>' + listItems.join('') + '</ol>');
+        listItems = [];
+        inOrderedList = false;
+      }
       result.push(line);
       continue;
     }
     
     // Unordered lists
     if (line.match(/^[-*+] /)) {
+      if (inOrderedList) {
+        result.push('<ol>' + listItems.join('') + '</ol>');
+        listItems = [];
+        inOrderedList = false;
+      }
       const content = line.substring(2);
       listItems.push('<li>' + content + '</li>');
       inList = true;
@@ -96,9 +112,14 @@ function markdownToHtml(markdown) {
     
     // Ordered lists
     if (line.match(/^\d+\. /)) {
+      if (inList) {
+        result.push('<ul>' + listItems.join('') + '</ul>');
+        listItems = [];
+        inList = false;
+      }
       const content = line.replace(/^\d+\. /, '');
       listItems.push('<li>' + content + '</li>');
-      inList = true;
+      inOrderedList = true;
       continue;
     }
     
@@ -108,6 +129,11 @@ function markdownToHtml(markdown) {
       listItems = [];
       inList = false;
     }
+    if (inOrderedList) {
+      result.push('<ol>' + listItems.join('') + '</ol>');
+      listItems = [];
+      inOrderedList = false;
+    }
     
     result.push('<p>' + line + '</p>');
   }
@@ -115,6 +141,9 @@ function markdownToHtml(markdown) {
   // Close any remaining list
   if (inList) {
     result.push('<ul>' + listItems.join('') + '</ul>');
+  }
+  if (inOrderedList) {
+    result.push('<ol>' + listItems.join('') + '</ol>');
   }
   
   return result.join('\n');

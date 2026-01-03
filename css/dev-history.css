@@ -219,15 +219,6 @@
   font-weight: bold;
 }
 
-/* Status badges */
-.markdown-body h3:has(+ p:contains("Merged")) {
-  color: #6dd9e8;
-}
-
-.markdown-body h3:has(+ p:contains("Open")) {
-  color: #ffaa00;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .dev-history-container {
