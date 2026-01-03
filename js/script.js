@@ -950,3 +950,16 @@ function closeVerifyWindow() {
 function isVerifyWindowVisible() {
     return verifyWindow.style.display !== "none" && verifyWindow.style.display !== "";
 }
+
+// --- Glitchy Development History Button ---
+// Show the glitchy button if all Asymptote Engine upgrades have been purchased
+function checkGlitchyButton() {
+  const glitchyBtn = document.getElementById('glitchy-dev-history-btn');
+  if (glitchyBtn) {
+    const allUpgradesPurchased = localStorage.getItem('asymptote_all_upgrades_purchased');
+    if (allUpgradesPurchased === 'true') {
+      glitchyBtn.style.display = 'inline-block';
+    }
+  }
+}
+checkGlitchyButton();
