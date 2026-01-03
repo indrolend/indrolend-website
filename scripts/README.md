@@ -1,4 +1,100 @@
-# Automated Screenshot Parsing System
+# Scripts Documentation
+
+This directory contains automation scripts for the Indrolend website:
+
+1. **Screenshot Parsing System** - OCR-based extraction of Spotify statistics
+2. **PR History Export** - Export GitHub Pull Request history for dev journal creation
+
+---
+
+## PR History Export Script
+
+### Overview
+
+The `export_pr_history.py` script exports Pull Request history from your GitHub repository to JSON format, making it easy to create a development journal or project timeline.
+
+### Features
+
+- Export all PRs with detailed metadata (number, title, state, dates, author, branches, URL, body)
+- Optionally export detailed PR comments and reviews for each PR
+- Automatic repository detection from git remote
+- Clean JSON output suitable for AI processing (e.g., ChatGPT)
+
+### Requirements
+
+- GitHub CLI (`gh`) - Install from https://cli.github.com/
+- Python 3.6+
+- Git repository with GitHub remote
+
+### Usage
+
+```bash
+# Basic usage - export PR list to pr_log.json
+python scripts/export_pr_history.py
+
+# Export with custom output file
+python scripts/export_pr_history.py --output my_timeline.json
+
+# Export with detailed comments and reviews
+python scripts/export_pr_history.py --with-details
+
+# Export with details to custom directory
+python scripts/export_pr_history.py --with-details --details-dir my_pr_details
+
+# Specify repository explicitly
+python scripts/export_pr_history.py --repo owner/repository
+
+# Limit number of PRs
+python scripts/export_pr_history.py --limit 50
+```
+
+### Output Files
+
+1. **Basic export** (`pr_log.json`):
+   - List of all PRs with metadata
+   - Includes: number, title, state, dates, author, branches, URL, body
+
+2. **Detailed export** (when using `--with-details`):
+   - Individual files: `pr_details/pr_{number}_detail.json`
+   - Combined file: `pr_details/all_prs_detailed.json`
+   - Includes: all basic info + comments + reviews
+
+### Creating a Dev Journal
+
+After exporting your PR history:
+
+1. Review the generated JSON file(s)
+2. Upload to ChatGPT or another AI tool
+3. Use a prompt like:
+   ```
+   Please analyze this PR history and create a development journal 
+   highlighting major features, improvements, and the evolution of this project.
+   ```
+
+### Example Output Structure
+
+See `scripts/example_pr_log.json` for a complete example. Basic structure:
+
+```json
+[
+  {
+    "number": 42,
+    "title": "Add Spotify analytics dashboard",
+    "state": "MERGED",
+    "createdAt": "2025-12-01T10:00:00Z",
+    "mergedAt": "2025-12-02T15:30:00Z",
+    "author": {"login": "username"},
+    "baseRefName": "main",
+    "headRefName": "feature/spotify",
+    "url": "https://github.com/owner/repo/pull/42",
+    "body": "Description of changes..."
+  }
+]
+```
+
+---
+
+## Automated Screenshot Parsing System
 
 This system automatically processes Spotify stats screenshots using OCR (Optical Character Recognition) to extract comprehensive analytics data including metrics, demographics, geography, and discovery sources.
 
@@ -35,6 +131,7 @@ This system automatically processes Spotify stats screenshots using OCR (Optical
 │   ├── parse_screenshots.py         # OCR parsing script
 │   ├── validate_ocr_examples.py     # Validation script for examples
 │   ├── generate_ground_truth_json.py # Generate JSON files from example_text
+│   ├── export_pr_history.py         # Export PR history for dev journal
 │   └── requirements.txt             # Python dependencies
 ├── data/
 │   ├── parsed-stats.json            # Output: parsed statistics and analytics
@@ -45,7 +142,9 @@ This system automatically processes Spotify stats screenshots using OCR (Optical
 
 ## Manual Usage
 
-To run the parser manually:
+### Screenshot Parsing
+
+To run the screenshot parser manually:
 
 ```bash
 # Install dependencies (one-time setup)
@@ -60,6 +159,21 @@ python scripts/validate_ocr_examples.py
 
 # Generate ground truth JSON files from example_text (if needed)
 python scripts/generate_ground_truth_json.py
+```
+
+### PR History Export
+
+To export your PR history:
+
+```bash
+# Install GitHub CLI (one-time setup)
+# Visit: https://cli.github.com/
+
+# Export PR history
+python scripts/export_pr_history.py
+
+# See more options
+python scripts/export_pr_history.py --help
 ```
 
 ## Validation and Testing
