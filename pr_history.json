@@ -1,0 +1,321 @@
+{
+  "total_count": 45,
+  "summary": "Pull request history for indrolend-website repository showing web development learning journey from November 2025 to January 2026",
+  "prs": [
+    {
+      "number": 1,
+      "title": "[WIP] Fix sudo access issues during installation",
+      "state": "open",
+      "created": "2025-11-29",
+      "merged": null
+    },
+    {
+      "number": 2,
+      "title": "Clean up redundant code and fix deprecated APIs",
+      "state": "merged",
+      "created": "2025-11-29",
+      "merged": "2025-11-29"
+    },
+    {
+      "number": 3,
+      "title": "Replace captcha popup header text with full-width image",
+      "state": "merged",
+      "created": "2025-11-30",
+      "merged": "2025-11-30"
+    },
+    {
+      "number": 4,
+      "title": "Remove INDROLEND title text from homepage header",
+      "state": "merged",
+      "created": "2025-11-30",
+      "merged": "2025-11-30"
+    },
+    {
+      "number": 5,
+      "title": "Add fluctuating text effect with serif font, font-weight cycling, hover speedup",
+      "state": "merged",
+      "created": "2025-11-30",
+      "merged": "2025-11-30"
+    },
+    {
+      "number": 6,
+      "title": "Add lightweight UI interaction effects",
+      "state": "merged",
+      "created": "2025-11-30",
+      "merged": "2025-11-30"
+    },
+    {
+      "number": 7,
+      "title": "Replace particle dots with randomized characters",
+      "state": "merged",
+      "created": "2025-11-30",
+      "merged": "2025-11-30"
+    },
+    {
+      "number": 8,
+      "title": "[WIP] Add Instagram button to homepage",
+      "state": "open",
+      "created": "2025-12-08",
+      "merged": null
+    },
+    {
+      "number": 9,
+      "title": "Add Instagram social card to home page",
+      "state": "merged",
+      "created": "2025-12-08",
+      "merged": "2025-12-09"
+    },
+    {
+      "number": 10,
+      "title": "Replace Word Game with Risk/Catan-style Territory Control Game",
+      "state": "merged",
+      "created": "2025-12-10",
+      "merged": "2025-12-11"
+    },
+    {
+      "number": 11,
+      "title": "Prevent mobile double-tap zoom on rapid clicking",
+      "state": "merged",
+      "created": "2025-12-11",
+      "merged": "2025-12-11"
+    },
+    {
+      "number": 12,
+      "title": "Add background music with volume and mute controls to Asymptote game",
+      "state": "merged",
+      "created": "2025-12-12",
+      "merged": "2025-12-21"
+    },
+    {
+      "number": 13,
+      "title": "Integrate framework narrative into Asymptote Engine with casual bro talk",
+      "state": "merged",
+      "created": "2025-12-12",
+      "merged": "2025-12-12"
+    },
+    {
+      "number": 14,
+      "title": "[WIP] Refactor text density in asymptote engine game",
+      "state": "merged",
+      "created": "2025-12-12",
+      "merged": "2025-12-12"
+    },
+    {
+      "number": 15,
+      "title": "Replace Talking album embed with Someday single embed",
+      "state": "merged",
+      "created": "2025-12-14",
+      "merged": "2025-12-14"
+    },
+    {
+      "number": 16,
+      "title": "Replace green color palette with teal/cyan theme based on #0b5a67",
+      "state": "merged",
+      "created": "2025-12-14",
+      "merged": "2025-12-16"
+    },
+    {
+      "number": 17,
+      "title": "Add idle game mechanics: Ticks resource, sacrifice conversions, and mini-reset system",
+      "state": "merged",
+      "created": "2025-12-21",
+      "merged": "2025-12-21"
+    },
+    {
+      "number": 18,
+      "title": "Add hidden narrative framework to Asymptote Engine game",
+      "state": "merged",
+      "created": "2025-12-21",
+      "merged": "2025-12-22"
+    },
+    {
+      "number": 19,
+      "title": "Fix Asymptote game intro overflow, Safari audio controls, and add settings modal",
+      "state": "merged",
+      "created": "2025-12-22",
+      "merged": "2025-12-23"
+    },
+    {
+      "number": 20,
+      "title": "Add Cookie Clicker-inspired achievements system to Asymptote Engine",
+      "state": "merged",
+      "created": "2025-12-23",
+      "merged": "2025-12-23"
+    },
+    {
+      "number": 21,
+      "title": "Add platform-specific music controls with floating overlay on PC",
+      "state": "merged",
+      "created": "2025-12-23",
+      "merged": "2025-12-23"
+    },
+    {
+      "number": 22,
+      "title": "Add stats dashboard with secure API integration for platform analytics",
+      "state": "open",
+      "created": "2025-12-24",
+      "merged": null
+    },
+    {
+      "number": 23,
+      "title": "Add Spotify artist stats page with API integration",
+      "state": "open",
+      "created": "2025-12-24",
+      "merged": null
+    },
+    {
+      "number": 24,
+      "title": "Add live Spotify artist data integration with secure OAuth backend",
+      "state": "merged",
+      "created": "2025-12-28",
+      "merged": "2025-12-28"
+    },
+    {
+      "number": 25,
+      "title": "Add deployment configuration and documentation for Spotify integration",
+      "state": "open",
+      "created": "2025-12-28",
+      "merged": null
+    },
+    {
+      "number": 26,
+      "title": "Update Spotify API backend URL to production endpoint",
+      "state": "merged",
+      "created": "2025-12-28",
+      "merged": "2025-12-28"
+    },
+    {
+      "number": 27,
+      "title": "[WIP] Add redirect for top songs to Spotify links",
+      "state": "open",
+      "created": "2025-12-28",
+      "merged": null
+    },
+    {
+      "number": 28,
+      "title": "Make Spotify top tracks clickable with URL validation",
+      "state": "merged",
+      "created": "2025-12-29",
+      "merged": "2025-12-29"
+    },
+    {
+      "number": 29,
+      "title": "Replace Spotify popularity metric with monthly listeners",
+      "state": "open",
+      "created": "2025-12-29",
+      "merged": null
+    },
+    {
+      "number": 30,
+      "title": "Add track popularity scores to Spotify integration",
+      "state": "open",
+      "created": "2025-12-30",
+      "merged": null
+    },
+    {
+      "number": 31,
+      "title": "Add Spotify business analytics dashboard with 28-day metrics snapshot",
+      "state": "merged",
+      "created": "2025-12-31",
+      "merged": "2025-12-31"
+    },
+    {
+      "number": 32,
+      "title": "[WIP] Set up workflow for automatic screenshot parsing",
+      "state": "merged",
+      "created": "2025-12-31",
+      "merged": "2025-12-31"
+    },
+    {
+      "number": 33,
+      "title": "Add automated OCR-based screenshot parsing for Spotify stats",
+      "state": "merged",
+      "created": "2025-12-31",
+      "merged": "2025-12-31"
+    },
+    {
+      "number": 34,
+      "title": "Auto-delete processed screenshots to prevent data conflicts",
+      "state": "merged",
+      "created": "2026-01-01",
+      "merged": "2026-01-01"
+    },
+    {
+      "number": 35,
+      "title": "Fix workflow push failures from concurrent screenshot uploads",
+      "state": "merged",
+      "created": "2026-01-01",
+      "merged": "2026-01-01"
+    },
+    {
+      "number": 36,
+      "title": "Clean up screenshots folder for automation testing",
+      "state": "merged",
+      "created": "2026-01-01",
+      "merged": "2026-01-01"
+    },
+    {
+      "number": 37,
+      "title": "Integrate screenshot-parsed analytics data with homepage display",
+      "state": "merged",
+      "created": "2026-01-01",
+      "merged": "2026-01-02"
+    },
+    {
+      "number": 38,
+      "title": "Add timestamp tracking and implement 24-hour caching for Spotify API",
+      "state": "merged",
+      "created": "2026-01-02",
+      "merged": "2026-01-02"
+    },
+    {
+      "number": 39,
+      "title": "Fix screenshot OCR parsing inaccuracies for Spotify analytics",
+      "state": "open",
+      "created": "2026-01-02",
+      "merged": null
+    },
+    {
+      "number": 40,
+      "title": "Add OCR example screenshots system with ground truth validation",
+      "state": "merged",
+      "created": "2026-01-02",
+      "merged": "2026-01-02"
+    },
+    {
+      "number": 41,
+      "title": "Add ground truth JSON generation for OCR example screenshots",
+      "state": "merged",
+      "created": "2026-01-02",
+      "merged": "2026-01-02"
+    },
+    {
+      "number": 42,
+      "title": "Reorder homepage: show screenshot stats first, API data at bottom",
+      "state": "merged",
+      "created": "2026-01-02",
+      "merged": "2026-01-02"
+    },
+    {
+      "number": 43,
+      "title": "Reorganize repository structure and add cross-browser compatibility",
+      "state": "merged",
+      "created": "2026-01-02",
+      "merged": "2026-01-02"
+    },
+    {
+      "number": 44,
+      "title": "Add PR history export script for dev journal generation",
+      "state": "open",
+      "created": "2026-01-03",
+      "merged": null
+    },
+    {
+      "number": 45,
+      "title": "[WIP] Create Markdown file summarizing development history",
+      "state": "open",
+      "created": "2026-01-03",
+      "merged": null
+    }
+  ]
+}
