@@ -96,17 +96,12 @@ def get_repository_name() -> Optional[str]:
             # git@github.com:owner/repo or git@github.com:owner/repo.git
             path = url[len("git@github.com:"):]
             parts = path.split("/")
-        elif "github.com" in url:
-            # Try to extract from other github.com URLs
-            # Handle cases like http://github.com/owner/repo
-            try:
-                # Find github.com and extract what comes after
-                idx = url.index("github.com")
-                after_github = url[idx + len("github.com"):].lstrip(":/")
-                parts = after_github.split("/")
-            except (ValueError, IndexError):
-                return None
+        elif url.startswith("http://github.com/"):
+            # http://github.com/owner/repo (less common, but possible)
+            path = url[len("http://github.com/"):]
+            parts = path.split("/")
         else:
+            # Not a recognized GitHub URL format
             return None
         
         if len(parts) >= 2:
