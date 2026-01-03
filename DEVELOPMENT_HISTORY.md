@@ -2,9 +2,9 @@
 
 ## Introduction
 
-This repository represents my learning journey in web development, starting from November 2025. What began as a simple personal website has evolved into a comprehensive platform featuring Spotify integration, OCR-based analytics parsing, an idle game with philosophical narrative, and various interactive elements. Each pull request documents a step in learning modern web technologies, from basic HTML/CSS to API integrations, automated workflows, and advanced UI/UX patterns.
+This repository documents the development of a personal website starting from November 2025. The website evolved from basic HTML/CSS pages to include Spotify integration, OCR-based analytics parsing, an idle game, and various interactive elements. Development progressed through incremental pull requests implementing modern web technologies, API integrations, automated workflows, and UI patterns.
 
-The project showcases practical application of:
+The project includes:
 - **Frontend Development**: HTML5, CSS3 (with vendor prefixes for browser compatibility), JavaScript
 - **API Integration**: Spotify Web API with OAuth 2.0, backend caching
 - **Automation**: GitHub Actions for CI/CD and screenshot processing
@@ -12,22 +12,22 @@ The project showcases practical application of:
 - **Game Development**: Idle clicker mechanics with narrative frameworks
 - **Performance Optimization**: Browser compatibility (IE11+), preloading, responsive design
 
-## Key Learning Highlights
+## Key Development Areas
 
 ### 🎵 **Spotify Integration** (PRs #24, #26, #28, #29, #30, #31)
-Implemented live artist data fetching with secure OAuth backend, monthly listeners scraping, clickable track links, and popularity metrics. This taught me about API authentication, CORS handling, backend/frontend separation, and data caching strategies.
+Implementation of live artist data fetching with secure OAuth backend, monthly listeners scraping, clickable track links, and popularity metrics. Components include API authentication, CORS handling, backend/frontend separation, and data caching strategies.
 
 ### 📸 **OCR Screenshot Parsing** (PRs #32, #33, #34, #35, #37, #40, #41)
-Built an automated system to extract Spotify analytics from screenshots using Tesseract OCR, with GitHub Actions workflows, ground truth validation, and accuracy improvements. This was my deepest dive into Python, regex patterns, data aggregation, and CI/CD automation.
+Automated system to extract Spotify analytics from screenshots using Tesseract OCR, GitHub Actions workflows, ground truth validation, and accuracy improvements. Utilizes Python, regex patterns, data aggregation, and CI/CD automation.
 
 ### 🎮 **Asymptote Engine Game** (PRs #10, #11, #12, #13, #14, #17, #18, #19, #20, #21)
-Created an idle clicker game with philosophical narrative, achievements system, settings modal, audio controls, and sacrifice mechanics. This taught me game loop design, state management, localStorage persistence, and user experience optimization.
+Idle clicker game featuring philosophical narrative, achievements system, settings modal, audio controls, and sacrifice mechanics. Includes game loop design, state management, localStorage persistence, and user experience optimization.
 
 ### 🎨 **UI/UX Evolution** (PRs #3, #4, #5, #6, #7, #16, #43)
-Progressive enhancement of visual effects: text fluctuation, tilt hover cards, color cycling, particle backgrounds, color palette changes, and cross-browser compatibility. This reinforced responsive design principles, CSS animations, and accessibility considerations.
+Progressive enhancement of visual effects including text fluctuation, tilt hover cards, color cycling, particle backgrounds, color palette changes, and cross-browser compatibility. Implements responsive design principles, CSS animations, and accessibility considerations.
 
 ### 🔧 **Repository Organization** (PRs #2, #43, #44)
-Learned code cleanup, modular structure, vendor prefixing for legacy browsers, documentation, and development tooling. This emphasized maintainability, performance, and professional development practices.
+Code cleanup, modular structure, vendor prefixing for legacy browsers, documentation, and development tooling. Focus on maintainability, performance, and professional development practices.
 
 ---
 
@@ -159,7 +159,7 @@ Learned code cleanup, modular structure, vendor prefixing for legacy browsers, d
 - Added concept tags (DENSITY & COMPRESSION, EMULATION STACKS)
 - Reframed upgrades as framework principles
 - Milestone system with progressive narrative
-- Casual "bro talk" voice throughout
+- Casual conversational voice throughout
 
 ---
 
@@ -476,27 +476,35 @@ Learned code cleanup, modular structure, vendor prefixing for legacy browsers, d
 
 ---
 
-## Lessons Learned
+## Technical Implementation Summary
 
-### Technical Skills
-- **API Integration**: OAuth flows (#24), token management, rate limiting, caching strategies (#38)
-- **OCR & Automation**: Tesseract configuration (#33), regex patterns (#37, #39), data aggregation, CI/CD with GitHub Actions (#32, #35)
-- **Frontend Engineering**: State management (#10, #17), localStorage persistence (#18), responsive design (#43), browser compatibility (#43)
-- **Backend Development**: Express.js (#24), serverless functions, environment variables (#24), CORS handling
-- **Game Development**: Game loops (#10), idle mechanics (#17), prestige systems (#10), narrative integration (#13, #18)
+### API Integration
+- OAuth flows (#24), token management, rate limiting, caching strategies (#38)
 
-### Soft Skills
-- **Iterative Development**: Breaking features into small PRs (#2-#7), testing incrementally
-- **Documentation**: READMEs (#40), quick start guides (#40), contributing guidelines (#40), visual diagrams (#40)
-- **Problem Solving**: Debugging OCR accuracy issues (#39, #40, #41), handling concurrency in workflows (#35), fixing mobile zoom (#11)
-- **User Experience**: Progressive disclosure of complexity (#14), intuitive controls (#19, #21), accessibility (#43)
+### OCR & Automation
+- Tesseract configuration (#33), regex patterns (#37, #39), data aggregation, CI/CD with GitHub Actions (#32, #35)
 
-### Future Directions
+### Frontend Engineering
+- State management (#10, #17), localStorage persistence (#18), responsive design (#43), browser compatibility (#43)
+
+### Backend Development
+- Express.js (#24), serverless functions, environment variables (#24), CORS handling
+
+### Game Development
+- Game loops (#10), idle mechanics (#17), prestige systems (#10), narrative integration (#13, #18)
+
+### Development Process
+- Iterative feature development through incremental PRs (#2-#7)
+- Documentation: READMEs (#40), quick start guides (#40), contributing guidelines (#40), visual diagrams (#40)
+- Debugging OCR accuracy issues (#39, #40, #41), handling concurrency in workflows (#35), mobile optimization (#11)
+- User interface design: Progressive disclosure of complexity (#14), intuitive controls (#19, #21), accessibility (#43)
+
+### Outstanding Items
 - Complete remaining draft PRs (#22, #23, #25, #27, #29, #30, #39, #44, #45)
-- Improve OCR accuracy with machine learning refinements
-- Add Apple Music and TikTok API integrations
-- Expand Asymptote Engine with new narrative branches
-- Implement analytics dashboards for deeper insights
+- OCR accuracy improvements
+- Additional API integrations (Apple Music, TikTok)
+- Asymptote Engine narrative expansion
+- Analytics dashboard enhancements
 
 ---
 
