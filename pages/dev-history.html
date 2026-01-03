@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="Indrolend - Development History" />
+  <meta name="theme-color" content="#020612" />
+  <title>Development History | Indrolend</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/dev-history.css" />
+  <script defer src="../js/dev-history.js"></script>
+</head>
+<body class="dev-history-bg">
+  <canvas id="particles-bg"></canvas>
+
+  <div class="dev-history-container">
+    <header class="dev-history-header">
+      <a href="home.html" class="back-button">← Back to Home</a>
+      <h1 class="dev-history-title">Development History</h1>
+      <p class="dev-history-subtitle">A chronicle of learning, building, and evolving</p>
+    </header>
+
+    <main class="dev-history-content">
+      <div id="markdown-content" class="markdown-body">
+        <!-- Content will be loaded here by JavaScript -->
+        <div class="loading-message">Loading development history...</div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Particle background script (reused from home page) -->
+  <script>
+    const particlesCanvas = document.getElementById("particles-bg");
+    if (particlesCanvas) {
+      const ctx = particlesCanvas.getContext("2d");
+      let particles = [];
+      const particleCount = 60;
+      const maxSpeed = 0.3;
+      const particleColor = "rgba(94, 232, 125, 0.4)";
+      const lineColor = "rgba(94, 232, 125, 0.1)";
+      const connectionDistance = 120;
+
+      const charPool = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%&*?!+-=";
+
+      function getRandomChar() {
+        return charPool[Math.floor(Math.random() * charPool.length)];
+      }
+
+      function resizeCanvas() {
+        particlesCanvas.width = window.innerWidth;
+        particlesCanvas.height = window.innerHeight;
+      }
+
+      function createParticle() {
+        const size = Math.floor(Math.random() * 6 + 10);
+        return {
+          x: Math.random() * particlesCanvas.width,
+          y: Math.random() * particlesCanvas.height,
+          vx: (Math.random() - 0.5) * maxSpeed,
+          vy: (Math.random() - 0.5) * maxSpeed,
+          size: size,
+          font: `${size}px "SF Mono", Menlo, Monaco, Consolas, monospace`,
+          char: getRandomChar(),
+          changeInterval: Math.random() * 1200 + 300,
+          lastChangeTime: performance.now()
+        };
+      }
+
+      function initParticles() {
+        particles = [];
+        for (let i = 0; i < particleCount; i++) {
+          particles.push(createParticle());
+        }
+      }
+
+      function updateParticles() {
+        const now = performance.now();
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < 0 || p.x > particlesCanvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > particlesCanvas.height) p.vy *= -1;
+
+          if (now - p.lastChangeTime >= p.changeInterval) {
+            p.char = getRandomChar();
+            p.lastChangeTime = now;
+            p.changeInterval = Math.random() * 1200 + 300;
+          }
+        });
+      }
+
+      function drawParticles() {
+        ctx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < connectionDistance) {
+              ctx.beginPath();
+              ctx.strokeStyle = lineColor;
+              ctx.lineWidth = 0.5;
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        ctx.fillStyle = particleColor;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        particles.forEach(p => {
+          ctx.font = p.font;
+          ctx.fillText(p.char, p.x, p.y);
+        });
+      }
+
+      function animateParticles() {
+        updateParticles();
+        drawParticles();
+        requestAnimationFrame(animateParticles);
+      }
+
+      resizeCanvas();
+      initParticles();
+      animateParticles();
+
+      window.addEventListener("resize", () => {
+        resizeCanvas();
+        initParticles();
+      });
+    }
+  </script>
+</body>
+</html>

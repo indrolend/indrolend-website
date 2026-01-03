@@ -1405,3 +1405,197 @@ html, body {
 .app-card.vibrating {
   animation: vibrate 0.3s ease-in-out;
 }
+
+/* ============================================
+   GLITCHY DEVELOPMENT HISTORY BUTTON
+   ============================================ */
+.glitchy-button {
+  position: relative;
+  display: inline-block;
+  margin: 20px auto 0;
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  color: var(--terminal-green);
+  background: rgba(109, 217, 232, 0.08);
+  border: 2px solid var(--terminal-green);
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-align: center;
+  -webkit-animation: glitchColorShift 3s infinite;
+  -moz-animation: glitchColorShift 3s infinite;
+  animation: glitchColorShift 3s infinite;
+}
+
+.glitchy-button:hover {
+  background: rgba(109, 217, 232, 0.15);
+  -webkit-box-shadow: 0 0 20px rgba(109, 217, 232, 0.4);
+  -moz-box-shadow: 0 0 20px rgba(109, 217, 232, 0.4);
+  box-shadow: 0 0 20px rgba(109, 217, 232, 0.4);
+  -webkit-animation: glitchIntense 0.5s infinite;
+  -moz-animation: glitchIntense 0.5s infinite;
+  animation: glitchIntense 0.5s infinite;
+}
+
+.glitch-text {
+  position: relative;
+  display: inline-block;
+  color: var(--terminal-green);
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.glitch-text::before {
+  left: 2px;
+  text-shadow: -2px 0 #ff00ff;
+  clip: rect(44px, 450px, 56px, 0);
+  -webkit-animation: glitchAnim 0.5s infinite linear alternate-reverse;
+  -moz-animation: glitchAnim 0.5s infinite linear alternate-reverse;
+  animation: glitchAnim 0.5s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+  left: -2px;
+  text-shadow: -2px 0 #00ffff;
+  clip: rect(44px, 450px, 56px, 0);
+  -webkit-animation: glitchAnim 0.7s infinite linear alternate-reverse;
+  -moz-animation: glitchAnim 0.7s infinite linear alternate-reverse;
+  animation: glitchAnim 0.7s infinite linear alternate-reverse;
+}
+
+@-webkit-keyframes glitchAnim {
+  0% { clip: rect(31px, 9999px, 94px, 0); }
+  10% { clip: rect(80px, 9999px, 2px, 0); }
+  20% { clip: rect(46px, 9999px, 70px, 0); }
+  30% { clip: rect(12px, 9999px, 88px, 0); }
+  40% { clip: rect(68px, 9999px, 15px, 0); }
+  50% { clip: rect(91px, 9999px, 34px, 0); }
+  60% { clip: rect(5px, 9999px, 60px, 0); }
+  70% { clip: rect(77px, 9999px, 22px, 0); }
+  80% { clip: rect(40px, 9999px, 85px, 0); }
+  90% { clip: rect(58px, 9999px, 11px, 0); }
+  100% { clip: rect(25px, 9999px, 99px, 0); }
+}
+
+@keyframes glitchAnim {
+  0% { clip: rect(31px, 9999px, 94px, 0); }
+  10% { clip: rect(80px, 9999px, 2px, 0); }
+  20% { clip: rect(46px, 9999px, 70px, 0); }
+  30% { clip: rect(12px, 9999px, 88px, 0); }
+  40% { clip: rect(68px, 9999px, 15px, 0); }
+  50% { clip: rect(91px, 9999px, 34px, 0); }
+  60% { clip: rect(5px, 9999px, 60px, 0); }
+  70% { clip: rect(77px, 9999px, 22px, 0); }
+  80% { clip: rect(40px, 9999px, 85px, 0); }
+  90% { clip: rect(58px, 9999px, 11px, 0); }
+  100% { clip: rect(25px, 9999px, 99px, 0); }
+}
+
+@-webkit-keyframes glitchColorShift {
+  0%, 100% {
+    border-color: var(--terminal-green);
+    color: var(--terminal-green);
+  }
+  20% {
+    border-color: #ff00ff;
+    color: #ff00ff;
+  }
+  40% {
+    border-color: #00ffff;
+    color: #00ffff;
+  }
+  60% {
+    border-color: #ffff00;
+    color: #ffff00;
+  }
+  80% {
+    border-color: var(--terminal-green);
+    color: var(--terminal-green);
+  }
+}
+
+@keyframes glitchColorShift {
+  0%, 100% {
+    border-color: var(--terminal-green);
+    color: var(--terminal-green);
+  }
+  20% {
+    border-color: #ff00ff;
+    color: #ff00ff;
+  }
+  40% {
+    border-color: #00ffff;
+    color: #00ffff;
+  }
+  60% {
+    border-color: #ffff00;
+    color: #ffff00;
+  }
+  80% {
+    border-color: var(--terminal-green);
+    color: var(--terminal-green);
+  }
+}
+
+@-webkit-keyframes glitchIntense {
+  0%, 100% {
+    -webkit-transform: translate(0);
+    transform: translate(0);
+  }
+  20% {
+    -webkit-transform: translate(-2px, 2px);
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    -webkit-transform: translate(-2px, -2px);
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    -webkit-transform: translate(2px, 2px);
+    transform: translate(2px, 2px);
+  }
+  80% {
+    -webkit-transform: translate(2px, -2px);
+    transform: translate(2px, -2px);
+  }
+}
+
+@keyframes glitchIntense {
+  0%, 100% {
+    -webkit-transform: translate(0);
+    -moz-transform: translate(0);
+    transform: translate(0);
+  }
+  20% {
+    -webkit-transform: translate(-2px, 2px);
+    -moz-transform: translate(-2px, 2px);
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    -webkit-transform: translate(-2px, -2px);
+    -moz-transform: translate(-2px, -2px);
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    -webkit-transform: translate(2px, 2px);
+    -moz-transform: translate(2px, 2px);
+    transform: translate(2px, 2px);
+  }
+  80% {
+    -webkit-transform: translate(2px, -2px);
+    -moz-transform: translate(2px, -2px);
+    transform: translate(2px, -2px);
+  }
+}

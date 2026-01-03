@@ -278,7 +278,17 @@ class ClickerGame {
     this.understanding -= upgDef.cost;
     this.upgrades[upgradeId].purchased = true;
     upgDef.effect(this);
+    
+    // Check if all upgrades are now purchased
+    if (this.areAllUpgradesPurchased()) {
+      localStorage.setItem('asymptote_all_upgrades_purchased', 'true');
+    }
+    
     return true;
+  }
+  
+  areAllUpgradesPurchased() {
+    return UPGRADES.every(upg => this.upgrades[upg.id].purchased);
   }
   
   canEnlighten() {
