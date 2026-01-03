@@ -73,6 +73,8 @@ After exporting your PR history:
 
 ### Example Output Structure
 
+See `scripts/example_pr_log.json` for a complete example. Basic structure:
+
 ```json
 [
   {

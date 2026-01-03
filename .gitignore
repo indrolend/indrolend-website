@@ -42,6 +42,8 @@ pr_log.json
 pr_details/
 *_pr_log.json
 *_timeline.json
+# But keep the example file
+!scripts/example_pr_log.json
 
 # Screenshots are auto-deleted after processing, but keep examples
 # Note: screenshots/examples/ directory should be committed to git

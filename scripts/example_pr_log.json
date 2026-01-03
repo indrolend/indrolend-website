@@ -1,0 +1,82 @@
+[
+  {
+    "number": 10,
+    "title": "Add OCR-based Spotify statistics parsing system",
+    "state": "MERGED",
+    "createdAt": "2025-11-15T10:30:00Z",
+    "mergedAt": "2025-11-16T14:20:00Z",
+    "updatedAt": "2025-11-16T14:20:00Z",
+    "closedAt": "2025-11-16T14:20:00Z",
+    "author": {
+      "login": "developer"
+    },
+    "baseRefName": "main",
+    "headRefName": "feature/ocr-parsing",
+    "url": "https://github.com/owner/repo/pull/10",
+    "body": "Implemented automated screenshot parsing system using Tesseract OCR to extract Spotify analytics data from screenshots. Includes validation system with example screenshots and ground truth data."
+  },
+  {
+    "number": 9,
+    "title": "Create responsive gallery with unlock game",
+    "state": "MERGED",
+    "createdAt": "2025-11-10T09:15:00Z",
+    "mergedAt": "2025-11-11T16:45:00Z",
+    "updatedAt": "2025-11-11T16:45:00Z",
+    "closedAt": "2025-11-11T16:45:00Z",
+    "author": {
+      "login": "developer"
+    },
+    "baseRefName": "main",
+    "headRefName": "feature/gallery",
+    "url": "https://github.com/owner/repo/pull/9",
+    "body": "Added photo gallery with tic-tac-toe unlock game. Gallery displays personal photos in a responsive grid layout."
+  },
+  {
+    "number": 8,
+    "title": "Implement Spotify analytics dashboard",
+    "state": "MERGED",
+    "createdAt": "2025-11-05T11:00:00Z",
+    "mergedAt": "2025-11-06T13:30:00Z",
+    "updatedAt": "2025-11-06T13:30:00Z",
+    "closedAt": "2025-11-06T13:30:00Z",
+    "author": {
+      "login": "developer"
+    },
+    "baseRefName": "main",
+    "headRefName": "feature/spotify-dashboard",
+    "url": "https://github.com/owner/repo/pull/8",
+    "body": "Created interactive Spotify analytics dashboard showing streaming statistics, demographics, geography, and discovery sources with visual charts and metrics."
+  },
+  {
+    "number": 7,
+    "title": "Add asymptote idle game",
+    "state": "MERGED",
+    "createdAt": "2025-10-28T15:20:00Z",
+    "mergedAt": "2025-10-29T10:15:00Z",
+    "updatedAt": "2025-10-29T10:15:00Z",
+    "closedAt": "2025-10-29T10:15:00Z",
+    "author": {
+      "login": "developer"
+    },
+    "baseRefName": "main",
+    "headRefName": "feature/asymptote-game",
+    "url": "https://github.com/owner/repo/pull/7",
+    "body": "Integrated the Asymptote idle game with mathematical progression mechanics and persistent game state."
+  },
+  {
+    "number": 6,
+    "title": "Improve browser compatibility with vendor prefixes",
+    "state": "MERGED",
+    "createdAt": "2025-10-20T08:45:00Z",
+    "mergedAt": "2025-10-20T17:00:00Z",
+    "updatedAt": "2025-10-20T17:00:00Z",
+    "closedAt": "2025-10-20T17:00:00Z",
+    "author": {
+      "login": "developer"
+    },
+    "baseRefName": "main",
+    "headRefName": "fix/browser-compatibility",
+    "url": "https://github.com/owner/repo/pull/6",
+    "body": "Added vendor prefixes for maximum browser compatibility. Supports older browsers including IE11+. Added flexbox fallbacks for CSS Grid."
+  }
+]

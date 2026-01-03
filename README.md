@@ -139,6 +139,7 @@ If you want to help improve the OCR parsing accuracy:
 - **OCR Examples Quick Start**: [OCR_EXAMPLES_QUICK_START.md](OCR_EXAMPLES_QUICK_START.md)
 - **OCR Examples Detailed Guide**: [screenshots/examples/README.md](screenshots/examples/README.md)
 - **Contributing OCR Examples**: [screenshots/examples/CONTRIBUTING.md](screenshots/examples/CONTRIBUTING.md)
+- **PR History Export**: [PR_EXPORT_GUIDE.md](PR_EXPORT_GUIDE.md) - Export PR history for dev journal creation
 
 ## Browser Compatibility
 
