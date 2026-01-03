@@ -40,7 +40,14 @@ def run_gh_command(command: List[str]) -> Optional[str]:
         command: List of command parts to execute
         
     Returns:
-        Command output as string, or None if command failed
+        Command output as string if successful, or None if command failed.
+        Returns None in the following cases:
+        - GitHub CLI returns non-zero exit code (authentication errors, API errors, etc.)
+        - GitHub CLI is not installed (FileNotFoundError)
+        
+    Note:
+        Error messages are printed to stderr but no exceptions are raised.
+        Caller should check for None return value and handle appropriately.
     """
     try:
         result = subprocess.run(
@@ -77,12 +84,28 @@ def get_repository_name() -> Optional[str]:
         url = result.stdout.strip()
         
         # Parse different git URL formats
-        if url.startswith("https://"):
-            # https://github.com/owner/repo.git
-            parts = url.replace("https://github.com/", "").replace(".git", "").split("/")
-        elif url.startswith("git@"):
-            # git@github.com:owner/repo.git
-            parts = url.replace("git@github.com:", "").replace(".git", "").split("/")
+        # Remove .git suffix if present
+        if url.endswith(".git"):
+            url = url[:-4]
+        
+        if url.startswith("https://github.com/"):
+            # https://github.com/owner/repo or https://github.com/owner/repo.git
+            path = url[len("https://github.com/"):]
+            parts = path.split("/")
+        elif url.startswith("git@github.com:"):
+            # git@github.com:owner/repo or git@github.com:owner/repo.git
+            path = url[len("git@github.com:"):]
+            parts = path.split("/")
+        elif "github.com" in url:
+            # Try to extract from other github.com URLs
+            # Handle cases like http://github.com/owner/repo
+            try:
+                # Find github.com and extract what comes after
+                idx = url.index("github.com")
+                after_github = url[idx + len("github.com"):].lstrip(":/")
+                parts = after_github.split("/")
+            except (ValueError, IndexError):
+                return None
         else:
             return None
         
@@ -214,6 +237,11 @@ def export_all_pr_details(repo: str, limit: int = 200, output_dir: str = "pr_det
         detail_dir.mkdir(exist_ok=True)
         
         # Fetch details for each PR
+        # Note: Using sequential API calls here is intentional. The GitHub CLI (gh)
+        # handles rate limiting automatically, and parallel requests could hit rate
+        # limits or overwhelm the API. For most repositories with <200 PRs, this
+        # completes in a reasonable time. For very large repositories, users can
+        # use the --limit flag to process PRs in batches.
         all_details = []
         for i, pr in enumerate(pr_list, 1):
             pr_number = pr['number']
