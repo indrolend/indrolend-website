@@ -1,0 +1,28 @@
+{
+  "scraped_at": "2026-01-06T17:00:00.000000+00:00",
+  "listeners": 1234,
+  "streams": 56789,
+  "followers": 890,
+  "top_cities": [
+    {
+      "city": "New York, NY",
+      "listeners": 234
+    },
+    {
+      "city": "Los Angeles, CA",
+      "listeners": 189
+    },
+    {
+      "city": "Chicago, IL",
+      "listeners": 156
+    },
+    {
+      "city": "Houston, TX",
+      "listeners": 134
+    },
+    {
+      "city": "Philadelphia, PA",
+      "listeners": 112
+    }
+  ]
+}
