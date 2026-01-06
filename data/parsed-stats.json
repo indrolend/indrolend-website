@@ -1,50 +1,349 @@
 {
-  "processed_at": "2026-01-05T03:59:26.706715+00:00",
-  "screenshots": [],
+  "processed_at": "2026-01-06T02:01:06.510982+00:00",
+  "screenshots": [
+    {
+      "filename": "IMG_0802.png",
+      "stats": {
+        "listeners": 416,
+        "discovery_active_total": 83
+      },
+      "extracted_text_preview": "2:38 wi *&  Audience  Last 28 days v  Listeners  Listeners Streams Strea 416 2,448 5.9 & 43% & 9% 100 50 / | (0)  Dec 07 Jan 03 Last period This period 316 416 Source of streams  Listeners - Last 28 d"
+    },
+    {
+      "filename": "IMG_0803.png",
+      "stats": {
+        "listeners": 28,
+        "discovery_active_total": 83
+      },
+      "extracted_text_preview": "2:38 wi *&  Audience  Last 28 days v  Streams  ers Streams Streams / Listen  2,448 5.9  400  200  \\V/  ! (e) Dec 07 Jan 03  Last period This period 1,710 2,448  Source of streams  Listeners - Last 28 "
+    },
+    {
+      "filename": "IMG_0804.png",
+      "stats": {
+        "listeners": 28,
+        "streams_per_listener": 8.0,
+        "saves": 8,
+        "discovery_active_total": 83
+      },
+      "extracted_text_preview": "2:38 wi *&  Audience Last 28 days v Streams / Listener ms Streams / Listener Saves 8 5.9 328  4 165%  \u201c0  Dec 07 Jan 03 Last period This period 5.4 5.9 Source of streams  Listeners - Last 28 days  All"
+    },
+    {
+      "filename": "IMG_0805.png",
+      "stats": {
+        "playlist_adds": 225,
+        "listeners": 28,
+        "saves": 225,
+        "discovery_active_total": 83
+      },
+      "extracted_text_preview": "2:38 o  *) A  Audience Last 28 days v Saves ms / Listener Playlist Adds 225 5 a 42%  \u201c0  Dec 07 Jan 03 Last period This period 124 328 Source of streams  Listeners - Last 28 days  All active sources -"
+    },
+    {
+      "filename": "IMG_0806.png",
+      "stats": {
+        "playlist_adds": 225,
+        "followers": 243,
+        "listeners": 28,
+        "discovery_active_total": 83
+      },
+      "extracted_text_preview": "2:38 wi *&  Audience Last 28 days v  Playlist Adds  Playlist Adds Followers 225 243  ae) Dec 07 Jan 03  Last period This period 158 225  Source of streams  Listeners - Last 28 days  All active sources"
+    },
+    {
+      "filename": "IMG_0807.png",
+      "stats": {
+        "playlist_adds": 225,
+        "followers": 243,
+        "listeners": 28,
+        "discovery_active_total": 83
+      },
+      "extracted_text_preview": "2:38 wi *&  Audience Last 28 days v Followers Playlist Adds Followers 225 243 me 42% a 1%  \u201c0  Dec 07 Jan 03 Last period This period 240 243 Source of streams  Listeners - Last 28 days  All active sou"
+    },
+    {
+      "filename": "IMG_0808.png",
+      "stats": {
+        "listeners": 28,
+        "discovery_active_total": 83,
+        "discovery_programmed_total": 12,
+        "discovery_artist_profile": 12,
+        "discovery_own_playlists": 12,
+        "discovery_algorithmic_playlists": 53,
+        "discovery_other_playlists": 12,
+        "discovery_radio_autoplay": 53
+      },
+      "extracted_text_preview": "Audience  Source of streams  Listeners - Last 28 days  All active sources - 83%  Artist profile and catalog ee  Listener\u2019s own playlists and library as  Listener\u2019s queue a  All programmed sources - 12"
+    },
+    {
+      "filename": "IMG_0809.png",
+      "stats": {
+        "listeners": 5,
+        "listeners_change": "-5%",
+        "gender_male": 0,
+        "discovery_programmed_total": 12,
+        "discovery_algorithmic_playlists": 5,
+        "discovery_other_playlists": 5,
+        "discovery_radio_autoplay": 5
+      },
+      "extracted_text_preview": "2:38 tT} Audience  All programmed sources - 12% Editorial playlists 0  Algorithmic playlists and mixes BS  Personalized editorial playlists t  Other listeners\u2019 playlists a  Radio and autoplay =  Chart"
+    },
+    {
+      "filename": "IMG_0810.png",
+      "stats": {
+        "gender_male": 38,
+        "gender_female": 0,
+        "gender_non_binary": 8,
+        "age_under_18": 6,
+        "age_18_24": 28,
+        "age_25_34": 42,
+        "age_35_44": 13
+      },
+      "extracted_text_preview": "2:38 o  Audience Sy 47  *) A  Their gender  Last 28 days  \u00ab 54% Male e 38% Female  0% Non-binary e 8% Not specified  Their age  Last 28 days  <18 6% =  18-24 28% as  25-34 42% a 35-44 a  13%  "
+    },
+    {
+      "filename": "IMG_0811.png",
+      "stats": {
+        "gender_male": 0,
+        "gender_female": 0,
+        "gender_non_binary": 8,
+        "age_under_18": 6,
+        "age_18_24": 28,
+        "age_25_34": 42,
+        "age_35_44": 13,
+        "age_45_54": 6,
+        "age_55_64": 2,
+        "age_65_plus": 2
+      },
+      "extracted_text_preview": "2:38 wi *&  Audience Sy  e 38% Female 0% Non-binary e 8% Not specified  Their age  Last 28 days  <18 6% =  18-24 28% as  25-34 42% as  35-44 13% a  45-54 6% =  55-64 2% |  65+ 2%  "
+    },
+    {
+      "filename": "IMG_0812.png",
+      "stats": {
+        "listeners": 388,
+        "top_cities": [
+          {
+            "name": "A\n\nListeners",
+            "listeners": 388
+          },
+          {
+            "name": "Top countries\nLast",
+            "listeners": 28
+          },
+          {
+            "name": "Australia\n\nTop cities\nLast",
+            "listeners": 28
+          },
+          {
+            "name": "Portland\nUnited States",
+            "listeners": 5
+          },
+          {
+            "name": "Atlanta\nUnited States",
+            "listeners": 4
+          },
+          {
+            "name": "United Kingdom",
+            "listeners": 3
+          },
+          {
+            "name": "Los Angeles\nUnited States",
+            "listeners": 3
+          },
+          {
+            "name": "United States",
+            "listeners": 2
+          },
+          {
+            "name": "Dallas\nUnited States",
+            "listeners": 2
+          }
+        ],
+        "top_countries": [
+          {
+            "name": "A\n\nListeners",
+            "listeners": 388
+          },
+          {
+            "name": "Top countries\nLast",
+            "listeners": 28
+          },
+          {
+            "name": "Australia\n\nTop cities\nLast",
+            "listeners": 28
+          },
+          {
+            "name": "Portland\nUnited States",
+            "listeners": 5
+          },
+          {
+            "name": "Atlanta\nUnited States",
+            "listeners": 4
+          },
+          {
+            "name": "United Kingdom",
+            "listeners": 3
+          },
+          {
+            "name": "Los Angeles\nUnited States",
+            "listeners": 3
+          },
+          {
+            "name": "United States",
+            "listeners": 2
+          },
+          {
+            "name": "Dallas\nUnited States",
+            "listeners": 2
+          }
+        ]
+      },
+      "extracted_text_preview": "2:38  Top countries Last 28 days  1 United States 2 United Kingdom  3 Australia  Top cities Last 28 days  Dallas United States  2 Los Angeles United States 3 Atlanta United States 4 Portland United St"
+    },
+    {
+      "filename": "IMG_0813.png",
+      "stats": {
+        "listeners": 13,
+        "top_cities": [
+          {
+            "name": "Top cities\n\nLast",
+            "listeners": 28
+          },
+          {
+            "name": "Listeners\nDallas",
+            "listeners": 13
+          },
+          {
+            "name": "Los Angeles",
+            "listeners": 13
+          },
+          {
+            "name": "Atlanta",
+            "listeners": 9
+          },
+          {
+            "name": "Portland",
+            "listeners": 8
+          },
+          {
+            "name": "Phoenix",
+            "listeners": 8
+          },
+          {
+            "name": "Houston",
+            "listeners": 8
+          },
+          {
+            "name": "Chicago",
+            "listeners": 8
+          },
+          {
+            "name": "United States",
+            "listeners": 8
+          },
+          {
+            "name": "United States",
+            "listeners": 7
+          }
+        ]
+      },
+      "extracted_text_preview": "2:38 al + &  Top cities  Last 28 days Listeners Dallas 13 United States  2 Los Angeles 13 United States  3 Atlanta 9 United States  4 Portland 8 United States  5 Phoenix 8 United States  6 Houston 8 U"
+    },
+    {
+      "filename": "IMG_0814.png",
+      "stats": {},
+      "extracted_text_preview": "11  12  13  14  15  16  17  18  19  20  21  2:38  New York United States Miami  United States  Fort Worth United States  Kansas City United States  McKinney United States  Austin United States  Columb",
+      "note": "No stats found in this screenshot"
+    },
+    {
+      "filename": "IMG_0815.png",
+      "stats": {
+        "top_cities": [
+          {
+            "name": "K Top cities",
+            "listeners": 48
+          },
+          {
+            "name": "United States",
+            "listeners": 28
+          },
+          {
+            "name": "United States",
+            "listeners": 26
+          },
+          {
+            "name": "United States",
+            "listeners": 25
+          },
+          {
+            "name": "United States",
+            "listeners": 24
+          },
+          {
+            "name": "United States",
+            "listeners": 20
+          },
+          {
+            "name": "United States",
+            "listeners": 19
+          },
+          {
+            "name": "Minneapolis",
+            "listeners": 4
+          },
+          {
+            "name": "Charlotte",
+            "listeners": 4
+          },
+          {
+            "name": "Montgomery",
+            "listeners": 4
+          }
+        ]
+      },
+      "extracted_text_preview": "2:38 al + & K Top cities 48 Minneapolis 4 United States 19 Charlotte 4 United States 20 Montgomery 4 United States a4 Seattle 4 United States Orlando 3 22 United States Arlington 3 23 United States 24"
+    }
+  ],
   "analytics": {
     "period": "Last 28 Days",
-    "dateGenerated": "2026-01-05T03:59:26.706804+00:00",
+    "dateGenerated": "2026-01-06T02:01:16.639024+00:00",
     "coreMetrics": {
       "totalListeners": {
-        "value": 0,
-        "change": "+0%"
+        "value": 13,
+        "change": "-5%"
       },
       "totalStreams": {
         "value": 0,
         "change": "+0%"
       },
       "streamsPerListener": {
-        "value": 0,
+        "value": 8.0,
         "change": "+0%"
       },
       "saves": {
-        "value": 0,
+        "value": 225,
         "change": "+0%"
       },
       "playlistAdds": {
-        "value": 0,
+        "value": 225,
         "change": "+0%"
       },
       "followers": {
-        "value": 0,
+        "value": 243,
         "change": "+0%"
       }
     },
     "discoverySources": {
       "active": {
-        "total": 0,
+        "total": 83,
         "breakdown": {
-          "artistProfile": 0,
-          "ownPlaylists": 0,
+          "artistProfile": 12,
+          "ownPlaylists": 12,
           "listenerQueue": 0
         }
       },
       "programmed": {
-        "total": 0,
+        "total": 12,
         "breakdown": {
-          "algorithmicPlaylists": 0,
-          "otherPlaylists": 0,
-          "radioAutoplay": 0,
+          "algorithmicPlaylists": 5,
+          "otherPlaylists": 5,
+          "radioAutoplay": 5,
           "editorialPlaylists": 0,
           "charts": 0
         }
@@ -55,24 +354,105 @@
       "gender": {
         "male": 0,
         "female": 0,
-        "nonBinary": 0,
+        "nonBinary": 8,
         "notSpecified": 0
       },
       "age": {
-        "under18": 0,
-        "18-24": 0,
-        "25-34": 0,
-        "35-44": 0,
-        "45-54": 0,
-        "55-64": 0,
-        "65+": 0
+        "under18": 6,
+        "18-24": 28,
+        "25-34": 42,
+        "35-44": 13,
+        "45-54": 6,
+        "55-64": 2,
+        "65+": 2
       }
     },
-    "topCountries": [],
-    "topCities": [],
+    "topCountries": [
+      {
+        "name": "A\n\nListeners",
+        "listeners": 388
+      },
+      {
+        "name": "Top countries\nLast",
+        "listeners": 28
+      },
+      {
+        "name": "Australia\n\nTop cities\nLast",
+        "listeners": 28
+      },
+      {
+        "name": "Portland\nUnited States",
+        "listeners": 5
+      },
+      {
+        "name": "Atlanta\nUnited States",
+        "listeners": 4
+      },
+      {
+        "name": "United Kingdom",
+        "listeners": 3
+      },
+      {
+        "name": "Los Angeles\nUnited States",
+        "listeners": 3
+      },
+      {
+        "name": "United States",
+        "listeners": 2
+      },
+      {
+        "name": "Dallas\nUnited States",
+        "listeners": 2
+      }
+    ],
+    "topCities": [
+      {
+        "name": "A\n\nListeners",
+        "listeners": 388
+      },
+      {
+        "name": "United States",
+        "listeners": 159
+      },
+      {
+        "name": "K Top cities",
+        "listeners": 48
+      },
+      {
+        "name": "Top countries\nLast",
+        "listeners": 28
+      },
+      {
+        "name": "Australia\n\nTop cities\nLast",
+        "listeners": 28
+      },
+      {
+        "name": "Top cities\n\nLast",
+        "listeners": 28
+      },
+      {
+        "name": "Listeners\nDallas",
+        "listeners": 13
+      },
+      {
+        "name": "Los Angeles",
+        "listeners": 13
+      },
+      {
+        "name": "Atlanta",
+        "listeners": 9
+      },
+      {
+        "name": "Portland",
+        "listeners": 8
+      }
+    ],
     "insights": [
-      "Listener base is stable",
-      "Streams per listener are stable (repeat engagement)"
+      "Listener numbers have declined slightly",
+      "Streams per listener are stable (repeat engagement)",
+      "Discovery is primarily organic/human-driven",
+      "Algorithmic amplification is minimal but present",
+      "Audience concentration strongest in A\n\nListeners"
     ]
   }
 }
