@@ -167,14 +167,15 @@ class SpotifyArtistsStatsDisplay {
 }
 
 // Initialize when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    const statsDisplay = new SpotifyArtistsStatsDisplay();
-    statsDisplay.init();
-  });
-} else {
+function initializeSpotifyStats() {
   const statsDisplay = new SpotifyArtistsStatsDisplay();
   statsDisplay.init();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeSpotifyStats);
+} else {
+  initializeSpotifyStats();
 }
 
 // Export for manual initialization if needed

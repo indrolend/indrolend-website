@@ -30,8 +30,9 @@ from selenium.common.exceptions import (
     NoSuchElementException,
     WebDriverException
 )
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -75,20 +76,16 @@ class SpotifyArtistsScraper:
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--window-size=1920,1080")
-        chrome_options.add_argument(
-            "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/120.0.0.0 Safari/537.36"
-        )
         
         try:
-            # Try to use ChromeDriver from PATH
-            self.driver = webdriver.Chrome(options=chrome_options)
+            # Use webdriver-manager to automatically download and manage ChromeDriver
+            service = Service(ChromeDriverManager().install())
+            self.driver = webdriver.Chrome(service=service, options=chrome_options)
             print("✓ Chrome driver initialized successfully")
         except WebDriverException as e:
             raise SpotifyArtistsScraperError(
                 f"Failed to initialize Chrome driver. "
-                f"Make sure Chrome/Chromium and ChromeDriver are installed.\n"
+                f"Make sure Chrome/Chromium is installed.\n"
                 f"Error: {e}"
             )
     
@@ -256,12 +253,19 @@ class SpotifyArtistsScraper:
             return None
     
     def _extract_top_cities(self) -> List[Dict[str, Any]]:
-        """Extract top 5 cities and their listener counts"""
+        """
+        Extract top 5 cities and their listener counts
+        
+        Note: This uses generic XPath selectors that may need adjustment based on 
+        the actual Spotify for Artists dashboard structure. The selectors are intentionally
+        broad to handle variations, but may require updates if Spotify changes their UI.
+        Consider updating the XPath after inspecting the actual DOM structure.
+        """
         cities = []
         
         try:
             # Look for city/location elements
-            # This is a generic approach - may need adjustment based on actual page structure
+            # NOTE: These are generic class name patterns - adjust based on actual page structure
             city_elements = self.driver.find_elements(
                 By.XPATH,
                 "//*[contains(@class, 'city') or contains(@class, 'location') or "

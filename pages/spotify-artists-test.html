@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spotify Artists Stats Test</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #0a0e1a;
+      font-family: 'Arial', sans-serif;
+      color: white;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+  </style>
+  <link rel="stylesheet" href="../css/spotify-artists-stats.css">
+</head>
+<body>
+  <div class="container">
+    <h1 style="text-align: center; color: #1DB954;">Spotify Artists Stats Display Test</h1>
+    
+    <!-- Stats Container -->
+    <div id="spotify-artists-stats"></div>
+    
+    <div style="margin-top: 40px; padding: 20px; background: rgba(40, 40, 60, 0.5); border-radius: 8px;">
+      <h3>Test Information</h3>
+      <p>This page tests the Spotify for Artists stats display component.</p>
+      <p>It fetches data from <code>../data/spotify_stats.json</code> and displays it above.</p>
+      <p>Check the browser console for any errors.</p>
+    </div>
+  </div>
+  
+  <script src="../js/spotify-artists-stats.js"></script>
+</body>
+</html>
