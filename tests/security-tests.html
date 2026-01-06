@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Tests - Indrolend Website</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+    }
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .test-case {
+      margin: 15px 0;
+      padding: 10px;
+      border-left: 4px solid #ddd;
+    }
+    .test-case.pass {
+      border-color: #4caf50;
+      background: #f1f8f4;
+    }
+    .test-case.fail {
+      border-color: #f44336;
+      background: #ffebee;
+    }
+    .test-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .test-result {
+      font-size: 14px;
+      color: #666;
+    }
+    code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+    .summary {
+      font-size: 18px;
+      font-weight: bold;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    .summary.pass {
+      background: #4caf50;
+      color: white;
+    }
+    .summary.fail {
+      background: #f44336;
+      color: white;
+    }
+  </style>
+  <script src="../js/security-utils.js"></script>
+</head>
+<body>
+  <h1>🔒 Security Utility Tests</h1>
+  <div id="test-results"></div>
+
+  <script>
+    // Test runner
+    const tests = [];
+    let passCount = 0;
+    let failCount = 0;
+
+    function addTest(title, testFn) {
+      try {
+        const result = testFn();
+        if (result.pass) {
+          passCount++;
+          tests.push({ title, status: 'pass', message: result.message });
+        } else {
+          failCount++;
+          tests.push({ title, status: 'fail', message: result.message });
+        }
+      } catch (error) {
+        failCount++;
+        tests.push({ title, status: 'fail', message: `Error: ${error.message}` });
+      }
+    }
+
+    // Test 1: HTML Escaping
+    addTest('HTML Escaping - Basic XSS Prevention', () => {
+      const malicious = '<script>alert("XSS")</script>';
+      const escaped = window.SecurityUtils.escapeHtml(malicious);
+      const pass = !escaped.includes('<script>') && escaped.includes('&lt;script&gt;');
+      return {
+        pass,
+        message: pass ? 'Script tags properly escaped' : 'Script tags not escaped!'
+      };
+    });
+
+    // Test 2: HTML Escaping - Quotes
+    addTest('HTML Escaping - Quote Characters', () => {
+      const input = 'Test "quotes" and \'apostrophes\'';
+      const escaped = window.SecurityUtils.escapeHtml(input);
+      const pass = escaped.includes('&quot;') || !escaped.includes('"');
+      return {
+        pass,
+        message: pass ? 'Quotes properly escaped' : 'Quotes not escaped!'
+      };
+    });
+
+    // Test 3: Valid Spotify URL
+    addTest('URL Sanitization - Valid Spotify URL', () => {
+      const url = 'https://open.spotify.com/artist/59X3431NBfd6xWMc3Zlh0v';
+      const result = window.SecurityUtils.sanitizeSpotifyUrl(url, ['/artist/']);
+      const pass = result === url;
+      return {
+        pass,
+        message: pass ? 'Valid Spotify URL accepted' : 'Valid URL rejected!'
+      };
+    });
+
+    // Test 4: HTTP Protocol Rejected
+    addTest('URL Sanitization - HTTP Protocol Rejected', () => {
+      const url = 'http://open.spotify.com/artist/123';
+      const result = window.SecurityUtils.sanitizeSpotifyUrl(url);
+      const pass = result === '#';
+      return {
+        pass,
+        message: pass ? 'HTTP protocol rejected' : 'HTTP protocol accepted!'
+      };
+    });
+
+    // Test 5: Malicious Domain Rejected
+    addTest('URL Sanitization - Malicious Domain Rejected', () => {
+      const url = 'https://malicious.com/fake-spotify';
+      const result = window.SecurityUtils.sanitizeSpotifyUrl(url);
+      const pass = result === '#';
+      return {
+        pass,
+        message: pass ? 'Malicious domain rejected' : 'Malicious domain accepted!'
+      };
+    });
+
+    // Test 6: Valid Spotify CDN Image
+    addTest('Image Sanitization - Valid Spotify CDN', () => {
+      const url = 'https://i.scdn.co/image/ab67616d0000b273';
+      const result = window.SecurityUtils.sanitizeImageUrl(url);
+      const pass = result === url;
+      return {
+        pass,
+        message: pass ? 'Valid CDN URL accepted' : 'Valid CDN URL rejected!'
+      };
+    });
+
+    // Test 7: Malicious Image URL Rejected
+    addTest('Image Sanitization - Malicious Domain Rejected', () => {
+      const url = 'https://evil.com/malicious.jpg';
+      const result = window.SecurityUtils.sanitizeImageUrl(url);
+      const pass = result === null;
+      return {
+        pass,
+        message: pass ? 'Malicious image URL rejected' : 'Malicious image URL accepted!'
+      };
+    });
+
+    // Test 8: Subdomain Attack Prevention
+    addTest('Image Sanitization - Subdomain Attack Prevention', () => {
+      const url = 'https://malicious.scdn.co/fake-image.jpg';
+      const result = window.SecurityUtils.sanitizeImageUrl(url);
+      const pass = result === null;
+      return {
+        pass,
+        message: pass ? 'Subdomain attack prevented' : 'Subdomain attack vulnerability!'
+      };
+    });
+
+    // Test 9: HTTP Image Rejected
+    addTest('Image Sanitization - HTTP Protocol Rejected', () => {
+      const url = 'http://i.scdn.co/image/valid';
+      const result = window.SecurityUtils.sanitizeImageUrl(url);
+      const pass = result === null;
+      return {
+        pass,
+        message: pass ? 'HTTP image URL rejected' : 'HTTP image URL accepted!'
+      };
+    });
+
+    // Test 10: Number Formatting
+    addTest('Number Formatting', () => {
+      const num = 1234567;
+      const formatted = window.SecurityUtils.formatNumber(num);
+      const pass = formatted === '1,234,567';
+      return {
+        pass,
+        message: pass ? 'Number formatted correctly' : 'Number formatting failed!'
+      };
+    });
+
+    // Test 11: Invalid URL Handling
+    addTest('URL Sanitization - Invalid URL String', () => {
+      const url = 'not-a-valid-url';
+      const result = window.SecurityUtils.sanitizeSpotifyUrl(url);
+      const pass = result === '#';
+      return {
+        pass,
+        message: pass ? 'Invalid URL rejected' : 'Invalid URL accepted!'
+      };
+    });
+
+    // Test 12: Null/Undefined Handling
+    addTest('Sanitization - Null/Undefined Handling', () => {
+      const result1 = window.SecurityUtils.escapeHtml(null);
+      const result2 = window.SecurityUtils.sanitizeSpotifyUrl(null);
+      const result3 = window.SecurityUtils.sanitizeImageUrl(undefined);
+      const pass = result1 === 'null' && result2 === '#' && result3 === null;
+      return {
+        pass,
+        message: pass ? 'Null/undefined handled safely' : 'Null/undefined not handled!'
+      };
+    });
+
+    // Test 13: Path Validation
+    addTest('URL Sanitization - Path Validation', () => {
+      const validUrl = 'https://open.spotify.com/track/123';
+      const invalidUrl = 'https://open.spotify.com/invalid/path';
+      const result1 = window.SecurityUtils.sanitizeSpotifyUrl(validUrl, ['/track/', '/artist/']);
+      const result2 = window.SecurityUtils.sanitizeSpotifyUrl(invalidUrl, ['/track/', '/artist/']);
+      const pass = result1 === validUrl && result2 === '#';
+      return {
+        pass,
+        message: pass ? 'Path validation working' : 'Path validation failed!'
+      };
+    });
+
+    // Test 14: Multiple Script Tags
+    addTest('HTML Escaping - Multiple Malicious Tags', () => {
+      const malicious = '<script>evil()</script><img src=x onerror=alert(1)><iframe>';
+      const escaped = window.SecurityUtils.escapeHtml(malicious);
+      const pass = !escaped.includes('<script>') && !escaped.includes('<img') && !escaped.includes('<iframe');
+      return {
+        pass,
+        message: pass ? 'Multiple malicious tags escaped' : 'Some malicious tags not escaped!'
+      };
+    });
+
+    // Render results
+    function renderResults() {
+      const container = document.getElementById('test-results');
+      
+      let html = '<div class="test-section">';
+      html += '<h2>Test Results</h2>';
+      
+      tests.forEach(test => {
+        html += `
+          <div class="test-case ${test.status}">
+            <div class="test-title">${test.status === 'pass' ? '✅' : '❌'} ${test.title}</div>
+            <div class="test-result">${test.message}</div>
+          </div>
+        `;
+      });
+      
+      html += '</div>';
+      
+      const summaryClass = failCount === 0 ? 'pass' : 'fail';
+      const summaryText = failCount === 0 
+        ? `All ${passCount} tests passed! 🎉`
+        : `${passCount} passed, ${failCount} failed`;
+      
+      html += `<div class="summary ${summaryClass}">${summaryText}</div>`;
+      
+      container.innerHTML = html;
+    }
+
+    // Run tests when page loads
+    window.addEventListener('DOMContentLoaded', renderResults);
+  </script>
+</body>
+</html>
