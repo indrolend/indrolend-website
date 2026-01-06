@@ -1,6 +1,44 @@
 {
-  "validation_date": "2026-01-06T16:18:15.216608+00:00",
+  "validation_date": "2026-01-06T16:21:07.352945+00:00",
+  "timezone": "UTC",
   "examples_validated": 14,
+  "overall_accuracy": 7.142857142857142,
+  "field_accuracy": {
+    "age_18_24": 14.285714285714285,
+    "age_25_34": 14.285714285714285,
+    "age_35_44": 14.285714285714285,
+    "age_45_54": 7.142857142857142,
+    "age_55_64": 7.142857142857142,
+    "age_65_plus": 7.142857142857142,
+    "age_under_18": 14.285714285714285,
+    "discovery_active_total": 50.0,
+    "discovery_algorithmic_playlists": 14.285714285714285,
+    "discovery_artist_profile": 7.142857142857142,
+    "discovery_listener_queue": 0.0,
+    "discovery_other": 0.0,
+    "discovery_other_playlists": 0.0,
+    "discovery_own_playlists": 7.142857142857142,
+    "discovery_programmed_total": 14.285714285714285,
+    "discovery_radio_autoplay": 14.285714285714285,
+    "followers": 14.285714285714285,
+    "followers_change": 0.0,
+    "gender_female": 0.0,
+    "gender_male": 0.0,
+    "gender_non_binary": 0.0,
+    "gender_not_specified": 0.0,
+    "listeners": 7.142857142857142,
+    "listeners_change": 0.0,
+    "playlist_adds": 14.285714285714285,
+    "playlist_adds_change": 0.0,
+    "saves": 7.142857142857142,
+    "saves_change": 0.0,
+    "streams": 7.142857142857142,
+    "streams_change": 0.0,
+    "streams_per_listener": 7.142857142857142,
+    "streams_per_listener_change": 0.0,
+    "top_cities": 0.0,
+    "top_countries": 0.0
+  },
   "results": [
     {
       "image": "IMG_0736.png",
@@ -4684,7 +4722,7 @@
               "listeners": 3
             }
           ],
-          "message": "Missing: {('Los Angeles, United States', 13), ('Cleveland, United States', 3), ('Washington, D.C., United States', 3), ('Dallas, United States', 13), ('St. Louis, United States', 3), ('Denver, United States', 7), ('Montgomery, United States', 4), ('Oakland, United States', 3), ('Kansas City, United States', 5), ('San Antonio, United States', 6), ('Jacksonville, United States', 7), ('Charlotte, United States', 4), ('Miami, United States', 6), ('Houston, United States', 8), ('McKinney, United States', 5), ('Minneapolis, United States', 4), ('Mission, United States', 3), ('New York, United States', 6), ('Columbus, United States', 4), ('Portland, United States', 7), ('Chicago, United States', 8), ('Seattle, United States', 4), ('Memphis, United States', 3), ('Arlington, United States', 3), ('Austin, United States', 5), ('Fort Worth, United States', 4), ('Atlanta, United States', 9), ('Orlando, United States', 4), ('Phoenix, United States', 8), ('Philadelphia, United States', 3), ('Lexington, United States', 3)}, Extra: {('United States', 402), ('Australia', 3), ('Listeners\\n\\nDallas', 13), ('United States\\n\\nLos Angeles', 13)}"
+          "message": "Missing: {('New York, United States', 6), ('Denver, United States', 7), ('Oakland, United States', 3), ('Fort Worth, United States', 4), ('Arlington, United States', 3), ('Philadelphia, United States', 3), ('Houston, United States', 8), ('Chicago, United States', 8), ('Miami, United States', 6), ('Austin, United States', 5), ('Atlanta, United States', 9), ('Kansas City, United States', 5), ('Minneapolis, United States', 4), ('Montgomery, United States', 4), ('Charlotte, United States', 4), ('Cleveland, United States', 3), ('McKinney, United States', 5), ('Washington, D.C., United States', 3), ('Seattle, United States', 4), ('Mission, United States', 3), ('Los Angeles, United States', 13), ('Phoenix, United States', 8), ('Dallas, United States', 13), ('Orlando, United States', 4), ('Jacksonville, United States', 7), ('Memphis, United States', 3), ('Lexington, United States', 3), ('St. Louis, United States', 3), ('San Antonio, United States', 6), ('Portland, United States', 7), ('Columbus, United States', 4)}, Extra: {('United States', 402), ('Australia', 3), ('United States\\n\\nLos Angeles', 13), ('Listeners\\n\\nDallas', 13)}"
         },
         {
           "field": "top_countries",
@@ -4721,7 +4759,7 @@
               "listeners": 3
             }
           ],
-          "message": "1/3 correct, Missing: {('Australia', 4), ('United Kingdom', 4)}, Extra: {('Australia', 3), ('Listeners\\n\\nDallas', 13), ('United States\\n\\nLos Angeles', 13)}"
+          "message": "1/3 correct, Missing: {('United Kingdom', 4), ('Australia', 4)}, Extra: {('Australia', 3), ('United States\\n\\nLos Angeles', 13), ('Listeners\\n\\nDallas', 13)}"
         }
       ],
       "accuracy": 0.0
@@ -5168,7 +5206,7 @@
               "listeners": 2
             }
           ],
-          "message": "Missing: {('Los Angeles, United States', 13), ('Washington, D.C., United States', 3), ('St. Louis, United States', 3), ('Montgomery, United States', 4), ('Oakland, United States', 3), ('Houston, United States', 8), ('McKinney, United States', 5), ('Minneapolis, United States', 4), ('Columbus, United States', 4), ('Chicago, United States', 8), ('Seattle, United States', 4), ('Austin, United States', 5), ('Fort Worth, United States', 4), ('Atlanta, United States', 9), ('Orlando, United States', 4), ('Phoenix, United States', 8), ('Lexington, United States', 3), ('Cleveland, United States', 3), ('Dallas, United States', 13), ('Denver, United States', 7), ('Kansas City, United States', 5), ('San Antonio, United States', 6), ('Jacksonville, United States', 7), ('Charlotte, United States', 4), ('Miami, United States', 6), ('Mission, United States', 3), ('New York, United States', 6), ('Portland, United States', 7), ('Memphis, United States', 3), ('Arlington, United States', 3), ('Philadelphia, United States', 3)}, Extra: {('United States', 2), ('United States', 5), ('United States', 40), ('United States', 8), ('United States', 4), ('United States', 7), ('United States', 3), ('United States', 9), ('United States', 6)}"
+          "message": "Missing: {('New York, United States', 6), ('Fort Worth, United States', 4), ('Arlington, United States', 3), ('Philadelphia, United States', 3), ('Houston, United States', 8), ('Atlanta, United States', 9), ('Kansas City, United States', 5), ('Minneapolis, United States', 4), ('Montgomery, United States', 4), ('Charlotte, United States', 4), ('Mission, United States', 3), ('Jacksonville, United States', 7), ('Memphis, United States', 3), ('St. Louis, United States', 3), ('Denver, United States', 7), ('San Antonio, United States', 6), ('Portland, United States', 7), ('Columbus, United States', 4), ('Oakland, United States', 3), ('Chicago, United States', 8), ('Miami, United States', 6), ('Cleveland, United States', 3), ('McKinney, United States', 5), ('Washington, D.C., United States', 3), ('Seattle, United States', 4), ('Los Angeles, United States', 13), ('Phoenix, United States', 8), ('Dallas, United States', 13), ('Orlando, United States', 4), ('Lexington, United States', 3), ('Austin, United States', 5)}, Extra: {('United States', 9), ('United States', 5), ('United States', 2), ('United States', 8), ('United States', 40), ('United States', 7), ('United States', 4), ('United States', 3), ('United States', 6)}"
         },
         {
           "field": "top_countries",
@@ -5639,7 +5677,7 @@
               "listeners": 12
             }
           ],
-          "message": "Missing: {('Los Angeles, United States', 13), ('Washington, D.C., United States', 3), ('St. Louis, United States', 3), ('Montgomery, United States', 4), ('Oakland, United States', 3), ('Houston, United States', 8), ('McKinney, United States', 5), ('Minneapolis, United States', 4), ('Columbus, United States', 4), ('Chicago, United States', 8), ('Seattle, United States', 4), ('Austin, United States', 5), ('Fort Worth, United States', 4), ('Atlanta, United States', 9), ('Orlando, United States', 4), ('Phoenix, United States', 8), ('Lexington, United States', 3), ('Cleveland, United States', 3), ('Dallas, United States', 13), ('Denver, United States', 7), ('Kansas City, United States', 5), ('San Antonio, United States', 6), ('Jacksonville, United States', 7), ('Charlotte, United States', 4), ('Miami, United States', 6), ('Mission, United States', 3), ('New York, United States', 6), ('Portland, United States', 7), ('Memphis, United States', 3), ('Arlington, United States', 3), ('Philadelphia, United States', 3)}, Extra: {('McKinney\\n\\nUnited States', 15), ('United States\\n\\nKansas City', 13), ('United States\\n\\nColumbus', 18), ('Charlotte\\n\\nUnited States\\n\\nMontgomery', 21), ('Minneapolis\\n\\nUnited States', 20), ('United States', 14), ('United States\\n\\nMiami', 12), ('United States\\n\\nFort Worth', 17), ('United States', 19), ('Austin\\n\\nUnited States\\n\\nOrlando', 16)}"
+          "message": "Missing: {('New York, United States', 6), ('Fort Worth, United States', 4), ('Arlington, United States', 3), ('Philadelphia, United States', 3), ('Houston, United States', 8), ('Atlanta, United States', 9), ('Kansas City, United States', 5), ('Minneapolis, United States', 4), ('Montgomery, United States', 4), ('Charlotte, United States', 4), ('Mission, United States', 3), ('Jacksonville, United States', 7), ('Memphis, United States', 3), ('St. Louis, United States', 3), ('Denver, United States', 7), ('San Antonio, United States', 6), ('Portland, United States', 7), ('Columbus, United States', 4), ('Oakland, United States', 3), ('Chicago, United States', 8), ('Miami, United States', 6), ('Cleveland, United States', 3), ('McKinney, United States', 5), ('Washington, D.C., United States', 3), ('Seattle, United States', 4), ('Los Angeles, United States', 13), ('Phoenix, United States', 8), ('Dallas, United States', 13), ('Orlando, United States', 4), ('Lexington, United States', 3), ('Austin, United States', 5)}, Extra: {('McKinney\\n\\nUnited States', 15), ('Charlotte\\n\\nUnited States\\n\\nMontgomery', 21), ('Minneapolis\\n\\nUnited States', 20), ('United States\\n\\nFort Worth', 17), ('United States', 14), ('United States\\n\\nKansas City', 13), ('United States\\n\\nMiami', 12), ('United States', 19), ('Austin\\n\\nUnited States\\n\\nOrlando', 16), ('United States\\n\\nColumbus', 18)}"
         },
         {
           "field": "top_countries",
@@ -6110,7 +6148,7 @@
               "listeners": 22
             }
           ],
-          "message": "Missing: {('Los Angeles, United States', 13), ('Washington, D.C., United States', 3), ('St. Louis, United States', 3), ('Montgomery, United States', 4), ('Oakland, United States', 3), ('Houston, United States', 8), ('McKinney, United States', 5), ('Minneapolis, United States', 4), ('Columbus, United States', 4), ('Chicago, United States', 8), ('Seattle, United States', 4), ('Austin, United States', 5), ('Fort Worth, United States', 4), ('Atlanta, United States', 9), ('Orlando, United States', 4), ('Phoenix, United States', 8), ('Lexington, United States', 3), ('Cleveland, United States', 3), ('Dallas, United States', 13), ('Denver, United States', 7), ('Kansas City, United States', 5), ('San Antonio, United States', 6), ('Jacksonville, United States', 7), ('Charlotte, United States', 4), ('Miami, United States', 6), ('Mission, United States', 3), ('New York, United States', 6), ('Portland, United States', 7), ('Memphis, United States', 3), ('Arlington, United States', 3), ('Philadelphia, United States', 3)}, Extra: {('United States', 31), ('United States\\n\\nWashington D.C', 30), ('United States\\n\\nSt Louis', 29), ('United States\\n\\nArlington', 24), ('Cleveland\\n\\nUnited States\\n\\nMission', 28), ('Lexington\\n\\nUnited States', 27), ('Montgomery\\n\\nUnited States', 22), ('United States', 26), ('Seattle\\n\\nUnited States\\n\\nMemphis', 23), ('United States\\n\\nOakland', 25)}"
+          "message": "Missing: {('New York, United States', 6), ('Fort Worth, United States', 4), ('Arlington, United States', 3), ('Philadelphia, United States', 3), ('Houston, United States', 8), ('Atlanta, United States', 9), ('Kansas City, United States', 5), ('Minneapolis, United States', 4), ('Montgomery, United States', 4), ('Charlotte, United States', 4), ('Mission, United States', 3), ('Jacksonville, United States', 7), ('Memphis, United States', 3), ('St. Louis, United States', 3), ('Denver, United States', 7), ('San Antonio, United States', 6), ('Portland, United States', 7), ('Columbus, United States', 4), ('Oakland, United States', 3), ('Chicago, United States', 8), ('Miami, United States', 6), ('Cleveland, United States', 3), ('McKinney, United States', 5), ('Washington, D.C., United States', 3), ('Seattle, United States', 4), ('Los Angeles, United States', 13), ('Phoenix, United States', 8), ('Dallas, United States', 13), ('Orlando, United States', 4), ('Lexington, United States', 3), ('Austin, United States', 5)}, Extra: {('United States', 31), ('United States\\n\\nArlington', 24), ('Cleveland\\n\\nUnited States\\n\\nMission', 28), ('United States\\n\\nWashington D.C', 30), ('United States\\n\\nOakland', 25), ('United States', 26), ('Lexington\\n\\nUnited States', 27), ('Seattle\\n\\nUnited States\\n\\nMemphis', 23), ('Montgomery\\n\\nUnited States', 22), ('United States\\n\\nSt Louis', 29)}"
         },
         {
           "field": "top_countries",
