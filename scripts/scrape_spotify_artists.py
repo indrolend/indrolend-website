@@ -137,9 +137,19 @@ class SpotifyArtistsScraper:
             
             # Wait for redirect to dashboard
             print("Waiting for dashboard to load...")
-            WebDriverWait(self.driver, TIMEOUT).until(
-                lambda driver: "artists.spotify.com" in driver.current_url and "login" not in driver.current_url
-            )
+            def is_dashboard_loaded(driver):
+                """Check if we're on the Spotify Artists dashboard"""
+                url = driver.current_url
+                # Parse URL to ensure we're on the correct domain
+                from urllib.parse import urlparse
+                parsed = urlparse(url)
+                return (
+                    parsed.scheme == "https" and
+                    parsed.netloc == "artists.spotify.com" and
+                    "login" not in url
+                )
+            
+            WebDriverWait(self.driver, TIMEOUT).until(is_dashboard_loaded)
             
             print("✓ Successfully logged in")
             time.sleep(3)  # Give dashboard time to fully load
