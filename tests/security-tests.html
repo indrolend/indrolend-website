@@ -108,7 +108,7 @@
     addTest('HTML Escaping - Quote Characters', () => {
       const input = 'Test "quotes" and \'apostrophes\'';
       const escaped = window.SecurityUtils.escapeHtml(input);
-      const pass = escaped.includes('&quot;') || !escaped.includes('"');
+      const pass = (escaped.includes('&quot;') || escaped.includes('&#x27;')) && !escaped.includes('"') && !escaped.includes("'");
       return {
         pass,
         message: pass ? 'Quotes properly escaped' : 'Quotes not escaped!'
@@ -243,7 +243,8 @@
     addTest('HTML Escaping - Multiple Malicious Tags', () => {
       const malicious = '<script>evil()</script><img src=x onerror=alert(1)><iframe>';
       const escaped = window.SecurityUtils.escapeHtml(malicious);
-      const pass = !escaped.includes('<script>') && !escaped.includes('<img') && !escaped.includes('<iframe');
+      // Check that all < characters are escaped to &lt;
+      const pass = !escaped.includes('<') && escaped.includes('&lt;');
       return {
         pass,
         message: pass ? 'Multiple malicious tags escaped' : 'Some malicious tags not escaped!'
