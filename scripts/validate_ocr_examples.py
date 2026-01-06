@@ -4,13 +4,16 @@ OCR Validation Script
 
 Validates the OCR parser against example screenshots with ground truth annotations.
 This helps identify parsing issues and track accuracy improvements.
+Provides detailed per-field accuracy metrics and mismatch analysis.
 """
 
 import json
 import sys
 from pathlib import Path
 from typing import Dict, List, Tuple, Any
-from datetime import datetime, timezone
+from datetime import datetime
+from collections import defaultdict
+import pytz
 
 # Import the parsing function from the main script
 from parse_screenshots import extract_text_from_image, parse_spotify_stats
@@ -263,7 +266,7 @@ def validate_all_examples(examples_dir: Path) -> List[Dict[str, Any]]:
 
 
 def print_summary(all_results: List[Dict[str, Any]]):
-    """Print overall summary of validation results."""
+    """Print overall summary of validation results with per-field breakdown."""
     if not all_results:
         return
     
@@ -289,8 +292,85 @@ def print_summary(all_results: List[Dict[str, Any]]):
         overall_accuracy = (total_correct / total_expected) * 100
         print(f"\n{'Overall Accuracy:':<30} {overall_accuracy:.1f}%")
     
+    # Per-field accuracy breakdown
+    print(f"\n{'='*70}")
+    print("PER-FIELD ACCURACY")
+    print(f"{'='*70}")
+    
+    # Collect statistics per field
+    field_stats = defaultdict(lambda: {'correct': 0, 'incorrect': 0, 'missing': 0, 'total': 0})
+    
+    for result in all_results:
+        for detail in result['details']:
+            field = detail['field']
+            status = detail['status']
+            
+            if status == 'correct':
+                field_stats[field]['correct'] += 1
+                field_stats[field]['total'] += 1
+            elif status == 'incorrect':
+                field_stats[field]['incorrect'] += 1
+                field_stats[field]['total'] += 1
+            elif status == 'missing':
+                field_stats[field]['missing'] += 1
+                field_stats[field]['total'] += 1
+            # 'extra' fields are not counted in total expected
+    
+    # Group fields by category
+    field_categories = {
+        'Core Metrics': [
+            'listeners', 'listeners_change',
+            'streams', 'streams_change',
+            'streams_per_listener', 'streams_per_listener_change',
+            'saves', 'saves_change',
+            'playlist_adds', 'playlist_adds_change',
+            'followers', 'followers_change'
+        ],
+        'Demographics - Gender': [
+            'gender_male', 'gender_female',
+            'gender_non_binary', 'gender_not_specified'
+        ],
+        'Demographics - Age': [
+            'age_under_18', 'age_18_24', 'age_25_34',
+            'age_35_44', 'age_45_54', 'age_55_64', 'age_65_plus'
+        ],
+        'Geography': ['top_cities', 'top_countries'],
+        'Discovery Sources': [
+            'discovery_active_total', 'discovery_programmed_total', 'discovery_other',
+            'discovery_artist_profile', 'discovery_own_playlists', 'discovery_listener_queue',
+            'discovery_algorithmic_playlists', 'discovery_other_playlists', 'discovery_radio_autoplay'
+        ]
+    }
+    
+    for category, fields in field_categories.items():
+        print(f"\n{category}:")
+        category_correct = 0
+        category_total = 0
+        
+        for field in fields:
+            if field in field_stats:
+                stats = field_stats[field]
+                correct = stats['correct']
+                total = stats['total']
+                category_correct += correct
+                category_total += total
+                
+                if total > 0:
+                    accuracy = (correct / total) * 100
+                    status_icon = '✓' if accuracy >= 90 else '⚠' if accuracy >= 50 else '✗'
+                    print(f"  {status_icon} {field:<40} {correct:>2}/{total:<2} ({accuracy:>5.1f}%)")
+                else:
+                    print(f"  - {field:<40} {'N/A'}")
+        
+        # Category summary
+        if category_total > 0:
+            category_accuracy = (category_correct / category_total) * 100
+            print(f"  {'Category Total:':<40} {category_correct}/{category_total} ({category_accuracy:.1f}%)")
+    
     # Print per-example summary
-    print(f"\n{'Per-Example Results:'}")
+    print(f"\n{'='*70}")
+    print("PER-EXAMPLE RESULTS")
+    print(f"{'='*70}")
     for result in all_results:
         accuracy_str = f"{result['accuracy']:.1f}%" if result['accuracy'] > 0 else "N/A"
         status = "✓" if result['accuracy'] >= 95 else "⚠" if result['accuracy'] >= 70 else "✗"
@@ -300,15 +380,42 @@ def print_summary(all_results: List[Dict[str, Any]]):
 
 def main():
     """Main entry point."""
+    import argparse
+    
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(
+        description='Validate OCR parser against ground truth examples'
+    )
+    parser.add_argument(
+        '--debug',
+        action='store_true',
+        help='Enable debug mode with verbose output'
+    )
+    parser.add_argument(
+        '--examples-dir',
+        type=str,
+        help='Directory containing example screenshots (default: screenshots/examples/)'
+    )
+    parser.add_argument(
+        '--output-file',
+        type=str,
+        help='Output JSON file for validation results (default: data/validation-results.json)'
+    )
+    
+    args = parser.parse_args()
+    
     # Get the repository root
     script_dir = Path(__file__).parent
     repo_root = script_dir.parent
-    examples_dir = repo_root / 'screenshots' / 'examples'
+    examples_dir = Path(args.examples_dir) if args.examples_dir else repo_root / 'screenshots' / 'examples'
+    output_file = Path(args.output_file) if args.output_file else repo_root / 'data' / 'validation-results.json'
     
     print("=" * 70)
     print("OCR VALIDATION - Testing Parser Against Ground Truth Examples")
     print("=" * 70)
     print(f"Examples directory: {examples_dir}")
+    print(f"Output file: {output_file}")
+    print(f"Debug mode: {'ON' if args.debug else 'OFF'}")
     
     if not examples_dir.exists():
         print(f"\n✗ Error: Examples directory not found: {examples_dir}")
@@ -330,13 +437,35 @@ def main():
     print_summary(all_results)
     
     # Save detailed results to JSON
-    output_file = repo_root / 'data' / 'validation-results.json'
     output_file.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Get current time in UTC
+    utc = pytz.UTC
+    current_time = datetime.now(utc)
+    
+    # Calculate per-field accuracy
+    field_accuracy = defaultdict(lambda: {'correct': 0, 'total': 0})
+    for result in all_results:
+        for detail in result['details']:
+            if detail['status'] in ['correct', 'incorrect', 'missing']:
+                field = detail['field']
+                field_accuracy[field]['total'] += 1
+                if detail['status'] == 'correct':
+                    field_accuracy[field]['correct'] += 1
+    
+    # Convert to percentage
+    field_accuracy_pct = {
+        field: (stats['correct'] / stats['total'] * 100) if stats['total'] > 0 else 0
+        for field, stats in field_accuracy.items()
+    }
     
     with open(output_file, 'w') as f:
         json.dump({
-            'validation_date': datetime.now(timezone.utc).isoformat(),
+            'validation_date': current_time.isoformat(),
+            'timezone': 'UTC',
             'examples_validated': len(all_results),
+            'overall_accuracy': (sum(r['correct'] for r in all_results) / sum(r['total_expected'] for r in all_results) * 100) if sum(r['total_expected'] for r in all_results) > 0 else 0,
+            'field_accuracy': field_accuracy_pct,
             'results': all_results
         }, f, indent=2)
     
@@ -350,6 +479,10 @@ def main():
             overall_accuracy = (total_correct / total_expected) * 100
             if overall_accuracy < 80:
                 print("\n⚠ Warning: Overall accuracy is below 80%")
+                print("   Consider:")
+                print("   - Reviewing the preprocessing parameters")
+                print("   - Checking if ground truth matches what's visible in screenshots")
+                print("   - Testing with different Tesseract configurations")
                 return 1
     
     return 0

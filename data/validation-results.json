@@ -1,0 +1,6177 @@
+{
+  "validation_date": "2026-01-06T16:21:07.352945+00:00",
+  "timezone": "UTC",
+  "examples_validated": 14,
+  "overall_accuracy": 7.142857142857142,
+  "field_accuracy": {
+    "age_18_24": 14.285714285714285,
+    "age_25_34": 14.285714285714285,
+    "age_35_44": 14.285714285714285,
+    "age_45_54": 7.142857142857142,
+    "age_55_64": 7.142857142857142,
+    "age_65_plus": 7.142857142857142,
+    "age_under_18": 14.285714285714285,
+    "discovery_active_total": 50.0,
+    "discovery_algorithmic_playlists": 14.285714285714285,
+    "discovery_artist_profile": 7.142857142857142,
+    "discovery_listener_queue": 0.0,
+    "discovery_other": 0.0,
+    "discovery_other_playlists": 0.0,
+    "discovery_own_playlists": 7.142857142857142,
+    "discovery_programmed_total": 14.285714285714285,
+    "discovery_radio_autoplay": 14.285714285714285,
+    "followers": 14.285714285714285,
+    "followers_change": 0.0,
+    "gender_female": 0.0,
+    "gender_male": 0.0,
+    "gender_non_binary": 0.0,
+    "gender_not_specified": 0.0,
+    "listeners": 7.142857142857142,
+    "listeners_change": 0.0,
+    "playlist_adds": 14.285714285714285,
+    "playlist_adds_change": 0.0,
+    "saves": 7.142857142857142,
+    "saves_change": 0.0,
+    "streams": 7.142857142857142,
+    "streams_change": 0.0,
+    "streams_per_listener": 7.142857142857142,
+    "streams_per_listener_change": 0.0,
+    "top_cities": 0.0,
+    "top_countries": 0.0
+  },
+  "results": [
+    {
+      "image": "IMG_0736.png",
+      "description": "Spotify analytics screenshot 1 of 14 - Contains complete ground truth data from example_text",
+      "total_expected": 34,
+      "total_extracted": 4,
+      "correct": 2,
+      "incorrect": 1,
+      "missing": 31,
+      "extra": 1,
+      "details": [
+        {
+          "field": "_unresolved_fields",
+          "status": "extra",
+          "expected": null,
+          "actual": [
+            "playlist_adds",
+            "followers",
+            "streams_per_listener",
+            "saves",
+            "listeners_change",
+            "streams_change",
+            "streams_per_listener_change",
+            "saves_change",
+            "playlist_adds_change",
+            "followers_change",
+            "gender_male",
+            "gender_female",
+            "gender_non_binary",
+            "gender_not_specified",
+            "age_under_18",
+            "age_18_24",
+            "age_25_34",
+            "age_35_44",
+            "age_45_54",
+            "age_55_64",
+            "age_65_plus",
+            "top_cities",
+            "top_countries",
+            "discovery_programmed_total",
+            "discovery_other",
+            "discovery_artist_profile",
+            "discovery_own_playlists",
+            "discovery_listener_queue",
+            "discovery_algorithmic_playlists",
+            "discovery_other_playlists",
+            "discovery_radio_autoplay"
+          ],
+          "message": "Extracted but not in ground truth"
+        },
+        {
+          "field": "age_18_24",
+          "status": "missing",
+          "expected": 29,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_25_34",
+          "status": "missing",
+          "expected": 42,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_35_44",
+          "status": "missing",
+          "expected": 13,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_45_54",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_55_64",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_65_plus",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_under_18",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_active_total",
+          "status": "correct",
+          "expected": 83,
+          "actual": 83,
+          "message": "Exact match"
+        },
+        {
+          "field": "discovery_algorithmic_playlists",
+          "status": "missing",
+          "expected": 4,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_artist_profile",
+          "status": "missing",
+          "expected": 53,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_listener_queue",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other",
+          "status": "missing",
+          "expected": 5,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other_playlists",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_own_playlists",
+          "status": "missing",
+          "expected": 33,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_programmed_total",
+          "status": "missing",
+          "expected": 12,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_radio_autoplay",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers",
+          "status": "missing",
+          "expected": 243,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers_change",
+          "status": "missing",
+          "expected": "+2%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_female",
+          "status": "missing",
+          "expected": 38,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_male",
+          "status": "missing",
+          "expected": 54,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_non_binary",
+          "status": "missing",
+          "expected": 0,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_not_specified",
+          "status": "missing",
+          "expected": 7,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners",
+          "status": "correct",
+          "expected": 427,
+          "actual": 427,
+          "message": "Exact match"
+        },
+        {
+          "field": "listeners_change",
+          "status": "missing",
+          "expected": "+38%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds",
+          "status": "missing",
+          "expected": 231,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds_change",
+          "status": "missing",
+          "expected": "+55%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves",
+          "status": "missing",
+          "expected": 333,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves_change",
+          "status": "missing",
+          "expected": "+182%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams",
+          "status": "incorrect",
+          "expected": 2476,
+          "actual": 427,
+          "message": "Mismatch: expected 2476, got 427"
+        },
+        {
+          "field": "streams_change",
+          "status": "missing",
+          "expected": "+47%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener",
+          "status": "missing",
+          "expected": 5.8,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener_change",
+          "status": "missing",
+          "expected": "+6%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_cities",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "Dallas, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Los Angeles, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Atlanta, United States",
+              "listeners": 9
+            },
+            {
+              "name": "Phoenix, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Houston, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Chicago, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Portland, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Denver, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Jacksonville, United States",
+              "listeners": 7
+            },
+            {
+              "name": "San Antonio, United States",
+              "listeners": 6
+            },
+            {
+              "name": "New York, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Miami, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Kansas City, United States",
+              "listeners": 5
+            },
+            {
+              "name": "McKinney, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Austin, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Orlando, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Fort Worth, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Columbus, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Minneapolis, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Charlotte, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Montgomery, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Seattle, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Memphis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Arlington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Oakland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Lexington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Cleveland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Mission, United States",
+              "listeners": 3
+            },
+            {
+              "name": "St. Louis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Washington, D.C., United States",
+              "listeners": 3
+            },
+            {
+              "name": "Philadelphia, United States",
+              "listeners": 3
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_countries",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "United States",
+              "listeners": 402
+            },
+            {
+              "name": "Australia",
+              "listeners": 4
+            },
+            {
+              "name": "United Kingdom",
+              "listeners": 4
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        }
+      ],
+      "accuracy": 5.88235294117647
+    },
+    {
+      "image": "IMG_0737.png",
+      "description": "Spotify analytics screenshot 2 of 14 - Contains complete ground truth data from example_text",
+      "total_expected": 34,
+      "total_extracted": 4,
+      "correct": 2,
+      "incorrect": 1,
+      "missing": 31,
+      "extra": 1,
+      "details": [
+        {
+          "field": "_unresolved_fields",
+          "status": "extra",
+          "expected": null,
+          "actual": [
+            "playlist_adds",
+            "followers",
+            "streams_per_listener",
+            "saves",
+            "listeners_change",
+            "streams_change",
+            "streams_per_listener_change",
+            "saves_change",
+            "playlist_adds_change",
+            "followers_change",
+            "gender_male",
+            "gender_female",
+            "gender_non_binary",
+            "gender_not_specified",
+            "age_under_18",
+            "age_18_24",
+            "age_25_34",
+            "age_35_44",
+            "age_45_54",
+            "age_55_64",
+            "age_65_plus",
+            "top_cities",
+            "top_countries",
+            "discovery_programmed_total",
+            "discovery_other",
+            "discovery_artist_profile",
+            "discovery_own_playlists",
+            "discovery_listener_queue",
+            "discovery_algorithmic_playlists",
+            "discovery_other_playlists",
+            "discovery_radio_autoplay"
+          ],
+          "message": "Extracted but not in ground truth"
+        },
+        {
+          "field": "age_18_24",
+          "status": "missing",
+          "expected": 29,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_25_34",
+          "status": "missing",
+          "expected": 42,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_35_44",
+          "status": "missing",
+          "expected": 13,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_45_54",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_55_64",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_65_plus",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_under_18",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_active_total",
+          "status": "correct",
+          "expected": 83,
+          "actual": 83,
+          "message": "Exact match"
+        },
+        {
+          "field": "discovery_algorithmic_playlists",
+          "status": "missing",
+          "expected": 4,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_artist_profile",
+          "status": "missing",
+          "expected": 53,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_listener_queue",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other",
+          "status": "missing",
+          "expected": 5,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other_playlists",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_own_playlists",
+          "status": "missing",
+          "expected": 33,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_programmed_total",
+          "status": "missing",
+          "expected": 12,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_radio_autoplay",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers",
+          "status": "missing",
+          "expected": 243,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers_change",
+          "status": "missing",
+          "expected": "+2%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_female",
+          "status": "missing",
+          "expected": 38,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_male",
+          "status": "missing",
+          "expected": 54,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_non_binary",
+          "status": "missing",
+          "expected": 0,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_not_specified",
+          "status": "missing",
+          "expected": 7,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners",
+          "status": "incorrect",
+          "expected": 427,
+          "actual": 28,
+          "message": "Mismatch: expected 427, got 28"
+        },
+        {
+          "field": "listeners_change",
+          "status": "missing",
+          "expected": "+38%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds",
+          "status": "missing",
+          "expected": 231,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds_change",
+          "status": "missing",
+          "expected": "+55%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves",
+          "status": "missing",
+          "expected": 333,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves_change",
+          "status": "missing",
+          "expected": "+182%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams",
+          "status": "correct",
+          "expected": 2476,
+          "actual": 2476,
+          "message": "Exact match"
+        },
+        {
+          "field": "streams_change",
+          "status": "missing",
+          "expected": "+47%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener",
+          "status": "missing",
+          "expected": 5.8,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener_change",
+          "status": "missing",
+          "expected": "+6%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_cities",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "Dallas, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Los Angeles, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Atlanta, United States",
+              "listeners": 9
+            },
+            {
+              "name": "Phoenix, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Houston, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Chicago, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Portland, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Denver, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Jacksonville, United States",
+              "listeners": 7
+            },
+            {
+              "name": "San Antonio, United States",
+              "listeners": 6
+            },
+            {
+              "name": "New York, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Miami, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Kansas City, United States",
+              "listeners": 5
+            },
+            {
+              "name": "McKinney, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Austin, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Orlando, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Fort Worth, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Columbus, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Minneapolis, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Charlotte, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Montgomery, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Seattle, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Memphis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Arlington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Oakland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Lexington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Cleveland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Mission, United States",
+              "listeners": 3
+            },
+            {
+              "name": "St. Louis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Washington, D.C., United States",
+              "listeners": 3
+            },
+            {
+              "name": "Philadelphia, United States",
+              "listeners": 3
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_countries",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "United States",
+              "listeners": 402
+            },
+            {
+              "name": "Australia",
+              "listeners": 4
+            },
+            {
+              "name": "United Kingdom",
+              "listeners": 4
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        }
+      ],
+      "accuracy": 5.88235294117647
+    },
+    {
+      "image": "IMG_0738.png",
+      "description": "Spotify analytics screenshot 3 of 14 - Contains complete ground truth data from example_text",
+      "total_expected": 34,
+      "total_extracted": 5,
+      "correct": 2,
+      "incorrect": 2,
+      "missing": 30,
+      "extra": 1,
+      "details": [
+        {
+          "field": "_unresolved_fields",
+          "status": "extra",
+          "expected": null,
+          "actual": [
+            "playlist_adds",
+            "followers",
+            "streams",
+            "listeners_change",
+            "streams_change",
+            "streams_per_listener_change",
+            "saves_change",
+            "playlist_adds_change",
+            "followers_change",
+            "gender_male",
+            "gender_female",
+            "gender_non_binary",
+            "gender_not_specified",
+            "age_under_18",
+            "age_18_24",
+            "age_25_34",
+            "age_35_44",
+            "age_45_54",
+            "age_55_64",
+            "age_65_plus",
+            "top_cities",
+            "top_countries",
+            "discovery_programmed_total",
+            "discovery_other",
+            "discovery_artist_profile",
+            "discovery_own_playlists",
+            "discovery_listener_queue",
+            "discovery_algorithmic_playlists",
+            "discovery_other_playlists",
+            "discovery_radio_autoplay"
+          ],
+          "message": "Extracted but not in ground truth"
+        },
+        {
+          "field": "age_18_24",
+          "status": "missing",
+          "expected": 29,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_25_34",
+          "status": "missing",
+          "expected": 42,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_35_44",
+          "status": "missing",
+          "expected": 13,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_45_54",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_55_64",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_65_plus",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_under_18",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_active_total",
+          "status": "correct",
+          "expected": 83,
+          "actual": 83,
+          "message": "Exact match"
+        },
+        {
+          "field": "discovery_algorithmic_playlists",
+          "status": "missing",
+          "expected": 4,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_artist_profile",
+          "status": "missing",
+          "expected": 53,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_listener_queue",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other",
+          "status": "missing",
+          "expected": 5,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other_playlists",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_own_playlists",
+          "status": "missing",
+          "expected": 33,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_programmed_total",
+          "status": "missing",
+          "expected": 12,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_radio_autoplay",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers",
+          "status": "missing",
+          "expected": 243,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers_change",
+          "status": "missing",
+          "expected": "+2%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_female",
+          "status": "missing",
+          "expected": 38,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_male",
+          "status": "missing",
+          "expected": 54,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_non_binary",
+          "status": "missing",
+          "expected": 0,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_not_specified",
+          "status": "missing",
+          "expected": 7,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners",
+          "status": "incorrect",
+          "expected": 427,
+          "actual": 28,
+          "message": "Mismatch: expected 427, got 28"
+        },
+        {
+          "field": "listeners_change",
+          "status": "missing",
+          "expected": "+38%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds",
+          "status": "missing",
+          "expected": 231,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds_change",
+          "status": "missing",
+          "expected": "+55%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves",
+          "status": "incorrect",
+          "expected": 333,
+          "actual": 5,
+          "message": "Mismatch: expected 333, got 5"
+        },
+        {
+          "field": "saves_change",
+          "status": "missing",
+          "expected": "+182%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams",
+          "status": "missing",
+          "expected": 2476,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_change",
+          "status": "missing",
+          "expected": "+47%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener",
+          "status": "correct",
+          "expected": 5.8,
+          "actual": 5.8,
+          "message": "Exact match"
+        },
+        {
+          "field": "streams_per_listener_change",
+          "status": "missing",
+          "expected": "+6%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_cities",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "Dallas, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Los Angeles, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Atlanta, United States",
+              "listeners": 9
+            },
+            {
+              "name": "Phoenix, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Houston, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Chicago, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Portland, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Denver, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Jacksonville, United States",
+              "listeners": 7
+            },
+            {
+              "name": "San Antonio, United States",
+              "listeners": 6
+            },
+            {
+              "name": "New York, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Miami, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Kansas City, United States",
+              "listeners": 5
+            },
+            {
+              "name": "McKinney, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Austin, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Orlando, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Fort Worth, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Columbus, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Minneapolis, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Charlotte, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Montgomery, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Seattle, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Memphis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Arlington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Oakland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Lexington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Cleveland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Mission, United States",
+              "listeners": 3
+            },
+            {
+              "name": "St. Louis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Washington, D.C., United States",
+              "listeners": 3
+            },
+            {
+              "name": "Philadelphia, United States",
+              "listeners": 3
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_countries",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "United States",
+              "listeners": 402
+            },
+            {
+              "name": "Australia",
+              "listeners": 4
+            },
+            {
+              "name": "United Kingdom",
+              "listeners": 4
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        }
+      ],
+      "accuracy": 5.88235294117647
+    },
+    {
+      "image": "IMG_0739.png",
+      "description": "Spotify analytics screenshot 4 of 14 - Contains complete ground truth data from example_text",
+      "total_expected": 34,
+      "total_extracted": 5,
+      "correct": 2,
+      "incorrect": 2,
+      "missing": 30,
+      "extra": 1,
+      "details": [
+        {
+          "field": "_unresolved_fields",
+          "status": "extra",
+          "expected": null,
+          "actual": [
+            "followers",
+            "streams",
+            "streams_per_listener",
+            "listeners_change",
+            "streams_change",
+            "streams_per_listener_change",
+            "saves_change",
+            "playlist_adds_change",
+            "followers_change",
+            "gender_male",
+            "gender_female",
+            "gender_non_binary",
+            "gender_not_specified",
+            "age_under_18",
+            "age_18_24",
+            "age_25_34",
+            "age_35_44",
+            "age_45_54",
+            "age_55_64",
+            "age_65_plus",
+            "top_cities",
+            "top_countries",
+            "discovery_programmed_total",
+            "discovery_other",
+            "discovery_artist_profile",
+            "discovery_own_playlists",
+            "discovery_listener_queue",
+            "discovery_algorithmic_playlists",
+            "discovery_other_playlists",
+            "discovery_radio_autoplay"
+          ],
+          "message": "Extracted but not in ground truth"
+        },
+        {
+          "field": "age_18_24",
+          "status": "missing",
+          "expected": 29,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_25_34",
+          "status": "missing",
+          "expected": 42,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_35_44",
+          "status": "missing",
+          "expected": 13,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_45_54",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_55_64",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_65_plus",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_under_18",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_active_total",
+          "status": "correct",
+          "expected": 83,
+          "actual": 83,
+          "message": "Exact match"
+        },
+        {
+          "field": "discovery_algorithmic_playlists",
+          "status": "missing",
+          "expected": 4,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_artist_profile",
+          "status": "missing",
+          "expected": 53,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_listener_queue",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other",
+          "status": "missing",
+          "expected": 5,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other_playlists",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_own_playlists",
+          "status": "missing",
+          "expected": 33,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_programmed_total",
+          "status": "missing",
+          "expected": 12,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_radio_autoplay",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers",
+          "status": "missing",
+          "expected": 243,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers_change",
+          "status": "missing",
+          "expected": "+2%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_female",
+          "status": "missing",
+          "expected": 38,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_male",
+          "status": "missing",
+          "expected": 54,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_non_binary",
+          "status": "missing",
+          "expected": 0,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_not_specified",
+          "status": "missing",
+          "expected": 7,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners",
+          "status": "incorrect",
+          "expected": 427,
+          "actual": 28,
+          "message": "Mismatch: expected 427, got 28"
+        },
+        {
+          "field": "listeners_change",
+          "status": "missing",
+          "expected": "+38%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds",
+          "status": "incorrect",
+          "expected": 231,
+          "actual": 333,
+          "message": "Mismatch: expected 231, got 333"
+        },
+        {
+          "field": "playlist_adds_change",
+          "status": "missing",
+          "expected": "+55%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves",
+          "status": "correct",
+          "expected": 333,
+          "actual": 333,
+          "message": "Exact match"
+        },
+        {
+          "field": "saves_change",
+          "status": "missing",
+          "expected": "+182%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams",
+          "status": "missing",
+          "expected": 2476,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_change",
+          "status": "missing",
+          "expected": "+47%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener",
+          "status": "missing",
+          "expected": 5.8,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener_change",
+          "status": "missing",
+          "expected": "+6%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_cities",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "Dallas, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Los Angeles, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Atlanta, United States",
+              "listeners": 9
+            },
+            {
+              "name": "Phoenix, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Houston, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Chicago, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Portland, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Denver, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Jacksonville, United States",
+              "listeners": 7
+            },
+            {
+              "name": "San Antonio, United States",
+              "listeners": 6
+            },
+            {
+              "name": "New York, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Miami, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Kansas City, United States",
+              "listeners": 5
+            },
+            {
+              "name": "McKinney, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Austin, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Orlando, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Fort Worth, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Columbus, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Minneapolis, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Charlotte, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Montgomery, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Seattle, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Memphis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Arlington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Oakland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Lexington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Cleveland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Mission, United States",
+              "listeners": 3
+            },
+            {
+              "name": "St. Louis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Washington, D.C., United States",
+              "listeners": 3
+            },
+            {
+              "name": "Philadelphia, United States",
+              "listeners": 3
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_countries",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "United States",
+              "listeners": 402
+            },
+            {
+              "name": "Australia",
+              "listeners": 4
+            },
+            {
+              "name": "United Kingdom",
+              "listeners": 4
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        }
+      ],
+      "accuracy": 5.88235294117647
+    },
+    {
+      "image": "IMG_0740.png",
+      "description": "Spotify analytics screenshot 5 of 14 - Contains complete ground truth data from example_text",
+      "total_expected": 34,
+      "total_extracted": 5,
+      "correct": 3,
+      "incorrect": 1,
+      "missing": 30,
+      "extra": 1,
+      "details": [
+        {
+          "field": "_unresolved_fields",
+          "status": "extra",
+          "expected": null,
+          "actual": [
+            "streams",
+            "streams_per_listener",
+            "saves",
+            "listeners_change",
+            "streams_change",
+            "streams_per_listener_change",
+            "saves_change",
+            "playlist_adds_change",
+            "followers_change",
+            "gender_male",
+            "gender_female",
+            "gender_non_binary",
+            "gender_not_specified",
+            "age_under_18",
+            "age_18_24",
+            "age_25_34",
+            "age_35_44",
+            "age_45_54",
+            "age_55_64",
+            "age_65_plus",
+            "top_cities",
+            "top_countries",
+            "discovery_programmed_total",
+            "discovery_other",
+            "discovery_artist_profile",
+            "discovery_own_playlists",
+            "discovery_listener_queue",
+            "discovery_algorithmic_playlists",
+            "discovery_other_playlists",
+            "discovery_radio_autoplay"
+          ],
+          "message": "Extracted but not in ground truth"
+        },
+        {
+          "field": "age_18_24",
+          "status": "missing",
+          "expected": 29,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_25_34",
+          "status": "missing",
+          "expected": 42,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_35_44",
+          "status": "missing",
+          "expected": 13,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_45_54",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_55_64",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_65_plus",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_under_18",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_active_total",
+          "status": "correct",
+          "expected": 83,
+          "actual": 83,
+          "message": "Exact match"
+        },
+        {
+          "field": "discovery_algorithmic_playlists",
+          "status": "missing",
+          "expected": 4,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_artist_profile",
+          "status": "missing",
+          "expected": 53,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_listener_queue",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other",
+          "status": "missing",
+          "expected": 5,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other_playlists",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_own_playlists",
+          "status": "missing",
+          "expected": 33,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_programmed_total",
+          "status": "missing",
+          "expected": 12,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_radio_autoplay",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers",
+          "status": "correct",
+          "expected": 243,
+          "actual": 243,
+          "message": "Exact match"
+        },
+        {
+          "field": "followers_change",
+          "status": "missing",
+          "expected": "+2%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_female",
+          "status": "missing",
+          "expected": 38,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_male",
+          "status": "missing",
+          "expected": 54,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_non_binary",
+          "status": "missing",
+          "expected": 0,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_not_specified",
+          "status": "missing",
+          "expected": 7,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners",
+          "status": "incorrect",
+          "expected": 427,
+          "actual": 28,
+          "message": "Mismatch: expected 427, got 28"
+        },
+        {
+          "field": "listeners_change",
+          "status": "missing",
+          "expected": "+38%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds",
+          "status": "correct",
+          "expected": 231,
+          "actual": 231,
+          "message": "Exact match"
+        },
+        {
+          "field": "playlist_adds_change",
+          "status": "missing",
+          "expected": "+55%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves",
+          "status": "missing",
+          "expected": 333,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves_change",
+          "status": "missing",
+          "expected": "+182%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams",
+          "status": "missing",
+          "expected": 2476,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_change",
+          "status": "missing",
+          "expected": "+47%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener",
+          "status": "missing",
+          "expected": 5.8,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener_change",
+          "status": "missing",
+          "expected": "+6%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_cities",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "Dallas, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Los Angeles, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Atlanta, United States",
+              "listeners": 9
+            },
+            {
+              "name": "Phoenix, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Houston, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Chicago, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Portland, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Denver, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Jacksonville, United States",
+              "listeners": 7
+            },
+            {
+              "name": "San Antonio, United States",
+              "listeners": 6
+            },
+            {
+              "name": "New York, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Miami, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Kansas City, United States",
+              "listeners": 5
+            },
+            {
+              "name": "McKinney, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Austin, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Orlando, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Fort Worth, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Columbus, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Minneapolis, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Charlotte, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Montgomery, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Seattle, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Memphis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Arlington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Oakland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Lexington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Cleveland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Mission, United States",
+              "listeners": 3
+            },
+            {
+              "name": "St. Louis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Washington, D.C., United States",
+              "listeners": 3
+            },
+            {
+              "name": "Philadelphia, United States",
+              "listeners": 3
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_countries",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "United States",
+              "listeners": 402
+            },
+            {
+              "name": "Australia",
+              "listeners": 4
+            },
+            {
+              "name": "United Kingdom",
+              "listeners": 4
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        }
+      ],
+      "accuracy": 8.823529411764707
+    },
+    {
+      "image": "IMG_0741.png",
+      "description": "Spotify analytics screenshot 6 of 14 - Contains complete ground truth data from example_text",
+      "total_expected": 34,
+      "total_extracted": 5,
+      "correct": 3,
+      "incorrect": 1,
+      "missing": 30,
+      "extra": 1,
+      "details": [
+        {
+          "field": "_unresolved_fields",
+          "status": "extra",
+          "expected": null,
+          "actual": [
+            "streams",
+            "streams_per_listener",
+            "saves",
+            "listeners_change",
+            "streams_change",
+            "streams_per_listener_change",
+            "saves_change",
+            "playlist_adds_change",
+            "followers_change",
+            "gender_male",
+            "gender_female",
+            "gender_non_binary",
+            "gender_not_specified",
+            "age_under_18",
+            "age_18_24",
+            "age_25_34",
+            "age_35_44",
+            "age_45_54",
+            "age_55_64",
+            "age_65_plus",
+            "top_cities",
+            "top_countries",
+            "discovery_programmed_total",
+            "discovery_other",
+            "discovery_artist_profile",
+            "discovery_own_playlists",
+            "discovery_listener_queue",
+            "discovery_algorithmic_playlists",
+            "discovery_other_playlists",
+            "discovery_radio_autoplay"
+          ],
+          "message": "Extracted but not in ground truth"
+        },
+        {
+          "field": "age_18_24",
+          "status": "missing",
+          "expected": 29,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_25_34",
+          "status": "missing",
+          "expected": 42,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_35_44",
+          "status": "missing",
+          "expected": 13,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_45_54",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_55_64",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_65_plus",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_under_18",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_active_total",
+          "status": "correct",
+          "expected": 83,
+          "actual": 83,
+          "message": "Exact match"
+        },
+        {
+          "field": "discovery_algorithmic_playlists",
+          "status": "missing",
+          "expected": 4,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_artist_profile",
+          "status": "missing",
+          "expected": 53,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_listener_queue",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other",
+          "status": "missing",
+          "expected": 5,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other_playlists",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_own_playlists",
+          "status": "missing",
+          "expected": 33,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_programmed_total",
+          "status": "missing",
+          "expected": 12,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_radio_autoplay",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers",
+          "status": "correct",
+          "expected": 243,
+          "actual": 243,
+          "message": "Exact match"
+        },
+        {
+          "field": "followers_change",
+          "status": "missing",
+          "expected": "+2%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_female",
+          "status": "missing",
+          "expected": 38,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_male",
+          "status": "missing",
+          "expected": 54,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_non_binary",
+          "status": "missing",
+          "expected": 0,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_not_specified",
+          "status": "missing",
+          "expected": 7,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners",
+          "status": "incorrect",
+          "expected": 427,
+          "actual": 28,
+          "message": "Mismatch: expected 427, got 28"
+        },
+        {
+          "field": "listeners_change",
+          "status": "missing",
+          "expected": "+38%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds",
+          "status": "correct",
+          "expected": 231,
+          "actual": 231,
+          "message": "Exact match"
+        },
+        {
+          "field": "playlist_adds_change",
+          "status": "missing",
+          "expected": "+55%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves",
+          "status": "missing",
+          "expected": 333,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves_change",
+          "status": "missing",
+          "expected": "+182%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams",
+          "status": "missing",
+          "expected": 2476,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_change",
+          "status": "missing",
+          "expected": "+47%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener",
+          "status": "missing",
+          "expected": 5.8,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener_change",
+          "status": "missing",
+          "expected": "+6%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_cities",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "Dallas, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Los Angeles, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Atlanta, United States",
+              "listeners": 9
+            },
+            {
+              "name": "Phoenix, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Houston, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Chicago, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Portland, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Denver, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Jacksonville, United States",
+              "listeners": 7
+            },
+            {
+              "name": "San Antonio, United States",
+              "listeners": 6
+            },
+            {
+              "name": "New York, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Miami, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Kansas City, United States",
+              "listeners": 5
+            },
+            {
+              "name": "McKinney, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Austin, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Orlando, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Fort Worth, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Columbus, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Minneapolis, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Charlotte, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Montgomery, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Seattle, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Memphis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Arlington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Oakland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Lexington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Cleveland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Mission, United States",
+              "listeners": 3
+            },
+            {
+              "name": "St. Louis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Washington, D.C., United States",
+              "listeners": 3
+            },
+            {
+              "name": "Philadelphia, United States",
+              "listeners": 3
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_countries",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "United States",
+              "listeners": 402
+            },
+            {
+              "name": "Australia",
+              "listeners": 4
+            },
+            {
+              "name": "United Kingdom",
+              "listeners": 4
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        }
+      ],
+      "accuracy": 8.823529411764707
+    },
+    {
+      "image": "IMG_0742.png",
+      "description": "Spotify analytics screenshot 7 of 14 - Contains complete ground truth data from example_text",
+      "total_expected": 34,
+      "total_extracted": 9,
+      "correct": 6,
+      "incorrect": 2,
+      "missing": 26,
+      "extra": 1,
+      "details": [
+        {
+          "field": "_unresolved_fields",
+          "status": "extra",
+          "expected": null,
+          "actual": [
+            "playlist_adds",
+            "followers",
+            "streams",
+            "streams_per_listener",
+            "saves",
+            "listeners_change",
+            "streams_change",
+            "streams_per_listener_change",
+            "saves_change",
+            "playlist_adds_change",
+            "followers_change",
+            "gender_male",
+            "gender_female",
+            "gender_non_binary",
+            "gender_not_specified",
+            "age_under_18",
+            "age_18_24",
+            "age_25_34",
+            "age_35_44",
+            "age_45_54",
+            "age_55_64",
+            "age_65_plus",
+            "top_cities",
+            "top_countries",
+            "discovery_other",
+            "discovery_listener_queue"
+          ],
+          "message": "Extracted but not in ground truth"
+        },
+        {
+          "field": "age_18_24",
+          "status": "missing",
+          "expected": 29,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_25_34",
+          "status": "missing",
+          "expected": 42,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_35_44",
+          "status": "missing",
+          "expected": 13,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_45_54",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_55_64",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_65_plus",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_under_18",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_active_total",
+          "status": "correct",
+          "expected": 83,
+          "actual": 83,
+          "message": "Exact match"
+        },
+        {
+          "field": "discovery_algorithmic_playlists",
+          "status": "correct",
+          "expected": 4,
+          "actual": 4,
+          "message": "Exact match"
+        },
+        {
+          "field": "discovery_artist_profile",
+          "status": "correct",
+          "expected": 53,
+          "actual": 53,
+          "message": "Exact match"
+        },
+        {
+          "field": "discovery_listener_queue",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other",
+          "status": "missing",
+          "expected": 5,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other_playlists",
+          "status": "incorrect",
+          "expected": 3,
+          "actual": 33,
+          "message": "Mismatch: expected 3, got 33"
+        },
+        {
+          "field": "discovery_own_playlists",
+          "status": "correct",
+          "expected": 33,
+          "actual": 33,
+          "message": "Exact match"
+        },
+        {
+          "field": "discovery_programmed_total",
+          "status": "correct",
+          "expected": 12,
+          "actual": 12,
+          "message": "Exact match"
+        },
+        {
+          "field": "discovery_radio_autoplay",
+          "status": "correct",
+          "expected": 6,
+          "actual": 6,
+          "message": "Exact match"
+        },
+        {
+          "field": "followers",
+          "status": "missing",
+          "expected": 243,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers_change",
+          "status": "missing",
+          "expected": "+2%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_female",
+          "status": "missing",
+          "expected": 38,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_male",
+          "status": "missing",
+          "expected": 54,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_non_binary",
+          "status": "missing",
+          "expected": 0,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_not_specified",
+          "status": "missing",
+          "expected": 7,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners",
+          "status": "incorrect",
+          "expected": 427,
+          "actual": 28,
+          "message": "Mismatch: expected 427, got 28"
+        },
+        {
+          "field": "listeners_change",
+          "status": "missing",
+          "expected": "+38%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds",
+          "status": "missing",
+          "expected": 231,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds_change",
+          "status": "missing",
+          "expected": "+55%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves",
+          "status": "missing",
+          "expected": 333,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves_change",
+          "status": "missing",
+          "expected": "+182%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams",
+          "status": "missing",
+          "expected": 2476,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_change",
+          "status": "missing",
+          "expected": "+47%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener",
+          "status": "missing",
+          "expected": 5.8,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener_change",
+          "status": "missing",
+          "expected": "+6%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_cities",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "Dallas, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Los Angeles, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Atlanta, United States",
+              "listeners": 9
+            },
+            {
+              "name": "Phoenix, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Houston, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Chicago, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Portland, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Denver, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Jacksonville, United States",
+              "listeners": 7
+            },
+            {
+              "name": "San Antonio, United States",
+              "listeners": 6
+            },
+            {
+              "name": "New York, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Miami, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Kansas City, United States",
+              "listeners": 5
+            },
+            {
+              "name": "McKinney, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Austin, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Orlando, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Fort Worth, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Columbus, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Minneapolis, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Charlotte, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Montgomery, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Seattle, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Memphis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Arlington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Oakland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Lexington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Cleveland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Mission, United States",
+              "listeners": 3
+            },
+            {
+              "name": "St. Louis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Washington, D.C., United States",
+              "listeners": 3
+            },
+            {
+              "name": "Philadelphia, United States",
+              "listeners": 3
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_countries",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "United States",
+              "listeners": 402
+            },
+            {
+              "name": "Australia",
+              "listeners": 4
+            },
+            {
+              "name": "United Kingdom",
+              "listeners": 4
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        }
+      ],
+      "accuracy": 17.647058823529413
+    },
+    {
+      "image": "IMG_0743.png",
+      "description": "Spotify analytics screenshot 8 of 14 - Contains complete ground truth data from example_text",
+      "total_expected": 34,
+      "total_extracted": 5,
+      "correct": 3,
+      "incorrect": 1,
+      "missing": 30,
+      "extra": 1,
+      "details": [
+        {
+          "field": "_unresolved_fields",
+          "status": "extra",
+          "expected": null,
+          "actual": [
+            "playlist_adds",
+            "followers",
+            "listeners",
+            "streams",
+            "streams_per_listener",
+            "saves",
+            "listeners_change",
+            "streams_change",
+            "streams_per_listener_change",
+            "saves_change",
+            "playlist_adds_change",
+            "followers_change",
+            "gender_male",
+            "gender_female",
+            "gender_non_binary",
+            "gender_not_specified",
+            "age_under_18",
+            "age_18_24",
+            "age_25_34",
+            "age_35_44",
+            "age_45_54",
+            "age_55_64",
+            "age_65_plus",
+            "top_cities",
+            "top_countries",
+            "discovery_active_total",
+            "discovery_other",
+            "discovery_artist_profile",
+            "discovery_own_playlists",
+            "discovery_listener_queue"
+          ],
+          "message": "Extracted but not in ground truth"
+        },
+        {
+          "field": "age_18_24",
+          "status": "missing",
+          "expected": 29,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_25_34",
+          "status": "missing",
+          "expected": 42,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_35_44",
+          "status": "missing",
+          "expected": 13,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_45_54",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_55_64",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_65_plus",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_under_18",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_active_total",
+          "status": "missing",
+          "expected": 83,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_algorithmic_playlists",
+          "status": "correct",
+          "expected": 4,
+          "actual": 4,
+          "message": "Exact match"
+        },
+        {
+          "field": "discovery_artist_profile",
+          "status": "missing",
+          "expected": 53,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_listener_queue",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other",
+          "status": "missing",
+          "expected": 5,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other_playlists",
+          "status": "incorrect",
+          "expected": 3,
+          "actual": 0,
+          "message": "Mismatch: expected 3, got 0"
+        },
+        {
+          "field": "discovery_own_playlists",
+          "status": "missing",
+          "expected": 33,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_programmed_total",
+          "status": "correct",
+          "expected": 12,
+          "actual": 12,
+          "message": "Exact match"
+        },
+        {
+          "field": "discovery_radio_autoplay",
+          "status": "correct",
+          "expected": 6,
+          "actual": 6,
+          "message": "Exact match"
+        },
+        {
+          "field": "followers",
+          "status": "missing",
+          "expected": 243,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers_change",
+          "status": "missing",
+          "expected": "+2%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_female",
+          "status": "missing",
+          "expected": 38,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_male",
+          "status": "missing",
+          "expected": 54,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_non_binary",
+          "status": "missing",
+          "expected": 0,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_not_specified",
+          "status": "missing",
+          "expected": 7,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners",
+          "status": "missing",
+          "expected": 427,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners_change",
+          "status": "missing",
+          "expected": "+38%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds",
+          "status": "missing",
+          "expected": 231,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds_change",
+          "status": "missing",
+          "expected": "+55%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves",
+          "status": "missing",
+          "expected": 333,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves_change",
+          "status": "missing",
+          "expected": "+182%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams",
+          "status": "missing",
+          "expected": 2476,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_change",
+          "status": "missing",
+          "expected": "+47%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener",
+          "status": "missing",
+          "expected": 5.8,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener_change",
+          "status": "missing",
+          "expected": "+6%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_cities",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "Dallas, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Los Angeles, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Atlanta, United States",
+              "listeners": 9
+            },
+            {
+              "name": "Phoenix, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Houston, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Chicago, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Portland, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Denver, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Jacksonville, United States",
+              "listeners": 7
+            },
+            {
+              "name": "San Antonio, United States",
+              "listeners": 6
+            },
+            {
+              "name": "New York, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Miami, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Kansas City, United States",
+              "listeners": 5
+            },
+            {
+              "name": "McKinney, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Austin, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Orlando, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Fort Worth, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Columbus, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Minneapolis, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Charlotte, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Montgomery, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Seattle, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Memphis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Arlington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Oakland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Lexington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Cleveland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Mission, United States",
+              "listeners": 3
+            },
+            {
+              "name": "St. Louis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Washington, D.C., United States",
+              "listeners": 3
+            },
+            {
+              "name": "Philadelphia, United States",
+              "listeners": 3
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_countries",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "United States",
+              "listeners": 402
+            },
+            {
+              "name": "Australia",
+              "listeners": 4
+            },
+            {
+              "name": "United Kingdom",
+              "listeners": 4
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        }
+      ],
+      "accuracy": 8.823529411764707
+    },
+    {
+      "image": "IMG_0744.png",
+      "description": "Spotify analytics screenshot 9 of 14 - Contains complete ground truth data from example_text",
+      "total_expected": 34,
+      "total_extracted": 8,
+      "correct": 4,
+      "incorrect": 3,
+      "missing": 27,
+      "extra": 1,
+      "details": [
+        {
+          "field": "_unresolved_fields",
+          "status": "extra",
+          "expected": null,
+          "actual": [
+            "playlist_adds",
+            "followers",
+            "listeners",
+            "streams",
+            "streams_per_listener",
+            "saves",
+            "listeners_change",
+            "streams_change",
+            "streams_per_listener_change",
+            "saves_change",
+            "playlist_adds_change",
+            "followers_change",
+            "gender_not_specified",
+            "age_45_54",
+            "age_55_64",
+            "age_65_plus",
+            "top_cities",
+            "top_countries",
+            "discovery_active_total",
+            "discovery_programmed_total",
+            "discovery_other",
+            "discovery_artist_profile",
+            "discovery_own_playlists",
+            "discovery_listener_queue",
+            "discovery_algorithmic_playlists",
+            "discovery_other_playlists",
+            "discovery_radio_autoplay"
+          ],
+          "message": "Extracted but not in ground truth"
+        },
+        {
+          "field": "age_18_24",
+          "status": "correct",
+          "expected": 29,
+          "actual": 29,
+          "message": "Exact match"
+        },
+        {
+          "field": "age_25_34",
+          "status": "correct",
+          "expected": 42,
+          "actual": 42,
+          "message": "Exact match"
+        },
+        {
+          "field": "age_35_44",
+          "status": "correct",
+          "expected": 13,
+          "actual": 13,
+          "message": "Exact match"
+        },
+        {
+          "field": "age_45_54",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_55_64",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_65_plus",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_under_18",
+          "status": "correct",
+          "expected": 6,
+          "actual": 6,
+          "message": "Exact match"
+        },
+        {
+          "field": "discovery_active_total",
+          "status": "missing",
+          "expected": 83,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_algorithmic_playlists",
+          "status": "missing",
+          "expected": 4,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_artist_profile",
+          "status": "missing",
+          "expected": 53,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_listener_queue",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other",
+          "status": "missing",
+          "expected": 5,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other_playlists",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_own_playlists",
+          "status": "missing",
+          "expected": 33,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_programmed_total",
+          "status": "missing",
+          "expected": 12,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_radio_autoplay",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers",
+          "status": "missing",
+          "expected": 243,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers_change",
+          "status": "missing",
+          "expected": "+2%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_female",
+          "status": "incorrect",
+          "expected": 38,
+          "actual": 0,
+          "message": "Mismatch: expected 38, got 0"
+        },
+        {
+          "field": "gender_male",
+          "status": "incorrect",
+          "expected": 54,
+          "actual": 38,
+          "message": "Mismatch: expected 54, got 38"
+        },
+        {
+          "field": "gender_non_binary",
+          "status": "incorrect",
+          "expected": 0,
+          "actual": 7,
+          "message": "Mismatch: expected 0, got 7"
+        },
+        {
+          "field": "gender_not_specified",
+          "status": "missing",
+          "expected": 7,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners",
+          "status": "missing",
+          "expected": 427,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners_change",
+          "status": "missing",
+          "expected": "+38%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds",
+          "status": "missing",
+          "expected": 231,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds_change",
+          "status": "missing",
+          "expected": "+55%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves",
+          "status": "missing",
+          "expected": 333,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves_change",
+          "status": "missing",
+          "expected": "+182%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams",
+          "status": "missing",
+          "expected": 2476,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_change",
+          "status": "missing",
+          "expected": "+47%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener",
+          "status": "missing",
+          "expected": 5.8,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener_change",
+          "status": "missing",
+          "expected": "+6%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_cities",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "Dallas, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Los Angeles, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Atlanta, United States",
+              "listeners": 9
+            },
+            {
+              "name": "Phoenix, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Houston, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Chicago, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Portland, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Denver, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Jacksonville, United States",
+              "listeners": 7
+            },
+            {
+              "name": "San Antonio, United States",
+              "listeners": 6
+            },
+            {
+              "name": "New York, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Miami, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Kansas City, United States",
+              "listeners": 5
+            },
+            {
+              "name": "McKinney, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Austin, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Orlando, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Fort Worth, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Columbus, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Minneapolis, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Charlotte, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Montgomery, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Seattle, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Memphis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Arlington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Oakland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Lexington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Cleveland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Mission, United States",
+              "listeners": 3
+            },
+            {
+              "name": "St. Louis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Washington, D.C., United States",
+              "listeners": 3
+            },
+            {
+              "name": "Philadelphia, United States",
+              "listeners": 3
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_countries",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "United States",
+              "listeners": 402
+            },
+            {
+              "name": "Australia",
+              "listeners": 4
+            },
+            {
+              "name": "United Kingdom",
+              "listeners": 4
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        }
+      ],
+      "accuracy": 11.76470588235294
+    },
+    {
+      "image": "IMG_0745.png",
+      "description": "Spotify analytics screenshot 10 of 14 - Contains complete ground truth data from example_text",
+      "total_expected": 34,
+      "total_extracted": 8,
+      "correct": 7,
+      "incorrect": 0,
+      "missing": 27,
+      "extra": 1,
+      "details": [
+        {
+          "field": "_unresolved_fields",
+          "status": "extra",
+          "expected": null,
+          "actual": [
+            "playlist_adds",
+            "followers",
+            "listeners",
+            "streams",
+            "streams_per_listener",
+            "saves",
+            "listeners_change",
+            "streams_change",
+            "streams_per_listener_change",
+            "saves_change",
+            "playlist_adds_change",
+            "followers_change",
+            "gender_male",
+            "gender_female",
+            "gender_non_binary",
+            "gender_not_specified",
+            "top_cities",
+            "top_countries",
+            "discovery_active_total",
+            "discovery_programmed_total",
+            "discovery_other",
+            "discovery_artist_profile",
+            "discovery_own_playlists",
+            "discovery_listener_queue",
+            "discovery_algorithmic_playlists",
+            "discovery_other_playlists",
+            "discovery_radio_autoplay"
+          ],
+          "message": "Extracted but not in ground truth"
+        },
+        {
+          "field": "age_18_24",
+          "status": "correct",
+          "expected": 29,
+          "actual": 29,
+          "message": "Exact match"
+        },
+        {
+          "field": "age_25_34",
+          "status": "correct",
+          "expected": 42,
+          "actual": 42,
+          "message": "Exact match"
+        },
+        {
+          "field": "age_35_44",
+          "status": "correct",
+          "expected": 13,
+          "actual": 13,
+          "message": "Exact match"
+        },
+        {
+          "field": "age_45_54",
+          "status": "correct",
+          "expected": 6,
+          "actual": 6,
+          "message": "Exact match"
+        },
+        {
+          "field": "age_55_64",
+          "status": "correct",
+          "expected": 2,
+          "actual": 2,
+          "message": "Exact match"
+        },
+        {
+          "field": "age_65_plus",
+          "status": "correct",
+          "expected": 2,
+          "actual": 2,
+          "message": "Exact match"
+        },
+        {
+          "field": "age_under_18",
+          "status": "correct",
+          "expected": 6,
+          "actual": 6,
+          "message": "Exact match"
+        },
+        {
+          "field": "discovery_active_total",
+          "status": "missing",
+          "expected": 83,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_algorithmic_playlists",
+          "status": "missing",
+          "expected": 4,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_artist_profile",
+          "status": "missing",
+          "expected": 53,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_listener_queue",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other",
+          "status": "missing",
+          "expected": 5,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other_playlists",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_own_playlists",
+          "status": "missing",
+          "expected": 33,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_programmed_total",
+          "status": "missing",
+          "expected": 12,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_radio_autoplay",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers",
+          "status": "missing",
+          "expected": 243,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers_change",
+          "status": "missing",
+          "expected": "+2%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_female",
+          "status": "missing",
+          "expected": 38,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_male",
+          "status": "missing",
+          "expected": 54,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_non_binary",
+          "status": "missing",
+          "expected": 0,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_not_specified",
+          "status": "missing",
+          "expected": 7,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners",
+          "status": "missing",
+          "expected": 427,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners_change",
+          "status": "missing",
+          "expected": "+38%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds",
+          "status": "missing",
+          "expected": 231,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds_change",
+          "status": "missing",
+          "expected": "+55%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves",
+          "status": "missing",
+          "expected": 333,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves_change",
+          "status": "missing",
+          "expected": "+182%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams",
+          "status": "missing",
+          "expected": 2476,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_change",
+          "status": "missing",
+          "expected": "+47%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener",
+          "status": "missing",
+          "expected": 5.8,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener_change",
+          "status": "missing",
+          "expected": "+6%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_cities",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "Dallas, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Los Angeles, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Atlanta, United States",
+              "listeners": 9
+            },
+            {
+              "name": "Phoenix, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Houston, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Chicago, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Portland, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Denver, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Jacksonville, United States",
+              "listeners": 7
+            },
+            {
+              "name": "San Antonio, United States",
+              "listeners": 6
+            },
+            {
+              "name": "New York, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Miami, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Kansas City, United States",
+              "listeners": 5
+            },
+            {
+              "name": "McKinney, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Austin, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Orlando, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Fort Worth, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Columbus, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Minneapolis, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Charlotte, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Montgomery, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Seattle, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Memphis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Arlington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Oakland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Lexington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Cleveland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Mission, United States",
+              "listeners": 3
+            },
+            {
+              "name": "St. Louis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Washington, D.C., United States",
+              "listeners": 3
+            },
+            {
+              "name": "Philadelphia, United States",
+              "listeners": 3
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_countries",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "United States",
+              "listeners": 402
+            },
+            {
+              "name": "Australia",
+              "listeners": 4
+            },
+            {
+              "name": "United Kingdom",
+              "listeners": 4
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        }
+      ],
+      "accuracy": 20.588235294117645
+    },
+    {
+      "image": "IMG_0746.png",
+      "description": "Spotify analytics screenshot 11 of 14 - Contains complete ground truth data from example_text",
+      "total_expected": 34,
+      "total_extracted": 4,
+      "correct": 0,
+      "incorrect": 3,
+      "missing": 31,
+      "extra": 1,
+      "details": [
+        {
+          "field": "_unresolved_fields",
+          "status": "extra",
+          "expected": null,
+          "actual": [
+            "playlist_adds",
+            "followers",
+            "streams",
+            "streams_per_listener",
+            "saves",
+            "listeners_change",
+            "streams_change",
+            "streams_per_listener_change",
+            "saves_change",
+            "playlist_adds_change",
+            "followers_change",
+            "gender_male",
+            "gender_female",
+            "gender_non_binary",
+            "gender_not_specified",
+            "age_under_18",
+            "age_18_24",
+            "age_25_34",
+            "age_35_44",
+            "age_45_54",
+            "age_55_64",
+            "age_65_plus",
+            "discovery_active_total",
+            "discovery_programmed_total",
+            "discovery_other",
+            "discovery_artist_profile",
+            "discovery_own_playlists",
+            "discovery_listener_queue",
+            "discovery_algorithmic_playlists",
+            "discovery_other_playlists",
+            "discovery_radio_autoplay"
+          ],
+          "message": "Extracted but not in ground truth"
+        },
+        {
+          "field": "age_18_24",
+          "status": "missing",
+          "expected": 29,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_25_34",
+          "status": "missing",
+          "expected": 42,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_35_44",
+          "status": "missing",
+          "expected": 13,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_45_54",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_55_64",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_65_plus",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_under_18",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_active_total",
+          "status": "missing",
+          "expected": 83,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_algorithmic_playlists",
+          "status": "missing",
+          "expected": 4,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_artist_profile",
+          "status": "missing",
+          "expected": 53,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_listener_queue",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other",
+          "status": "missing",
+          "expected": 5,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other_playlists",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_own_playlists",
+          "status": "missing",
+          "expected": 33,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_programmed_total",
+          "status": "missing",
+          "expected": 12,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_radio_autoplay",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers",
+          "status": "missing",
+          "expected": 243,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers_change",
+          "status": "missing",
+          "expected": "+2%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_female",
+          "status": "missing",
+          "expected": 38,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_male",
+          "status": "missing",
+          "expected": 54,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_non_binary",
+          "status": "missing",
+          "expected": 0,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_not_specified",
+          "status": "missing",
+          "expected": 7,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners",
+          "status": "incorrect",
+          "expected": 427,
+          "actual": 28,
+          "message": "Mismatch: expected 427, got 28"
+        },
+        {
+          "field": "listeners_change",
+          "status": "missing",
+          "expected": "+38%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds",
+          "status": "missing",
+          "expected": 231,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds_change",
+          "status": "missing",
+          "expected": "+55%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves",
+          "status": "missing",
+          "expected": 333,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves_change",
+          "status": "missing",
+          "expected": "+182%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams",
+          "status": "missing",
+          "expected": 2476,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_change",
+          "status": "missing",
+          "expected": "+47%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener",
+          "status": "missing",
+          "expected": 5.8,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener_change",
+          "status": "missing",
+          "expected": "+6%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_cities",
+          "status": "incorrect",
+          "expected": [
+            {
+              "name": "Dallas, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Los Angeles, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Atlanta, United States",
+              "listeners": 9
+            },
+            {
+              "name": "Phoenix, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Houston, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Chicago, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Portland, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Denver, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Jacksonville, United States",
+              "listeners": 7
+            },
+            {
+              "name": "San Antonio, United States",
+              "listeners": 6
+            },
+            {
+              "name": "New York, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Miami, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Kansas City, United States",
+              "listeners": 5
+            },
+            {
+              "name": "McKinney, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Austin, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Orlando, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Fort Worth, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Columbus, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Minneapolis, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Charlotte, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Montgomery, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Seattle, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Memphis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Arlington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Oakland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Lexington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Cleveland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Mission, United States",
+              "listeners": 3
+            },
+            {
+              "name": "St. Louis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Washington, D.C., United States",
+              "listeners": 3
+            },
+            {
+              "name": "Philadelphia, United States",
+              "listeners": 3
+            }
+          ],
+          "actual": [
+            {
+              "name": "United States",
+              "listeners": 402
+            },
+            {
+              "name": "Listeners\n\nDallas",
+              "listeners": 13
+            },
+            {
+              "name": "United States\n\nLos Angeles",
+              "listeners": 13
+            },
+            {
+              "name": "Australia",
+              "listeners": 3
+            }
+          ],
+          "message": "Missing: {('New York, United States', 6), ('Denver, United States', 7), ('Oakland, United States', 3), ('Fort Worth, United States', 4), ('Arlington, United States', 3), ('Philadelphia, United States', 3), ('Houston, United States', 8), ('Chicago, United States', 8), ('Miami, United States', 6), ('Austin, United States', 5), ('Atlanta, United States', 9), ('Kansas City, United States', 5), ('Minneapolis, United States', 4), ('Montgomery, United States', 4), ('Charlotte, United States', 4), ('Cleveland, United States', 3), ('McKinney, United States', 5), ('Washington, D.C., United States', 3), ('Seattle, United States', 4), ('Mission, United States', 3), ('Los Angeles, United States', 13), ('Phoenix, United States', 8), ('Dallas, United States', 13), ('Orlando, United States', 4), ('Jacksonville, United States', 7), ('Memphis, United States', 3), ('Lexington, United States', 3), ('St. Louis, United States', 3), ('San Antonio, United States', 6), ('Portland, United States', 7), ('Columbus, United States', 4)}, Extra: {('United States', 402), ('Australia', 3), ('United States\\n\\nLos Angeles', 13), ('Listeners\\n\\nDallas', 13)}"
+        },
+        {
+          "field": "top_countries",
+          "status": "incorrect",
+          "expected": [
+            {
+              "name": "United States",
+              "listeners": 402
+            },
+            {
+              "name": "Australia",
+              "listeners": 4
+            },
+            {
+              "name": "United Kingdom",
+              "listeners": 4
+            }
+          ],
+          "actual": [
+            {
+              "name": "United States",
+              "listeners": 402
+            },
+            {
+              "name": "Listeners\n\nDallas",
+              "listeners": 13
+            },
+            {
+              "name": "United States\n\nLos Angeles",
+              "listeners": 13
+            },
+            {
+              "name": "Australia",
+              "listeners": 3
+            }
+          ],
+          "message": "1/3 correct, Missing: {('United Kingdom', 4), ('Australia', 4)}, Extra: {('Australia', 3), ('United States\\n\\nLos Angeles', 13), ('Listeners\\n\\nDallas', 13)}"
+        }
+      ],
+      "accuracy": 0.0
+    },
+    {
+      "image": "IMG_0747.png",
+      "description": "Spotify analytics screenshot 12 of 14 - Contains complete ground truth data from example_text",
+      "total_expected": 34,
+      "total_extracted": 2,
+      "correct": 0,
+      "incorrect": 1,
+      "missing": 33,
+      "extra": 1,
+      "details": [
+        {
+          "field": "_unresolved_fields",
+          "status": "extra",
+          "expected": null,
+          "actual": [
+            "playlist_adds",
+            "followers",
+            "listeners",
+            "streams",
+            "streams_per_listener",
+            "saves",
+            "listeners_change",
+            "streams_change",
+            "streams_per_listener_change",
+            "saves_change",
+            "playlist_adds_change",
+            "followers_change",
+            "gender_male",
+            "gender_female",
+            "gender_non_binary",
+            "gender_not_specified",
+            "age_under_18",
+            "age_18_24",
+            "age_25_34",
+            "age_35_44",
+            "age_45_54",
+            "age_55_64",
+            "age_65_plus",
+            "top_countries",
+            "discovery_active_total",
+            "discovery_programmed_total",
+            "discovery_other",
+            "discovery_artist_profile",
+            "discovery_own_playlists",
+            "discovery_listener_queue",
+            "discovery_algorithmic_playlists",
+            "discovery_other_playlists",
+            "discovery_radio_autoplay"
+          ],
+          "message": "Extracted but not in ground truth"
+        },
+        {
+          "field": "age_18_24",
+          "status": "missing",
+          "expected": 29,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_25_34",
+          "status": "missing",
+          "expected": 42,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_35_44",
+          "status": "missing",
+          "expected": 13,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_45_54",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_55_64",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_65_plus",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_under_18",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_active_total",
+          "status": "missing",
+          "expected": 83,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_algorithmic_playlists",
+          "status": "missing",
+          "expected": 4,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_artist_profile",
+          "status": "missing",
+          "expected": 53,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_listener_queue",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other",
+          "status": "missing",
+          "expected": 5,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other_playlists",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_own_playlists",
+          "status": "missing",
+          "expected": 33,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_programmed_total",
+          "status": "missing",
+          "expected": 12,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_radio_autoplay",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers",
+          "status": "missing",
+          "expected": 243,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers_change",
+          "status": "missing",
+          "expected": "+2%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_female",
+          "status": "missing",
+          "expected": 38,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_male",
+          "status": "missing",
+          "expected": 54,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_non_binary",
+          "status": "missing",
+          "expected": 0,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_not_specified",
+          "status": "missing",
+          "expected": 7,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners",
+          "status": "missing",
+          "expected": 427,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners_change",
+          "status": "missing",
+          "expected": "+38%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds",
+          "status": "missing",
+          "expected": 231,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds_change",
+          "status": "missing",
+          "expected": "+55%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves",
+          "status": "missing",
+          "expected": 333,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves_change",
+          "status": "missing",
+          "expected": "+182%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams",
+          "status": "missing",
+          "expected": 2476,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_change",
+          "status": "missing",
+          "expected": "+47%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener",
+          "status": "missing",
+          "expected": 5.8,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener_change",
+          "status": "missing",
+          "expected": "+6%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_cities",
+          "status": "incorrect",
+          "expected": [
+            {
+              "name": "Dallas, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Los Angeles, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Atlanta, United States",
+              "listeners": 9
+            },
+            {
+              "name": "Phoenix, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Houston, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Chicago, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Portland, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Denver, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Jacksonville, United States",
+              "listeners": 7
+            },
+            {
+              "name": "San Antonio, United States",
+              "listeners": 6
+            },
+            {
+              "name": "New York, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Miami, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Kansas City, United States",
+              "listeners": 5
+            },
+            {
+              "name": "McKinney, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Austin, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Orlando, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Fort Worth, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Columbus, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Minneapolis, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Charlotte, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Montgomery, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Seattle, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Memphis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Arlington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Oakland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Lexington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Cleveland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Mission, United States",
+              "listeners": 3
+            },
+            {
+              "name": "St. Louis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Washington, D.C., United States",
+              "listeners": 3
+            },
+            {
+              "name": "Philadelphia, United States",
+              "listeners": 3
+            }
+          ],
+          "actual": [
+            {
+              "name": "United States",
+              "listeners": 40
+            },
+            {
+              "name": "United States",
+              "listeners": 9
+            },
+            {
+              "name": "United States",
+              "listeners": 8
+            },
+            {
+              "name": "United States",
+              "listeners": 7
+            },
+            {
+              "name": "United States",
+              "listeners": 6
+            },
+            {
+              "name": "United States",
+              "listeners": 5
+            },
+            {
+              "name": "United States",
+              "listeners": 4
+            },
+            {
+              "name": "United States",
+              "listeners": 3
+            },
+            {
+              "name": "United States",
+              "listeners": 2
+            }
+          ],
+          "message": "Missing: {('New York, United States', 6), ('Fort Worth, United States', 4), ('Arlington, United States', 3), ('Philadelphia, United States', 3), ('Houston, United States', 8), ('Atlanta, United States', 9), ('Kansas City, United States', 5), ('Minneapolis, United States', 4), ('Montgomery, United States', 4), ('Charlotte, United States', 4), ('Mission, United States', 3), ('Jacksonville, United States', 7), ('Memphis, United States', 3), ('St. Louis, United States', 3), ('Denver, United States', 7), ('San Antonio, United States', 6), ('Portland, United States', 7), ('Columbus, United States', 4), ('Oakland, United States', 3), ('Chicago, United States', 8), ('Miami, United States', 6), ('Cleveland, United States', 3), ('McKinney, United States', 5), ('Washington, D.C., United States', 3), ('Seattle, United States', 4), ('Los Angeles, United States', 13), ('Phoenix, United States', 8), ('Dallas, United States', 13), ('Orlando, United States', 4), ('Lexington, United States', 3), ('Austin, United States', 5)}, Extra: {('United States', 9), ('United States', 5), ('United States', 2), ('United States', 8), ('United States', 40), ('United States', 7), ('United States', 4), ('United States', 3), ('United States', 6)}"
+        },
+        {
+          "field": "top_countries",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "United States",
+              "listeners": 402
+            },
+            {
+              "name": "Australia",
+              "listeners": 4
+            },
+            {
+              "name": "United Kingdom",
+              "listeners": 4
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        }
+      ],
+      "accuracy": 0.0
+    },
+    {
+      "image": "IMG_0748.png",
+      "description": "Spotify analytics screenshot 13 of 14 - Contains complete ground truth data from example_text",
+      "total_expected": 34,
+      "total_extracted": 2,
+      "correct": 0,
+      "incorrect": 1,
+      "missing": 33,
+      "extra": 1,
+      "details": [
+        {
+          "field": "_unresolved_fields",
+          "status": "extra",
+          "expected": null,
+          "actual": [
+            "playlist_adds",
+            "followers",
+            "listeners",
+            "streams",
+            "streams_per_listener",
+            "saves",
+            "listeners_change",
+            "streams_change",
+            "streams_per_listener_change",
+            "saves_change",
+            "playlist_adds_change",
+            "followers_change",
+            "gender_male",
+            "gender_female",
+            "gender_non_binary",
+            "gender_not_specified",
+            "age_under_18",
+            "age_18_24",
+            "age_25_34",
+            "age_35_44",
+            "age_45_54",
+            "age_55_64",
+            "age_65_plus",
+            "top_countries",
+            "discovery_active_total",
+            "discovery_programmed_total",
+            "discovery_other",
+            "discovery_artist_profile",
+            "discovery_own_playlists",
+            "discovery_listener_queue",
+            "discovery_algorithmic_playlists",
+            "discovery_other_playlists",
+            "discovery_radio_autoplay"
+          ],
+          "message": "Extracted but not in ground truth"
+        },
+        {
+          "field": "age_18_24",
+          "status": "missing",
+          "expected": 29,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_25_34",
+          "status": "missing",
+          "expected": 42,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_35_44",
+          "status": "missing",
+          "expected": 13,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_45_54",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_55_64",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_65_plus",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_under_18",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_active_total",
+          "status": "missing",
+          "expected": 83,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_algorithmic_playlists",
+          "status": "missing",
+          "expected": 4,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_artist_profile",
+          "status": "missing",
+          "expected": 53,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_listener_queue",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other",
+          "status": "missing",
+          "expected": 5,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other_playlists",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_own_playlists",
+          "status": "missing",
+          "expected": 33,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_programmed_total",
+          "status": "missing",
+          "expected": 12,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_radio_autoplay",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers",
+          "status": "missing",
+          "expected": 243,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers_change",
+          "status": "missing",
+          "expected": "+2%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_female",
+          "status": "missing",
+          "expected": 38,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_male",
+          "status": "missing",
+          "expected": 54,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_non_binary",
+          "status": "missing",
+          "expected": 0,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_not_specified",
+          "status": "missing",
+          "expected": 7,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners",
+          "status": "missing",
+          "expected": 427,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners_change",
+          "status": "missing",
+          "expected": "+38%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds",
+          "status": "missing",
+          "expected": 231,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds_change",
+          "status": "missing",
+          "expected": "+55%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves",
+          "status": "missing",
+          "expected": 333,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves_change",
+          "status": "missing",
+          "expected": "+182%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams",
+          "status": "missing",
+          "expected": 2476,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_change",
+          "status": "missing",
+          "expected": "+47%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener",
+          "status": "missing",
+          "expected": 5.8,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener_change",
+          "status": "missing",
+          "expected": "+6%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_cities",
+          "status": "incorrect",
+          "expected": [
+            {
+              "name": "Dallas, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Los Angeles, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Atlanta, United States",
+              "listeners": 9
+            },
+            {
+              "name": "Phoenix, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Houston, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Chicago, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Portland, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Denver, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Jacksonville, United States",
+              "listeners": 7
+            },
+            {
+              "name": "San Antonio, United States",
+              "listeners": 6
+            },
+            {
+              "name": "New York, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Miami, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Kansas City, United States",
+              "listeners": 5
+            },
+            {
+              "name": "McKinney, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Austin, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Orlando, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Fort Worth, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Columbus, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Minneapolis, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Charlotte, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Montgomery, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Seattle, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Memphis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Arlington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Oakland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Lexington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Cleveland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Mission, United States",
+              "listeners": 3
+            },
+            {
+              "name": "St. Louis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Washington, D.C., United States",
+              "listeners": 3
+            },
+            {
+              "name": "Philadelphia, United States",
+              "listeners": 3
+            }
+          ],
+          "actual": [
+            {
+              "name": "Charlotte\n\nUnited States\n\nMontgomery",
+              "listeners": 21
+            },
+            {
+              "name": "Minneapolis\n\nUnited States",
+              "listeners": 20
+            },
+            {
+              "name": "United States",
+              "listeners": 19
+            },
+            {
+              "name": "United States\n\nColumbus",
+              "listeners": 18
+            },
+            {
+              "name": "United States\n\nFort Worth",
+              "listeners": 17
+            },
+            {
+              "name": "Austin\n\nUnited States\n\nOrlando",
+              "listeners": 16
+            },
+            {
+              "name": "McKinney\n\nUnited States",
+              "listeners": 15
+            },
+            {
+              "name": "United States",
+              "listeners": 14
+            },
+            {
+              "name": "United States\n\nKansas City",
+              "listeners": 13
+            },
+            {
+              "name": "United States\n\nMiami",
+              "listeners": 12
+            }
+          ],
+          "message": "Missing: {('New York, United States', 6), ('Fort Worth, United States', 4), ('Arlington, United States', 3), ('Philadelphia, United States', 3), ('Houston, United States', 8), ('Atlanta, United States', 9), ('Kansas City, United States', 5), ('Minneapolis, United States', 4), ('Montgomery, United States', 4), ('Charlotte, United States', 4), ('Mission, United States', 3), ('Jacksonville, United States', 7), ('Memphis, United States', 3), ('St. Louis, United States', 3), ('Denver, United States', 7), ('San Antonio, United States', 6), ('Portland, United States', 7), ('Columbus, United States', 4), ('Oakland, United States', 3), ('Chicago, United States', 8), ('Miami, United States', 6), ('Cleveland, United States', 3), ('McKinney, United States', 5), ('Washington, D.C., United States', 3), ('Seattle, United States', 4), ('Los Angeles, United States', 13), ('Phoenix, United States', 8), ('Dallas, United States', 13), ('Orlando, United States', 4), ('Lexington, United States', 3), ('Austin, United States', 5)}, Extra: {('McKinney\\n\\nUnited States', 15), ('Charlotte\\n\\nUnited States\\n\\nMontgomery', 21), ('Minneapolis\\n\\nUnited States', 20), ('United States\\n\\nFort Worth', 17), ('United States', 14), ('United States\\n\\nKansas City', 13), ('United States\\n\\nMiami', 12), ('United States', 19), ('Austin\\n\\nUnited States\\n\\nOrlando', 16), ('United States\\n\\nColumbus', 18)}"
+        },
+        {
+          "field": "top_countries",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "United States",
+              "listeners": 402
+            },
+            {
+              "name": "Australia",
+              "listeners": 4
+            },
+            {
+              "name": "United Kingdom",
+              "listeners": 4
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        }
+      ],
+      "accuracy": 0.0
+    },
+    {
+      "image": "IMG_0749.png",
+      "description": "Spotify analytics screenshot 14 of 14 - Contains complete ground truth data from example_text",
+      "total_expected": 34,
+      "total_extracted": 2,
+      "correct": 0,
+      "incorrect": 1,
+      "missing": 33,
+      "extra": 1,
+      "details": [
+        {
+          "field": "_unresolved_fields",
+          "status": "extra",
+          "expected": null,
+          "actual": [
+            "playlist_adds",
+            "followers",
+            "listeners",
+            "streams",
+            "streams_per_listener",
+            "saves",
+            "listeners_change",
+            "streams_change",
+            "streams_per_listener_change",
+            "saves_change",
+            "playlist_adds_change",
+            "followers_change",
+            "gender_male",
+            "gender_female",
+            "gender_non_binary",
+            "gender_not_specified",
+            "age_under_18",
+            "age_18_24",
+            "age_25_34",
+            "age_35_44",
+            "age_45_54",
+            "age_55_64",
+            "age_65_plus",
+            "top_countries",
+            "discovery_active_total",
+            "discovery_programmed_total",
+            "discovery_other",
+            "discovery_artist_profile",
+            "discovery_own_playlists",
+            "discovery_listener_queue",
+            "discovery_algorithmic_playlists",
+            "discovery_other_playlists",
+            "discovery_radio_autoplay"
+          ],
+          "message": "Extracted but not in ground truth"
+        },
+        {
+          "field": "age_18_24",
+          "status": "missing",
+          "expected": 29,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_25_34",
+          "status": "missing",
+          "expected": 42,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_35_44",
+          "status": "missing",
+          "expected": 13,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_45_54",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_55_64",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_65_plus",
+          "status": "missing",
+          "expected": 2,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "age_under_18",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_active_total",
+          "status": "missing",
+          "expected": 83,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_algorithmic_playlists",
+          "status": "missing",
+          "expected": 4,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_artist_profile",
+          "status": "missing",
+          "expected": 53,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_listener_queue",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other",
+          "status": "missing",
+          "expected": 5,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_other_playlists",
+          "status": "missing",
+          "expected": 3,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_own_playlists",
+          "status": "missing",
+          "expected": 33,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_programmed_total",
+          "status": "missing",
+          "expected": 12,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "discovery_radio_autoplay",
+          "status": "missing",
+          "expected": 6,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers",
+          "status": "missing",
+          "expected": 243,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "followers_change",
+          "status": "missing",
+          "expected": "+2%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_female",
+          "status": "missing",
+          "expected": 38,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_male",
+          "status": "missing",
+          "expected": 54,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_non_binary",
+          "status": "missing",
+          "expected": 0,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "gender_not_specified",
+          "status": "missing",
+          "expected": 7,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners",
+          "status": "missing",
+          "expected": 427,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "listeners_change",
+          "status": "missing",
+          "expected": "+38%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds",
+          "status": "missing",
+          "expected": 231,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "playlist_adds_change",
+          "status": "missing",
+          "expected": "+55%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves",
+          "status": "missing",
+          "expected": 333,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "saves_change",
+          "status": "missing",
+          "expected": "+182%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams",
+          "status": "missing",
+          "expected": 2476,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_change",
+          "status": "missing",
+          "expected": "+47%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener",
+          "status": "missing",
+          "expected": 5.8,
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "streams_per_listener_change",
+          "status": "missing",
+          "expected": "+6%",
+          "actual": null,
+          "message": "Not extracted"
+        },
+        {
+          "field": "top_cities",
+          "status": "incorrect",
+          "expected": [
+            {
+              "name": "Dallas, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Los Angeles, United States",
+              "listeners": 13
+            },
+            {
+              "name": "Atlanta, United States",
+              "listeners": 9
+            },
+            {
+              "name": "Phoenix, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Houston, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Chicago, United States",
+              "listeners": 8
+            },
+            {
+              "name": "Portland, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Denver, United States",
+              "listeners": 7
+            },
+            {
+              "name": "Jacksonville, United States",
+              "listeners": 7
+            },
+            {
+              "name": "San Antonio, United States",
+              "listeners": 6
+            },
+            {
+              "name": "New York, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Miami, United States",
+              "listeners": 6
+            },
+            {
+              "name": "Kansas City, United States",
+              "listeners": 5
+            },
+            {
+              "name": "McKinney, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Austin, United States",
+              "listeners": 5
+            },
+            {
+              "name": "Orlando, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Fort Worth, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Columbus, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Minneapolis, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Charlotte, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Montgomery, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Seattle, United States",
+              "listeners": 4
+            },
+            {
+              "name": "Memphis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Arlington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Oakland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Lexington, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Cleveland, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Mission, United States",
+              "listeners": 3
+            },
+            {
+              "name": "St. Louis, United States",
+              "listeners": 3
+            },
+            {
+              "name": "Washington, D.C., United States",
+              "listeners": 3
+            },
+            {
+              "name": "Philadelphia, United States",
+              "listeners": 3
+            }
+          ],
+          "actual": [
+            {
+              "name": "United States",
+              "listeners": 31
+            },
+            {
+              "name": "United States\n\nWashington D.C",
+              "listeners": 30
+            },
+            {
+              "name": "United States\n\nSt Louis",
+              "listeners": 29
+            },
+            {
+              "name": "Cleveland\n\nUnited States\n\nMission",
+              "listeners": 28
+            },
+            {
+              "name": "Lexington\n\nUnited States",
+              "listeners": 27
+            },
+            {
+              "name": "United States",
+              "listeners": 26
+            },
+            {
+              "name": "United States\n\nOakland",
+              "listeners": 25
+            },
+            {
+              "name": "United States\n\nArlington",
+              "listeners": 24
+            },
+            {
+              "name": "Seattle\n\nUnited States\n\nMemphis",
+              "listeners": 23
+            },
+            {
+              "name": "Montgomery\n\nUnited States",
+              "listeners": 22
+            }
+          ],
+          "message": "Missing: {('New York, United States', 6), ('Fort Worth, United States', 4), ('Arlington, United States', 3), ('Philadelphia, United States', 3), ('Houston, United States', 8), ('Atlanta, United States', 9), ('Kansas City, United States', 5), ('Minneapolis, United States', 4), ('Montgomery, United States', 4), ('Charlotte, United States', 4), ('Mission, United States', 3), ('Jacksonville, United States', 7), ('Memphis, United States', 3), ('St. Louis, United States', 3), ('Denver, United States', 7), ('San Antonio, United States', 6), ('Portland, United States', 7), ('Columbus, United States', 4), ('Oakland, United States', 3), ('Chicago, United States', 8), ('Miami, United States', 6), ('Cleveland, United States', 3), ('McKinney, United States', 5), ('Washington, D.C., United States', 3), ('Seattle, United States', 4), ('Los Angeles, United States', 13), ('Phoenix, United States', 8), ('Dallas, United States', 13), ('Orlando, United States', 4), ('Lexington, United States', 3), ('Austin, United States', 5)}, Extra: {('United States', 31), ('United States\\n\\nArlington', 24), ('Cleveland\\n\\nUnited States\\n\\nMission', 28), ('United States\\n\\nWashington D.C', 30), ('United States\\n\\nOakland', 25), ('United States', 26), ('Lexington\\n\\nUnited States', 27), ('Seattle\\n\\nUnited States\\n\\nMemphis', 23), ('Montgomery\\n\\nUnited States', 22), ('United States\\n\\nSt Louis', 29)}"
+        },
+        {
+          "field": "top_countries",
+          "status": "missing",
+          "expected": [
+            {
+              "name": "United States",
+              "listeners": 402
+            },
+            {
+              "name": "Australia",
+              "listeners": 4
+            },
+            {
+              "name": "United Kingdom",
+              "listeners": 4
+            }
+          ],
+          "actual": null,
+          "message": "Not extracted"
+        }
+      ],
+      "accuracy": 0.0
+    }
+  ]
+}
