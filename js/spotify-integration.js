@@ -116,26 +116,19 @@ function sanitizeImageUrl(url) {
 }
 
 /**
- * Escape HTML using shared utilities
+ * Escape HTML using shared utilities with fallback
  */
 function escapeHtml(text) {
-  // Use shared utility if available, otherwise fallback
+  // Use shared utility if available
   if (window.SecurityUtils && window.SecurityUtils.escapeHtml) {
     return window.SecurityUtils.escapeHtml(text);
   }
   
-  // Fallback implementation - consistent with main utility
-  if (typeof text !== 'string') {
-    text = String(text);
-  }
-  const htmlEscapeMap = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#x27;'
-  };
-  return text.replace(/[&<>"']/g, char => htmlEscapeMap[char]);
+  // Consistent map-based fallback (inline to avoid duplication)
+  if (typeof text !== 'string') text = String(text);
+  return text.replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;'
+  }[char]));
 }
 
 /**

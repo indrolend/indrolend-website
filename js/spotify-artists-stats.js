@@ -23,11 +23,11 @@ class SpotifyArtistsStatsDisplay {
     if (window.SecurityUtils && window.SecurityUtils.escapeHtml) {
       return window.SecurityUtils.escapeHtml(text);
     }
-    // Fallback
-    if (typeof text !== 'string') return String(text);
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+    // Consistent map-based fallback
+    if (typeof text !== 'string') text = String(text);
+    return text.replace(/[&<>"']/g, char => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;'
+    }[char]));
   }
 
   /**
