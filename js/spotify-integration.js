@@ -1,6 +1,13 @@
 /**
  * Spotify Frontend Integration Module
  * Handles fetching and displaying live Spotify artist data
+ * 
+ * Security Features:
+ * - Uses shared security utilities for consistent sanitization
+ * - HTTPS enforcement in production
+ * - Safe DOM manipulation
+ * 
+ * Dependencies: security-utils.js must be loaded first
  */
 
 // Configuration
@@ -47,7 +54,7 @@ async function fetchSpotifyData() {
  * Format large numbers with commas
  */
 function formatNumber(num) {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return window.SecurityUtils ? window.SecurityUtils.formatNumber(num) : num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 /**
@@ -60,78 +67,148 @@ function formatDuration(ms) {
 }
 
 /**
- * Sanitize and validate Spotify URL
- * Ensures the URL is from spotify.com domain to prevent malicious redirects
+ * Sanitize and validate Spotify URL using shared utilities
  */
 function sanitizeSpotifyUrl(url) {
-  if (!url) return '#';
+  // Use shared utility if available, otherwise fallback to local implementation
+  if (window.SecurityUtils && window.SecurityUtils.sanitizeSpotifyUrl) {
+    return window.SecurityUtils.sanitizeSpotifyUrl(url, ['/artist/', '/track/', '/album/']);
+  }
+  
+  // Fallback implementation
+  if (!url || typeof url !== 'string') return '#';
   
   try {
     const parsedUrl = new URL(url);
-    // Only allow spotify.com and open.spotify.com domains
-    if (parsedUrl.hostname === 'open.spotify.com' || parsedUrl.hostname === 'spotify.com') {
+    if (parsedUrl.protocol === 'https:' && 
+        (parsedUrl.hostname === 'open.spotify.com' || parsedUrl.hostname === 'spotify.com')) {
       return url;
     }
   } catch (e) {
-    // Invalid URL
+    console.warn('Invalid Spotify URL:', url);
   }
   
   return '#';
 }
 
 /**
+ * Sanitize image URL using shared utilities
+ */
+function sanitizeImageUrl(url) {
+  // Use shared utility if available, otherwise fallback to local implementation
+  if (window.SecurityUtils && window.SecurityUtils.sanitizeImageUrl) {
+    return window.SecurityUtils.sanitizeImageUrl(url);
+  }
+  
+  // Fallback implementation
+  if (!url || typeof url !== 'string') return null;
+  
+  try {
+    const parsedUrl = new URL(url);
+    if (parsedUrl.protocol === 'https:' && parsedUrl.hostname === 'i.scdn.co') {
+      return url;
+    }
+  } catch (e) {
+    console.warn('Invalid image URL:', url);
+  }
+  
+  return null;
+}
+
+/**
+ * Escape HTML using shared utilities with fallback
+ */
+function escapeHtml(text) {
+  // Use shared utility if available
+  if (window.SecurityUtils && window.SecurityUtils.escapeHtml) {
+    return window.SecurityUtils.escapeHtml(text);
+  }
+  
+  // Consistent map-based fallback (inline to avoid duplication)
+  if (typeof text !== 'string') text = String(text);
+  return text.replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;'
+  }[char]));
+}
+
+/**
  * Create the Spotify data display HTML (artist info and top tracks)
+ * Uses HTML escaping for all user-controlled content to prevent XSS
  */
 function createSpotifyDisplay(data) {
   const { artist, topTracks } = data;
   
+  // Sanitize and validate all data from API
+  const sanitizedFollowers = parseInt(artist.followers) || 0;
+  const sanitizedPopularity = parseInt(artist.popularity) || 0;
+  
   // Create the main container
   const container = document.createElement('div');
   container.className = 'spotify-data-container';
-  container.innerHTML = `
+  
+  // Build HTML with escaped content
+  let html = `
     <div class="spotify-artist-info">
       <h2 class="spotify-section-title">Live from Spotify</h2>
       <div class="spotify-stats">
         <div class="spotify-stat">
-          <span class="spotify-stat-value">${formatNumber(artist.followers)}</span>
+          <span class="spotify-stat-value">${formatNumber(sanitizedFollowers)}</span>
           <span class="spotify-stat-label">Followers</span>
         </div>
         <div class="spotify-stat">
-          <span class="spotify-stat-value">${artist.popularity}</span>
+          <span class="spotify-stat-value">${sanitizedPopularity}</span>
           <span class="spotify-stat-label">Popularity</span>
         </div>
-      </div>
-      ${artist.genres && artist.genres.length > 0 ? `
-        <div class="spotify-genres">
-          ${artist.genres.map(genre => `<span class="spotify-genre-tag">${genre}</span>`).join('')}
-        </div>
-      ` : ''}
-    </div>
-    
-    ${topTracks && topTracks.length > 0 ? `
+      </div>`;
+  
+  // Add genres if available (with HTML escaping)
+  if (artist.genres && Array.isArray(artist.genres) && artist.genres.length > 0) {
+    html += '<div class="spotify-genres">';
+    artist.genres.forEach(genre => {
+      html += `<span class="spotify-genre-tag">${escapeHtml(genre)}</span>`;
+    });
+    html += '</div>';
+  }
+  
+  html += '</div>';
+  
+  // Add top tracks if available (with sanitization)
+  if (topTracks && Array.isArray(topTracks) && topTracks.length > 0) {
+    html += `
       <div class="spotify-tracks">
         <h3 class="spotify-tracks-title">Top Tracks</h3>
-        <div class="spotify-tracks-list">
-          ${topTracks.map((track, index) => `
-            <a href="${sanitizeSpotifyUrl(track.spotifyUrl)}" target="_blank" rel="noopener noreferrer" class="spotify-track-link">
-              <div class="spotify-track-item">
-                <span class="spotify-track-number">${index + 1}</span>
-                ${track.albumImage ? `
-                  <img src="${track.albumImage}" alt="${track.album}" class="spotify-track-image" />
-                ` : ''}
-                <div class="spotify-track-info">
-                  <div class="spotify-track-name">${track.name}</div>
-                  <div class="spotify-track-album">${track.album}</div>
-                </div>
-                <span class="spotify-track-duration">${formatDuration(track.duration)}</span>
-              </div>
-            </a>
-          `).join('')}
+        <div class="spotify-tracks-list">`;
+    
+    topTracks.forEach((track, index) => {
+      const sanitizedUrl = sanitizeSpotifyUrl(track.spotifyUrl);
+      const sanitizedImageUrl = sanitizeImageUrl(track.albumImage);
+      const sanitizedDuration = parseInt(track.duration) || 0;
+      
+      html += `
+        <a href="${sanitizedUrl}" target="_blank" rel="noopener noreferrer" class="spotify-track-link">
+          <div class="spotify-track-item">
+            <span class="spotify-track-number">${index + 1}</span>`;
+      
+      if (sanitizedImageUrl) {
+        html += `<img src="${sanitizedImageUrl}" alt="${escapeHtml(track.album)}" class="spotify-track-image" loading="lazy" />`;
+      }
+      
+      html += `
+            <div class="spotify-track-info">
+              <div class="spotify-track-name">${escapeHtml(track.name)}</div>
+              <div class="spotify-track-album">${escapeHtml(track.album)}</div>
+            </div>
+            <span class="spotify-track-duration">${formatDuration(sanitizedDuration)}</span>
+          </div>
+        </a>`;
+    });
+    
+    html += `
         </div>
-      </div>
-    ` : ''}
-  `;
+      </div>`;
+  }
   
+  container.innerHTML = html;
   return container;
 }
 

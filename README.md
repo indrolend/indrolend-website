@@ -203,6 +203,40 @@ Contributions are welcome! Areas where you can help:
 - 🐛 Fixing bugs
 - 📝 Improving documentation
 
+## Security
+
+Security is a top priority for this project. We implement multiple layers of protection:
+
+- **Environment Variables**: All sensitive credentials stored securely in `.env` files (never committed)
+- **Input Sanitization**: XSS prevention through HTML escaping and URL validation
+- **HTTPS Enforcement**: Secure communication for all external API calls
+- **Secure Error Handling**: Generic error messages to users, detailed logs server-side only
+- **Dependency Management**: Regular vulnerability scanning and updates
+- **No User Data Collection**: This website doesn't collect, store, or track user data
+
+For detailed security information, see [SECURITY.md](SECURITY.md).
+
+### Security Setup
+
+**Important**: Before running the application, set up your environment variables:
+
+1. **For Python Scripts** (Spotify scraper):
+   ```bash
+   cp .env.example .env
+   # Edit .env and add your Spotify credentials
+   ```
+
+2. **For Node.js Backend** (Spotify API):
+   ```bash
+   cd backend/
+   cp .env.example .env
+   # Edit .env and add your Spotify API credentials
+   ```
+
+3. **Never commit `.env` files** - they are excluded via `.gitignore`
+
+See [SECURITY.md](SECURITY.md) for complete security guidelines and best practices.
+
 ## License
 
 This is a personal website project. Please contact the owner for licensing information.

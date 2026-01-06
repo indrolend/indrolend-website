@@ -5,6 +5,12 @@ Spotify for Artists Stats Scraper
 This script uses Selenium to log into Spotify for Artists, extract audience statistics,
 and save them to a JSON file for display on the website.
 
+Security Features:
+- Credentials stored securely in environment variables (never hardcoded)
+- HTTPS enforcement for all Spotify connections
+- URL validation to ensure navigating only to spotify.com domains
+- No credentials logged or exposed in error messages
+
 Requirements:
 - Chrome/Chromium browser installed
 - ChromeDriver installed (or use webdriver-manager)
@@ -138,7 +144,10 @@ class SpotifyArtistsScraper:
             # Wait for redirect to dashboard
             print("Waiting for dashboard to load...")
             def is_dashboard_loaded(driver):
-                """Check if we're on the Spotify Artists dashboard"""
+                """
+                Check if we're on the Spotify Artists dashboard
+                Security: Validates HTTPS and correct domain to prevent phishing
+                """
                 url = driver.current_url
                 # Parse URL to ensure we're on the correct domain
                 from urllib.parse import urlparse
@@ -156,11 +165,11 @@ class SpotifyArtistsScraper:
             
         except TimeoutException as e:
             raise SpotifyArtistsScraperError(
-                f"Login timeout. Check your credentials or network connection. Error: {e}"
+                "Login timeout. Check your credentials or network connection."
             )
         except NoSuchElementException as e:
             raise SpotifyArtistsScraperError(
-                f"Could not find login form elements. Spotify might have changed their layout. Error: {e}"
+                "Could not find login form elements. Spotify might have changed their layout."
             )
     
     def extract_stats(self) -> Dict[str, Any]:

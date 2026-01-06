@@ -1,12 +1,33 @@
 /**
  * Spotify Analytics Display Module
  * Renders the business snapshot analytics data
+ * 
+ * Security: Uses shared security utilities for consistent sanitization
+ * Dependencies: security-utils.js must be loaded first
  */
+
+/**
+ * Escape HTML using shared utilities with fallback
+ */
+function escapeHtmlAnalytics(text) {
+  if (window.SecurityUtils && window.SecurityUtils.escapeHtml) {
+    return window.SecurityUtils.escapeHtml(text);
+  }
+  // Consistent map-based fallback
+  if (typeof text !== 'string') text = String(text);
+  return text.replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;'
+  }[char]));
+}
 
 /**
  * Format number with commas
  */
 function formatAnalyticsNumber(num) {
+  if (window.SecurityUtils && window.SecurityUtils.formatNumber) {
+    return window.SecurityUtils.formatNumber(num);
+  }
+  // Fallback
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
@@ -185,7 +206,7 @@ function createGeographyDisplay(countries, cities) {
             ${countries.map((country, idx) => `
               <div class="analytics-location-item">
                 <span class="analytics-location-rank">${idx + 1}</span>
-                <span class="analytics-location-name">${country.name}</span>
+                <span class="analytics-location-name">${escapeHtmlAnalytics(country.name)}</span>
                 <span class="analytics-location-value">${formatAnalyticsNumber(country.listeners)}</span>
               </div>
             `).join('')}
@@ -198,7 +219,7 @@ function createGeographyDisplay(countries, cities) {
             ${cities.map((city, idx) => `
               <div class="analytics-location-item">
                 <span class="analytics-location-rank">${idx + 1}</span>
-                <span class="analytics-location-name">${city.name}</span>
+                <span class="analytics-location-name">${escapeHtmlAnalytics(city.name)}</span>
                 <span class="analytics-location-value">${formatAnalyticsNumber(city.listeners)}</span>
               </div>
             `).join('')}
