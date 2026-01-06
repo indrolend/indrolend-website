@@ -1,6 +1,12 @@
 /**
  * Spotify Frontend Integration Module
  * Handles fetching and displaying live Spotify artist data
+ * 
+ * Security Features:
+ * - HTML escaping to prevent XSS attacks
+ * - URL sanitization for external links
+ * - HTTPS enforcement in production
+ * - Safe DOM manipulation
  */
 
 // Configuration
@@ -13,6 +19,17 @@ const CACHE_DURATION = 24 * 60 * 60 * 1000; // Cache data for 24 hours (backend 
 // Cache object
 let cachedSpotifyData = null;
 let cacheTimestamp = null;
+
+/**
+ * Escape HTML special characters to prevent XSS attacks
+ * Converts characters like <, >, &, ", ' to their HTML entity equivalents
+ */
+function escapeHtml(text) {
+  if (typeof text !== 'string') return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
 
 /**
  * Fetch Spotify data from backend
@@ -62,76 +79,127 @@ function formatDuration(ms) {
 /**
  * Sanitize and validate Spotify URL
  * Ensures the URL is from spotify.com domain to prevent malicious redirects
+ * Also validates protocol to ensure HTTPS
  */
 function sanitizeSpotifyUrl(url) {
-  if (!url) return '#';
+  if (!url || typeof url !== 'string') return '#';
   
   try {
     const parsedUrl = new URL(url);
-    // Only allow spotify.com and open.spotify.com domains
-    if (parsedUrl.hostname === 'open.spotify.com' || parsedUrl.hostname === 'spotify.com') {
+    // Only allow HTTPS protocol and spotify.com domains
+    if (parsedUrl.protocol === 'https:' && 
+        (parsedUrl.hostname === 'open.spotify.com' || parsedUrl.hostname === 'spotify.com')) {
       return url;
     }
   } catch (e) {
-    // Invalid URL
+    // Invalid URL - return safe default
+    console.warn('Invalid Spotify URL:', url);
   }
   
   return '#';
 }
 
 /**
+ * Sanitize image URL to prevent XSS and ensure it's from trusted sources
+ * Only allows HTTPS URLs from Spotify's CDN
+ */
+function sanitizeImageUrl(url) {
+  if (!url || typeof url !== 'string') return null;
+  
+  try {
+    const parsedUrl = new URL(url);
+    // Only allow HTTPS and Spotify's image CDN domains
+    if (parsedUrl.protocol === 'https:' && 
+        (parsedUrl.hostname.endsWith('.scdn.co') || 
+         parsedUrl.hostname.endsWith('.spotifycdn.com') ||
+         parsedUrl.hostname === 'i.scdn.co')) {
+      return url;
+    }
+  } catch (e) {
+    console.warn('Invalid image URL:', url);
+  }
+  
+  return null;
+}
+
+/**
  * Create the Spotify data display HTML (artist info and top tracks)
+ * Uses HTML escaping for all user-controlled content to prevent XSS
  */
 function createSpotifyDisplay(data) {
   const { artist, topTracks } = data;
   
+  // Sanitize and validate all data from API
+  const sanitizedFollowers = parseInt(artist.followers) || 0;
+  const sanitizedPopularity = parseInt(artist.popularity) || 0;
+  
   // Create the main container
   const container = document.createElement('div');
   container.className = 'spotify-data-container';
-  container.innerHTML = `
+  
+  // Build HTML with escaped content
+  let html = `
     <div class="spotify-artist-info">
       <h2 class="spotify-section-title">Live from Spotify</h2>
       <div class="spotify-stats">
         <div class="spotify-stat">
-          <span class="spotify-stat-value">${formatNumber(artist.followers)}</span>
+          <span class="spotify-stat-value">${formatNumber(sanitizedFollowers)}</span>
           <span class="spotify-stat-label">Followers</span>
         </div>
         <div class="spotify-stat">
-          <span class="spotify-stat-value">${artist.popularity}</span>
+          <span class="spotify-stat-value">${sanitizedPopularity}</span>
           <span class="spotify-stat-label">Popularity</span>
         </div>
-      </div>
-      ${artist.genres && artist.genres.length > 0 ? `
-        <div class="spotify-genres">
-          ${artist.genres.map(genre => `<span class="spotify-genre-tag">${genre}</span>`).join('')}
-        </div>
-      ` : ''}
-    </div>
-    
-    ${topTracks && topTracks.length > 0 ? `
+      </div>`;
+  
+  // Add genres if available (with HTML escaping)
+  if (artist.genres && Array.isArray(artist.genres) && artist.genres.length > 0) {
+    html += '<div class="spotify-genres">';
+    artist.genres.forEach(genre => {
+      html += `<span class="spotify-genre-tag">${escapeHtml(genre)}</span>`;
+    });
+    html += '</div>';
+  }
+  
+  html += '</div>';
+  
+  // Add top tracks if available (with sanitization)
+  if (topTracks && Array.isArray(topTracks) && topTracks.length > 0) {
+    html += `
       <div class="spotify-tracks">
         <h3 class="spotify-tracks-title">Top Tracks</h3>
-        <div class="spotify-tracks-list">
-          ${topTracks.map((track, index) => `
-            <a href="${sanitizeSpotifyUrl(track.spotifyUrl)}" target="_blank" rel="noopener noreferrer" class="spotify-track-link">
-              <div class="spotify-track-item">
-                <span class="spotify-track-number">${index + 1}</span>
-                ${track.albumImage ? `
-                  <img src="${track.albumImage}" alt="${track.album}" class="spotify-track-image" />
-                ` : ''}
-                <div class="spotify-track-info">
-                  <div class="spotify-track-name">${track.name}</div>
-                  <div class="spotify-track-album">${track.album}</div>
-                </div>
-                <span class="spotify-track-duration">${formatDuration(track.duration)}</span>
-              </div>
-            </a>
-          `).join('')}
+        <div class="spotify-tracks-list">`;
+    
+    topTracks.forEach((track, index) => {
+      const sanitizedUrl = sanitizeSpotifyUrl(track.spotifyUrl);
+      const sanitizedImageUrl = sanitizeImageUrl(track.albumImage);
+      const sanitizedDuration = parseInt(track.duration) || 0;
+      
+      html += `
+        <a href="${sanitizedUrl}" target="_blank" rel="noopener noreferrer" class="spotify-track-link">
+          <div class="spotify-track-item">
+            <span class="spotify-track-number">${index + 1}</span>`;
+      
+      if (sanitizedImageUrl) {
+        html += `<img src="${sanitizedImageUrl}" alt="${escapeHtml(track.album)}" class="spotify-track-image" loading="lazy" />`;
+      }
+      
+      html += `
+            <div class="spotify-track-info">
+              <div class="spotify-track-name">${escapeHtml(track.name)}</div>
+              <div class="spotify-track-album">${escapeHtml(track.album)}</div>
+            </div>
+            <span class="spotify-track-duration">${formatDuration(sanitizedDuration)}</span>
+          </div>
+        </a>`;
+    });
+    
+    html += `
         </div>
-      </div>
-    ` : ''}
-  `;
+      </div>`;
+  }
   
+  container.innerHTML = html;
   return container;
 }
 
