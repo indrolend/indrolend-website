@@ -20,12 +20,6 @@ MIN_COUNTRY_NAME_LENGTH = 3
 MIN_LISTENERS_COUNT = 1
 GENERIC_WORDS = {'Active', 'Total', 'Streams', 'Male', 'Female', 'Age', 'Sources', 'Listeners'}
 
-# Constants for geography parsing
-MIN_CITY_NAME_LENGTH = 2
-MIN_COUNTRY_NAME_LENGTH = 3
-MIN_LISTENERS_COUNT = 1
-GENERIC_WORDS = {'Active', 'Total', 'Streams', 'Male', 'Female', 'Age', 'Sources', 'Listeners'}
-
 # Timezone configuration - set to UTC by default, can be overridden
 DEFAULT_TIMEZONE = 'UTC'
 
@@ -94,7 +88,8 @@ def preprocess_image(image_path, debug=False):
     pil_image = Image.fromarray(enhanced)
     
     if debug:
-        debug_dir = Path('/tmp/ocr_debug')
+        import tempfile
+        debug_dir = Path(tempfile.gettempdir()) / 'ocr_debug'
         debug_dir.mkdir(exist_ok=True)
         base_name = Path(image_path).stem
         
@@ -114,9 +109,12 @@ def extract_text_from_image(image_path, preprocess=True, debug=False):
     Extract text from an image using Tesseract OCR with preprocessing.
     
     Tries multiple approaches to maximize extraction:
-    1. Preprocessed image with PSM 3 (fully automatic)
-    2. Preprocessed image with PSM 11 (sparse text)
-    3. Original image with PSM 6 (uniform block)
+    1. Preprocessed image with PSM 3 (fully automatic page segmentation)
+    2. Preprocessed image with PSM 11 (sparse text detection)
+    3. Original image with PSM 3 (fully automatic)
+    4. Original image with PSM 6 (uniform block of text)
+    
+    Returns the result with the most extracted text.
     
     Args:
         image_path: Path to the image file
@@ -838,18 +836,6 @@ def process_screenshots_folder(screenshots_dir, output_file, debug=False, timezo
                 'note': 'These fields were attempted but could not be extracted from the screenshots'
             }, f, indent=2)
         print(f"✓ Debug info saved to {debug_file}")
-    
-    # Save results to JSON
-    output_path = Path(output_file)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    
-    with open(output_path, 'w') as f:
-        json.dump(results, f, indent=2)
-    
-    print(f"\n✓ Results saved to {output_file}")
-    print(f"Total screenshots processed: {len(image_files)}")
-    stats_found = sum(1 for item in results['screenshots'] if item['stats'])
-    print(f"Screenshots with extractable stats: {stats_found}")
     
     # Delete all processed screenshots to prevent conflicting data in future runs
     if image_files:
