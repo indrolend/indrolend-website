@@ -6,6 +6,7 @@
 /**
  * Escape HTML special characters to prevent XSS attacks
  * Converts characters like <, >, &, ", ' to their HTML entity equivalents
+ * Uses map-based approach for better performance and clarity
  * 
  * @param {*} text - Text to escape (will be converted to string)
  * @returns {string} Escaped HTML string safe for insertion into DOM
@@ -14,9 +15,17 @@ function escapeHtml(text) {
   if (typeof text !== 'string') {
     text = String(text);
   }
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
+  
+  // Map-based escaping for better performance and clearer intent
+  const htmlEscapeMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#x27;'
+  };
+  
+  return text.replace(/[&<>"']/g, char => htmlEscapeMap[char]);
 }
 
 /**
@@ -46,9 +55,9 @@ function sanitizeSpotifyUrl(url, allowedPaths = null) {
       return '#';
     }
     
-    // If path restrictions are specified, validate them
+    // If path restrictions are specified, validate them using startsWith for security
     if (allowedPaths && Array.isArray(allowedPaths)) {
-      const hasValidPath = allowedPaths.some(pattern => parsedUrl.pathname.includes(pattern));
+      const hasValidPath = allowedPaths.some(pattern => parsedUrl.pathname.startsWith(pattern));
       if (!hasValidPath) {
         console.warn('Invalid Spotify URL path:', url);
         return '#';

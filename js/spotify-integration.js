@@ -124,11 +124,18 @@ function escapeHtml(text) {
     return window.SecurityUtils.escapeHtml(text);
   }
   
-  // Fallback implementation
-  if (typeof text !== 'string') return '';
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
+  // Fallback implementation - consistent with main utility
+  if (typeof text !== 'string') {
+    text = String(text);
+  }
+  const htmlEscapeMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#x27;'
+  };
+  return text.replace(/[&<>"']/g, char => htmlEscapeMap[char]);
 }
 
 /**

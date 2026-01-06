@@ -71,14 +71,31 @@ nano .env
 - Use secure headers (CSP, HSTS, X-Content-Type-Options)
 
 **Recommended Headers (for production deployment):**
+
+**Note on CSP**: The example below uses `'unsafe-inline'` which weakens XSS protection. For production deployments, consider implementing nonce-based or hash-based CSP for better security:
+
 ```
-Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://*.scdn.co https://*.spotifycdn.com data:; connect-src 'self' https://spotify-stats-backend-y8hb.onrender.com https://api.spotify.com
+Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-{random}'; style-src 'self' 'nonce-{random}' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://*.scdn.co https://*.spotifycdn.com data:; connect-src 'self' https://spotify-stats-backend-y8hb.onrender.com https://api.spotify.com
 Strict-Transport-Security: max-age=31536000; includeSubDomains
 X-Content-Type-Options: nosniff
 X-Frame-Options: DENY
 X-XSS-Protection: 1; mode=block
 Referrer-Policy: strict-origin-when-cross-origin
 ```
+
+**For Development (more permissive, includes unsafe-inline):**
+```
+Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://*.scdn.co https://*.spotifycdn.com data:; connect-src 'self' https://spotify-stats-backend-y8hb.onrender.com https://api.spotify.com
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Referrer-Policy: strict-origin-when-cross-origin
+```
+
+To implement nonce-based CSP:
+1. Generate a random nonce value for each request
+2. Add the nonce to all inline script and style tags: `<script nonce="{random}">...</script>`
+3. Include the nonce in CSP header: `script-src 'self' 'nonce-{random}'`
 
 ### 4. Error Handling
 
