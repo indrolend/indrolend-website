@@ -2,12 +2,24 @@
 
 Automated scraper that logs into Spotify for Artists, extracts audience statistics, and saves them to a JSON file for display on your website.
 
+## Automated Daily Updates
+
+**This repository is configured to automatically scrape Spotify for Artists statistics once daily at 3 AM UTC** using GitHub Actions. The scraped data is automatically committed to `data/spotify_stats.json` and displayed on the website.
+
+To enable this automation:
+1. Add your Spotify credentials to GitHub repository secrets:
+   - Go to **Settings** → **Secrets and variables** → **Actions**
+   - Add `SPOTIFY_EMAIL` (your Spotify login email)
+   - Add `SPOTIFY_PASSWORD` (your Spotify login password)
+2. The workflow runs automatically every day
+3. You can also trigger it manually from the **Actions** tab
+
 ## Features
 
 - 🔐 **Secure Authentication**: Uses environment variables to store credentials
-- 🤖 **Automated Scraping**: Selenium-based browser automation
+- 🤖 **Automated Scraping**: Selenium-based browser automation  
 - 📊 **Comprehensive Stats**: Extracts listeners, streams, followers, and top cities
-- 🔄 **Scheduled Updates**: Easy integration with cron jobs or task schedulers
+- 🔄 **Daily Automated Updates**: GitHub Actions runs scraper once per day
 - 💪 **Robust Error Handling**: Graceful failure handling with detailed logging
 - 🌐 **Website Integration**: Automatically displays stats on your website
 
@@ -158,7 +170,36 @@ The scraper creates `data/spotify_stats.json` with the following structure:
 
 ## Automation
 
-### Option 1: Cron Job (Linux/macOS)
+### GitHub Actions (Recommended - Already Configured)
+
+**This repository is already configured with a GitHub Actions workflow** that automatically scrapes Spotify for Artists stats once daily at 3 AM UTC. The workflow is located at `.github/workflows/scrape-spotify-stats.yml`.
+
+#### Setup Steps:
+
+1. **Add GitHub Secrets** (required for automation to work):
+   - Go to your repository on GitHub
+   - Navigate to **Settings** → **Secrets and variables** → **Actions**
+   - Click **New repository secret** and add:
+     - `SPOTIFY_EMAIL`: Your Spotify login email
+     - `SPOTIFY_PASSWORD`: Your Spotify login password
+
+2. **The workflow will automatically**:
+   - Run daily at 3 AM UTC
+   - Scrape your Spotify for Artists dashboard
+   - Save stats to `data/spotify_stats.json`
+   - Commit and push the changes
+   - Display updated stats on your website
+
+3. **Manual Trigger** (optional):
+   - Go to the **Actions** tab in your repository
+   - Select "Scrape Spotify for Artists Stats"
+   - Click "Run workflow" to trigger manually
+
+### Alternative: Local Automation Options
+
+If you prefer to run the scraper locally instead of using GitHub Actions:
+
+#### Option 1: Cron Job (Linux/macOS)
 
 Set up automatic scraping with a cron job:
 
@@ -185,7 +226,7 @@ Set up automatic scraping with a cron job:
    mkdir -p logs
    ```
 
-### Option 2: Task Scheduler (Windows)
+#### Option 2: Task Scheduler (Windows)
 
 1. Open Task Scheduler (`taskschd.msc`)
 
@@ -202,58 +243,6 @@ Set up automatic scraping with a cron job:
 
 4. Enable "Run whether user is logged on or not"
 
-### Option 3: GitHub Actions (Cloud)
-
-Add a workflow file `.github/workflows/scrape-spotify-stats.yml`:
-
-```yaml
-name: Scrape Spotify Stats
-
-on:
-  schedule:
-    # Run every 6 hours
-    - cron: '0 */6 * * *'
-  workflow_dispatch:  # Allow manual trigger
-
-jobs:
-  scrape:
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      
-      - name: Install Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser chromium-chromedriver
-      
-      - name: Install dependencies
-        run: pip install -r scripts/requirements.txt
-      
-      - name: Run scraper
-        env:
-          SPOTIFY_EMAIL: ${{ secrets.SPOTIFY_EMAIL }}
-          SPOTIFY_PASSWORD: ${{ secrets.SPOTIFY_PASSWORD }}
-        run: python scripts/scrape_spotify_artists.py
-      
-      - name: Commit and push
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add data/spotify_stats.json
-          git diff --staged --quiet || git commit -m "Update Spotify stats"
-          git push
-```
-
-Don't forget to add secrets to your GitHub repository:
-- Go to Settings → Secrets and variables → Actions
-- Add `SPOTIFY_EMAIL` and `SPOTIFY_PASSWORD`
-
 ## Website Integration
 
 The stats are automatically displayed on your website when you include:
@@ -263,7 +252,7 @@ The stats are automatically displayed on your website when you include:
 3. **HTML Container**: `<div id="spotify-artists-stats"></div>`
 
 The JavaScript automatically:
-- Fetches `data/spotify_stats.json`
+- Fetches `data/spotify_stats.json` (updated daily by GitHub Actions)
 - Displays listeners, streams, followers, and top cities
 - Refreshes every 5 minutes
 - Handles errors gracefully

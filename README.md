@@ -13,18 +13,37 @@ Personal website with integrated Spotify analytics and OCR-based statistics pars
 
 ## Spotify Statistics System
 
-### Option 1: Live Scraping (Recommended)
+### Automated Daily Updates (Configured)
 
-Automatically scrape live statistics from your Spotify for Artists dashboard:
+**The Spotify Snapshot on the website automatically updates daily** via GitHub Actions:
+
+- **What it does**: Scrapes live statistics from Spotify for Artists dashboard
+- **When it runs**: Once daily at 3 AM UTC
+- **What you need**: Add `SPOTIFY_EMAIL` and `SPOTIFY_PASSWORD` to GitHub repository secrets
+- **Where data is stored**: `data/spotify_stats.json`
+- **Website display**: Shown in the "Spotify for Artists Stats" section on the home page
+
+**Setup Instructions**:
+1. Go to **Settings** → **Secrets and variables** → **Actions** in your GitHub repository
+2. Add `SPOTIFY_EMAIL` (your Spotify login email)
+3. Add `SPOTIFY_PASSWORD` (your Spotify login password)
+4. The workflow runs automatically every day
+
+See [SPOTIFY_ARTISTS_SCRAPER.md](SPOTIFY_ARTISTS_SCRAPER.md) for complete documentation.
+
+### Additional Options
+
+#### Manual Scraping
+
+For manual/local scraping of live statistics:
 
 1. Install dependencies: `pip install -r scripts/requirements.txt`
 2. Configure credentials in `.env` file
 3. Run the scraper: `python scripts/scrape_spotify_artists.py`
-4. Schedule with cron/task scheduler for automatic updates
 
 See [SPOTIFY_ARTISTS_SCRAPER.md](SPOTIFY_ARTISTS_SCRAPER.md) for complete setup instructions.
 
-### Option 2: Screenshot Parsing
+#### Screenshot Parsing
 
 To update your Spotify analytics using screenshots:
 
