@@ -1,7 +1,20 @@
 /**
  * Spotify Analytics Display Module
  * Renders the business snapshot analytics data
+ * 
+ * Security: Data comes from parsed JSON (OCR or default), but we still escape
+ * any text content to prevent potential XSS from malformed data files
  */
+
+/**
+ * Escape HTML special characters to prevent XSS attacks
+ */
+function escapeHtmlAnalytics(text) {
+  if (typeof text !== 'string') return String(text);
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
 
 /**
  * Format number with commas
@@ -185,7 +198,7 @@ function createGeographyDisplay(countries, cities) {
             ${countries.map((country, idx) => `
               <div class="analytics-location-item">
                 <span class="analytics-location-rank">${idx + 1}</span>
-                <span class="analytics-location-name">${country.name}</span>
+                <span class="analytics-location-name">${escapeHtmlAnalytics(country.name)}</span>
                 <span class="analytics-location-value">${formatAnalyticsNumber(country.listeners)}</span>
               </div>
             `).join('')}
@@ -198,7 +211,7 @@ function createGeographyDisplay(countries, cities) {
             ${cities.map((city, idx) => `
               <div class="analytics-location-item">
                 <span class="analytics-location-rank">${idx + 1}</span>
-                <span class="analytics-location-name">${city.name}</span>
+                <span class="analytics-location-name">${escapeHtmlAnalytics(city.name)}</span>
                 <span class="analytics-location-value">${formatAnalyticsNumber(city.listeners)}</span>
               </div>
             `).join('')}
