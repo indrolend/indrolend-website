@@ -2,14 +2,18 @@
  * Spotify Analytics Display Module
  * Renders the business snapshot analytics data
  * 
- * Security: Data comes from parsed JSON (OCR or default), but we still escape
- * any text content to prevent potential XSS from malformed data files
+ * Security: Uses shared security utilities for consistent sanitization
+ * Dependencies: security-utils.js must be loaded first
  */
 
 /**
- * Escape HTML special characters to prevent XSS attacks
+ * Escape HTML using shared utilities with fallback
  */
 function escapeHtmlAnalytics(text) {
+  if (window.SecurityUtils && window.SecurityUtils.escapeHtml) {
+    return window.SecurityUtils.escapeHtml(text);
+  }
+  // Fallback
   if (typeof text !== 'string') return String(text);
   const div = document.createElement('div');
   div.textContent = text;
@@ -20,6 +24,10 @@ function escapeHtmlAnalytics(text) {
  * Format number with commas
  */
 function formatAnalyticsNumber(num) {
+  if (window.SecurityUtils && window.SecurityUtils.formatNumber) {
+    return window.SecurityUtils.formatNumber(num);
+  }
+  // Fallback
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 

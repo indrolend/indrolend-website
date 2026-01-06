@@ -3,10 +3,11 @@
  * Handles fetching and displaying live Spotify artist data
  * 
  * Security Features:
- * - HTML escaping to prevent XSS attacks
- * - URL sanitization for external links
+ * - Uses shared security utilities for consistent sanitization
  * - HTTPS enforcement in production
  * - Safe DOM manipulation
+ * 
+ * Dependencies: security-utils.js must be loaded first
  */
 
 // Configuration
@@ -19,17 +20,6 @@ const CACHE_DURATION = 24 * 60 * 60 * 1000; // Cache data for 24 hours (backend 
 // Cache object
 let cachedSpotifyData = null;
 let cacheTimestamp = null;
-
-/**
- * Escape HTML special characters to prevent XSS attacks
- * Converts characters like <, >, &, ", ' to their HTML entity equivalents
- */
-function escapeHtml(text) {
-  if (typeof text !== 'string') return '';
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
 
 /**
  * Fetch Spotify data from backend
@@ -64,7 +54,7 @@ async function fetchSpotifyData() {
  * Format large numbers with commas
  */
 function formatNumber(num) {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return window.SecurityUtils ? window.SecurityUtils.formatNumber(num) : num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 /**
@@ -77,22 +67,24 @@ function formatDuration(ms) {
 }
 
 /**
- * Sanitize and validate Spotify URL
- * Ensures the URL is from spotify.com domain to prevent malicious redirects
- * Also validates protocol to ensure HTTPS
+ * Sanitize and validate Spotify URL using shared utilities
  */
 function sanitizeSpotifyUrl(url) {
+  // Use shared utility if available, otherwise fallback to local implementation
+  if (window.SecurityUtils && window.SecurityUtils.sanitizeSpotifyUrl) {
+    return window.SecurityUtils.sanitizeSpotifyUrl(url, ['/artist/', '/track/', '/album/']);
+  }
+  
+  // Fallback implementation
   if (!url || typeof url !== 'string') return '#';
   
   try {
     const parsedUrl = new URL(url);
-    // Only allow HTTPS protocol and spotify.com domains
     if (parsedUrl.protocol === 'https:' && 
         (parsedUrl.hostname === 'open.spotify.com' || parsedUrl.hostname === 'spotify.com')) {
       return url;
     }
   } catch (e) {
-    // Invalid URL - return safe default
     console.warn('Invalid Spotify URL:', url);
   }
   
@@ -100,19 +92,20 @@ function sanitizeSpotifyUrl(url) {
 }
 
 /**
- * Sanitize image URL to prevent XSS and ensure it's from trusted sources
- * Only allows HTTPS URLs from Spotify's CDN
+ * Sanitize image URL using shared utilities
  */
 function sanitizeImageUrl(url) {
+  // Use shared utility if available, otherwise fallback to local implementation
+  if (window.SecurityUtils && window.SecurityUtils.sanitizeImageUrl) {
+    return window.SecurityUtils.sanitizeImageUrl(url);
+  }
+  
+  // Fallback implementation
   if (!url || typeof url !== 'string') return null;
   
   try {
     const parsedUrl = new URL(url);
-    // Only allow HTTPS and Spotify's image CDN domains
-    if (parsedUrl.protocol === 'https:' && 
-        (parsedUrl.hostname.endsWith('.scdn.co') || 
-         parsedUrl.hostname.endsWith('.spotifycdn.com') ||
-         parsedUrl.hostname === 'i.scdn.co')) {
+    if (parsedUrl.protocol === 'https:' && parsedUrl.hostname === 'i.scdn.co') {
       return url;
     }
   } catch (e) {
@@ -120,6 +113,22 @@ function sanitizeImageUrl(url) {
   }
   
   return null;
+}
+
+/**
+ * Escape HTML using shared utilities
+ */
+function escapeHtml(text) {
+  // Use shared utility if available, otherwise fallback
+  if (window.SecurityUtils && window.SecurityUtils.escapeHtml) {
+    return window.SecurityUtils.escapeHtml(text);
+  }
+  
+  // Fallback implementation
+  if (typeof text !== 'string') return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
 /**

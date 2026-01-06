@@ -187,8 +187,7 @@ app.get('/api/spotify', async (req, res) => {
     
     // Return generic error message to client (don't expose internal details)
     res.status(500).json({ 
-      error: 'Failed to fetch Spotify data',
-      message: 'Unable to retrieve artist information at this time. Please try again later.'
+      error: 'Unable to retrieve artist information at this time. Please try again later.'
     });
   }
 });
@@ -227,8 +226,7 @@ app.post('/api/spotify/refresh-cache', async (req, res) => {
     
     // Return generic error message to client
     res.status(500).json({ 
-      error: 'Failed to refresh cache',
-      message: 'Unable to refresh artist data at this time. Please try again later.'
+      error: 'Unable to refresh artist data at this time. Please try again later.'
     });
   }
 });
