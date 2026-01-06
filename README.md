@@ -5,6 +5,7 @@ Personal website with integrated Spotify analytics and OCR-based statistics pars
 ## Features
 
 - **Spotify Analytics Dashboard**: Visual display of streaming statistics
+- **Spotify for Artists Scraper**: Automated extraction of live audience stats (listeners, streams, followers, top cities)
 - **Automated Screenshot Parsing**: OCR-based extraction of Spotify stats from screenshots
 - **Example-Based Validation**: System for improving OCR accuracy with ground truth data
 - **Interactive Games**: Asymptote idle game, Tic-Tac-Toe, Word Game
@@ -12,9 +13,20 @@ Personal website with integrated Spotify analytics and OCR-based statistics pars
 
 ## Spotify Statistics System
 
-### Processing Your Statistics
+### Option 1: Live Scraping (Recommended)
 
-To update your Spotify analytics on the website:
+Automatically scrape live statistics from your Spotify for Artists dashboard:
+
+1. Install dependencies: `pip install -r scripts/requirements.txt`
+2. Configure credentials in `.env` file
+3. Run the scraper: `python scripts/scrape_spotify_artists.py`
+4. Schedule with cron/task scheduler for automatic updates
+
+See [SPOTIFY_ARTISTS_SCRAPER.md](SPOTIFY_ARTISTS_SCRAPER.md) for complete setup instructions.
+
+### Option 2: Screenshot Parsing
+
+To update your Spotify analytics using screenshots:
 
 1. Take screenshots of your Spotify for Artists statistics
 2. Upload them to the `screenshots/` folder
@@ -121,6 +133,26 @@ If you want to help improve the OCR parsing accuracy:
    python scripts/parse_screenshots.py
    ```
 
+### For Spotify Artists Scraper
+
+1. Install dependencies:
+   ```bash
+   pip install -r scripts/requirements.txt
+   ```
+
+2. Configure credentials:
+   ```bash
+   cp .env.example .env
+   # Edit .env and add your Spotify email and password
+   ```
+
+3. Run the scraper:
+   ```bash
+   python scripts/scrape_spotify_artists.py
+   ```
+
+4. Automate with cron (see [SPOTIFY_ARTISTS_SCRAPER.md](SPOTIFY_ARTISTS_SCRAPER.md))
+
 ### For OCR Development
 
 1. Add example screenshots to `screenshots/examples/`
@@ -134,7 +166,8 @@ If you want to help improve the OCR parsing accuracy:
 ## Documentation
 
 - **Repository Structure**: [STRUCTURE.md](STRUCTURE.md) - Complete directory organization and guidelines
-- **Spotify Integration**: [SPOTIFY_INTEGRATION.md](SPOTIFY_INTEGRATION.md)
+- **Spotify for Artists Scraper**: [SPOTIFY_ARTISTS_SCRAPER.md](SPOTIFY_ARTISTS_SCRAPER.md) - Automated stats scraping setup
+- **Spotify API Integration**: [SPOTIFY_INTEGRATION.md](SPOTIFY_INTEGRATION.md) - Using Spotify Web API
 - **Screenshot Parsing**: [scripts/README.md](scripts/README.md)
 - **OCR Examples Quick Start**: [OCR_EXAMPLES_QUICK_START.md](OCR_EXAMPLES_QUICK_START.md)
 - **OCR Examples Detailed Guide**: [screenshots/examples/README.md](screenshots/examples/README.md)

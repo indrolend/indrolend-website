@@ -21,10 +21,12 @@
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="../css/spotify-styles.css" />
   <link rel="stylesheet" href="../css/spotify-analytics-styles.css" />
+  <link rel="stylesheet" href="../css/spotify-artists-stats.css" />
   <script defer src="../js/script.js"></script>
   <script defer src="../js/spotify-integration.js"></script>
   <script defer src="../js/spotify-analytics-data.js"></script>
   <script defer src="../js/spotify-analytics.js"></script>
+  <script defer src="../js/spotify-artists-stats.js"></script>
 </head>
 <body class="home-bg">
   <canvas id="particles-bg"></canvas>
@@ -41,6 +43,9 @@
     </header>
 
     <section class="home-main">
+      <!-- Spotify for Artists Stats (from scraper) -->
+      <div id="spotify-artists-stats"></div>
+
       <!-- Spotify Analytics Dashboard -->
       <div id="spotify-analytics-placeholder"></div>
 
