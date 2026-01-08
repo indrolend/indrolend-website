@@ -1,0 +1,158 @@
+/**
+ * Easter Egg Sandbox Mode Styles
+ * 3D cube transformations and physics interactions
+ */
+
+/* Cube wrapper - positioned container for each cube */
+.cube-wrapper {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  transition: none; /* Smooth physics animations */
+}
+
+/* 3D Cube container */
+.cube {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.1s ease-out;
+}
+
+/* Cube faces - all 6 sides */
+.cube-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border: 1px solid rgba(109, 217, 232, 0.5);
+  box-shadow: 0 0 20px rgba(109, 217, 232, 0.2);
+  overflow: hidden;
+}
+
+/* Front face - shows original button content */
+.cube-face-front {
+  transform: translateZ(75px);
+  background: var(--bg-panel, rgba(5, 12, 28, 0.96));
+}
+
+/* Back face */
+.cube-face-back {
+  transform: rotateY(180deg) translateZ(75px);
+  background: rgba(5, 12, 28, 0.8);
+}
+
+/* Left face */
+.cube-face-left {
+  transform: rotateY(-90deg) translateZ(75px);
+  background: rgba(5, 12, 28, 0.85);
+}
+
+/* Right face */
+.cube-face-right {
+  transform: rotateY(90deg) translateZ(75px);
+  background: rgba(5, 12, 28, 0.85);
+}
+
+/* Top face */
+.cube-face-top {
+  transform: rotateX(90deg) translateZ(75px);
+  background: rgba(5, 12, 28, 0.9);
+}
+
+/* Bottom face */
+.cube-face-bottom {
+  transform: rotateX(-90deg) translateZ(75px);
+  background: rgba(5, 12, 28, 0.9);
+}
+
+/* Reset button - matches website style */
+.sandbox-reset-button {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  
+  /* Styling to match existing website buttons */
+  background: rgba(5, 12, 28, 0.96);
+  background: var(--bg-panel, rgba(5, 12, 28, 0.96));
+  border: 2px solid rgba(109, 217, 232, 0.6);
+  border: 2px solid var(--border-subtle, rgba(109, 217, 232, 0.3));
+  border-radius: 12px;
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #6dd9e8;
+  color: var(--terminal-green, #6dd9e8);
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  
+  /* Effects */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+              0 0 20px rgba(109, 217, 232, 0.3);
+  transition: all 0.3s ease;
+  
+  /* Animation */
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.sandbox-reset-button:hover {
+  background: rgba(109, 217, 232, 0.1);
+  border-color: #6dd9e8;
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5),
+              0 0 30px rgba(109, 217, 232, 0.5);
+}
+
+.sandbox-reset-button:active {
+  transform: translateX(-50%) translateY(0);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4),
+              0 0 15px rgba(109, 217, 232, 0.4);
+}
+
+/* Pulse glow animation for reset button */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(109, 217, 232, 0.3);
+  }
+  50% {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(109, 217, 232, 0.5);
+  }
+}
+
+/* Webkit vendor prefixes for older browsers */
+@-webkit-keyframes pulse-glow {
+  0%, 100% {
+    -webkit-box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                        0 0 20px rgba(109, 217, 232, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(109, 217, 232, 0.3);
+  }
+  50% {
+    -webkit-box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                        0 0 30px rgba(109, 217, 232, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(109, 217, 232, 0.5);
+  }
+}
+
+/* Ensure cube content is properly displayed */
+.cube-face .app-card-media,
+.cube-face .app-card-label {
+  pointer-events: none;
+}
+
+/* Make sure images in cubes scale properly */
+.cube-face img {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+}
