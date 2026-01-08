@@ -13,9 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Mouse interaction settings (from particles.js)
     const mouse = {
       x: null,
-      y: null,
-      clicking: false,
-      clickTime: 0
+      y: null
     };
     const repulseDistance = 150;
     const grabDistance = 150;
@@ -45,8 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
         y: y !== undefined ? y : Math.random() * particlesCanvas.height,
         vx: vx,
         vy: vy,
-        vx_i: vx, // Initial velocity (for repulse reset)
-        vy_i: vy,
         size: size,
         radius: size / 2, // Used for collision detection
         font: `${size}px "SF Mono", Menlo, Monaco, Consolas, monospace`, // Pre-cached font string
@@ -84,6 +80,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Mouse repulse effect (from particles.js)
+        // Physics formula: force = (1/r) * (-1 * (d/r)² + 1) * r * v
+        // where r=repulseDistance, d=distance, v=velocity
         if (mouse.x !== null && mouse.y !== null) {
           const dx = p.x - mouse.x;
           const dy = p.y - mouse.y;
@@ -145,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (distance < connectionDistance) {
             // Fade opacity based on distance (from particles.js)
-            const opacity = 0.1 - (distance / (1 / 0.1)) / connectionDistance;
+            const opacity = (1 - distance / connectionDistance) * 0.1;
             if (opacity > 0) {
               ctx.beginPath();
               ctx.strokeStyle = `rgba(94, 232, 125, ${opacity})`;
@@ -167,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (distance < grabDistance) {
             // Fade opacity based on distance
-            const opacity = 0.4 - (distance / (1 / 0.4)) / grabDistance;
+            const opacity = (1 - distance / grabDistance) * 0.4;
             if (opacity > 0) {
               ctx.beginPath();
               ctx.strokeStyle = `rgba(94, 232, 125, ${opacity})`;
@@ -213,17 +211,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener('click', (e) => {
       // Push mode: add new particles on click (from particles.js)
-      mouse.clicking = true;
-      mouse.clickTime = Date.now();
-      
       const particlesToAdd = 4;
       for (let i = 0; i < particlesToAdd; i++) {
         particles.push(createParticle(e.clientX, e.clientY));
       }
-      
-      setTimeout(() => {
-        mouse.clicking = false;
-      }, 100);
     });
 
     window.addEventListener("resize", () => {
