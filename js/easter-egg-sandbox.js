@@ -68,46 +68,20 @@
     startPhysicsLoop();
   }
 
-  // Initialize Cannon.js physics world
+  // Initialize simple physics world (custom lightweight implementation)
   function initPhysicsWorld() {
-    if (typeof CANNON === 'undefined') {
-      console.error('Cannon.js not loaded');
-      return;
-    }
-
-    // Create physics world with gravity
-    physicsWorld = new CANNON.World();
-    physicsWorld.gravity.set(0, -9.82, 0); // Gravity pointing down
-    physicsWorld.broadphase = new CANNON.NaiveBroadphase();
-    physicsWorld.solver.iterations = 10;
-
-    // Create invisible ground plane (below viewport)
-    const groundBody = new CANNON.Body({
-      mass: 0, // Static
-      shape: new CANNON.Plane()
-    });
-    groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
-    groundBody.position.set(0, -window.innerHeight, 0);
-    physicsWorld.addBody(groundBody);
-
-    // Create invisible walls (boundaries)
-    // Left wall
-    const leftWall = new CANNON.Body({
-      mass: 0,
-      shape: new CANNON.Plane()
-    });
-    leftWall.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.PI / 2);
-    leftWall.position.set(-50, 0, 0);
-    physicsWorld.addBody(leftWall);
-
-    // Right wall
-    const rightWall = new CANNON.Body({
-      mass: 0,
-      shape: new CANNON.Plane()
-    });
-    rightWall.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), -Math.PI / 2);
-    rightWall.position.set(window.innerWidth + 50, 0, 0);
-    physicsWorld.addBody(rightWall);
+    // Create simple physics world object
+    physicsWorld = {
+      gravity: 0.5, // pixels per frame squared
+      bounds: {
+        minX: 0,
+        maxX: window.innerWidth,
+        minY: 0,
+        maxY: window.innerHeight
+      },
+      damping: 0.98, // velocity damping
+      bounceFactor: 0.6
+    };
   }
 
   // Transform buttons into 3D cubes
@@ -173,21 +147,25 @@
       button.style.opacity = '0';
       button.style.pointerEvents = 'none';
 
-      // Create physics body for cube
-      const cubeSize = Math.min(rect.width, rect.height) / 2;
-      const shape = new CANNON.Box(new CANNON.Vec3(cubeSize, cubeSize, cubeSize));
-      const body = new CANNON.Body({
+      // Create simple physics body for cube
+      const cubeSize = Math.min(rect.width, rect.height);
+      const body = {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+        z: 0,
+        vx: 0, // velocity x
+        vy: 0, // velocity y
+        vz: 0, // velocity z
+        ax: 0, // angular velocity x
+        ay: 0, // angular velocity y
+        az: 0, // angular velocity z
+        rx: 0, // rotation x
+        ry: 0, // rotation y
+        rz: 0, // rotation z
         mass: 1,
-        shape: shape,
-        position: new CANNON.Vec3(
-          rect.left + rect.width / 2,
-          rect.top + rect.height / 2,
-          0
-        ),
-        linearDamping: 0.3,
-        angularDamping: 0.3
-      });
-      physicsWorld.addBody(body);
+        size: cubeSize,
+        isKinematic: false
+      };
 
       // Store cube object
       cubeObjects.push({
@@ -218,9 +196,12 @@
       startY = e.clientY;
       
       // Make body kinematic (not affected by physics) while dragging
-      cubeObj.body.type = CANNON.Body.KINEMATIC;
-      cubeObj.body.velocity.set(0, 0, 0);
-      cubeObj.body.angularVelocity.set(0, 0, 0);
+      cubeObj.body.isKinematic = true;
+      cubeObj.body.vx = 0;
+      cubeObj.body.vy = 0;
+      cubeObj.body.ax = 0;
+      cubeObj.body.ay = 0;
+      cubeObj.body.az = 0;
       
       element.style.cursor = 'grabbing';
     });
@@ -232,9 +213,8 @@
       const dy = e.clientY - startY;
 
       // Update position
-      const rect = element.getBoundingClientRect();
-      cubeObj.body.position.x = e.clientX;
-      cubeObj.body.position.y = e.clientY;
+      cubeObj.body.x = e.clientX;
+      cubeObj.body.y = e.clientY;
 
       // Update rotation based on drag movement
       cubeObj.rotationY += dx * 0.5;
@@ -251,10 +231,10 @@
       element.style.cursor = 'grab';
       
       // Make body dynamic again
-      cubeObj.body.type = CANNON.Body.DYNAMIC;
+      cubeObj.body.isKinematic = false;
       
       // Apply a small velocity to make it "drop"
-      cubeObj.body.velocity.y = -2;
+      cubeObj.body.vy = 2; // Downward velocity
     });
 
     element.style.cursor = 'grab';
@@ -267,17 +247,104 @@
     function animate() {
       if (!isActive) return;
 
-      // Step physics simulation
-      physicsWorld.step(timeStep);
-
-      // Update cube positions and rotations
+      // Apply simple physics to each cube
       cubeObjects.forEach((cubeObj) => {
-        const pos = cubeObj.body.position;
-        const quat = cubeObj.body.quaternion;
+        if (cubeObj.body.isKinematic) return; // Skip if being dragged
+
+        const body = cubeObj.body;
+        const bounds = physicsWorld.bounds;
+
+        // Apply gravity
+        body.vy += physicsWorld.gravity;
+
+        // Apply damping
+        body.vx *= physicsWorld.damping;
+        body.vy *= physicsWorld.damping;
+        body.ax *= physicsWorld.damping;
+        body.ay *= physicsWorld.damping;
+        body.az *= physicsWorld.damping;
 
         // Update position
-        cubeObj.element.style.left = (pos.x - cubeObj.element.offsetWidth / 2) + 'px';
-        cubeObj.element.style.top = (pos.y - cubeObj.element.offsetHeight / 2) + 'px';
+        body.x += body.vx;
+        body.y += body.vy;
+
+        // Update rotation
+        body.rx += body.ax;
+        body.ry += body.ay;
+        body.rz += body.az;
+
+        // Collision detection with boundaries
+        const halfSize = body.size / 2;
+
+        // Bottom boundary
+        if (body.y + halfSize > bounds.maxY) {
+          body.y = bounds.maxY - halfSize;
+          body.vy *= -physicsWorld.bounceFactor;
+          body.ax = (Math.random() - 0.5) * 2; // Add random spin
+        }
+
+        // Top boundary
+        if (body.y - halfSize < bounds.minY) {
+          body.y = bounds.minY + halfSize;
+          body.vy *= -physicsWorld.bounceFactor;
+        }
+
+        // Left boundary
+        if (body.x - halfSize < bounds.minX) {
+          body.x = bounds.minX + halfSize;
+          body.vx *= -physicsWorld.bounceFactor;
+          body.ay = (Math.random() - 0.5) * 2; // Add random spin
+        }
+
+        // Right boundary
+        if (body.x + halfSize > bounds.maxX) {
+          body.x = bounds.maxX - halfSize;
+          body.vx *= -physicsWorld.bounceFactor;
+          body.ay = (Math.random() - 0.5) * 2; // Add random spin
+        }
+
+        // Collision detection between cubes
+        cubeObjects.forEach((otherCubeObj) => {
+          if (cubeObj === otherCubeObj) return;
+          const otherBody = otherCubeObj.body;
+
+          const dx = body.x - otherBody.x;
+          const dy = body.y - otherBody.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const minDistance = (body.size + otherBody.size) / 2;
+
+          if (distance < minDistance) {
+            // Collision detected - simple elastic collision
+            const angle = Math.atan2(dy, dx);
+            const targetX = otherBody.x + Math.cos(angle) * minDistance;
+            const targetY = otherBody.y + Math.sin(angle) * minDistance;
+
+            // Separate cubes
+            body.x = targetX;
+            body.y = targetY;
+
+            // Bounce velocities
+            const tempVx = body.vx;
+            const tempVy = body.vy;
+            body.vx = otherBody.vx * physicsWorld.bounceFactor;
+            body.vy = otherBody.vy * physicsWorld.bounceFactor;
+            otherBody.vx = tempVx * physicsWorld.bounceFactor;
+            otherBody.vy = tempVy * physicsWorld.bounceFactor;
+
+            // Add spin
+            body.az = (Math.random() - 0.5) * 5;
+            otherBody.az = (Math.random() - 0.5) * 5;
+          }
+        });
+      });
+
+      // Update cube visual positions and rotations
+      cubeObjects.forEach((cubeObj) => {
+        const body = cubeObj.body;
+
+        // Update position
+        cubeObj.element.style.left = (body.x - cubeObj.element.offsetWidth / 2) + 'px';
+        cubeObj.element.style.top = (body.y - cubeObj.element.offsetHeight / 2) + 'px';
 
         // Update rotation
         if (cubeObj.isDragging) {
@@ -285,9 +352,7 @@
           cubeObj.cube.style.transform = `rotateX(${cubeObj.rotationX}deg) rotateY(${cubeObj.rotationY}deg)`;
         } else {
           // Use physics rotation
-          const euler = new CANNON.Vec3();
-          quat.toEuler(euler);
-          cubeObj.cube.style.transform = `rotateX(${euler.x * 180 / Math.PI}deg) rotateY(${euler.y * 180 / Math.PI}deg) rotateZ(${euler.z * 180 / Math.PI}deg)`;
+          cubeObj.cube.style.transform = `rotateX(${body.rx}deg) rotateY(${body.ry}deg) rotateZ(${body.rz}deg)`;
         }
       });
 
@@ -328,12 +393,7 @@
     });
 
     // Clear physics world
-    if (physicsWorld) {
-      physicsWorld.bodies.forEach(body => {
-        physicsWorld.removeBody(body);
-      });
-      physicsWorld = null;
-    }
+    physicsWorld = null;
 
     // Remove reset button
     const resetBtn = document.getElementById('sandbox-reset-btn');
