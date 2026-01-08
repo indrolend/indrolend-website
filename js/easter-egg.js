@@ -14,6 +14,8 @@
   const GRAVITY = 0.3;
   const BOUNCE_DAMPING = 0.7;
   const ROTATION_SPEED = 0.02;
+  const DEFAULT_BG_COLOR = 'rgba(5, 12, 28, 0.96)';
+  const DEFAULT_BORDER_COLOR = 'rgba(109, 217, 232, 0.3)';
 
   // State
   let keyBuffer = '';
@@ -23,6 +25,7 @@
   let cubes = [];
   let animationFrame = null;
   let originalButtons = [];
+  let resizeHandler = null;
 
   /**
    * Rolling buffer for keypress detection
@@ -88,6 +91,12 @@
       animationFrame = null;
     }
     
+    // Remove resize listener
+    if (resizeHandler) {
+      window.removeEventListener('resize', resizeHandler);
+      resizeHandler = null;
+    }
+    
     // Remove canvas
     if (canvas && canvas.parentNode) {
       canvas.parentNode.removeChild(canvas);
@@ -102,6 +111,15 @@
     
     originalButtons = [];
     cubes = [];
+  }
+
+  /**
+   * Handle window resize
+   */
+  function handleResize() {
+    if (!canvas) return;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
   }
 
   /**
@@ -127,17 +145,9 @@
     // Click to deactivate
     canvas.addEventListener('click', deactivate);
     
-    // Handle window resize
-    window.addEventListener('resize', handleResize);
-  }
-
-  /**
-   * Handle window resize
-   */
-  function handleResize() {
-    if (!canvas) return;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    // Handle window resize - store handler for cleanup
+    resizeHandler = handleResize;
+    window.addEventListener('resize', resizeHandler);
   }
 
   /**
@@ -156,12 +166,14 @@
       const styles = window.getComputedStyle(button);
       
       // Extract colors
-      const bgColor = styles.backgroundColor || 'rgba(5, 12, 28, 0.96)';
-      const borderColor = styles.borderColor || 'rgba(109, 217, 232, 0.3)';
+      const bgColor = styles.backgroundColor || DEFAULT_BG_COLOR;
+      const borderColor = styles.borderColor || DEFAULT_BORDER_COLOR;
       
-      // Get text content
-      const textEl = button.querySelector('.important-word');
-      const text = textEl ? textEl.textContent : button.textContent.trim();
+      // Get text content - try multiple selectors for robustness
+      const textEl = button.querySelector('.important-word') || 
+                     button.querySelector('.app-card-label') ||
+                     button;
+      const text = textEl ? textEl.textContent.trim() : 'button';
       
       // Create cube object
       const cube = {
@@ -384,8 +396,9 @@
    * Initialize Easter egg listener
    */
   function init() {
-    // Only activate on home page
-    if (!window.location.pathname.includes('home.html')) {
+    // Only activate on home page - check exact path
+    const path = window.location.pathname;
+    if (!path.endsWith('home.html') && !path.endsWith('/')) {
       return;
     }
     
