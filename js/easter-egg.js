@@ -28,9 +28,9 @@
   let resizeHandler = null;
 
   /**
-   * Rolling buffer for keypress detection
+   * Rolling buffer for keydown detection
    */
-  function handleKeyPress(e) {
+  function handleKeyDown(e) {
     // Only capture alphabetic keys (trigger word is 'indrolend')
     if (e.key.length === 1 && /[a-z]/i.test(e.key)) {
       keyBuffer += e.key.toLowerCase();
@@ -406,7 +406,7 @@
       return;
     }
     
-    document.addEventListener('keypress', handleKeyPress);
+    document.addEventListener('keydown', handleKeyDown);
   }
 
   // Auto-initialize when DOM is ready
