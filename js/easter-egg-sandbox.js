@@ -242,8 +242,6 @@
 
   // Physics animation loop
   function startPhysicsLoop() {
-    const timeStep = 1 / 60; // 60 fps
-
     function animate() {
       if (!isActive) return;
 
@@ -304,6 +302,7 @@
         }
 
         // Collision detection between cubes
+        // Note: O(n²) complexity is acceptable here since we only have ~8 buttons
         cubeObjects.forEach((otherCubeObj) => {
           if (cubeObj === otherCubeObj) return;
           const otherBody = otherCubeObj.body;
@@ -384,8 +383,8 @@
 
     // Remove all cube elements
     cubeObjects.forEach((cubeObj) => {
-      if (cubeObj.element && cubeObj.element.parentNode) {
-        cubeObj.element.parentNode.removeChild(cubeObj.element);
+      if (cubeObj.element) {
+        cubeObj.element.remove();
       }
       // Restore original button
       cubeObj.originalButton.style.opacity = '';
