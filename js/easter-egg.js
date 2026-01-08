@@ -31,8 +31,8 @@
    * Rolling buffer for keypress detection
    */
   function handleKeyPress(e) {
-    // Only capture alphanumeric keys
-    if (e.key.length === 1 && /[a-z0-9]/i.test(e.key)) {
+    // Only capture alphabetic keys (trigger word is 'indrolend')
+    if (e.key.length === 1 && /[a-z]/i.test(e.key)) {
       keyBuffer += e.key.toLowerCase();
       
       // Keep buffer at max size
@@ -396,9 +396,13 @@
    * Initialize Easter egg listener
    */
   function init() {
-    // Only activate on home page - check exact path
+    // Only activate on home page - check for exact home.html or root path
     const path = window.location.pathname;
-    if (!path.endsWith('home.html') && !path.endsWith('/')) {
+    const isHomePage = path.endsWith('/home.html') || 
+                       path === '/pages/home.html' ||
+                       (path === '/' && document.querySelector('.home-bg'));
+    
+    if (!isHomePage) {
       return;
     }
     
