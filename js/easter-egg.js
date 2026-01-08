@@ -26,6 +26,7 @@
   let animationFrame = null;
   let originalButtons = [];
   let resizeHandler = null;
+  let keyDownHandler = null;
 
   /**
    * Rolling buffer for keydown detection
@@ -406,7 +407,20 @@
       return;
     }
     
-    document.addEventListener('keydown', handleKeyDown);
+    // Store handler for potential cleanup
+    keyDownHandler = handleKeyDown;
+    document.addEventListener('keydown', keyDownHandler);
+  }
+
+  /**
+   * Cleanup function (called when page unloads)
+   */
+  function cleanup() {
+    if (keyDownHandler) {
+      document.removeEventListener('keydown', keyDownHandler);
+      keyDownHandler = null;
+    }
+    deactivate();
   }
 
   // Auto-initialize when DOM is ready
@@ -415,5 +429,8 @@
   } else {
     init();
   }
+
+  // Cleanup on page unload
+  window.addEventListener('beforeunload', cleanup);
 
 })();
