@@ -9,6 +9,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const particleColor = "rgba(94, 232, 125, 0.4)";
     const lineColor = "rgba(94, 232, 125, 0.1)";
     const connectionDistance = 120;
+    
+    // Mouse interaction settings (from particles.js)
+    const mouse = {
+      x: null,
+      y: null,
+      clicking: false,
+      clickTime: 0
+    };
+    const repulseDistance = 150;
+    const grabDistance = 150;
+    const attractEnabled = false; // Set to true to enable particle-to-particle attraction
+    const attractRotateX = 3000;
+    const attractRotateY = 3000;
+    const bounceEnabled = false; // Set to true to enable particle-to-particle bounce
 
     // Character pool: numbers (0-9), uppercase (A-Z), lowercase (a-z), symbols
     const charPool = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%&*?!+-=";
@@ -22,14 +36,19 @@ document.addEventListener("DOMContentLoaded", () => {
       particlesCanvas.height = window.innerHeight;
     }
 
-    function createParticle() {
+    function createParticle(x, y) {
       const size = Math.floor(Math.random() * 6 + 10); // Font size between 10-16px
+      const vx = (Math.random() - 0.5) * maxSpeed;
+      const vy = (Math.random() - 0.5) * maxSpeed;
       return {
-        x: Math.random() * particlesCanvas.width,
-        y: Math.random() * particlesCanvas.height,
-        vx: (Math.random() - 0.5) * maxSpeed,
-        vy: (Math.random() - 0.5) * maxSpeed,
+        x: x !== undefined ? x : Math.random() * particlesCanvas.width,
+        y: y !== undefined ? y : Math.random() * particlesCanvas.height,
+        vx: vx,
+        vy: vy,
+        vx_i: vx, // Initial velocity (for repulse reset)
+        vy_i: vy,
         size: size,
+        radius: size / 2, // Used for collision detection
         font: `${size}px "SF Mono", Menlo, Monaco, Consolas, monospace`, // Pre-cached font string
         char: getRandomChar(),
         // Each particle changes at its own random interval (300ms to 1500ms)
@@ -47,10 +66,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateParticles() {
       const now = performance.now();
-      particles.forEach(p => {
+      particles.forEach((p, i) => {
+        // Apply velocity
         p.x += p.vx;
         p.y += p.vy;
 
+        // Bounce off walls
         if (p.x < 0 || p.x > particlesCanvas.width) p.vx *= -1;
         if (p.y < 0 || p.y > particlesCanvas.height) p.vy *= -1;
 
@@ -61,13 +82,61 @@ document.addEventListener("DOMContentLoaded", () => {
           // Randomize next change interval for natural variation
           p.changeInterval = Math.random() * 1200 + 300;
         }
+
+        // Mouse repulse effect (from particles.js)
+        if (mouse.x !== null && mouse.y !== null) {
+          const dx = p.x - mouse.x;
+          const dy = p.y - mouse.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < repulseDistance) {
+            const normVec = { x: dx / distance, y: dy / distance };
+            const velocity = 100;
+            const repulseFactor = Math.max(0, Math.min(50, 
+              (1 / repulseDistance) * (-1 * Math.pow(distance / repulseDistance, 2) + 1) * repulseDistance * velocity
+            ));
+            
+            const newX = p.x + normVec.x * repulseFactor * 0.02;
+            const newY = p.y + normVec.y * repulseFactor * 0.02;
+            
+            // Keep within bounds
+            if (newX > 0 && newX < particlesCanvas.width) p.x = newX;
+            if (newY > 0 && newY < particlesCanvas.height) p.y = newY;
+          }
+        }
+
+        // Particle-to-particle interactions
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dx = p.x - p2.x;
+          const dy = p.y - p2.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          // Attract particles (from particles.js)
+          if (attractEnabled && distance < connectionDistance) {
+            const ax = dx / (attractRotateX * 1000);
+            const ay = dy / (attractRotateY * 1000);
+            p.vx -= ax;
+            p.vy -= ay;
+            p2.vx += ax;
+            p2.vy += ay;
+          }
+
+          // Bounce particles off each other (from particles.js)
+          if (bounceEnabled && distance <= p.radius + p2.radius) {
+            p.vx = -p.vx;
+            p.vy = -p.vy;
+            p2.vx = -p2.vx;
+            p2.vy = -p2.vy;
+          }
+        }
       });
     }
 
     function drawParticles() {
       ctx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
 
-      // Draw connections
+      // Draw connections between particles
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
@@ -75,14 +144,40 @@ document.addEventListener("DOMContentLoaded", () => {
           const distance = Math.sqrt(dx * dx + dy * dy);
 
           if (distance < connectionDistance) {
-            ctx.beginPath();
-            ctx.strokeStyle = lineColor;
-            ctx.lineWidth = 0.5;
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
+            // Fade opacity based on distance (from particles.js)
+            const opacity = 0.1 - (distance / (1 / 0.1)) / connectionDistance;
+            if (opacity > 0) {
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(94, 232, 125, ${opacity})`;
+              ctx.lineWidth = 0.5;
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
           }
         }
+      }
+
+      // Draw grab lines to cursor (from particles.js)
+      if (mouse.x !== null && mouse.y !== null) {
+        particles.forEach(p => {
+          const dx = p.x - mouse.x;
+          const dy = p.y - mouse.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < grabDistance) {
+            // Fade opacity based on distance
+            const opacity = 0.4 - (distance / (1 / 0.4)) / grabDistance;
+            if (opacity > 0) {
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(94, 232, 125, ${opacity})`;
+              ctx.lineWidth = 1;
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(mouse.x, mouse.y);
+              ctx.stroke();
+            }
+          }
+        });
       }
 
       // Draw particles as characters
@@ -104,6 +199,32 @@ document.addEventListener("DOMContentLoaded", () => {
     resizeCanvas();
     initParticles();
     animateParticles();
+
+    // Mouse event listeners (from particles.js) - track on window level
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    window.addEventListener('mouseleave', () => {
+      mouse.x = null;
+      mouse.y = null;
+    });
+
+    window.addEventListener('click', (e) => {
+      // Push mode: add new particles on click (from particles.js)
+      mouse.clicking = true;
+      mouse.clickTime = Date.now();
+      
+      const particlesToAdd = 4;
+      for (let i = 0; i < particlesToAdd; i++) {
+        particles.push(createParticle(e.clientX, e.clientY));
+      }
+      
+      setTimeout(() => {
+        mouse.clicking = false;
+      }, 100);
+    });
 
     window.addEventListener("resize", () => {
       resizeCanvas();
