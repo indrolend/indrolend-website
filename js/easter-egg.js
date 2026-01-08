@@ -14,8 +14,6 @@
   const GRAVITY = 0.3;
   const BOUNCE_DAMPING = 0.7;
   const ROTATION_SPEED = 0.02;
-  const DEFAULT_BG_COLOR = 'rgba(5, 12, 28, 0.96)';
-  const DEFAULT_BORDER_COLOR = 'rgba(109, 217, 232, 0.3)';
 
   // State
   let keyBuffer = '';
@@ -25,15 +23,13 @@
   let cubes = [];
   let animationFrame = null;
   let originalButtons = [];
-  let resizeHandler = null;
-  let keyDownHandler = null;
 
   /**
-   * Rolling buffer for keydown detection
+   * Rolling buffer for keypress detection
    */
-  function handleKeyDown(e) {
-    // Only capture alphabetic keys (trigger word is 'indrolend')
-    if (e.key.length === 1 && /[a-z]/i.test(e.key)) {
+  function handleKeyPress(e) {
+    // Only capture alphanumeric keys
+    if (e.key.length === 1 && /[a-z0-9]/i.test(e.key)) {
       keyBuffer += e.key.toLowerCase();
       
       // Keep buffer at max size
@@ -92,12 +88,6 @@
       animationFrame = null;
     }
     
-    // Remove resize listener
-    if (resizeHandler) {
-      window.removeEventListener('resize', resizeHandler);
-      resizeHandler = null;
-    }
-    
     // Remove canvas
     if (canvas && canvas.parentNode) {
       canvas.parentNode.removeChild(canvas);
@@ -112,15 +102,6 @@
     
     originalButtons = [];
     cubes = [];
-  }
-
-  /**
-   * Handle window resize
-   */
-  function handleResize() {
-    if (!canvas) return;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
   }
 
   /**
@@ -146,9 +127,17 @@
     // Click to deactivate
     canvas.addEventListener('click', deactivate);
     
-    // Handle window resize - store handler for cleanup
-    resizeHandler = handleResize;
-    window.addEventListener('resize', resizeHandler);
+    // Handle window resize
+    window.addEventListener('resize', handleResize);
+  }
+
+  /**
+   * Handle window resize
+   */
+  function handleResize() {
+    if (!canvas) return;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
   }
 
   /**
@@ -167,14 +156,12 @@
       const styles = window.getComputedStyle(button);
       
       // Extract colors
-      const bgColor = styles.backgroundColor || DEFAULT_BG_COLOR;
-      const borderColor = styles.borderColor || DEFAULT_BORDER_COLOR;
+      const bgColor = styles.backgroundColor || 'rgba(5, 12, 28, 0.96)';
+      const borderColor = styles.borderColor || 'rgba(109, 217, 232, 0.3)';
       
-      // Get text content - try multiple selectors for robustness
-      const textEl = button.querySelector('.important-word') || 
-                     button.querySelector('.app-card-label') ||
-                     button;
-      const text = textEl ? textEl.textContent.trim() : 'button';
+      // Get text content
+      const textEl = button.querySelector('.important-word');
+      const text = textEl ? textEl.textContent : button.textContent.trim();
       
       // Create cube object
       const cube = {
@@ -397,30 +384,12 @@
    * Initialize Easter egg listener
    */
   function init() {
-    // Only activate on home page - check for exact home.html or root path
-    const path = window.location.pathname;
-    const isHomePage = path.endsWith('/home.html') || 
-                       path === '/pages/home.html' ||
-                       (path === '/' && document.querySelector('.home-bg'));
-    
-    if (!isHomePage) {
+    // Only activate on home page
+    if (!window.location.pathname.includes('home.html')) {
       return;
     }
     
-    // Store handler for potential cleanup
-    keyDownHandler = handleKeyDown;
-    document.addEventListener('keydown', keyDownHandler);
-  }
-
-  /**
-   * Cleanup function (called when page unloads)
-   */
-  function cleanup() {
-    if (keyDownHandler) {
-      document.removeEventListener('keydown', keyDownHandler);
-      keyDownHandler = null;
-    }
-    deactivate();
+    document.addEventListener('keypress', handleKeyPress);
   }
 
   // Auto-initialize when DOM is ready
@@ -429,8 +398,5 @@
   } else {
     init();
   }
-
-  // Cleanup on page unload
-  window.addEventListener('beforeunload', cleanup);
 
 })();
