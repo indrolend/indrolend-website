@@ -1,13 +1,14 @@
 /**
- * Easter Egg: Button-to-Cube Transformation
- * Triggers when user types "indrolend" on the homepage
- * Uses Canvas2D for lightweight 3D-like cube rendering with physics
+ * Easter Egg: Multiple Easter Eggs
+ * 1. Button-to-Cube Transformation - Triggers when user types "indrolend" on the homepage
+ * 2. Snake Game - Triggers when user clicks on the header image
+ * Uses Canvas2D for lightweight rendering with physics
  */
 
 (function() {
   'use strict';
 
-  // Configuration
+  // Configuration for cube easter egg
   const TRIGGER_WORD = 'indrolend';
   const BUFFER_SIZE = 16;
   const BUTTON_SELECTOR = '.app-card';
@@ -15,14 +16,18 @@
   const BOUNCE_DAMPING = 0.7;
   const ROTATION_SPEED = 0.02;
 
-  // State
+  // State for cube easter egg
   let keyBuffer = '';
-  let isActive = false;
-  let canvas = null;
-  let ctx = null;
+  let isCubeActive = false;
+  let cubeCanvas = null;
+  let cubeCtx = null;
   let cubes = [];
-  let animationFrame = null;
+  let cubeAnimationFrame = null;
   let originalButtons = [];
+
+  // State for snake easter egg
+  let isSnakeActive = false;
+  let snakeAnimationFrame = null;
 
   /**
    * Rolling buffer for keypress detection
@@ -46,54 +51,54 @@
   }
 
   /**
-   * Toggle the Easter egg on/off
+   * Toggle the cube Easter egg on/off
    */
   function toggleEasterEgg() {
-    if (isActive) {
-      deactivate();
+    if (isCubeActive) {
+      deactivateCube();
     } else {
-      activate();
+      activateCube();
     }
   }
 
   /**
-   * Activate the Easter egg
+   * Activate the cube Easter egg
    */
-  function activate() {
-    if (isActive) return;
+  function activateCube() {
+    if (isCubeActive) return;
     
-    isActive = true;
+    isCubeActive = true;
     
     // Create canvas overlay
-    createCanvas();
+    createCubeCanvas();
     
     // Transform buttons to cubes
     transformButtonsToCubes();
     
     // Start animation loop
-    animate();
+    animateCubes();
   }
 
   /**
-   * Deactivate the Easter egg
+   * Deactivate the cube Easter egg
    */
-  function deactivate() {
-    if (!isActive) return;
+  function deactivateCube() {
+    if (!isCubeActive) return;
     
-    isActive = false;
+    isCubeActive = false;
     
     // Stop animation
-    if (animationFrame) {
-      cancelAnimationFrame(animationFrame);
-      animationFrame = null;
+    if (cubeAnimationFrame) {
+      cancelAnimationFrame(cubeAnimationFrame);
+      cubeAnimationFrame = null;
     }
     
     // Remove canvas
-    if (canvas && canvas.parentNode) {
-      canvas.parentNode.removeChild(canvas);
+    if (cubeCanvas && cubeCanvas.parentNode) {
+      cubeCanvas.parentNode.removeChild(cubeCanvas);
     }
-    canvas = null;
-    ctx = null;
+    cubeCanvas = null;
+    cubeCtx = null;
     
     // Restore original buttons
     originalButtons.forEach(({ element, display }) => {
@@ -105,39 +110,39 @@
   }
 
   /**
-   * Create canvas overlay
+   * Create canvas overlay for cube easter egg
    */
-  function createCanvas() {
-    canvas = document.createElement('canvas');
-    canvas.id = 'easter-egg-canvas';
-    canvas.style.position = 'fixed';
-    canvas.style.top = '0';
-    canvas.style.left = '0';
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    canvas.style.zIndex = '9999';
-    canvas.style.pointerEvents = 'auto';
-    canvas.style.cursor = 'pointer';
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  function createCubeCanvas() {
+    cubeCanvas = document.createElement('canvas');
+    cubeCanvas.id = 'easter-egg-canvas';
+    cubeCanvas.style.position = 'fixed';
+    cubeCanvas.style.top = '0';
+    cubeCanvas.style.left = '0';
+    cubeCanvas.style.width = '100%';
+    cubeCanvas.style.height = '100%';
+    cubeCanvas.style.zIndex = '9999';
+    cubeCanvas.style.pointerEvents = 'auto';
+    cubeCanvas.style.cursor = 'pointer';
+    cubeCanvas.width = window.innerWidth;
+    cubeCanvas.height = window.innerHeight;
     
-    document.body.appendChild(canvas);
-    ctx = canvas.getContext('2d');
+    document.body.appendChild(cubeCanvas);
+    cubeCtx = cubeCanvas.getContext('2d');
     
     // Click to deactivate
-    canvas.addEventListener('click', deactivate);
+    cubeCanvas.addEventListener('click', deactivateCube);
     
     // Handle window resize
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleCubeResize);
   }
 
   /**
-   * Handle window resize
+   * Handle window resize for cube easter egg
    */
-  function handleResize() {
-    if (!canvas) return;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  function handleCubeResize() {
+    if (!cubeCanvas) return;
+    cubeCanvas.width = window.innerWidth;
+    cubeCanvas.height = window.innerHeight;
   }
 
   /**
@@ -242,8 +247,8 @@
    * Uses isometric projection for 3D appearance
    */
   function drawCube(cube) {
-    ctx.save();
-    ctx.translate(cube.x, cube.y);
+    cubeCtx.save();
+    cubeCtx.translate(cube.x, cube.y);
     
     const s = cube.size;
     const depth = s * 0.5;
@@ -255,45 +260,45 @@
     // Draw three visible faces of the cube (isometric style)
     
     // Top face
-    ctx.fillStyle = lightenColor(cube.bgColor, 30);
-    ctx.strokeStyle = cube.borderColor;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(-s/2 * rx, -s/2 * ry);
-    ctx.lineTo(0, -s/2 * ry - depth/2);
-    ctx.lineTo(s/2 * rx, -s/2 * ry);
-    ctx.lineTo(0, -s/2 * ry + depth/2);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
+    cubeCtx.fillStyle = lightenColor(cube.bgColor, 30);
+    cubeCtx.strokeStyle = cube.borderColor;
+    cubeCtx.lineWidth = 2;
+    cubeCtx.beginPath();
+    cubeCtx.moveTo(-s/2 * rx, -s/2 * ry);
+    cubeCtx.lineTo(0, -s/2 * ry - depth/2);
+    cubeCtx.lineTo(s/2 * rx, -s/2 * ry);
+    cubeCtx.lineTo(0, -s/2 * ry + depth/2);
+    cubeCtx.closePath();
+    cubeCtx.fill();
+    cubeCtx.stroke();
     
     // Left face
-    ctx.fillStyle = darkenColor(cube.bgColor, 20);
-    ctx.beginPath();
-    ctx.moveTo(-s/2 * rx, -s/2 * ry);
-    ctx.lineTo(-s/2 * rx, s/2 * ry);
-    ctx.lineTo(0, s/2 * ry + depth/2);
-    ctx.lineTo(0, -s/2 * ry + depth/2);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
+    cubeCtx.fillStyle = darkenColor(cube.bgColor, 20);
+    cubeCtx.beginPath();
+    cubeCtx.moveTo(-s/2 * rx, -s/2 * ry);
+    cubeCtx.lineTo(-s/2 * rx, s/2 * ry);
+    cubeCtx.lineTo(0, s/2 * ry + depth/2);
+    cubeCtx.lineTo(0, -s/2 * ry + depth/2);
+    cubeCtx.closePath();
+    cubeCtx.fill();
+    cubeCtx.stroke();
     
     // Front face
-    ctx.fillStyle = cube.bgColor;
-    ctx.beginPath();
-    ctx.moveTo(0, -s/2 * ry + depth/2);
-    ctx.lineTo(0, s/2 * ry + depth/2);
-    ctx.lineTo(s/2 * rx, s/2 * ry);
-    ctx.lineTo(s/2 * rx, -s/2 * ry);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
+    cubeCtx.fillStyle = cube.bgColor;
+    cubeCtx.beginPath();
+    cubeCtx.moveTo(0, -s/2 * ry + depth/2);
+    cubeCtx.lineTo(0, s/2 * ry + depth/2);
+    cubeCtx.lineTo(s/2 * rx, s/2 * ry);
+    cubeCtx.lineTo(s/2 * rx, -s/2 * ry);
+    cubeCtx.closePath();
+    cubeCtx.fill();
+    cubeCtx.stroke();
     
     // Draw text on front face
-    ctx.fillStyle = '#6dd9e8';
-    ctx.font = `${s * 0.15}px system-ui, sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    cubeCtx.fillStyle = '#6dd9e8';
+    cubeCtx.font = `${s * 0.15}px system-ui, sans-serif`;
+    cubeCtx.textAlign = 'center';
+    cubeCtx.textBaseline = 'middle';
     
     // Wrap text if needed
     const words = cube.text.split(' ');
@@ -303,7 +308,7 @@
     
     words.forEach(word => {
       const testLine = currentLine ? currentLine + ' ' + word : word;
-      const metrics = ctx.measureText(testLine);
+      const metrics = cubeCtx.measureText(testLine);
       if (metrics.width > maxWidth && currentLine) {
         lines.push(currentLine);
         currentLine = word;
@@ -317,10 +322,10 @@
     const lineHeight = s * 0.18;
     const startY = -(lines.length - 1) * lineHeight / 2;
     lines.forEach((line, i) => {
-      ctx.fillText(line, s * 0.15, startY + i * lineHeight);
+      cubeCtx.fillText(line, s * 0.15, startY + i * lineHeight);
     });
     
-    ctx.restore();
+    cubeCtx.restore();
   }
 
   /**
@@ -355,29 +360,29 @@
   }
 
   /**
-   * Animation loop
+   * Animation loop for cube easter egg
    */
-  function animate() {
-    if (!isActive) return;
+  function animateCubes() {
+    if (!isCubeActive) return;
     
     // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    cubeCtx.clearRect(0, 0, cubeCanvas.width, cubeCanvas.height);
     
     // Semi-transparent background
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    cubeCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    cubeCtx.fillRect(0, 0, cubeCanvas.width, cubeCanvas.height);
     
     // Update and draw cubes
     updateCubes();
     cubes.forEach(drawCube);
     
     // Draw hint text
-    ctx.fillStyle = 'rgba(109, 217, 232, 0.8)';
-    ctx.font = '16px system-ui, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Click anywhere to exit', canvas.width / 2, canvas.height - 30);
+    cubeCtx.fillStyle = 'rgba(109, 217, 232, 0.8)';
+    cubeCtx.font = '16px system-ui, sans-serif';
+    cubeCtx.textAlign = 'center';
+    cubeCtx.fillText('Click anywhere to exit', cubeCanvas.width / 2, cubeCanvas.height - 30);
     
-    animationFrame = requestAnimationFrame(animate);
+    cubeAnimationFrame = requestAnimationFrame(animateCubes);
   }
 
   /**
@@ -389,7 +394,447 @@
       return;
     }
     
+    // Initialize cube easter egg
     document.addEventListener('keypress', handleKeyPress);
+    
+    // Initialize snake easter egg - click on header image
+    const headerImage = document.querySelector('.home-header-image');
+    if (headerImage) {
+      headerImage.style.cursor = 'pointer';
+      headerImage.addEventListener('click', activateSnake);
+    }
+  }
+
+  // ========================
+  // SNAKE GAME EASTER EGG
+  // ========================
+
+  // Snake game state
+  let snakeCanvas = null;
+  let snakeCtx = null;
+  let snake = [];
+  let food = null;
+  let direction = { x: 1, y: 0 };
+  let nextDirection = { x: 1, y: 0 };
+  let gridSize = 20;
+  let snakeSpeed = 150; // ms per move
+  let lastMoveTime = 0;
+  let gameScore = 0;
+  let closeButton = null;
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let particlesBackup = null;
+
+  /**
+   * Activate snake game
+   */
+  function activateSnake() {
+    if (isSnakeActive || isCubeActive) return;
+    
+    isSnakeActive = true;
+    
+    // Backup and hide particles canvas
+    const particlesBg = document.getElementById('particles-bg');
+    if (particlesBg) {
+      particlesBackup = particlesBg;
+      particlesBg.style.display = 'none';
+    }
+    
+    // Create snake canvas
+    createSnakeCanvas();
+    
+    // Initialize snake game
+    initSnakeGame();
+    
+    // Start animation
+    animateSnake();
+  }
+
+  /**
+   * Deactivate snake game
+   */
+  function deactivateSnake() {
+    if (!isSnakeActive) return;
+    
+    isSnakeActive = false;
+    
+    // Stop animation
+    if (snakeAnimationFrame) {
+      cancelAnimationFrame(snakeAnimationFrame);
+      snakeAnimationFrame = null;
+    }
+    
+    // Remove canvas and close button
+    if (snakeCanvas && snakeCanvas.parentNode) {
+      snakeCanvas.parentNode.removeChild(snakeCanvas);
+    }
+    if (closeButton && closeButton.parentNode) {
+      closeButton.parentNode.removeChild(closeButton);
+    }
+    
+    snakeCanvas = null;
+    snakeCtx = null;
+    closeButton = null;
+    
+    // Restore particles canvas
+    if (particlesBackup) {
+      particlesBackup.style.display = 'block';
+      particlesBackup = null;
+    }
+    
+    // Remove event listeners
+    document.removeEventListener('keydown', handleSnakeKeyDown);
+    if (snakeCanvas) {
+      snakeCanvas.removeEventListener('touchstart', handleSnakeTouchStart);
+      snakeCanvas.removeEventListener('touchend', handleSnakeTouchEnd);
+    }
+  }
+
+  /**
+   * Create canvas for snake game
+   */
+  function createSnakeCanvas() {
+    snakeCanvas = document.createElement('canvas');
+    snakeCanvas.id = 'snake-game-canvas';
+    snakeCanvas.style.position = 'fixed';
+    snakeCanvas.style.top = '0';
+    snakeCanvas.style.left = '0';
+    snakeCanvas.style.width = '100%';
+    snakeCanvas.style.height = '100%';
+    snakeCanvas.style.zIndex = '9999';
+    snakeCanvas.style.backgroundColor = 'rgba(2, 6, 18, 1)';
+    snakeCanvas.width = window.innerWidth;
+    snakeCanvas.height = window.innerHeight;
+    
+    document.body.appendChild(snakeCanvas);
+    snakeCtx = snakeCanvas.getContext('2d');
+    
+    // Create close button
+    closeButton = document.createElement('button');
+    closeButton.textContent = '×';
+    closeButton.style.position = 'fixed';
+    closeButton.style.top = '20px';
+    closeButton.style.left = '20px';
+    closeButton.style.zIndex = '10000';
+    closeButton.style.width = '40px';
+    closeButton.style.height = '40px';
+    closeButton.style.fontSize = '32px';
+    closeButton.style.fontWeight = 'bold';
+    closeButton.style.color = 'rgba(109, 217, 232, 0.9)';
+    closeButton.style.backgroundColor = 'rgba(5, 12, 28, 0.9)';
+    closeButton.style.border = '2px solid rgba(109, 217, 232, 0.5)';
+    closeButton.style.borderRadius = '8px';
+    closeButton.style.cursor = 'pointer';
+    closeButton.style.display = 'flex';
+    closeButton.style.alignItems = 'center';
+    closeButton.style.justifyContent = 'center';
+    closeButton.style.padding = '0';
+    closeButton.style.lineHeight = '1';
+    closeButton.addEventListener('click', deactivateSnake);
+    
+    // Add hover effect
+    closeButton.addEventListener('mouseenter', () => {
+      closeButton.style.backgroundColor = 'rgba(109, 217, 232, 0.2)';
+      closeButton.style.borderColor = 'rgba(109, 217, 232, 0.9)';
+    });
+    closeButton.addEventListener('mouseleave', () => {
+      closeButton.style.backgroundColor = 'rgba(5, 12, 28, 0.9)';
+      closeButton.style.borderColor = 'rgba(109, 217, 232, 0.5)';
+    });
+    
+    document.body.appendChild(closeButton);
+    
+    // Add input handlers
+    document.addEventListener('keydown', handleSnakeKeyDown);
+    snakeCanvas.addEventListener('touchstart', handleSnakeTouchStart, { passive: false });
+    snakeCanvas.addEventListener('touchend', handleSnakeTouchEnd, { passive: false });
+  }
+
+  /**
+   * Initialize snake game
+   */
+  function initSnakeGame() {
+    // Calculate grid size based on screen size
+    const minDimension = Math.min(snakeCanvas.width, snakeCanvas.height);
+    gridSize = Math.floor(minDimension / 25);
+    if (gridSize < 15) gridSize = 15;
+    if (gridSize > 30) gridSize = 30;
+    
+    // Initialize snake in the center
+    const centerX = Math.floor(snakeCanvas.width / gridSize / 2);
+    const centerY = Math.floor(snakeCanvas.height / gridSize / 2);
+    
+    snake = [
+      { x: centerX, y: centerY },
+      { x: centerX - 1, y: centerY },
+      { x: centerX - 2, y: centerY }
+    ];
+    
+    direction = { x: 1, y: 0 };
+    nextDirection = { x: 1, y: 0 };
+    gameScore = 0;
+    lastMoveTime = performance.now();
+    
+    // Place initial food
+    placeFood();
+  }
+
+  /**
+   * Place food at random location
+   */
+  function placeFood() {
+    const maxX = Math.floor(snakeCanvas.width / gridSize);
+    const maxY = Math.floor(snakeCanvas.height / gridSize);
+    
+    let validPosition = false;
+    let attempts = 0;
+    
+    while (!validPosition && attempts < 100) {
+      food = {
+        x: Math.floor(Math.random() * maxX),
+        y: Math.floor(Math.random() * maxY)
+      };
+      
+      // Check if food overlaps with snake
+      validPosition = !snake.some(segment => 
+        segment.x === food.x && segment.y === food.y
+      );
+      
+      attempts++;
+    }
+  }
+
+  /**
+   * Handle keyboard input for snake
+   */
+  function handleSnakeKeyDown(e) {
+    if (!isSnakeActive) return;
+    
+    switch(e.key) {
+      case 'ArrowUp':
+      case 'w':
+      case 'W':
+        if (direction.y === 0) {
+          nextDirection = { x: 0, y: -1 };
+        }
+        e.preventDefault();
+        break;
+      case 'ArrowDown':
+      case 's':
+      case 'S':
+        if (direction.y === 0) {
+          nextDirection = { x: 0, y: 1 };
+        }
+        e.preventDefault();
+        break;
+      case 'ArrowLeft':
+      case 'a':
+      case 'A':
+        if (direction.x === 0) {
+          nextDirection = { x: -1, y: 0 };
+        }
+        e.preventDefault();
+        break;
+      case 'ArrowRight':
+      case 'd':
+      case 'D':
+        if (direction.x === 0) {
+          nextDirection = { x: 1, y: 0 };
+        }
+        e.preventDefault();
+        break;
+    }
+  }
+
+  /**
+   * Handle touch start for mobile controls
+   */
+  function handleSnakeTouchStart(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+  }
+
+  /**
+   * Handle touch end for mobile controls
+   */
+  function handleSnakeTouchEnd(e) {
+    e.preventDefault();
+    if (!isSnakeActive) return;
+    
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - touchStartX;
+    const deltaY = touch.clientY - touchStartY;
+    const minSwipeDistance = 30;
+    
+    // Determine swipe direction
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+      // Horizontal swipe
+      if (Math.abs(deltaX) > minSwipeDistance) {
+        if (deltaX > 0 && direction.x === 0) {
+          nextDirection = { x: 1, y: 0 };
+        } else if (deltaX < 0 && direction.x === 0) {
+          nextDirection = { x: -1, y: 0 };
+        }
+      }
+    } else {
+      // Vertical swipe
+      if (Math.abs(deltaY) > minSwipeDistance) {
+        if (deltaY > 0 && direction.y === 0) {
+          nextDirection = { x: 0, y: 1 };
+        } else if (deltaY < 0 && direction.y === 0) {
+          nextDirection = { x: 0, y: -1 };
+        }
+      }
+    }
+  }
+
+  /**
+   * Update snake game state
+   */
+  function updateSnake(currentTime) {
+    if (currentTime - lastMoveTime < snakeSpeed) {
+      return;
+    }
+    
+    lastMoveTime = currentTime;
+    direction = nextDirection;
+    
+    // Calculate new head position
+    const head = snake[0];
+    const newHead = {
+      x: head.x + direction.x,
+      y: head.y + direction.y
+    };
+    
+    // Check wall collision
+    const maxX = Math.floor(snakeCanvas.width / gridSize);
+    const maxY = Math.floor(snakeCanvas.height / gridSize);
+    
+    if (newHead.x < 0 || newHead.x >= maxX || 
+        newHead.y < 0 || newHead.y >= maxY) {
+      // Game over
+      gameOver();
+      return;
+    }
+    
+    // Check self collision
+    if (snake.some(segment => segment.x === newHead.x && segment.y === newHead.y)) {
+      // Game over
+      gameOver();
+      return;
+    }
+    
+    // Add new head
+    snake.unshift(newHead);
+    
+    // Check if food eaten
+    if (newHead.x === food.x && newHead.y === food.y) {
+      gameScore++;
+      placeFood();
+      
+      // Increase speed slightly
+      if (snakeSpeed > 80) {
+        snakeSpeed -= 2;
+      }
+    } else {
+      // Remove tail if no food eaten
+      snake.pop();
+    }
+  }
+
+  /**
+   * Draw snake game
+   */
+  function drawSnake() {
+    // Clear canvas
+    snakeCtx.fillStyle = 'rgba(2, 6, 18, 1)';
+    snakeCtx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+    
+    // Draw snake with glow effect
+    snake.forEach((segment, index) => {
+      const x = segment.x * gridSize;
+      const y = segment.y * gridSize;
+      
+      // Draw glow
+      snakeCtx.shadowBlur = 15;
+      snakeCtx.shadowColor = 'rgba(94, 232, 125, 0.8)';
+      
+      // Head is brighter
+      if (index === 0) {
+        snakeCtx.fillStyle = 'rgba(94, 232, 125, 1)';
+      } else {
+        const opacity = 0.6 + (0.4 * (1 - index / snake.length));
+        snakeCtx.fillStyle = `rgba(94, 232, 125, ${opacity})`;
+      }
+      
+      snakeCtx.fillRect(x + 1, y + 1, gridSize - 2, gridSize - 2);
+    });
+    
+    // Draw food with glow effect
+    if (food) {
+      const x = food.x * gridSize;
+      const y = food.y * gridSize;
+      
+      snakeCtx.shadowBlur = 20;
+      snakeCtx.shadowColor = 'rgba(109, 217, 232, 0.9)';
+      snakeCtx.fillStyle = 'rgba(109, 217, 232, 1)';
+      snakeCtx.fillRect(x + 2, y + 2, gridSize - 4, gridSize - 4);
+    }
+    
+    // Reset shadow
+    snakeCtx.shadowBlur = 0;
+    
+    // Draw score
+    snakeCtx.fillStyle = 'rgba(109, 217, 232, 0.8)';
+    snakeCtx.font = '20px "SF Mono", Menlo, Monaco, Consolas, monospace';
+    snakeCtx.textAlign = 'right';
+    snakeCtx.fillText(`Score: ${gameScore}`, snakeCanvas.width - 20, 40);
+    
+    // Draw controls hint
+    snakeCtx.font = '14px "SF Mono", Menlo, Monaco, Consolas, monospace';
+    snakeCtx.textAlign = 'center';
+    snakeCtx.fillStyle = 'rgba(109, 217, 232, 0.5)';
+    snakeCtx.fillText('Arrow keys or WASD to move', snakeCanvas.width / 2, snakeCanvas.height - 30);
+    snakeCtx.fillText('Swipe to move on mobile', snakeCanvas.width / 2, snakeCanvas.height - 10);
+  }
+
+  /**
+   * Game over
+   */
+  function gameOver() {
+    // Draw game over message
+    snakeCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    snakeCtx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+    
+    snakeCtx.fillStyle = 'rgba(255, 140, 140, 0.9)';
+    snakeCtx.font = 'bold 48px system-ui, sans-serif';
+    snakeCtx.textAlign = 'center';
+    snakeCtx.textBaseline = 'middle';
+    snakeCtx.fillText('Game Over', snakeCanvas.width / 2, snakeCanvas.height / 2 - 40);
+    
+    snakeCtx.fillStyle = 'rgba(109, 217, 232, 0.8)';
+    snakeCtx.font = '24px system-ui, sans-serif';
+    snakeCtx.fillText(`Score: ${gameScore}`, snakeCanvas.width / 2, snakeCanvas.height / 2 + 20);
+    
+    // Return to normal after delay
+    setTimeout(() => {
+      deactivateSnake();
+    }, 2000);
+  }
+
+  /**
+   * Animation loop for snake game
+   */
+  function animateSnake() {
+    if (!isSnakeActive) return;
+    
+    const currentTime = performance.now();
+    updateSnake(currentTime);
+    drawSnake();
+    
+    snakeAnimationFrame = requestAnimationFrame(animateSnake);
   }
 
   // Auto-initialize when DOM is ready
