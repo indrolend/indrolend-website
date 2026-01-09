@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // Attract particles (from particles.js)
           if (attractEnabled && distance < connectionDistance) {
             const ax = dx / (attractRotateX * 1000);
-            const ay = dx / (attractRotateY * 1000);
+            const ay = dy / (attractRotateY * 1000);
             p.vx -= ax;
             p.vy -= ay;
             p2.vx += ax;

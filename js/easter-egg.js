@@ -492,11 +492,16 @@
     document.removeEventListener('touchstart', handleSnakeTouchStart);
     document.removeEventListener('touchend', handleSnakeTouchEnd);
     
-    // Remove close button
+    // Remove close button and score overlay
     if (closeButton && closeButton.parentNode) {
       closeButton.parentNode.removeChild(closeButton);
     }
     closeButton = null;
+    
+    const scoreOverlay = document.getElementById('snake-score-overlay');
+    if (scoreOverlay && scoreOverlay.parentNode) {
+      scoreOverlay.parentNode.removeChild(scoreOverlay);
+    }
     
     // Restore page visibility
     const homeContainer = document.querySelector('.home-container');
@@ -511,9 +516,10 @@
   }
 
   /**
-   * Create close button overlay
+   * Create close button and score overlay
    */
   function createCloseButton() {
+    // Create close button
     closeButton = document.createElement('button');
     closeButton.textContent = '×';
     closeButton.style.position = 'fixed';
@@ -547,6 +553,34 @@
     });
     
     document.body.appendChild(closeButton);
+    
+    // Create score overlay div
+    const scoreOverlay = document.createElement('div');
+    scoreOverlay.id = 'snake-score-overlay';
+    scoreOverlay.style.position = 'fixed';
+    scoreOverlay.style.top = '0';
+    scoreOverlay.style.left = '0';
+    scoreOverlay.style.width = '100%';
+    scoreOverlay.style.height = '100%';
+    scoreOverlay.style.zIndex = '9999';
+    scoreOverlay.style.pointerEvents = 'none';
+    scoreOverlay.style.display = 'flex';
+    scoreOverlay.style.flexDirection = 'column';
+    scoreOverlay.style.justifyContent = 'space-between';
+    scoreOverlay.style.alignItems = 'center';
+    scoreOverlay.style.padding = '20px';
+    
+    scoreOverlay.innerHTML = `
+      <div></div>
+      <div style="text-align: right; width: 100%; color: rgba(109, 217, 232, 0.8); font: 20px 'SF Mono', Menlo, Monaco, Consolas, monospace;">
+        Score: <span id="snake-score-value">0</span>
+      </div>
+      <div style="text-align: center; color: rgba(109, 217, 232, 0.5); font: 14px 'SF Mono', Menlo, Monaco, Consolas, monospace;">
+        Arrow keys or WASD • Swipe on mobile
+      </div>
+    `;
+    
+    document.body.appendChild(scoreOverlay);
   }
 
   /**
@@ -830,7 +864,7 @@
   }
 
   /**
-   * Animation loop - attract particles to targets
+   * Animation loop - update game state and score
    */
   function animateParticleSnake() {
     if (!isSnakeActive) return;
@@ -838,19 +872,10 @@
     const currentTime = performance.now();
     updateParticleSnake(currentTime);
     
-    // Draw score overlay
-    if (particleSystem && particleSystem.ctx) {
-      const ctx = particleSystem.ctx;
-      ctx.fillStyle = 'rgba(109, 217, 232, 0.8)';
-      ctx.font = '20px "SF Mono", Menlo, Monaco, Consolas, monospace';
-      ctx.textAlign = 'right';
-      ctx.fillText(`Score: ${gameScore}`, particleSystem.canvas.width - 20, 40);
-      
-      // Controls hint
-      ctx.font = '14px "SF Mono", Menlo, Monaco, Consolas, monospace';
-      ctx.textAlign = 'center';
-      ctx.fillStyle = 'rgba(109, 217, 232, 0.5)';
-      ctx.fillText('Arrow keys or WASD • Swipe on mobile', particleSystem.canvas.width / 2, particleSystem.canvas.height - 20);
+    // Update score display
+    const scoreValue = document.getElementById('snake-score-value');
+    if (scoreValue) {
+      scoreValue.textContent = gameScore;
     }
     
     snakeAnimationFrame = requestAnimationFrame(animateParticleSnake);
