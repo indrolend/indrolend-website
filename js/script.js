@@ -796,7 +796,7 @@ Dr. Wei's voice lingers at the edge of the memory:
         
         // Update particle target positions when canvas resizes
         particles.forEach(p => {
-          if (p.cellIndex !== null && p.cellIndex !== undefined) {
+          if (p.cellIndex != null) { // Check for both null and undefined
             const newCenter = getCellCenter(p.cellIndex);
             p.targetX = newCenter.x;
             p.targetY = newCenter.y;
