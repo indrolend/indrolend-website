@@ -6,12 +6,25 @@ The homepage includes a hidden easter egg that transforms the page into an inter
 
 ## Activation
 
-Type the word `indrolend` sequentially on the homepage (pages/home.html) to activate the easter egg.
+Type the word `indrolend` sequentially on the homepage (pages/home.html) to activate the easter egg. Each key must be pressed in the correct order - if you press a wrong key, the sequence resets.
 
 **Requirements:**
 - Desktop browser only (viewport width > 768px)
 - JavaScript enabled
 - Modern browser with CSS 3D transform support
+
+**How it works:**
+- Press 'i' (sequence starts)
+- Press 'n' (sequence continues)
+- Press 'd' (sequence continues)
+- Press 'r' (sequence continues)
+- Press 'o' (sequence continues)
+- Press 'l' (sequence continues)
+- Press 'e' (sequence continues)
+- Press 'n' (sequence continues)
+- Press 'd' (easter egg activates!)
+
+If you press any wrong key during the sequence, it resets and you must start over from 'i'.
 
 ## Features
 
@@ -49,6 +62,7 @@ Type the word `indrolend` sequentially on the homepage (pages/home.html) to acti
 - **No dependencies**: Uses custom physics engine (no external libraries)
 - **Non-destructive**: Original buttons are hidden, not removed
 - **Clean reset**: Complete restoration of original page state
+- **Exact sequence matching**: Keys must be pressed in correct order ('i','n','d','r','o','l','e','n','d')
 
 ### Physics Engine
 Custom lightweight implementation with:
@@ -83,6 +97,7 @@ Custom lightweight implementation with:
 - Cubes cannot be clicked to navigate (by design - they're in physics mode)
 - Multiple activations in same session require page reload
 - Physics simulation uses O(n²) collision detection (acceptable for ~8 cubes)
+- Wrong keypress during sequence resets activation (must start from 'i' again)
 
 ## Security Considerations
 - ✅ No external dependencies or CDN resources
