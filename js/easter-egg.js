@@ -467,6 +467,7 @@
     
     // Remove event listeners before removing elements
     document.removeEventListener('keydown', handleSnakeKeyDown);
+    window.removeEventListener('resize', handleSnakeResize);
     if (snakeCanvas) {
       snakeCanvas.removeEventListener('touchstart', handleSnakeTouchStart);
       snakeCanvas.removeEventListener('touchend', handleSnakeTouchEnd);
@@ -549,6 +550,18 @@
     document.addEventListener('keydown', handleSnakeKeyDown);
     snakeCanvas.addEventListener('touchstart', handleSnakeTouchStart, { passive: false });
     snakeCanvas.addEventListener('touchend', handleSnakeTouchEnd, { passive: false });
+    
+    // Handle window resize
+    window.addEventListener('resize', handleSnakeResize);
+  }
+
+  /**
+   * Handle window resize for snake game
+   */
+  function handleSnakeResize() {
+    if (!snakeCanvas || !isSnakeActive) return;
+    snakeCanvas.width = window.innerWidth;
+    snakeCanvas.height = window.innerHeight;
   }
 
   /**
