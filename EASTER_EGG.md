@@ -10,6 +10,8 @@ The homepage includes a hidden easter egg that transforms the page into an inter
 
 **Mobile:** Shake your device 3 times rapidly to activate the easter egg.
 
+**Note for iOS Safari users:** The shake detection uses a delta acceleration algorithm that properly detects motion by filtering out the constant gravity component. This ensures reliable shake detection on iOS devices.
+
 **Requirements:**
 - JavaScript enabled
 - Modern browser with CSS 3D transform support
@@ -75,6 +77,7 @@ If you wait more than 2 seconds between shakes, the count resets.
 - **Clean reset**: Complete restoration of original page state
 - **Exact sequence matching**: Keys must be pressed in correct order ('i','n','d','r','o','l','e','n','d')
 - **Dual activation**: Keyboard on desktop, shake gesture on mobile
+- **iOS Safari compatible**: Delta acceleration algorithm filters out gravity for reliable shake detection
 - **Square buttons**: All buttons use aspect-ratio: 1/1 for consistent sizing
 - **Proper cube geometry**: Uses smallest dimension to create perfect cubes
 
@@ -90,6 +93,7 @@ Custom lightweight implementation with:
 - Modern browsers with CSS 3D transforms (Chrome, Firefox, Safari, Edge)
 - Desktop: Keyboard activation
 - Mobile: Shake gesture activation
+- **iOS Safari**: Fixed shake detection using delta acceleration algorithm
 - iOS 13+: Requires user interaction before motion sensor access
 - Square buttons: Consistent across all browsers (Safari, Chrome, Firefox, Edge)
 - Gracefully handles missing motion sensor support
@@ -100,11 +104,12 @@ Custom lightweight implementation with:
 1. ✅ Navigate to homepage
 2. ✅ **Desktop**: Type "indrolend" (verify cubes appear)
 3. ✅ **Mobile**: Shake device 3 times (verify cubes appear)
-4. ✅ Verify 3D cube appearance with all 6 faces
-5. ✅ Verify cubes are perfect squares (not elongated)
-6. ✅ Verify cube faces align properly (no overlapping edges)
-7. ✅ Test drag functionality (click/touch and drag cube)
-8. ✅ Test rotation (cubes rotate during drag)
+4. ✅ **iOS Safari**: Test shake detection works properly
+5. ✅ Verify 3D cube appearance with all 6 faces
+6. ✅ Verify cubes are perfect squares (not elongated)
+7. ✅ Verify cube faces align properly (no overlapping edges)
+8. ✅ Test drag functionality (click/touch and drag cube)
+9. ✅ Test rotation (cubes rotate during drag)
 9. ✅ Test physics (cubes fall and bounce)
 10. ✅ Test collisions (cubes bounce off each other)
 11. ✅ Test boundaries (cubes stay within viewport)
