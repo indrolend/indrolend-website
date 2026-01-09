@@ -513,6 +513,11 @@
     // Clear particle targets - let them drift naturally
     particleTargets = [];
     particleSystem = null;
+    
+    // Reset particles to their normal state
+    if (window.resetParticles && typeof window.resetParticles === 'function') {
+      window.resetParticles();
+    }
   }
 
   /**
