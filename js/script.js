@@ -795,10 +795,11 @@ Dr. Wei's voice lingers at the edge of the memory:
       const TOUCH_DEBOUNCE_MS = 300;
       
       // Detect mobile device for performance optimization
-      // Use feature detection instead of user agent sniffing
+      // Primarily use screen width for layout decisions, with touch capability as secondary check
       function checkIsMobile() {
-        return (navigator.maxTouchPoints > 0 || 'ontouchstart' in window) 
-               && (window.innerWidth <= MOBILE_BREAKPOINT_WIDTH);
+        const hasSmallScreen = window.innerWidth <= MOBILE_BREAKPOINT_WIDTH;
+        const hasTouchCapability = navigator.maxTouchPoints > 0;
+        return hasSmallScreen && hasTouchCapability;
       }
       
       let isMobile = checkIsMobile();
@@ -1083,8 +1084,9 @@ Dr. Wei's voice lingers at the edge of the memory:
         }
       }
 
-      // Debounce flag to prevent multiple rapid taps
+      // Debounce flag and timeout ID to prevent multiple rapid taps
       let isProcessingTouch = false;
+      let touchDebounceTimeout = null;
 
       tttGameCanvas.addEventListener('click', (e) => {
         handleClick(e.clientX, e.clientY);
@@ -1100,9 +1102,15 @@ Dr. Wei's voice lingers at the edge of the memory:
         const touch = e.touches[0];
         handleClick(touch.clientX, touch.clientY);
         
+        // Clear any existing timeout before setting a new one
+        if (touchDebounceTimeout) {
+          clearTimeout(touchDebounceTimeout);
+        }
+        
         // Reset after a short delay
-        setTimeout(() => {
+        touchDebounceTimeout = setTimeout(() => {
           isProcessingTouch = false;
+          touchDebounceTimeout = null;
         }, TOUCH_DEBOUNCE_MS);
       }, { passive: false });
 
