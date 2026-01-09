@@ -35,18 +35,25 @@
   function handleKeyPress(e) {
     if (isActive) return; // Already active
 
-    // Append the pressed key to sequence
-    typedSequence += e.key.toLowerCase();
-
-    // Keep only the last N characters (length of trigger word)
-    if (typedSequence.length > TRIGGER_WORD.length) {
-      typedSequence = typedSequence.slice(-TRIGGER_WORD.length);
-    }
-
-    // Check if trigger word is typed
-    if (typedSequence === TRIGGER_WORD) {
-      activateSandboxMode();
-      typedSequence = ''; // Reset sequence
+    const key = e.key.toLowerCase();
+    
+    // Check if this key matches the next expected character
+    if (key === TRIGGER_WORD[typedSequence.length]) {
+      typedSequence += key;
+      
+      // Check if we've completed the trigger word
+      if (typedSequence === TRIGGER_WORD) {
+        activateSandboxMode();
+        typedSequence = ''; // Reset sequence
+      }
+    } else {
+      // Wrong key pressed, reset the sequence
+      typedSequence = '';
+      
+      // Check if the pressed key matches the first character (restart sequence)
+      if (key === TRIGGER_WORD[0]) {
+        typedSequence = key;
+      }
     }
   }
 
