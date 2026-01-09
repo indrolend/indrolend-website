@@ -22,23 +22,19 @@
   let cubeObjects = [];
   let animationFrameId = null;
 
-  // Shake detection for mobile
-  let lastShakeTime = 0;
-  const SHAKE_THRESHOLD = 15; // Sensitivity threshold
-  const SHAKE_DEBOUNCE_TIME = 200; // ms between shake detections
-  const SHAKE_RESET_TIMEOUT = 2000; // ms to reset shake count
-  const SHAKE_COUNT_REQUIRED = 3; // Number of shakes to activate
-  let shakeCount = 0;
-  let shakeResetTimer = null;
-  
-  // Store previous acceleration for delta calculation (iOS fix)
-  let lastAcceleration = null; // Will be initialized on first shake event
+  // Pull gesture detection for mobile (replacing shake)
+  let pullStartY = null;
+  let pullCount = 0;
+  let pullResetTimer = null;
+  const PULL_THRESHOLD = 100; // pixels to pull down
+  const PULL_COUNT_REQUIRED = 3; // Number of pulls to activate
+  const PULL_RESET_TIMEOUT = 3000; // ms to reset pull count
 
   // Initialize easter egg listener
   function initEasterEgg() {
     if (isMobileDevice()) {
-      // Enable shake gesture on mobile
-      initShakeDetection();
+      // Enable pull gesture on mobile
+      initPullDetection();
     } else {
       // Enable keyboard trigger on desktop
       document.addEventListener('keypress', handleKeyPress);
@@ -71,82 +67,77 @@
     }
   }
 
-  // Initialize shake detection for mobile devices
-  function initShakeDetection() {
-    if (typeof DeviceMotionEvent === 'undefined') {
-      return; // Device doesn't support motion events
-    }
+  // Initialize pull gesture detection for mobile devices
+  function initPullDetection() {
+    // Find the app grid container
+    const appGrid = document.querySelector('.app-grid');
+    if (!appGrid) return;
 
-    // Request permission for iOS 13+
-    if (typeof DeviceMotionEvent.requestPermission === 'function') {
-      // iOS requires user interaction before requesting permission
-      // We'll add a one-time tap listener
-      const requestPermission = () => {
-        DeviceMotionEvent.requestPermission()
-          .then(permissionState => {
-            if (permissionState === 'granted') {
-              window.addEventListener('devicemotion', handleShake);
-            }
-          })
-          .catch(console.error);
-        document.removeEventListener('touchstart', requestPermission);
-      };
-      document.addEventListener('touchstart', requestPermission, { once: true });
-    } else {
-      // Non-iOS devices
-      window.addEventListener('devicemotion', handleShake);
+    // Add touch event listeners to the app grid
+    appGrid.addEventListener('touchstart', handleTouchStart, { passive: false });
+    appGrid.addEventListener('touchmove', handleTouchMove, { passive: false });
+    appGrid.addEventListener('touchend', handleTouchEnd, { passive: false });
+  }
+
+  // Handle touch start
+  function handleTouchStart(event) {
+    if (isActive) return;
+    
+    // Only track if touch starts near the bottom of the app grid
+    const touch = event.touches[0];
+    const appGrid = event.currentTarget;
+    const rect = appGrid.getBoundingClientRect();
+    
+    // Check if we're at the bottom of the scrollable area
+    const scrollTop = appGrid.scrollTop;
+    const scrollHeight = appGrid.scrollHeight;
+    const clientHeight = appGrid.clientHeight;
+    
+    // Only start tracking if scrolled to the bottom
+    if (scrollTop + clientHeight >= scrollHeight - 10) {
+      pullStartY = touch.clientY;
     }
   }
 
-  // Handle shake gesture
-  function handleShake(event) {
-    if (isActive) return; // Already active
-
-    const acceleration = event.accelerationIncludingGravity;
-    if (!acceleration) return;
-
-    const { x, y, z } = acceleration;
+  // Handle touch move
+  function handleTouchMove(event) {
+    if (isActive || pullStartY === null) return;
     
-    // Initialize lastAcceleration on first event to avoid false positives
-    if (lastAcceleration === null) {
-      lastAcceleration = { x, y, z };
-      return; // Skip first event, just set baseline
+    const touch = event.touches[0];
+    const pullDistance = touch.clientY - pullStartY;
+    
+    // If pulling down past threshold, prevent default scrolling
+    if (pullDistance > 50) {
+      event.preventDefault();
     }
-    
-    // Calculate the delta from the last acceleration (important for iOS)
-    // This removes the constant gravity component
-    const deltaX = Math.abs(x - lastAcceleration.x);
-    const deltaY = Math.abs(y - lastAcceleration.y);
-    const deltaZ = Math.abs(z - lastAcceleration.z);
-    
-    // Update last acceleration
-    lastAcceleration = { x, y, z };
-    
-    // Calculate change magnitude (this detects motion, not static gravity)
-    const deltaSum = deltaX + deltaY + deltaZ;
+  }
 
-    const currentTime = Date.now();
+  // Handle touch end
+  function handleTouchEnd(event) {
+    if (isActive || pullStartY === null) return;
     
-    // Detect significant shake (using delta instead of absolute magnitude)
-    // Uses SHAKE_THRESHOLD constant for delta sum detection
-    if (deltaSum > SHAKE_THRESHOLD) {
-      if (currentTime - lastShakeTime > SHAKE_DEBOUNCE_TIME) {
-        shakeCount++;
-        lastShakeTime = currentTime;
-
-        // Reset shake count after timeout
-        clearTimeout(shakeResetTimer);
-        shakeResetTimer = setTimeout(() => {
-          shakeCount = 0;
-        }, SHAKE_RESET_TIMEOUT);
-
-        // Activate after required number of shakes
-        if (shakeCount >= SHAKE_COUNT_REQUIRED) {
-          shakeCount = 0;
-          activateSandboxMode();
-        }
+    const touch = event.changedTouches[0];
+    const pullDistance = touch.clientY - pullStartY;
+    
+    // Check if pulled far enough
+    if (pullDistance > PULL_THRESHOLD) {
+      pullCount++;
+      
+      // Reset pull count after timeout
+      clearTimeout(pullResetTimer);
+      pullResetTimer = setTimeout(() => {
+        pullCount = 0;
+      }, PULL_RESET_TIMEOUT);
+      
+      // Activate after required number of pulls
+      if (pullCount >= PULL_COUNT_REQUIRED) {
+        pullCount = 0;
+        activateSandboxMode();
       }
     }
+    
+    // Reset pull start
+    pullStartY = null;
   }
 
   // Activate the sandbox mode

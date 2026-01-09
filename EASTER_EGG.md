@@ -8,9 +8,9 @@ The homepage includes a hidden easter egg that transforms the page into an inter
 
 **Desktop:** Type the word `indrolend` sequentially on the homepage (pages/home.html). Each key must be pressed in the correct order - if you press a wrong key, the sequence resets.
 
-**Mobile:** Shake your device 3 times rapidly to activate the easter egg.
+**Mobile:** Pull down from the bottom of the app grid 3 times to activate the easter egg. Scroll to the end of all apps, then pull down past the last app 3 times within 3 seconds.
 
-**Note for iOS Safari users:** The shake detection uses a delta acceleration algorithm that properly detects motion by filtering out the constant gravity component. This ensures reliable shake detection on iOS devices.
+**Note:** The mobile activation uses a pull-to-refresh style gesture that works reliably on all mobile browsers including iOS Safari.
 
 **Requirements:**
 - JavaScript enabled
@@ -32,12 +32,12 @@ The homepage includes a hidden easter egg that transforms the page into an inter
 If you press any wrong key during the sequence, it resets and you must start over from 'i'.
 
 **How it works (Mobile):**
-- Shake your device firmly
-- Shake again within 2 seconds
-- Shake a third time within 2 seconds
+- Scroll to the bottom of the app grid (after all apps)
+- Pull down firmly (drag your finger downward more than 100 pixels)
+- Repeat the pull 2 more times within 3 seconds
 - Easter egg activates!
 
-If you wait more than 2 seconds between shakes, the count resets.
+If you wait more than 3 seconds between pulls, the count resets.
 
 ## Features
 
@@ -76,8 +76,8 @@ If you wait more than 2 seconds between shakes, the count resets.
 - **Non-destructive**: Original buttons are hidden, not removed
 - **Clean reset**: Complete restoration of original page state
 - **Exact sequence matching**: Keys must be pressed in correct order ('i','n','d','r','o','l','e','n','d')
-- **Dual activation**: Keyboard on desktop, shake gesture on mobile
-- **iOS Safari compatible**: Delta acceleration algorithm filters out gravity for reliable shake detection
+- **Dual activation**: Keyboard on desktop, pull gesture on mobile
+- **Mobile pull detection**: Touch-based pull-to-refresh style gesture at bottom of app grid
 - **Square buttons**: All buttons use aspect-ratio: 1/1 for consistent sizing
 - **Proper cube geometry**: Uses smallest dimension to create perfect cubes
 
@@ -92,19 +92,18 @@ Custom lightweight implementation with:
 ### Browser Compatibility
 - Modern browsers with CSS 3D transforms (Chrome, Firefox, Safari, Edge)
 - Desktop: Keyboard activation
-- Mobile: Shake gesture activation
-- **iOS Safari**: Fixed shake detection using delta acceleration algorithm
-- iOS 13+: Requires user interaction before motion sensor access
+- Mobile: Pull gesture activation (touch-based)
+- **iOS Safari**: Pull gesture works reliably on all iOS versions
 - Square buttons: Consistent across all browsers (Safari, Chrome, Firefox, Edge)
-- Gracefully handles missing motion sensor support
+- Gracefully handles missing touch support
 
 ## Testing
 
 ### Manual Testing Checklist
 1. ✅ Navigate to homepage
 2. ✅ **Desktop**: Type "indrolend" (verify cubes appear)
-3. ✅ **Mobile**: Shake device 3 times (verify cubes appear)
-4. ✅ **iOS Safari**: Test shake detection works properly
+3. ✅ **Mobile**: Pull down from bottom of app grid 3 times (verify cubes appear)
+4. ✅ **iOS Safari**: Test pull gesture works properly
 5. ✅ Verify 3D cube appearance with all 6 faces
 6. ✅ Verify cubes are perfect squares (not elongated)
 7. ✅ Verify cube faces align properly (no overlapping edges)
@@ -123,8 +122,8 @@ Custom lightweight implementation with:
 - Multiple activations in same session require page reload
 - Physics simulation uses O(n²) collision detection (acceptable for ~8 cubes)
 - Wrong keypress during sequence resets activation (must start from 'i' again)
-- Mobile shake requires 3 shakes within 2 seconds
-- iOS devices require user interaction before motion sensor access
+- Mobile pull requires 3 pulls within 3 seconds at bottom of app grid
+- Pull gesture only works when scrolled to the bottom of the app grid
 
 ## Security Considerations
 - ✅ No external dependencies or CDN resources
@@ -138,11 +137,10 @@ Custom lightweight implementation with:
 - Physics parameters can be adjusted in `initPhysicsWorld()`
 - Cube styling can be modified in `easter-egg-sandbox.css`
 - Trigger word can be changed in `TRIGGER_WORD` constant
-- Shake detection parameters configurable via constants:
-  - `SHAKE_THRESHOLD`: Acceleration sensitivity (default: 15)
-  - `SHAKE_DEBOUNCE_TIME`: Milliseconds between shakes (default: 200ms)
-  - `SHAKE_RESET_TIMEOUT`: Time before shake count resets (default: 2000ms)
-  - `SHAKE_COUNT_REQUIRED`: Number of shakes needed (default: 3)
+- Pull gesture parameters configurable via constants:
+  - `PULL_THRESHOLD`: Distance in pixels to pull (default: 100px)
+  - `PULL_RESET_TIMEOUT`: Time before pull count resets (default: 3000ms)
+  - `PULL_COUNT_REQUIRED`: Number of pulls needed (default: 3)
 - Button aspect ratio can be changed in `css/style.css` (.app-card)
 
 ## Future Enhancements (Optional)
