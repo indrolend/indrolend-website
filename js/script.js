@@ -791,8 +791,12 @@ Dr. Wei's voice lingers at the edge of the memory:
       let entranceComplete = false;
       
       // Detect mobile device for performance optimization
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
-                       || (window.innerWidth <= 768);
+      // Use feature detection instead of user agent sniffing
+      const isMobile = (navigator.maxTouchPoints > 0 || 'ontouchstart' in window) 
+                       && (window.innerWidth <= 768);
+      
+      // Touch debounce constant
+      const TOUCH_DEBOUNCE_MS = 300;
       
       function resizeCanvas() {
         tttGameCanvas.width = window.innerWidth;
@@ -1075,9 +1079,7 @@ Dr. Wei's voice lingers at the edge of the memory:
       let isProcessingTouch = false;
 
       tttGameCanvas.addEventListener('click', (e) => {
-        if (!isMobile) {
-          handleClick(e.clientX, e.clientY);
-        }
+        handleClick(e.clientX, e.clientY);
       });
 
       tttGameCanvas.addEventListener('touchstart', (e) => {
@@ -1093,7 +1095,7 @@ Dr. Wei's voice lingers at the edge of the memory:
         // Reset after a short delay
         setTimeout(() => {
           isProcessingTouch = false;
-        }, 300);
+        }, TOUCH_DEBOUNCE_MS);
       }, { passive: false });
 
       function checkWinner(b) {
