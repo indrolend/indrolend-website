@@ -80,26 +80,70 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateParticles() {
       const now = performance.now();
       particles.forEach((p, i) => {
+        // Check for snake game target (Easter egg)
+        let inSnakeGame = false;
+        if (window.getSnakeParticleTarget && typeof window.getSnakeParticleTarget === 'function') {
+          const target = window.getSnakeParticleTarget(p);
+          if (target) {
+            inSnakeGame = true;
+            // Strong attraction to target during transitions
+            const dx = target.x - p.x;
+            const dy = target.y - p.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 5) {
+              // Extremely strong attraction for instant snapping
+              const attractionForce = 1.2;
+              p.vx += (dx / distance) * attractionForce;
+              p.vy += (dy / distance) * attractionForce;
+              
+              // Minimal dampening for maximum speed
+              p.vx *= 0.95;
+              p.vy *= 0.95;
+              
+              // Change char to square for game mode
+              if (target.type === 'snake' && p.char !== '■') {
+                p.char = '■';
+              } else if (target.type === 'food' && p.char !== '●') {
+                p.char = '●';
+              }
+            } else {
+              // Very close to target - lock in place instantly
+              p.vx *= 0.2;
+              p.vy *= 0.2;
+            }
+          }
+        }
+        
         // Apply velocity
         p.x += p.vx;
         p.y += p.vy;
 
-        // Bounce off walls
-        if (p.x < 0 || p.x > particlesCanvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > particlesCanvas.height) p.vy *= -1;
+        // Bounce off walls (gentler during snake game)
+        if (inSnakeGame) {
+          // Soft boundaries during game - wrap around instead
+          if (p.x < 0) p.x = particlesCanvas.width;
+          if (p.x > particlesCanvas.width) p.x = 0;
+          if (p.y < 0) p.y = particlesCanvas.height;
+          if (p.y > particlesCanvas.height) p.y = 0;
+        } else {
+          // Normal bounce when not in game
+          if (p.x < 0 || p.x > particlesCanvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > particlesCanvas.height) p.vy *= -1;
+        }
 
-        // Change character at randomized intervals
-        if (now - p.lastChangeTime >= p.changeInterval) {
+        // Change character at randomized intervals (only when not in snake game)
+        if (!inSnakeGame && now - p.lastChangeTime >= p.changeInterval) {
           p.char = getRandomChar();
           p.lastChangeTime = now;
           // Randomize next change interval for natural variation
           p.changeInterval = Math.random() * 1200 + 300;
         }
 
-        // Mouse repulse effect (from particles.js)
+        // Mouse repulse effect (from particles.js) - disabled during snake game
         // Physics formula: force = (1/r) * (-1 * (d/r)² + 1) * r * v
         // where r=repulseDistance, d=distance, v=velocity
-        if (mouse.x !== null && mouse.y !== null) {
+        if (!inSnakeGame && mouse.x !== null && mouse.y !== null) {
           const dx = p.x - mouse.x;
           const dy = p.y - mouse.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
@@ -120,29 +164,31 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
 
-        // Particle-to-particle interactions
-        for (let j = i + 1; j < particles.length; j++) {
-          const p2 = particles[j];
-          const dx = p.x - p2.x;
-          const dy = p.y - p2.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+        // Particle-to-particle interactions (disabled during snake game)
+        if (!inSnakeGame) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const p2 = particles[j];
+            const dx = p.x - p2.x;
+            const dy = p.y - p2.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
 
-          // Attract particles (from particles.js)
-          if (attractEnabled && distance < connectionDistance) {
-            const ax = dx / (attractRotateX * 1000);
-            const ay = dy / (attractRotateY * 1000);
-            p.vx -= ax;
-            p.vy -= ay;
-            p2.vx += ax;
-            p2.vy += ay;
-          }
+            // Attract particles (from particles.js)
+            if (attractEnabled && distance < connectionDistance) {
+              const ax = dx / (attractRotateX * 1000);
+              const ay = dy / (attractRotateY * 1000);
+              p.vx -= ax;
+              p.vy -= ay;
+              p2.vx += ax;
+              p2.vy += ay;
+            }
 
-          // Bounce particles off each other (from particles.js)
-          if (bounceEnabled && distance <= p.radius + p2.radius) {
-            p.vx = -p.vx;
-            p.vy = -p.vy;
-            p2.vx = -p2.vx;
-            p2.vy = -p2.vy;
+            // Bounce particles off each other (from particles.js)
+            if (bounceEnabled && distance <= p.radius + p2.radius) {
+              p.vx = -p.vx;
+              p.vy = -p.vy;
+              p2.vx = -p2.vx;
+              p2.vy = -p2.vy;
+            }
           }
         }
       });
@@ -150,6 +196,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function drawParticles() {
       ctx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+
+      // Check if we should hide particles during snake game play phase
+      const gamePhase = window.getSnakeGamePhase && window.getSnakeGamePhase();
+      const hideParticles = gamePhase === 'playing';
+      
+      if (hideParticles) {
+        // Don't draw particles during active gameplay
+        return;
+      }
 
       // Draw connections between particles
       for (let i = 0; i < particles.length; i++) {
@@ -214,6 +269,19 @@ document.addEventListener("DOMContentLoaded", () => {
     resizeCanvas();
     initParticles();
     animateParticles();
+
+    // Expose reset function for Easter egg cleanup
+    window.resetParticles = function() {
+      const now = performance.now();
+      particles.forEach(p => {
+        p.char = getRandomChar();
+        p.vx = (Math.random() - 0.5) * maxSpeed;
+        p.vy = (Math.random() - 0.5) * maxSpeed;
+        // Reset timing properties for consistent behavior
+        p.lastChangeTime = now;
+        p.changeInterval = Math.random() * 1200 + 300;
+      });
+    };
 
     // Mouse event listeners (from particles.js) - track on window level
     window.addEventListener('mousemove', (e) => {
