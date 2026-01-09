@@ -790,9 +790,26 @@ Dr. Wei's voice lingers at the edge of the memory:
       let clickRepulsion = null;
       let entranceComplete = false;
       
+      // Constants for mobile detection and touch handling
+      const MOBILE_BREAKPOINT_WIDTH = 768;
+      const TOUCH_DEBOUNCE_MS = 300;
+      
+      // Detect mobile device for performance optimization
+      // Primarily use screen width for layout decisions, with touch capability as secondary check
+      function checkIsMobile() {
+        const hasSmallScreen = window.innerWidth <= MOBILE_BREAKPOINT_WIDTH;
+        const hasTouchCapability = navigator.maxTouchPoints > 0;
+        return hasSmallScreen && hasTouchCapability;
+      }
+      
+      let isMobile = checkIsMobile();
+      
       function resizeCanvas() {
         tttGameCanvas.width = window.innerWidth;
         tttGameCanvas.height = window.innerHeight;
+        
+        // Update mobile detection on resize (handles device rotation)
+        isMobile = checkIsMobile();
         
         // Update particle target positions when canvas resizes
         particles.forEach(p => {
@@ -830,8 +847,8 @@ Dr. Wei's voice lingers at the edge of the memory:
         }
 
         update() {
-          // Micro fluctuations for "alive" effect
-          if (!this.isGuide && gameState === 'playing') {
+          // Micro fluctuations for "alive" effect - skip on mobile for performance
+          if (!this.isGuide && gameState === 'playing' && !isMobile) {
             this.fluctuationPhase += this.fluctuationSpeed;
             const fluctX = Math.sin(this.fluctuationPhase) * this.fluctuationAmount;
             const fluctY = Math.cos(this.fluctuationPhase * 1.3) * this.fluctuationAmount;
@@ -948,7 +965,8 @@ Dr. Wei's voice lingers at the edge of the memory:
         const center = getCellCenter(index);
         const size = Math.min(tttGameCanvas.width, tttGameCanvas.height) * 0.08;
         const color = 'rgba(109, 217, 232, 0.9)';
-        const particleCount = 40;
+        // Reduce particle count on mobile for better performance
+        const particleCount = isMobile ? 25 : 40;
 
         for (let i = 0; i < particleCount; i++) {
           const t = i / particleCount;
@@ -971,7 +989,8 @@ Dr. Wei's voice lingers at the edge of the memory:
         const center = getCellCenter(index);
         const radius = Math.min(tttGameCanvas.width, tttGameCanvas.height) * 0.05;
         const color = 'rgba(255, 140, 140, 0.9)';
-        const particleCount = 35;
+        // Reduce particle count on mobile for better performance
+        const particleCount = isMobile ? 22 : 35;
 
         for (let i = 0; i < particleCount; i++) {
           const angle = (i / particleCount) * Math.PI * 2;
@@ -1065,14 +1084,31 @@ Dr. Wei's voice lingers at the edge of the memory:
         }
       }
 
+      // Debounce flag and timeout ID to prevent multiple rapid taps
+      let isProcessingTouch = false;
+      let touchDebounceTimeout = null;
+
       tttGameCanvas.addEventListener('click', (e) => {
         handleClick(e.clientX, e.clientY);
       });
 
       tttGameCanvas.addEventListener('touchstart', (e) => {
         e.preventDefault();
+        
+        // Prevent processing multiple touches at once
+        if (isProcessingTouch) return;
+        isProcessingTouch = true;
+        
         const touch = e.touches[0];
         handleClick(touch.clientX, touch.clientY);
+        
+        // Clear any existing timeout before setting a new one
+        clearTimeout(touchDebounceTimeout);
+        
+        // Reset after a short delay
+        touchDebounceTimeout = setTimeout(() => {
+          isProcessingTouch = false;
+        }, TOUCH_DEBOUNCE_MS);
       }, { passive: false });
 
       function checkWinner(b) {
