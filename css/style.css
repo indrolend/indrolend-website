@@ -1010,6 +1010,7 @@ html, body {
 
 .ttt-cell:disabled {
   cursor: default;
+  opacity: 0.7;
 }
 
 .ttt-status {
@@ -1023,6 +1024,7 @@ html, body {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.9);
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;

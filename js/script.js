@@ -775,7 +775,7 @@ Dr. Wei's voice lingers at the edge of the memory:
     // If already unlocked, go straight to gallery
     const alreadyUnlocked = localStorage.getItem("galleryUnlocked") === "true";
     if (alreadyUnlocked) {
-      window.location.href = "pages/gallery.html";
+      window.location.href = "gallery.html";
     } else {
       let board = Array(9).fill(null); // 'X' for player, 'O' for computer
       let gameOver = false;
