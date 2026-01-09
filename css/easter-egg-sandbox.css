@@ -36,37 +36,37 @@
 
 /* Front face - shows original button content */
 .cube-face-front {
-  transform: translateZ(75px);
+  transform: translateZ(var(--cube-half-size, 75px));
   background: var(--bg-panel, rgba(5, 12, 28, 0.96));
 }
 
 /* Back face */
 .cube-face-back {
-  transform: rotateY(180deg) translateZ(75px);
+  transform: rotateY(180deg) translateZ(var(--cube-half-size, 75px));
   background: rgba(5, 12, 28, 0.8);
 }
 
 /* Left face */
 .cube-face-left {
-  transform: rotateY(-90deg) translateZ(75px);
+  transform: rotateY(-90deg) translateZ(var(--cube-half-size, 75px));
   background: rgba(5, 12, 28, 0.85);
 }
 
 /* Right face */
 .cube-face-right {
-  transform: rotateY(90deg) translateZ(75px);
+  transform: rotateY(90deg) translateZ(var(--cube-half-size, 75px));
   background: rgba(5, 12, 28, 0.85);
 }
 
 /* Top face */
 .cube-face-top {
-  transform: rotateX(90deg) translateZ(75px);
+  transform: rotateX(90deg) translateZ(var(--cube-half-size, 75px));
   background: rgba(5, 12, 28, 0.9);
 }
 
 /* Bottom face */
 .cube-face-bottom {
-  transform: rotateX(-90deg) translateZ(75px);
+  transform: rotateX(-90deg) translateZ(var(--cube-half-size, 75px));
   background: rgba(5, 12, 28, 0.9);
 }
 

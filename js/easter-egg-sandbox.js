@@ -8,7 +8,7 @@
 (function() {
   'use strict';
 
-  // Check if device is mobile (disable easter egg on mobile)
+  // Check if device is mobile
   function isMobileDevice() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
       || window.innerWidth <= 768;
@@ -22,13 +22,21 @@
   let cubeObjects = [];
   let animationFrameId = null;
 
-  // Initialize easter egg listener (desktop only)
+  // Shake detection for mobile
+  let lastShakeTime = 0;
+  let shakeThreshold = 15; // Sensitivity threshold
+  let shakeCount = 0;
+  let shakeResetTimer = null;
+
+  // Initialize easter egg listener
   function initEasterEgg() {
     if (isMobileDevice()) {
-      return; // Don't activate on mobile
+      // Enable shake gesture on mobile
+      initShakeDetection();
+    } else {
+      // Enable keyboard trigger on desktop
+      document.addEventListener('keypress', handleKeyPress);
     }
-
-    document.addEventListener('keypress', handleKeyPress);
   }
 
   // Handle keypress for easter egg trigger
@@ -53,6 +61,66 @@
       // Check if the pressed key matches the first character (restart sequence)
       if (key === TRIGGER_WORD[0]) {
         typedSequence = key;
+      }
+    }
+  }
+
+  // Initialize shake detection for mobile devices
+  function initShakeDetection() {
+    if (typeof DeviceMotionEvent === 'undefined') {
+      return; // Device doesn't support motion events
+    }
+
+    // Request permission for iOS 13+
+    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+      // iOS requires user interaction before requesting permission
+      // We'll add a one-time tap listener
+      const requestPermission = () => {
+        DeviceMotionEvent.requestPermission()
+          .then(permissionState => {
+            if (permissionState === 'granted') {
+              window.addEventListener('devicemotion', handleShake);
+            }
+          })
+          .catch(console.error);
+        document.removeEventListener('touchstart', requestPermission);
+      };
+      document.addEventListener('touchstart', requestPermission, { once: true });
+    } else {
+      // Non-iOS devices
+      window.addEventListener('devicemotion', handleShake);
+    }
+  }
+
+  // Handle shake gesture
+  function handleShake(event) {
+    if (isActive) return; // Already active
+
+    const acceleration = event.accelerationIncludingGravity;
+    if (!acceleration) return;
+
+    const { x, y, z } = acceleration;
+    const accelerationMagnitude = Math.sqrt(x * x + y * y + z * z);
+
+    const currentTime = Date.now();
+    
+    // Detect significant shake
+    if (accelerationMagnitude > shakeThreshold) {
+      if (currentTime - lastShakeTime > 200) { // Debounce
+        shakeCount++;
+        lastShakeTime = currentTime;
+
+        // Reset shake count after 2 seconds of no shaking
+        clearTimeout(shakeResetTimer);
+        shakeResetTimer = setTimeout(() => {
+          shakeCount = 0;
+        }, 2000);
+
+        // Activate after 3 shakes
+        if (shakeCount >= 3) {
+          shakeCount = 0;
+          activateSandboxMode();
+        }
       }
     }
   }
@@ -99,19 +167,26 @@
       // Get button position and dimensions
       const rect = button.getBoundingClientRect();
       
-      // Create cube wrapper
+      // Use the smaller dimension to create a proper cube
+      const cubeSize = Math.min(rect.width, rect.height);
+      const halfCube = cubeSize / 2;
+      
+      // Create cube wrapper with square dimensions
       const cubeWrapper = document.createElement('div');
       cubeWrapper.className = 'cube-wrapper';
       cubeWrapper.style.position = 'fixed';
       cubeWrapper.style.left = rect.left + 'px';
       cubeWrapper.style.top = rect.top + 'px';
-      cubeWrapper.style.width = rect.width + 'px';
-      cubeWrapper.style.height = rect.height + 'px';
+      cubeWrapper.style.width = cubeSize + 'px';
+      cubeWrapper.style.height = cubeSize + 'px';
       cubeWrapper.style.zIndex = '1000';
 
       // Create 3D cube structure
       const cube = document.createElement('div');
       cube.className = 'cube';
+      
+      // Set the CSS variable for proper cube face positioning
+      cube.style.setProperty('--cube-half-size', halfCube + 'px');
       
       // Clone button content for front face
       const frontFace = document.createElement('div');
@@ -155,7 +230,6 @@
       button.style.pointerEvents = 'none';
 
       // Create simple physics body for cube
-      const cubeSize = Math.min(rect.width, rect.height);
       const body = {
         x: rect.left + rect.width / 2,
         y: rect.top + rect.height / 2,
