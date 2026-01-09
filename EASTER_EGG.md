@@ -6,14 +6,17 @@ The homepage includes a hidden easter egg that transforms the page into an inter
 
 ## Activation
 
-Type the word `indrolend` sequentially on the homepage (pages/home.html) to activate the easter egg. Each key must be pressed in the correct order - if you press a wrong key, the sequence resets.
+**Desktop:** Type the word `indrolend` sequentially on the homepage (pages/home.html). Each key must be pressed in the correct order - if you press a wrong key, the sequence resets.
+
+**Mobile:** Shake your device 3 times rapidly to activate the easter egg.
 
 **Requirements:**
-- Desktop browser only (viewport width > 768px)
 - JavaScript enabled
 - Modern browser with CSS 3D transform support
+- **Mobile only**: Device with accelerometer/motion sensors
+  - iOS 13+: User interaction required first (tap anywhere) to request permission
 
-**How it works:**
+**How it works (Desktop):**
 - Press 'i' (sequence starts)
 - Press 'n' (sequence continues)
 - Press 'd' (sequence continues)
@@ -25,6 +28,14 @@ Type the word `indrolend` sequentially on the homepage (pages/home.html) to acti
 - Press 'd' (easter egg activates!)
 
 If you press any wrong key during the sequence, it resets and you must start over from 'i'.
+
+**How it works (Mobile):**
+- Shake your device firmly
+- Shake again within 2 seconds
+- Shake a third time within 2 seconds
+- Easter egg activates!
+
+If you wait more than 2 seconds between shakes, the count resets.
 
 ## Features
 
@@ -63,6 +74,9 @@ If you press any wrong key during the sequence, it resets and you must start ove
 - **Non-destructive**: Original buttons are hidden, not removed
 - **Clean reset**: Complete restoration of original page state
 - **Exact sequence matching**: Keys must be pressed in correct order ('i','n','d','r','o','l','e','n','d')
+- **Dual activation**: Keyboard on desktop, shake gesture on mobile
+- **Square buttons**: All buttons use aspect-ratio: 1/1 for consistent sizing
+- **Proper cube geometry**: Uses smallest dimension to create perfect cubes
 
 ### Physics Engine
 Custom lightweight implementation with:
@@ -74,30 +88,38 @@ Custom lightweight implementation with:
 
 ### Browser Compatibility
 - Modern browsers with CSS 3D transforms (Chrome, Firefox, Safari, Edge)
-- Gracefully disabled on mobile devices
-- No impact on browsers without 3D transform support
+- Desktop: Keyboard activation
+- Mobile: Shake gesture activation
+- iOS 13+: Requires user interaction before motion sensor access
+- Square buttons: Consistent across all browsers (Safari, Chrome, Firefox, Edge)
+- Gracefully handles missing motion sensor support
 
 ## Testing
 
 ### Manual Testing Checklist
 1. ✅ Navigate to homepage
-2. ✅ Type "indrolend" (verify cubes appear)
-3. ✅ Verify 3D cube appearance with all 6 faces
-4. ✅ Test drag functionality (click and drag cube)
-5. ✅ Test rotation (cubes rotate during drag)
-6. ✅ Test physics (cubes fall and bounce)
-7. ✅ Test collisions (cubes bounce off each other)
-8. ✅ Test boundaries (cubes stay within viewport)
-9. ✅ Click Reset button
-10. ✅ Verify original page state restored
-11. ✅ Verify buttons are clickable after reset
-12. ✅ Test on mobile (should not activate)
+2. ✅ **Desktop**: Type "indrolend" (verify cubes appear)
+3. ✅ **Mobile**: Shake device 3 times (verify cubes appear)
+4. ✅ Verify 3D cube appearance with all 6 faces
+5. ✅ Verify cubes are perfect squares (not elongated)
+6. ✅ Verify cube faces align properly (no overlapping edges)
+7. ✅ Test drag functionality (click/touch and drag cube)
+8. ✅ Test rotation (cubes rotate during drag)
+9. ✅ Test physics (cubes fall and bounce)
+10. ✅ Test collisions (cubes bounce off each other)
+11. ✅ Test boundaries (cubes stay within viewport)
+12. ✅ Click Reset button
+13. ✅ Verify original page state restored
+14. ✅ Verify buttons are square and clickable after reset
+15. ✅ Test on multiple browsers (Safari, Chrome, Firefox, Edge)
 
 ### Known Behavior
 - Cubes cannot be clicked to navigate (by design - they're in physics mode)
 - Multiple activations in same session require page reload
 - Physics simulation uses O(n²) collision detection (acceptable for ~8 cubes)
 - Wrong keypress during sequence resets activation (must start from 'i' again)
+- Mobile shake requires 3 shakes within 2 seconds
+- iOS devices require user interaction before motion sensor access
 
 ## Security Considerations
 - ✅ No external dependencies or CDN resources
@@ -111,6 +133,12 @@ Custom lightweight implementation with:
 - Physics parameters can be adjusted in `initPhysicsWorld()`
 - Cube styling can be modified in `easter-egg-sandbox.css`
 - Trigger word can be changed in `TRIGGER_WORD` constant
+- Shake detection parameters configurable via constants:
+  - `SHAKE_THRESHOLD`: Acceleration sensitivity (default: 15)
+  - `SHAKE_DEBOUNCE_TIME`: Milliseconds between shakes (default: 200ms)
+  - `SHAKE_RESET_TIMEOUT`: Time before shake count resets (default: 2000ms)
+  - `SHAKE_COUNT_REQUIRED`: Number of shakes needed (default: 3)
+- Button aspect ratio can be changed in `css/style.css` (.app-card)
 
 ## Future Enhancements (Optional)
 - Add sound effects for collisions
