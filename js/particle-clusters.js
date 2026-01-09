@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     applemusic: ["#FC3C44", "#FA243C", "#FFFFFF"], // Red, White
     youtube: ["#FF0000", "#282828", "#FFFFFF"], // Red, Dark Gray, White
     bandcamp: ["#629AA9", "#1DA0C3", "#FFFFFF"], // Blue tones
-    gallery: ["#6DD9E8", "#FF8C8C"], // Cyan (X) and Red (O) from tic-tac-toe
+    gallery: ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#9400D3"], // Rainbow explosion colors
     galleryLocked: ["#888888"] // Single gray particle when locked
   };
 
