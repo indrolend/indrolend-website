@@ -972,142 +972,6 @@ Dr. Wei's voice lingers at the edge of the memory:
         }
       }
 
-      // Create simple home icon from particles (much faster than text)
-      function createHomeIcon() {
-        const centerX = tttGameCanvas.width / 2;
-        const centerY = tttGameCanvas.height / 2;
-        const size = 80;
-        const color = 'rgba(109, 217, 232, 0.9)';
-        const homeParticles = [];
-        
-        // House roof (triangle) - 3 lines
-        const roofPoints = 15;
-        for (let i = 0; i <= roofPoints; i++) {
-          const t = i / roofPoints;
-          // Left roof line
-          const x1 = centerX - size/2 + t * size/2;
-          const y1 = centerY - size/4 + t * size/3;
-          // Right roof line  
-          const x2 = centerX + t * size/2;
-          const y2 = centerY - size/4 - t * size/3;
-          
-          const startAngle1 = Math.random() * Math.PI * 2;
-          const startAngle2 = Math.random() * Math.PI * 2;
-          const startRadius = 200;
-          
-          homeParticles.push(new Particle(
-            centerX + Math.cos(startAngle1) * startRadius,
-            centerY + Math.sin(startAngle1) * startRadius,
-            x1, y1, color, -1, 'home'
-          ));
-          
-          homeParticles.push(new Particle(
-            centerX + Math.cos(startAngle2) * startRadius,
-            centerY + Math.sin(startAngle2) * startRadius,
-            x2, y2, color, -1, 'home'
-          ));
-        }
-        
-        // House base (square) - 4 lines
-        const basePoints = 12;
-        for (let i = 0; i <= basePoints; i++) {
-          const t = i / basePoints;
-          const startAngle = Math.random() * Math.PI * 2;
-          const startRadius = 200;
-          
-          // Top line
-          homeParticles.push(new Particle(
-            centerX + Math.cos(startAngle) * startRadius,
-            centerY + Math.sin(startAngle) * startRadius,
-            centerX - size/2 + t * size,
-            centerY - size/4 + 2,
-            color, -1, 'home'
-          ));
-          
-          // Bottom line
-          homeParticles.push(new Particle(
-            centerX + Math.cos(startAngle + 1) * startRadius,
-            centerY + Math.sin(startAngle + 1) * startRadius,
-            centerX - size/2 + t * size,
-            centerY + size/2,
-            color, -1, 'home'
-          ));
-        }
-        
-        // Left and right walls
-        const wallPoints = 10;
-        for (let i = 0; i <= wallPoints; i++) {
-          const t = i / wallPoints;
-          const startAngle = Math.random() * Math.PI * 2;
-          const startRadius = 200;
-          
-          // Left wall
-          homeParticles.push(new Particle(
-            centerX + Math.cos(startAngle) * startRadius,
-            centerY + Math.sin(startAngle) * startRadius,
-            centerX - size/2,
-            centerY - size/4 + 2 + t * (size/2 + size/4 - 2),
-            color, -1, 'home'
-          ));
-          
-          // Right wall
-          homeParticles.push(new Particle(
-            centerX + Math.cos(startAngle + 2) * startRadius,
-            centerY + Math.sin(startAngle + 2) * startRadius,
-            centerX + size/2,
-            centerY - size/4 + 2 + t * (size/2 + size/4 - 2),
-            color, -1, 'home'
-          ));
-        }
-        
-        // Door (small rectangle)
-        const doorPoints = 8;
-        for (let i = 0; i <= doorPoints; i++) {
-          const t = i / doorPoints;
-          const startAngle = Math.random() * Math.PI * 2;
-          const startRadius = 200;
-          
-          // Door vertical lines
-          homeParticles.push(new Particle(
-            centerX + Math.cos(startAngle) * startRadius,
-            centerY + Math.sin(startAngle) * startRadius,
-            centerX - size/6,
-            centerY + size/6 + t * size/3,
-            color, -1, 'home'
-          ));
-          
-          homeParticles.push(new Particle(
-            centerX + Math.cos(startAngle + 1) * startRadius,
-            centerY + Math.sin(startAngle + 1) * startRadius,
-            centerX + size/6,
-            centerY + size/6 + t * size/3,
-            color, -1, 'home'
-          ));
-        }
-        
-        // Door horizontal lines
-        const doorHPoints = 6;
-        for (let i = 0; i <= doorHPoints; i++) {
-          const t = i / doorHPoints;
-          const startAngle = Math.random() * Math.PI * 2;
-          const startRadius = 200;
-          
-          homeParticles.push(new Particle(
-            centerX + Math.cos(startAngle) * startRadius,
-            centerY + Math.sin(startAngle) * startRadius,
-            centerX - size/6 + t * size/3,
-            centerY + size/2,
-            color, -1, 'home'
-          ));
-        }
-        
-        homeParticles.forEach(p => {
-          p.returnForce = 0.04;
-          p.radius = 2.5;
-        });
-        
-        particles.push(...homeParticles);
-      }
 
       // Rainbow explosion
       function createRainbowExplosion() {
@@ -1122,7 +986,7 @@ Dr. Wei's voice lingers at the edge of the memory:
         ];
         
         particles.forEach(p => {
-          if (p.shape && p.shape !== 'home') {
+          if (p.shape) {
             const color = colors[Math.floor(Math.random() * colors.length)];
             p.color = color;
             const angle = Math.random() * Math.PI * 2;
@@ -1134,10 +998,9 @@ Dr. Wei's voice lingers at the edge of the memory:
           }
         });
         
+        // Redirect to home page after explosion animation
         setTimeout(() => {
-          particles.length = 0;
-          gameState = 'showing_message';
-          createHomeIcon();
+          window.location.href = "home.html";
         }, 2000);
       }
 
@@ -1164,14 +1027,8 @@ Dr. Wei's voice lingers at the edge of the memory:
 
       // Click handler
       function handleClick(x, y) {
-        if (gameState === 'showing_message') {
-          // Click anywhere on home icon to go home
-          const centerX = tttGameCanvas.width / 2;
-          const centerY = tttGameCanvas.height / 2;
-          const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
-          if (distance < 150) {
-            window.location.href = "home.html";
-          }
+        // During celebration, ignore clicks - auto-redirect will handle it
+        if (gameState === 'celebrating') {
           return;
         }
         
