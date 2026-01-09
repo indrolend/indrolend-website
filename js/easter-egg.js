@@ -389,8 +389,11 @@
    * Initialize Easter egg listener
    */
   function init() {
-    // Only activate on home page
-    if (!window.location.pathname.includes('home.html')) {
+    // Only activate on home page - check for both home.html and pages with header image
+    const isHomePage = window.location.pathname.includes('home.html') || 
+                       document.querySelector('.home-header-image');
+    
+    if (!isHomePage) {
       return;
     }
     
@@ -464,6 +467,13 @@
       snakeAnimationFrame = null;
     }
     
+    // Remove event listeners before removing elements
+    document.removeEventListener('keydown', handleSnakeKeyDown);
+    if (snakeCanvas) {
+      snakeCanvas.removeEventListener('touchstart', handleSnakeTouchStart);
+      snakeCanvas.removeEventListener('touchend', handleSnakeTouchEnd);
+    }
+    
     // Remove canvas and close button
     if (snakeCanvas && snakeCanvas.parentNode) {
       snakeCanvas.parentNode.removeChild(snakeCanvas);
@@ -480,13 +490,6 @@
     if (particlesBackup) {
       particlesBackup.style.display = 'block';
       particlesBackup = null;
-    }
-    
-    // Remove event listeners
-    document.removeEventListener('keydown', handleSnakeKeyDown);
-    if (snakeCanvas) {
-      snakeCanvas.removeEventListener('touchstart', handleSnakeTouchStart);
-      snakeCanvas.removeEventListener('touchend', handleSnakeTouchEnd);
     }
   }
 
