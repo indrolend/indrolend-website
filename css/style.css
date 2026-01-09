@@ -860,6 +860,20 @@ html, body {
   min-height: 100vh;
   margin: 0;
   padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Particle canvas backdrop */
+.ttt-particles-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.7;
 }
 
 .ttt-container {
@@ -869,6 +883,8 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .ttt-header h1 {
@@ -877,6 +893,17 @@ html, body {
   text-transform: uppercase;
   color: var(--terminal-green);
   margin-bottom: 4px;
+  text-shadow: 0 0 10px rgba(109, 217, 232, 0.5), 0 0 20px rgba(109, 217, 232, 0.3);
+  animation: titlePulse 3s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(109, 217, 232, 0.5), 0 0 20px rgba(109, 217, 232, 0.3);
+  }
+  50% {
+    text-shadow: 0 0 15px rgba(109, 217, 232, 0.7), 0 0 30px rgba(109, 217, 232, 0.5), 0 0 40px rgba(109, 217, 232, 0.3);
+  }
 }
 
 .ttt-header p {
@@ -894,16 +921,16 @@ html, body {
 .ttt-board {
   display: grid;
   grid-template-columns: repeat(3, minmax(70px, 1fr));
-  gap: 6px;
+  gap: 8px;
   width: 100%;
   max-width: 340px;
 }
 
 .ttt-cell {
   aspect-ratio: 1 / 1;
-  border-radius: 10px;
-  border: 1px solid var(--border-subtle);
-  background: rgba(5, 12, 28, 0.96);
+  border-radius: 12px;
+  border: 2px solid rgba(109, 217, 232, 0.3);
+  background: rgba(5, 12, 28, 0.85);
   color: var(--terminal-green);
   font-size: 32px;
   font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
@@ -911,27 +938,106 @@ html, body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(109, 217, 232, 0.05);
+  overflow: hidden;
+}
+
+/* Neon glow effect on hover */
+.ttt-cell:hover:not(:disabled) {
+  border-color: rgba(109, 217, 232, 0.6);
+  background: rgba(10, 25, 45, 0.9);
+  box-shadow: 0 0 20px rgba(109, 217, 232, 0.4), 
+              0 0 40px rgba(109, 217, 232, 0.2),
+              inset 0 0 30px rgba(109, 217, 232, 0.1);
+  transform: scale(1.05);
+}
+
+/* Subtle pulsing for empty cells */
+.ttt-cell:empty:not(:disabled) {
+  animation: cellPulse 2s ease-in-out infinite;
+}
+
+@keyframes cellPulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(109, 217, 232, 0.05);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(109, 217, 232, 0.3), inset 0 0 25px rgba(109, 217, 232, 0.08);
+  }
+}
+
+/* Enhanced X and O with glow */
+.ttt-cell:not(:empty) {
+  text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+  animation: symbolAppear 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes symbolAppear {
+  0% {
+    transform: scale(0) rotate(180deg);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* Winner cell glow effect */
+.ttt-cell.winner {
+  animation: winnerGlow 0.8s ease-in-out infinite;
+  border-color: rgba(109, 217, 232, 1);
+}
+
+@keyframes winnerGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(109, 217, 232, 0.6), 
+                0 0 40px rgba(109, 217, 232, 0.4),
+                0 0 60px rgba(109, 217, 232, 0.2),
+                inset 0 0 30px rgba(109, 217, 232, 0.2);
+    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor, 0 0 40px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(109, 217, 232, 0.8), 
+                0 0 60px rgba(109, 217, 232, 0.6),
+                0 0 90px rgba(109, 217, 232, 0.4),
+                inset 0 0 40px rgba(109, 217, 232, 0.3);
+    text-shadow: 0 0 15px currentColor, 0 0 30px currentColor, 0 0 45px currentColor, 0 0 60px currentColor;
+  }
 }
 
 .ttt-cell:disabled {
   cursor: default;
-  opacity: 0.8;
 }
 
 .ttt-status {
   font-size: 13px;
   color: var(--text-muted);
   min-height: 18px;
+  text-shadow: 0 0 5px rgba(109, 217, 232, 0.3);
 }
 
 .ttt-modal {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 20;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .ttt-modal.hidden {
@@ -940,25 +1046,53 @@ html, body {
 
 .ttt-modal-inner {
   background: rgba(5, 12, 28, 0.98);
-  border-radius: 14px;
-  padding: 20px 18px 16px;
-  border: 1px solid var(--border-subtle);
-  min-width: 220px;
+  border-radius: 16px;
+  padding: 24px 20px 18px;
+  border: 2px solid rgba(109, 217, 232, 0.5);
+  min-width: 240px;
   text-align: center;
+  box-shadow: 0 0 40px rgba(109, 217, 232, 0.4), 
+              0 0 80px rgba(109, 217, 232, 0.2),
+              inset 0 0 30px rgba(109, 217, 232, 0.1);
+  animation: modalScale 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes modalScale {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .ttt-modal-inner p {
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+  text-shadow: 0 0 10px rgba(109, 217, 232, 0.5);
+  font-size: 15px;
 }
 
 .ttt-win-ok {
   border-radius: 999px;
-  border: 1px solid var(--terminal-green-soft);
-  background: transparent;
+  border: 2px solid var(--terminal-green-soft);
+  background: rgba(109, 217, 232, 0.1);
   color: var(--terminal-green);
-  padding: 6px 18px;
+  padding: 8px 24px;
   font-size: 13px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  box-shadow: 0 0 10px rgba(109, 217, 232, 0.3);
+}
+
+.ttt-win-ok:hover {
+  background: rgba(109, 217, 232, 0.2);
+  border-color: var(--terminal-green);
+  box-shadow: 0 0 20px rgba(109, 217, 232, 0.5), 0 0 40px rgba(109, 217, 232, 0.3);
+  transform: scale(1.05);
 }
 
 

@@ -764,11 +764,12 @@ Dr. Wei's voice lingers at the edge of the memory:
     renderIntroForm();
   }
 
-  // --- Tic-tac-toe gallery gate ---
+  // --- Tic-tac-toe gallery gate with particle effects ---
   const tttBoard = document.getElementById("tttBoard");
   const tttStatus = document.getElementById("tttStatus");
   const tttModal = document.getElementById("tttWinModal");
   const tttWinOk = document.getElementById("tttWinOk");
+  const tttParticlesCanvas = document.getElementById("tttParticles");
 
   if (tttBoard && tttStatus && tttModal && tttWinOk) {
     // If already unlocked, go straight to gallery
@@ -785,13 +786,116 @@ Dr. Wei's voice lingers at the edge of the memory:
         [0,4,8],[2,4,6]
       ];
 
+      // Particle system setup
+      let particleCtx = null;
+      let particles = [];
+      
+      if (tttParticlesCanvas) {
+        particleCtx = tttParticlesCanvas.getContext("2d");
+        
+        function resizeTttCanvas() {
+          tttParticlesCanvas.width = window.innerWidth;
+          tttParticlesCanvas.height = window.innerHeight;
+        }
+        resizeTttCanvas();
+        window.addEventListener("resize", resizeTttCanvas);
+
+        // Particle class
+        class Particle {
+          constructor(x, y, color, size, vx, vy) {
+            this.x = x;
+            this.y = y;
+            this.color = color;
+            this.size = size;
+            this.vx = vx;
+            this.vy = vy;
+            this.life = 1.0;
+            this.decay = Math.random() * 0.02 + 0.01;
+          }
+
+          update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.vy += 0.1; // gravity
+            this.life -= this.decay;
+          }
+
+          draw(ctx) {
+            ctx.save();
+            ctx.globalAlpha = this.life;
+            ctx.fillStyle = this.color;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+
+          isDead() {
+            return this.life <= 0;
+          }
+        }
+
+        // Create particle burst
+        function createParticleBurst(x, y, color, count) {
+          for (let i = 0; i < count; i++) {
+            const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+            const speed = Math.random() * 3 + 2;
+            const vx = Math.cos(angle) * speed;
+            const vy = Math.sin(angle) * speed;
+            const size = Math.random() * 3 + 2;
+            particles.push(new Particle(x, y, color, size, vx, vy));
+          }
+        }
+
+        // Create trail effect
+        function createTrail(x, y, color, count) {
+          for (let i = 0; i < count; i++) {
+            const vx = (Math.random() - 0.5) * 2;
+            const vy = (Math.random() - 0.5) * 2;
+            const size = Math.random() * 2 + 1;
+            particles.push(new Particle(x, y, color, size, vx, vy));
+          }
+        }
+
+        // Animate particles
+        function animateParticles() {
+          if (particleCtx) {
+            particleCtx.clearRect(0, 0, tttParticlesCanvas.width, tttParticlesCanvas.height);
+            
+            particles = particles.filter(p => !p.isDead());
+            
+            particles.forEach(p => {
+              p.update();
+              p.draw(particleCtx);
+            });
+            
+            requestAnimationFrame(animateParticles);
+          }
+        }
+        animateParticles();
+
+        // Add hover effect particles
+        tttBoard.querySelectorAll(".ttt-cell").forEach(cell => {
+          cell.addEventListener("mouseenter", (e) => {
+            if (!cell.textContent && !gameOver) {
+              const rect = cell.getBoundingClientRect();
+              const centerX = rect.left + rect.width / 2;
+              const centerY = rect.top + rect.height / 2;
+              createTrail(centerX, centerY, "rgba(109, 217, 232, 0.8)", 5);
+            }
+          });
+        });
+      }
+
       function checkWinner(b) {
         for (const [a,b1,c] of wins) {
           if (b[a] && b[a] === b[b1] && b[a] === b[c]) {
-            return b[a];
+            return { winner: b[a], line: [a, b1, c] };
           }
         }
-        if (b.every(v => v)) return "draw";
+        if (b.every(v => v)) return { winner: "draw", line: null };
         return null;
       }
 
@@ -799,21 +903,62 @@ Dr. Wei's voice lingers at the edge of the memory:
         tttStatus.textContent = msg || "";
       }
 
+      function highlightWinningLine(line) {
+        if (line) {
+          line.forEach(idx => {
+            const cell = tttBoard.querySelector('[data-index="' + idx + '"]');
+            if (cell) {
+              cell.classList.add("winner");
+              
+              // Create explosion effect for winning cells
+              if (particleCtx) {
+                const rect = cell.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                createParticleBurst(centerX, centerY, "rgba(109, 217, 232, 1)", 30);
+              }
+            }
+          });
+        }
+      }
+
       function computerMove() {
         if (gameOver) return;
         const empties = board.map((v,i) => v ? null : i).filter(v => v !== null);
         if (!empties.length) return;
-        const choice = empties[Math.floor(Math.random() * empties.length)];
-        board[choice] = "O";
-        const cell = tttBoard.querySelector('[data-index="' + choice + '"]');
-        if (cell) cell.textContent = "O";
+        
+        setTimeout(() => {
+          const choice = empties[Math.floor(Math.random() * empties.length)];
+          board[choice] = "O";
+          const cell = tttBoard.querySelector('[data-index="' + choice + '"]');
+          if (cell) {
+            cell.textContent = "O";
+            
+            // Particle burst for computer move
+            if (particleCtx) {
+              const rect = cell.getBoundingClientRect();
+              const centerX = rect.left + rect.width / 2;
+              const centerY = rect.top + rect.height / 2;
+              createParticleBurst(centerX, centerY, "rgba(255, 100, 100, 0.8)", 15);
+            }
+          }
 
-        const winner = checkWinner(board);
-        if (winner === "O" || winner === "draw") {
-          gameOver = true;
-          // Losing or draw: kick back home with no unlock
-          window.location.href = "home.html";
-        }
+          const result = checkWinner(board);
+          if (result) {
+            if (result.winner === "O") {
+              gameOver = true;
+              highlightWinningLine(result.line);
+              setTimeout(() => {
+                window.location.href = "home.html";
+              }, 2000);
+            } else if (result.winner === "draw") {
+              gameOver = true;
+              setTimeout(() => {
+                window.location.href = "home.html";
+              }, 1500);
+            }
+          }
+        }, 500);
       }
 
       function handleCellClick(e) {
@@ -824,17 +969,46 @@ Dr. Wei's voice lingers at the edge of the memory:
         board[idx] = "X";
         cell.textContent = "X";
 
-        const winner = checkWinner(board);
-        if (winner === "X") {
-          gameOver = true;
-          // Unlock gallery, show modal
-          localStorage.setItem("galleryUnlocked", "true");
-          tttModal.classList.remove("hidden");
-          updateStatus("");
-        } else if (winner === "draw") {
-          // draw counts as loss: kick out
-          gameOver = true;
-          window.location.href = "home.html";
+        // Particle burst for player move
+        if (particleCtx) {
+          const rect = cell.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          createParticleBurst(centerX, centerY, "rgba(109, 217, 232, 1)", 20);
+        }
+
+        const result = checkWinner(board);
+        if (result) {
+          if (result.winner === "X") {
+            gameOver = true;
+            highlightWinningLine(result.line);
+            
+            // Extra celebration particles
+            if (particleCtx && result.line) {
+              result.line.forEach(idx => {
+                const winCell = tttBoard.querySelector('[data-index="' + idx + '"]');
+                if (winCell) {
+                  const rect = winCell.getBoundingClientRect();
+                  const centerX = rect.left + rect.width / 2;
+                  const centerY = rect.top + rect.height / 2;
+                  setTimeout(() => {
+                    createParticleBurst(centerX, centerY, "rgba(109, 217, 232, 1)", 40);
+                  }, 300);
+                }
+              });
+            }
+            
+            setTimeout(() => {
+              localStorage.setItem("galleryUnlocked", "true");
+              tttModal.classList.remove("hidden");
+              updateStatus("");
+            }, 800);
+          } else if (result.winner === "draw") {
+            gameOver = true;
+            setTimeout(() => {
+              window.location.href = "home.html";
+            }, 1500);
+          }
         } else {
           computerMove();
         }
