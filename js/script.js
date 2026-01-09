@@ -764,14 +764,13 @@ Dr. Wei's voice lingers at the edge of the memory:
     renderIntroForm();
   }
 
-  // --- Tic-tac-toe gallery gate with particle effects ---
-  const tttBoard = document.getElementById("tttBoard");
+  // --- Tic-tac-toe gallery gate with custom particle system ---
+  const tttGameCanvas = document.getElementById("tttGameCanvas");
   const tttStatus = document.getElementById("tttStatus");
   const tttModal = document.getElementById("tttWinModal");
   const tttWinOk = document.getElementById("tttWinOk");
-  const tttParticlesCanvas = document.getElementById("tttParticles");
 
-  if (tttBoard && tttStatus && tttModal && tttWinOk) {
+  if (tttGameCanvas && tttStatus && tttModal && tttWinOk) {
     // If already unlocked, go straight to gallery
     const alreadyUnlocked = localStorage.getItem("galleryUnlocked") === "true";
     if (alreadyUnlocked) {
@@ -786,111 +785,235 @@ Dr. Wei's voice lingers at the edge of the memory:
         [0,4,8],[2,4,6]
       ];
 
-      // Particle system setup
-      let particleCtx = null;
-      let particles = [];
+      // Custom particle system with repulsion
+      const ctx = tttGameCanvas.getContext("2d");
+      const particles = [];
+      const mousePos = { x: null, y: null };
       
-      if (tttParticlesCanvas) {
-        particleCtx = tttParticlesCanvas.getContext("2d");
-        
-        function resizeTttCanvas() {
-          tttParticlesCanvas.width = window.innerWidth;
-          tttParticlesCanvas.height = window.innerHeight;
-        }
-        resizeTttCanvas();
-        window.addEventListener("resize", resizeTttCanvas);
+      function resizeCanvas() {
+        const rect = tttGameCanvas.getBoundingClientRect();
+        tttGameCanvas.width = rect.width;
+        tttGameCanvas.height = rect.height;
+      }
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
 
-        // Particle class
-        class Particle {
-          constructor(x, y, color, size, vx, vy) {
-            this.x = x;
-            this.y = y;
-            this.color = color;
-            this.size = size;
-            this.vx = vx;
-            this.vy = vy;
-            this.life = 1.0;
-            this.decay = Math.random() * 0.02 + 0.01;
-          }
-
-          update() {
-            this.x += this.vx;
-            this.y += this.vy;
-            this.vy += 0.1; // gravity
-            this.life -= this.decay;
-          }
-
-          draw(ctx) {
-            ctx.save();
-            ctx.globalAlpha = this.life;
-            ctx.fillStyle = this.color;
-            ctx.shadowBlur = 15;
-            ctx.shadowColor = this.color;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-          }
-
-          isDead() {
-            return this.life <= 0;
-          }
+      // Particle class with repulsion behavior
+      class Particle {
+        constructor(x, y, targetX, targetY, color, cellIndex, shape) {
+          this.x = x + (Math.random() - 0.5) * 10;
+          this.y = y + (Math.random() - 0.5) * 10;
+          this.targetX = targetX;
+          this.targetY = targetY;
+          this.vx = 0;
+          this.vy = 0;
+          this.color = color;
+          this.radius = 2.5;
+          this.cellIndex = cellIndex;
+          this.shape = shape;
+          this.returnForce = 0.03;
+          this.damping = 0.85;
+          this.maxSpeed = 8;
+          this.repelDistance = 80;
+          this.repelForce = 400;
         }
 
-        // Create particle burst
-        function createParticleBurst(x, y, color, count) {
-          for (let i = 0; i < count; i++) {
-            const angle = (Math.PI * 2 * i) / count + Math.random() * 0.5;
-            const speed = Math.random() * 3 + 2;
-            const vx = Math.cos(angle) * speed;
-            const vy = Math.sin(angle) * speed;
-            const size = Math.random() * 3 + 2;
-            particles.push(new Particle(x, y, color, size, vx, vy));
-          }
-        }
-
-        // Create trail effect
-        function createTrail(x, y, color, count) {
-          for (let i = 0; i < count; i++) {
-            const vx = (Math.random() - 0.5) * 2;
-            const vy = (Math.random() - 0.5) * 2;
-            const size = Math.random() * 2 + 1;
-            particles.push(new Particle(x, y, color, size, vx, vy));
-          }
-        }
-
-        // Animate particles
-        function animateParticles() {
-          if (particleCtx) {
-            particleCtx.clearRect(0, 0, tttParticlesCanvas.width, tttParticlesCanvas.height);
+        update() {
+          // Repulsion from mouse/touch
+          if (mousePos.x !== null && mousePos.y !== null) {
+            const dx = this.x - mousePos.x;
+            const dy = this.y - mousePos.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
             
-            particles = particles.filter(p => !p.isDead());
-            
-            particles.forEach(p => {
-              p.update();
-              p.draw(particleCtx);
-            });
-            
-            requestAnimationFrame(animateParticles);
-          }
-        }
-        animateParticles();
-
-        // Add hover effect particles
-        tttBoard.querySelectorAll(".ttt-cell").forEach(cell => {
-          cell.addEventListener("mouseenter", (e) => {
-            if (!cell.textContent && !gameOver) {
-              const rect = cell.getBoundingClientRect();
-              const centerX = rect.left + rect.width / 2;
-              const centerY = rect.top + rect.height / 2;
-              createTrail(centerX, centerY, "rgba(109, 217, 232, 0.8)", 5);
+            if (dist < this.repelDistance && dist > 0) {
+              const force = (this.repelDistance - dist) / this.repelDistance;
+              const repel = this.repelForce * force;
+              this.vx += (dx / dist) * repel * 0.01;
+              this.vy += (dy / dist) * repel * 0.01;
             }
-          });
-        });
+          }
+
+          // Return to target position
+          const tdx = this.targetX - this.x;
+          const tdy = this.targetY - this.y;
+          this.vx += tdx * this.returnForce;
+          this.vy += tdy * this.returnForce;
+
+          // Apply damping
+          this.vx *= this.damping;
+          this.vy *= this.damping;
+
+          // Limit speed
+          const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+          if (speed > this.maxSpeed) {
+            this.vx = (this.vx / speed) * this.maxSpeed;
+            this.vy = (this.vy / speed) * this.maxSpeed;
+          }
+
+          // Update position
+          this.x += this.vx;
+          this.y += this.vy;
+        }
+
+        draw() {
+          ctx.save();
+          ctx.fillStyle = this.color;
+          ctx.shadowBlur = 12;
+          ctx.shadowColor = this.color;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
       }
 
+      // Calculate grid cell centers
+      function getCellCenter(index) {
+        const w = tttGameCanvas.width;
+        const h = tttGameCanvas.height;
+        const cellW = w / 3;
+        const cellH = h / 3;
+        const row = Math.floor(index / 3);
+        const col = index % 3;
+        return {
+          x: col * cellW + cellW / 2,
+          y: row * cellH + cellH / 2
+        };
+      }
+
+      // Get cell index from coordinates
+      function getCellIndex(x, y) {
+        const w = tttGameCanvas.width;
+        const h = tttGameCanvas.height;
+        const cellW = w / 3;
+        const cellH = h / 3;
+        const col = Math.floor(x / cellW);
+        const row = Math.floor(y / cellH);
+        if (col >= 0 && col < 3 && row >= 0 && row < 3) {
+          return row * 3 + col;
+        }
+        return -1;
+      }
+
+      // Create X shape with particles
+      function createXParticles(index) {
+        const center = getCellCenter(index);
+        const size = Math.min(tttGameCanvas.width, tttGameCanvas.height) / 8;
+        const color = 'rgba(109, 217, 232, 1)';
+        const particleCount = 40;
+
+        // Create diagonal lines forming X
+        for (let i = 0; i < particleCount; i++) {
+          const t = i / particleCount;
+          
+          // First diagonal (\)
+          if (i < particleCount / 2) {
+            const x = center.x - size/2 + size * (t * 2);
+            const y = center.y - size/2 + size * (t * 2);
+            particles.push(new Particle(center.x, center.y, x, y, color, index, 'X'));
+          }
+          // Second diagonal (/)
+          else {
+            const t2 = (i - particleCount / 2) / (particleCount / 2);
+            const x = center.x + size/2 - size * t2;
+            const y = center.y - size/2 + size * t2;
+            particles.push(new Particle(center.x, center.y, x, y, color, index, 'X'));
+          }
+        }
+      }
+
+      // Create O shape with particles
+      function createOParticles(index) {
+        const center = getCellCenter(index);
+        const radius = Math.min(tttGameCanvas.width, tttGameCanvas.height) / 10;
+        const color = 'rgba(255, 100, 100, 1)';
+        const particleCount = 35;
+
+        // Create circle
+        for (let i = 0; i < particleCount; i++) {
+          const angle = (i / particleCount) * Math.PI * 2;
+          const x = center.x + Math.cos(angle) * radius;
+          const y = center.y + Math.sin(angle) * radius;
+          particles.push(new Particle(center.x, center.y, x, y, color, index, 'O'));
+        }
+      }
+
+      // Animation loop
+      function animate() {
+        ctx.fillStyle = 'rgba(2, 6, 18, 0.15)';
+        ctx.fillRect(0, 0, tttGameCanvas.width, tttGameCanvas.height);
+
+        particles.forEach(p => {
+          p.update();
+          p.draw();
+        });
+
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      // Mouse/touch interaction
+      function updateMousePos(x, y) {
+        const rect = tttGameCanvas.getBoundingClientRect();
+        mousePos.x = x - rect.left;
+        mousePos.y = y - rect.top;
+      }
+
+      tttGameCanvas.addEventListener('mousemove', (e) => {
+        updateMousePos(e.clientX, e.clientY);
+      });
+
+      tttGameCanvas.addEventListener('mouseleave', () => {
+        mousePos.x = null;
+        mousePos.y = null;
+      });
+
+      tttGameCanvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        updateMousePos(touch.clientX, touch.clientY);
+      }, { passive: false });
+
+      tttGameCanvas.addEventListener('touchend', () => {
+        mousePos.x = null;
+        mousePos.y = null;
+      });
+
+      // Handle clicks
+      function handleClick(x, y) {
+        if (gameOver) return;
+        
+        const rect = tttGameCanvas.getBoundingClientRect();
+        const canvasX = x - rect.left;
+        const canvasY = y - rect.top;
+        const idx = getCellIndex(canvasX, canvasY);
+        
+        if (idx === -1 || board[idx]) return;
+
+        // Player move
+        board[idx] = "X";
+        createXParticles(idx);
+
+        const result = checkWinner(board);
+        if (result) {
+          handleGameEnd(result);
+        } else {
+          setTimeout(computerMove, 600);
+        }
+      }
+
+      tttGameCanvas.addEventListener('click', (e) => {
+        handleClick(e.clientX, e.clientY);
+      });
+
+      tttGameCanvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        handleClick(touch.clientX, touch.clientY);
+      }, { passive: false });
+
       function checkWinner(b) {
-        for (const [a,b1,c] of wins) {
+        for (const [a, b1, c] of wins) {
           if (b[a] && b[a] === b[b1] && b[a] === b[c]) {
             return { winner: b[a], line: [a, b1, c] };
           }
@@ -906,117 +1029,54 @@ Dr. Wei's voice lingers at the edge of the memory:
       function highlightWinningLine(line) {
         if (line) {
           line.forEach(idx => {
-            const cell = tttBoard.querySelector('[data-index="' + idx + '"]');
-            if (cell) {
-              cell.classList.add("winner");
-              
-              // Create explosion effect for winning cells
-              if (particleCtx) {
-                const rect = cell.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                createParticleBurst(centerX, centerY, "rgba(109, 217, 232, 1)", 30);
+            // Make winning particles larger and more glowing
+            particles.forEach(p => {
+              if (p.cellIndex === idx) {
+                p.radius = 3.5;
+                p.repelForce = 600;
               }
-            }
+            });
           });
         }
       }
 
       function computerMove() {
         if (gameOver) return;
-        const empties = board.map((v,i) => v ? null : i).filter(v => v !== null);
+        const empties = board.map((v, i) => v ? null : i).filter(v => v !== null);
         if (!empties.length) return;
-        
-        setTimeout(() => {
-          const choice = empties[Math.floor(Math.random() * empties.length)];
-          board[choice] = "O";
-          const cell = tttBoard.querySelector('[data-index="' + choice + '"]');
-          if (cell) {
-            cell.textContent = "O";
-            
-            // Particle burst for computer move
-            if (particleCtx) {
-              const rect = cell.getBoundingClientRect();
-              const centerX = rect.left + rect.width / 2;
-              const centerY = rect.top + rect.height / 2;
-              createParticleBurst(centerX, centerY, "rgba(255, 100, 100, 0.8)", 15);
-            }
-          }
 
-          const result = checkWinner(board);
-          if (result) {
-            if (result.winner === "O") {
-              gameOver = true;
-              highlightWinningLine(result.line);
-              setTimeout(() => {
-                window.location.href = "home.html";
-              }, 2000);
-            } else if (result.winner === "draw") {
-              gameOver = true;
-              setTimeout(() => {
-                window.location.href = "home.html";
-              }, 1500);
-            }
-          }
-        }, 500);
-      }
-
-      function handleCellClick(e) {
-        const cell = e.currentTarget;
-        const idx = parseInt(cell.getAttribute("data-index"), 10);
-        if (gameOver || board[idx]) return;
-
-        board[idx] = "X";
-        cell.textContent = "X";
-
-        // Particle burst for player move
-        if (particleCtx) {
-          const rect = cell.getBoundingClientRect();
-          const centerX = rect.left + rect.width / 2;
-          const centerY = rect.top + rect.height / 2;
-          createParticleBurst(centerX, centerY, "rgba(109, 217, 232, 1)", 20);
-        }
+        const choice = empties[Math.floor(Math.random() * empties.length)];
+        board[choice] = "O";
+        createOParticles(choice);
 
         const result = checkWinner(board);
         if (result) {
-          if (result.winner === "X") {
-            gameOver = true;
-            highlightWinningLine(result.line);
-            
-            // Extra celebration particles
-            if (particleCtx && result.line) {
-              result.line.forEach(idx => {
-                const winCell = tttBoard.querySelector('[data-index="' + idx + '"]');
-                if (winCell) {
-                  const rect = winCell.getBoundingClientRect();
-                  const centerX = rect.left + rect.width / 2;
-                  const centerY = rect.top + rect.height / 2;
-                  setTimeout(() => {
-                    createParticleBurst(centerX, centerY, "rgba(109, 217, 232, 1)", 40);
-                  }, 300);
-                }
-              });
-            }
-            
-            setTimeout(() => {
-              localStorage.setItem("galleryUnlocked", "true");
-              tttModal.classList.remove("hidden");
-              updateStatus("");
-            }, 800);
-          } else if (result.winner === "draw") {
-            gameOver = true;
-            setTimeout(() => {
-              window.location.href = "home.html";
-            }, 1500);
-          }
-        } else {
-          computerMove();
+          handleGameEnd(result);
         }
       }
 
-      tttBoard.querySelectorAll(".ttt-cell").forEach(cell => {
-        cell.addEventListener("click", handleCellClick);
-      });
+      function handleGameEnd(result) {
+        gameOver = true;
+        
+        if (result.winner === "X") {
+          highlightWinningLine(result.line);
+          setTimeout(() => {
+            localStorage.setItem("galleryUnlocked", "true");
+            tttModal.classList.remove("hidden");
+            updateStatus("");
+          }, 1000);
+        } else if (result.winner === "O") {
+          highlightWinningLine(result.line);
+          setTimeout(() => {
+            window.location.href = "home.html";
+          }, 2000);
+        } else {
+          // Draw
+          setTimeout(() => {
+            window.location.href = "home.html";
+          }, 1500);
+        }
+      }
 
       tttWinOk.addEventListener("click", () => {
         window.location.href = "home.html";

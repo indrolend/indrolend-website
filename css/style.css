@@ -853,7 +853,7 @@ html, body {
 
 
 
-/* Tic-tac-toe gate */
+/* Tic-tac-toe gate - Minimalist Particle-Based */
 .ttt-bg {
   background: radial-gradient(circle at top, #020612, #00020a);
   color: var(--text-main);
@@ -864,20 +864,8 @@ html, body {
   overflow: hidden;
 }
 
-/* Particle canvas backdrop */
-.ttt-particles-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.7;
-}
-
 .ttt-container {
-  max-width: 420px;
+  max-width: 600px;
   margin: 0 auto;
   padding: 32px 16px 40px;
   display: flex;
@@ -918,99 +906,21 @@ html, body {
   gap: 14px;
 }
 
-.ttt-board {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(70px, 1fr));
-  gap: 8px;
+/* Canvas for particle-based game */
+.ttt-game-canvas {
   width: 100%;
-  max-width: 340px;
-}
-
-.ttt-cell {
-  aspect-ratio: 1 / 1;
-  border-radius: 12px;
-  border: 2px solid rgba(109, 217, 232, 0.3);
-  background: rgba(5, 12, 28, 0.85);
-  color: var(--terminal-green);
-  font-size: 32px;
-  font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  max-width: 500px;
+  height: 500px;
   cursor: pointer;
-  position: relative;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(109, 217, 232, 0.05);
-  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(2, 6, 18, 0.3);
 }
 
-/* Neon glow effect on hover */
-.ttt-cell:hover:not(:disabled) {
-  border-color: rgba(109, 217, 232, 0.6);
-  background: rgba(10, 25, 45, 0.9);
-  box-shadow: 0 0 20px rgba(109, 217, 232, 0.4), 
-              0 0 40px rgba(109, 217, 232, 0.2),
-              inset 0 0 30px rgba(109, 217, 232, 0.1);
-  transform: scale(1.05);
-}
-
-/* Subtle pulsing for empty cells */
-.ttt-cell:empty:not(:disabled) {
-  animation: cellPulse 2s ease-in-out infinite;
-}
-
-@keyframes cellPulse {
-  0%, 100% {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(109, 217, 232, 0.05);
+@media (max-width: 640px) {
+  .ttt-game-canvas {
+    height: 400px;
+    max-width: 400px;
   }
-  50% {
-    box-shadow: 0 0 15px rgba(109, 217, 232, 0.3), inset 0 0 25px rgba(109, 217, 232, 0.08);
-  }
-}
-
-/* Enhanced X and O with glow */
-.ttt-cell:not(:empty) {
-  text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
-  animation: symbolAppear 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-@keyframes symbolAppear {
-  0% {
-    transform: scale(0) rotate(180deg);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1) rotate(0deg);
-    opacity: 1;
-  }
-}
-
-/* Winner cell glow effect */
-.ttt-cell.winner {
-  animation: winnerGlow 0.8s ease-in-out infinite;
-  border-color: rgba(109, 217, 232, 1);
-}
-
-@keyframes winnerGlow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(109, 217, 232, 0.6), 
-                0 0 40px rgba(109, 217, 232, 0.4),
-                0 0 60px rgba(109, 217, 232, 0.2),
-                inset 0 0 30px rgba(109, 217, 232, 0.2);
-    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor, 0 0 40px currentColor;
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(109, 217, 232, 0.8), 
-                0 0 60px rgba(109, 217, 232, 0.6),
-                0 0 90px rgba(109, 217, 232, 0.4),
-                inset 0 0 40px rgba(109, 217, 232, 0.3);
-    text-shadow: 0 0 15px currentColor, 0 0 30px currentColor, 0 0 45px currentColor, 0 0 60px currentColor;
-  }
-}
-
-.ttt-cell:disabled {
-  cursor: default;
-  opacity: 0.7;
 }
 
 .ttt-status {
