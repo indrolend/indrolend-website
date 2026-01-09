@@ -34,9 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const mouse = { x: null, y: null, active: false };
     let animationId = null;
     let isVisible = false;
-    
-    // Use a lighter version of the first color for connection lines
-    const connectionLineColor = colors[0] || "#6DD9E8";
 
     // Set canvas size to match container
     function resizeCanvas() {
