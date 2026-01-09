@@ -785,10 +785,11 @@ Dr. Wei's voice lingers at the edge of the memory:
         [0,4,8],[2,4,6]
       ];
 
-      // Custom particle system with repulsion
+      // Custom particle system with click-only repulsion
       const ctx = tttGameCanvas.getContext("2d");
       const particles = [];
-      const mousePos = { x: null, y: null };
+      const guideDots = Array(9).fill(true); // Track which guide dots are visible
+      let clickRepulsion = null; // { x, y, time, strength }
       
       function resizeCanvas() {
         const rect = tttGameCanvas.getBoundingClientRect();
@@ -798,7 +799,7 @@ Dr. Wei's voice lingers at the edge of the memory:
       resizeCanvas();
       window.addEventListener("resize", resizeCanvas);
 
-      // Particle class with repulsion behavior
+      // Particle class with click-based repulsion
       class Particle {
         constructor(x, y, targetX, targetY, color, cellIndex, shape) {
           this.x = x + (Math.random() - 0.5) * 10;
@@ -811,25 +812,24 @@ Dr. Wei's voice lingers at the edge of the memory:
           this.radius = 2.5;
           this.cellIndex = cellIndex;
           this.shape = shape;
-          this.returnForce = 0.03;
-          this.damping = 0.85;
-          this.maxSpeed = 8;
-          this.repelDistance = 80;
-          this.repelForce = 400;
+          this.returnForce = 0.04;
+          this.damping = 0.88;
+          this.maxSpeed = 10;
         }
 
         update() {
-          // Repulsion from mouse/touch
-          if (mousePos.x !== null && mousePos.y !== null) {
-            const dx = this.x - mousePos.x;
-            const dy = this.y - mousePos.y;
+          // Click-based repulsion with decay
+          if (clickRepulsion) {
+            const dx = this.x - clickRepulsion.x;
+            const dy = this.y - clickRepulsion.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
+            const repelDistance = 100;
             
-            if (dist < this.repelDistance && dist > 0) {
-              const force = (this.repelDistance - dist) / this.repelDistance;
-              const repel = this.repelForce * force;
-              this.vx += (dx / dist) * repel * 0.01;
-              this.vy += (dy / dist) * repel * 0.01;
+            if (dist < repelDistance && dist > 0) {
+              const force = (repelDistance - dist) / repelDistance;
+              const repel = clickRepulsion.strength * force;
+              this.vx += (dx / dist) * repel;
+              this.vy += (dy / dist) * repel;
             }
           }
 
@@ -858,7 +858,7 @@ Dr. Wei's voice lingers at the edge of the memory:
         draw() {
           ctx.save();
           ctx.fillStyle = this.color;
-          ctx.shadowBlur = 12;
+          ctx.shadowBlur = 15;
           ctx.shadowColor = this.color;
           ctx.beginPath();
           ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
@@ -895,11 +895,11 @@ Dr. Wei's voice lingers at the edge of the memory:
         return -1;
       }
 
-      // Create X shape with particles
+      // Create X shape with particles - bioluminescent cyan
       function createXParticles(index) {
         const center = getCellCenter(index);
         const size = Math.min(tttGameCanvas.width, tttGameCanvas.height) / 8;
-        const color = 'rgba(109, 217, 232, 1)';
+        const color = 'rgba(109, 217, 232, 0.9)'; // Softer bioluminescent cyan
         const particleCount = 40;
 
         // Create diagonal lines forming X
@@ -922,11 +922,11 @@ Dr. Wei's voice lingers at the edge of the memory:
         }
       }
 
-      // Create O shape with particles
+      // Create O shape with particles - bioluminescent coral/pink
       function createOParticles(index) {
         const center = getCellCenter(index);
         const radius = Math.min(tttGameCanvas.width, tttGameCanvas.height) / 10;
-        const color = 'rgba(255, 100, 100, 1)';
+        const color = 'rgba(255, 140, 140, 0.9)'; // Softer bioluminescent coral
         const particleCount = 35;
 
         // Create circle
@@ -940,44 +940,41 @@ Dr. Wei's voice lingers at the edge of the memory:
 
       // Animation loop
       function animate() {
-        ctx.fillStyle = 'rgba(2, 6, 18, 0.15)';
+        ctx.fillStyle = 'rgba(2, 6, 18, 0.2)';
         ctx.fillRect(0, 0, tttGameCanvas.width, tttGameCanvas.height);
 
+        // Draw guide dots for empty cells
+        for (let i = 0; i < 9; i++) {
+          if (guideDots[i] && !board[i]) {
+            const center = getCellCenter(i);
+            ctx.save();
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+            ctx.beginPath();
+            ctx.arc(center.x, center.y, 3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+          }
+        }
+
+        // Update and draw particles
         particles.forEach(p => {
           p.update();
           p.draw();
         });
 
+        // Decay click repulsion
+        if (clickRepulsion) {
+          clickRepulsion.strength *= 0.92;
+          if (clickRepulsion.strength < 0.1) {
+            clickRepulsion = null;
+          }
+        }
+
         requestAnimationFrame(animate);
       }
       animate();
-
-      // Mouse/touch interaction
-      function updateMousePos(x, y) {
-        const rect = tttGameCanvas.getBoundingClientRect();
-        mousePos.x = x - rect.left;
-        mousePos.y = y - rect.top;
-      }
-
-      tttGameCanvas.addEventListener('mousemove', (e) => {
-        updateMousePos(e.clientX, e.clientY);
-      });
-
-      tttGameCanvas.addEventListener('mouseleave', () => {
-        mousePos.x = null;
-        mousePos.y = null;
-      });
-
-      tttGameCanvas.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        const touch = e.touches[0];
-        updateMousePos(touch.clientX, touch.clientY);
-      }, { passive: false });
-
-      tttGameCanvas.addEventListener('touchend', () => {
-        mousePos.x = null;
-        mousePos.y = null;
-      });
 
       // Handle clicks
       function handleClick(x, y) {
@@ -990,7 +987,18 @@ Dr. Wei's voice lingers at the edge of the memory:
         
         if (idx === -1 || board[idx]) return;
 
-        // Player move
+        // Hide guide dot
+        guideDots[idx] = false;
+
+        // Create click repulsion effect
+        const center = getCellCenter(idx);
+        clickRepulsion = {
+          x: center.x,
+          y: center.y,
+          strength: 0.8
+        };
+
+        // Player move - particles emerge from white dot origin
         board[idx] = "X";
         createXParticles(idx);
 
@@ -1046,6 +1054,18 @@ Dr. Wei's voice lingers at the edge of the memory:
         if (!empties.length) return;
 
         const choice = empties[Math.floor(Math.random() * empties.length)];
+        
+        // Hide guide dot
+        guideDots[choice] = false;
+
+        // Create click repulsion effect for computer move
+        const center = getCellCenter(choice);
+        clickRepulsion = {
+          x: center.x,
+          y: center.y,
+          strength: 0.8
+        };
+
         board[choice] = "O";
         createOParticles(choice);
 
