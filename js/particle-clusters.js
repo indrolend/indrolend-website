@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (platformKey === 'gallery') {
       const isUnlocked = localStorage.getItem("galleryUnlocked") === "true";
       if (isUnlocked) {
-        colors = platformColors.gallery; // Red and cyan particles
+        colors = platformColors.gallery; // Rainbow explosion particles
       } else {
         colors = platformColors.galleryLocked; // Single gray particle
         particleCount = 1; // Only one particle when locked
