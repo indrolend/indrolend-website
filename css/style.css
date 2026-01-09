@@ -576,7 +576,7 @@ html, body {
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.15;
+  opacity: 0.5;
   z-index: 1;
   pointer-events: none;
 }
@@ -601,7 +601,7 @@ html, body {
 /* Bandcamp diamond shape */
 .app-card-media[data-bg="bandcamp"]::before {
   background: none;
-  border: 2px solid rgba(98, 154, 169, 0.2);
+  border: 3px solid rgba(98, 154, 169, 0.5);
   transform: rotate(45deg);
   width: 70%;
   height: 70%;

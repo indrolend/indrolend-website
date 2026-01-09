@@ -124,31 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function drawParticles() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Draw connections first (behind particles)
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < config.connectionDistance) {
-            const opacity = (1 - distance / config.connectionDistance) * 0.3;
-            // Convert hex color to rgba for opacity support
-            const hexColor = connectionLineColor.replace('#', '');
-            const r = parseInt(hexColor.substr(0, 2), 16);
-            const g = parseInt(hexColor.substr(2, 2), 16);
-            const b = parseInt(hexColor.substr(4, 2), 16);
-            ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      // Draw particles
+      // Draw particles only (no connection lines for free-space feel)
       particles.forEach(particle => {
         ctx.fillStyle = particle.color;
         ctx.beginPath();
