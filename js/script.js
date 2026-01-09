@@ -764,20 +764,18 @@ Dr. Wei's voice lingers at the edge of the memory:
     renderIntroForm();
   }
 
-  // --- Tic-tac-toe gallery gate ---
-  const tttBoard = document.getElementById("tttBoard");
-  const tttStatus = document.getElementById("tttStatus");
-  const tttModal = document.getElementById("tttWinModal");
-  const tttWinOk = document.getElementById("tttWinOk");
+  // --- Tic-tac-toe gallery gate with advanced particle system ---
+  const tttGameCanvas = document.getElementById("tttGameCanvas");
 
-  if (tttBoard && tttStatus && tttModal && tttWinOk) {
+  if (tttGameCanvas) {
     // If already unlocked, go straight to gallery
     const alreadyUnlocked = localStorage.getItem("galleryUnlocked") === "true";
     if (alreadyUnlocked) {
-      window.location.href = "pages/gallery.html";
+      window.location.href = "gallery.html";
     } else {
-      let board = Array(9).fill(null); // 'X' for player, 'O' for computer
+      let board = Array(9).fill(null);
       let gameOver = false;
+      let gameState = 'loading'; // 'loading', 'playing', 'celebrating', 'showing_message'
 
       const wins = [
         [0,1,2],[3,4,5],[6,7,8],
@@ -785,70 +783,366 @@ Dr. Wei's voice lingers at the edge of the memory:
         [0,4,8],[2,4,6]
       ];
 
-      function checkWinner(b) {
-        for (const [a,b1,c] of wins) {
-          if (b[a] && b[a] === b[b1] && b[a] === b[c]) {
-            return b[a];
+      // Particle system
+      const ctx = tttGameCanvas.getContext("2d");
+      let particles = [];
+      const guideDots = Array(9).fill(false);
+      let clickRepulsion = null;
+      let entranceComplete = false;
+      
+      function resizeCanvas() {
+        tttGameCanvas.width = window.innerWidth;
+        tttGameCanvas.height = window.innerHeight;
+        
+        // Update particle target positions when canvas resizes
+        particles.forEach(p => {
+          if (p.cellIndex != null) { // Check for both null and undefined
+            const newCenter = getCellCenter(p.cellIndex);
+            p.targetX = newCenter.x;
+            p.targetY = newCenter.y;
+          }
+        });
+      }
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
+
+      // Enhanced Particle class with micro-fluctuations
+      class Particle {
+        constructor(x, y, targetX, targetY, color, cellIndex, shape, isGuide = false) {
+          this.x = x;
+          this.y = y;
+          this.targetX = targetX;
+          this.targetY = targetY;
+          this.vx = 0;
+          this.vy = 0;
+          this.color = color;
+          this.radius = isGuide ? 3 : 2.5;
+          this.cellIndex = cellIndex;
+          this.shape = shape;
+          this.isGuide = isGuide;
+          this.returnForce = 0.04;
+          this.damping = 0.88;
+          this.maxSpeed = 10;
+          // Micro fluctuations
+          this.fluctuationPhase = Math.random() * Math.PI * 2;
+          this.fluctuationSpeed = 0.02 + Math.random() * 0.03;
+          this.fluctuationAmount = 0.3 + Math.random() * 0.7;
+        }
+
+        update() {
+          // Micro fluctuations for "alive" effect
+          if (!this.isGuide && gameState === 'playing') {
+            this.fluctuationPhase += this.fluctuationSpeed;
+            const fluctX = Math.sin(this.fluctuationPhase) * this.fluctuationAmount;
+            const fluctY = Math.cos(this.fluctuationPhase * 1.3) * this.fluctuationAmount;
+            this.vx += fluctX * 0.01;
+            this.vy += fluctY * 0.01;
+          }
+
+          // Click repulsion
+          if (clickRepulsion) {
+            const dx = this.x - clickRepulsion.x;
+            const dy = this.y - clickRepulsion.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            
+            if (dist < 100 && dist > 0) {
+              const force = (100 - dist) / 100;
+              const repel = clickRepulsion.strength * force;
+              this.vx += (dx / dist) * repel;
+              this.vy += (dy / dist) * repel;
+            }
+          }
+
+          // Return to target
+          const tdx = this.targetX - this.x;
+          const tdy = this.targetY - this.y;
+          this.vx += tdx * this.returnForce;
+          this.vy += tdy * this.returnForce;
+
+          // Damping
+          this.vx *= this.damping;
+          this.vy *= this.damping;
+
+          // Speed limit
+          const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+          if (speed > this.maxSpeed) {
+            this.vx = (this.vx / speed) * this.maxSpeed;
+            this.vy = (this.vy / speed) * this.maxSpeed;
+          }
+
+          this.x += this.vx;
+          this.y += this.vy;
+        }
+
+        draw() {
+          ctx.save();
+          ctx.fillStyle = this.color;
+          ctx.shadowBlur = this.isGuide ? 8 : 15;
+          ctx.shadowColor = this.color;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      // Calculate grid positions
+      function getCellCenter(index) {
+        const gridSize = Math.min(tttGameCanvas.width, tttGameCanvas.height) * 0.6;
+        const cellSize = gridSize / 3;
+        const startX = (tttGameCanvas.width - gridSize) / 2;
+        const startY = (tttGameCanvas.height - gridSize) / 2;
+        const row = Math.floor(index / 3);
+        const col = index % 3;
+        return {
+          x: startX + col * cellSize + cellSize / 2,
+          y: startY + row * cellSize + cellSize / 2
+        };
+      }
+
+      function getCellIndex(x, y) {
+        const gridSize = Math.min(tttGameCanvas.width, tttGameCanvas.height) * 0.6;
+        const cellSize = gridSize / 3;
+        const startX = (tttGameCanvas.width - gridSize) / 2;
+        const startY = (tttGameCanvas.height - gridSize) / 2;
+        const col = Math.floor((x - startX) / cellSize);
+        const row = Math.floor((y - startY) / cellSize);
+        if (col >= 0 && col < 3 && row >= 0 && row < 3) {
+          return row * 3 + col;
+        }
+        return -1;
+      }
+
+      // Entrance animation - dots emerge from deep ocean
+      function createEntranceAnimation() {
+        gameState = 'loading';
+        const bottomY = tttGameCanvas.height + 100;
+        
+        for (let i = 0; i < 9; i++) {
+          const center = getCellCenter(i);
+          const startX = center.x + (Math.random() - 0.5) * 50;
+          
+          setTimeout(() => {
+            const particle = new Particle(
+              startX, bottomY,
+              center.x, center.y,
+              'rgba(255, 255, 255, 0.6)',
+              i, null, true
+            );
+            particle.returnForce = 0.02;
+            particles.push(particle);
+            guideDots[i] = true;
+            
+            if (i === 8) {
+              setTimeout(() => {
+                entranceComplete = true;
+                gameState = 'playing';
+              }, 2000);
+            }
+          }, i * 150);
+        }
+      }
+
+      // Create X particles
+      function createXParticles(index) {
+        const center = getCellCenter(index);
+        const size = Math.min(tttGameCanvas.width, tttGameCanvas.height) * 0.08;
+        const color = 'rgba(109, 217, 232, 0.9)';
+        const particleCount = 40;
+
+        for (let i = 0; i < particleCount; i++) {
+          const t = i / particleCount;
+          let tx, ty;
+          
+          if (i < particleCount / 2) {
+            tx = center.x - size/2 + size * (t * 2);
+            ty = center.y - size/2 + size * (t * 2);
+          } else {
+            const t2 = (i - particleCount / 2) / (particleCount / 2);
+            tx = center.x + size/2 - size * t2;
+            ty = center.y - size/2 + size * t2;
+          }
+          particles.push(new Particle(center.x, center.y, tx, ty, color, index, 'X'));
+        }
+      }
+
+      // Create O particles
+      function createOParticles(index) {
+        const center = getCellCenter(index);
+        const radius = Math.min(tttGameCanvas.width, tttGameCanvas.height) * 0.05;
+        const color = 'rgba(255, 140, 140, 0.9)';
+        const particleCount = 35;
+
+        for (let i = 0; i < particleCount; i++) {
+          const angle = (i / particleCount) * Math.PI * 2;
+          const tx = center.x + Math.cos(angle) * radius;
+          const ty = center.y + Math.sin(angle) * radius;
+          particles.push(new Particle(center.x, center.y, tx, ty, color, index, 'O'));
+        }
+      }
+
+
+      // Rainbow explosion
+      function createRainbowExplosion() {
+        const colors = [
+          'rgba(255, 0, 0, 0.9)',
+          'rgba(255, 127, 0, 0.9)',
+          'rgba(255, 255, 0, 0.9)',
+          'rgba(0, 255, 0, 0.9)',
+          'rgba(0, 0, 255, 0.9)',
+          'rgba(75, 0, 130, 0.9)',
+          'rgba(148, 0, 211, 0.9)'
+        ];
+        
+        particles.forEach(p => {
+          if (p.shape) {
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            p.color = color;
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 5 + Math.random() * 10;
+            p.vx = Math.cos(angle) * speed;
+            p.vy = Math.sin(angle) * speed;
+            p.returnForce = 0;
+            p.damping = 0.95;
+          }
+        });
+        
+        // Redirect to home page after explosion animation
+        setTimeout(() => {
+          window.location.href = "home.html";
+        }, 2000);
+      }
+
+      // Animation loop
+      function animate() {
+        // Use higher alpha during entrance for clean trails, then switch to lower for gameplay
+        const alphaValue = gameState === 'loading' ? 0.5 : 0.15;
+        ctx.fillStyle = `rgba(2, 6, 18, ${alphaValue})`;
+        ctx.fillRect(0, 0, tttGameCanvas.width, tttGameCanvas.height);
+
+        particles.forEach(p => {
+          p.update();
+          p.draw();
+        });
+
+        // Decay click repulsion
+        if (clickRepulsion) {
+          clickRepulsion.strength *= 0.92;
+          if (clickRepulsion.strength < 0.1) {
+            clickRepulsion = null;
           }
         }
-        if (b.every(v => v)) return "draw";
+
+        requestAnimationFrame(animate);
+      }
+
+      // Click handler
+      function handleClick(x, y) {
+        // During celebration, ignore clicks - auto-redirect will handle it
+        if (gameState === 'celebrating') {
+          return;
+        }
+        
+        if (gameState !== 'playing' || gameOver) return;
+        
+        const idx = getCellIndex(x, y);
+        if (idx === -1 || board[idx] || !guideDots[idx]) return;
+
+        guideDots[idx] = false;
+        particles = particles.filter(p => p.cellIndex !== idx || !p.isGuide);
+
+        const center = getCellCenter(idx);
+        clickRepulsion = { x: center.x, y: center.y, strength: 0.8 };
+
+        board[idx] = "X";
+        createXParticles(idx);
+
+        const result = checkWinner(board);
+        if (result) {
+          handleGameEnd(result);
+        } else {
+          setTimeout(computerMove, 600);
+        }
+      }
+
+      tttGameCanvas.addEventListener('click', (e) => {
+        handleClick(e.clientX, e.clientY);
+      });
+
+      tttGameCanvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        handleClick(touch.clientX, touch.clientY);
+      }, { passive: false });
+
+      function checkWinner(b) {
+        for (const [a, b1, c] of wins) {
+          if (b[a] && b[a] === b[b1] && b[a] === b[c]) {
+            return { winner: b[a], line: [a, b1, c] };
+          }
+        }
+        if (b.every(v => v)) return { winner: "draw", line: null };
         return null;
       }
 
-      function updateStatus(msg) {
-        tttStatus.textContent = msg || "";
+      function highlightWinningLine(line) {
+        if (line) {
+          line.forEach(idx => {
+            particles.forEach(p => {
+              if (p.cellIndex === idx && !p.isGuide) {
+                p.radius = 3.5;
+              }
+            });
+          });
+        }
       }
 
       function computerMove() {
         if (gameOver) return;
-        const empties = board.map((v,i) => v ? null : i).filter(v => v !== null);
+        const empties = board.map((v, i) => v ? null : i).filter(v => v !== null);
         if (!empties.length) return;
+
         const choice = empties[Math.floor(Math.random() * empties.length)];
+        guideDots[choice] = false;
+        particles = particles.filter(p => p.cellIndex !== choice || !p.isGuide);
+
+        const center = getCellCenter(choice);
+        clickRepulsion = { x: center.x, y: center.y, strength: 0.8 };
+
         board[choice] = "O";
-        const cell = tttBoard.querySelector('[data-index="' + choice + '"]');
-        if (cell) cell.textContent = "O";
+        createOParticles(choice);
 
-        const winner = checkWinner(board);
-        if (winner === "O" || winner === "draw") {
-          gameOver = true;
-          // Losing or draw: kick back home with no unlock
-          window.location.href = "home.html";
+        const result = checkWinner(board);
+        if (result) {
+          handleGameEnd(result);
         }
       }
 
-      function handleCellClick(e) {
-        const cell = e.currentTarget;
-        const idx = parseInt(cell.getAttribute("data-index"), 10);
-        if (gameOver || board[idx]) return;
-
-        board[idx] = "X";
-        cell.textContent = "X";
-
-        const winner = checkWinner(board);
-        if (winner === "X") {
-          gameOver = true;
-          // Unlock gallery, show modal
-          localStorage.setItem("galleryUnlocked", "true");
-          tttModal.classList.remove("hidden");
-          updateStatus("");
-        } else if (winner === "draw") {
-          // draw counts as loss: kick out
-          gameOver = true;
-          window.location.href = "home.html";
+      function handleGameEnd(result) {
+        gameOver = true;
+        
+        if (result.winner === "X") {
+          highlightWinningLine(result.line);
+          setTimeout(() => {
+            localStorage.setItem("galleryUnlocked", "true");
+            gameState = 'celebrating';
+            createRainbowExplosion();
+          }, 1000);
+        } else if (result.winner === "O") {
+          highlightWinningLine(result.line);
+          setTimeout(() => {
+            window.location.href = "home.html";
+          }, 2000);
         } else {
-          computerMove();
+          setTimeout(() => {
+            window.location.href = "home.html";
+          }, 1500);
         }
       }
 
-      tttBoard.querySelectorAll(".ttt-cell").forEach(cell => {
-        cell.addEventListener("click", handleCellClick);
-      });
-
-      tttWinOk.addEventListener("click", () => {
-        window.location.href = "home.html";
-      });
-
-      updateStatus("you are X. computer is O.");
+      // Start
+      animate();
+      createEntranceAnimation();
     }
   }
 
