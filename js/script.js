@@ -972,29 +972,31 @@ Dr. Wei's voice lingers at the edge of the memory:
         }
       }
 
-      // Create text from particles
+      // Create text from particles with better legibility
       function createTextParticles(text, centerY, color, onComplete) {
-        const fontSize = 40;
+        const fontSize = text.length > 15 ? 50 : 60; // Larger font for better readability
         const tempCanvas = document.createElement('canvas');
         const tempCtx = tempCanvas.getContext('2d');
         tempCanvas.width = tttGameCanvas.width;
-        tempCanvas.height = 100;
+        tempCanvas.height = 120;
         
-        tempCtx.font = `${fontSize}px "SF Mono", monospace`;
+        // Use bold font for better particle formation
+        tempCtx.font = `bold ${fontSize}px Arial, sans-serif`;
         tempCtx.textAlign = 'center';
         tempCtx.textBaseline = 'middle';
         tempCtx.fillStyle = 'white';
-        tempCtx.fillText(text, tempCanvas.width / 2, 50);
+        tempCtx.fillText(text, tempCanvas.width / 2, 60);
         
-        const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, 100);
+        const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, 120);
         const textParticles = [];
         
-        for (let y = 0; y < 100; y += 4) {
-          for (let x = 0; x < tempCanvas.width; x += 4) {
+        // Sample every 2 pixels for denser particle text
+        for (let y = 0; y < 120; y += 2) {
+          for (let x = 0; x < tempCanvas.width; x += 2) {
             const index = (y * tempCanvas.width + x) * 4;
             if (imageData.data[index + 3] > 128) {
               const targetX = x;
-              const targetY = centerY - 50 + y;
+              const targetY = centerY - 60 + y;
               const startAngle = Math.random() * Math.PI * 2;
               const startRadius = 300;
               const startX = tttGameCanvas.width / 2 + Math.cos(startAngle) * startRadius;
@@ -1002,6 +1004,7 @@ Dr. Wei's voice lingers at the edge of the memory:
               
               const p = new Particle(startX, startY, targetX, targetY, color, -1, 'text');
               p.returnForce = 0.03;
+              p.radius = 2.8; // Slightly larger particles for better visibility
               textParticles.push(p);
             }
           }
