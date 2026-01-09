@@ -80,6 +80,30 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateParticles() {
       const now = performance.now();
       particles.forEach((p, i) => {
+        // Check for snake game target (Easter egg)
+        if (window.getSnakeParticleTarget && typeof window.getSnakeParticleTarget === 'function') {
+          const target = window.getSnakeParticleTarget(p);
+          if (target) {
+            // Strong attraction to target
+            const dx = target.x - p.x;
+            const dy = target.y - p.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 2) {
+              const attractionForce = 0.1; // Strong pull
+              p.vx += dx * attractionForce;
+              p.vy += dy * attractionForce;
+              
+              // Change char to square for game mode
+              if (target.type === 'snake' && p.char !== '■') {
+                p.char = '■';
+              } else if (target.type === 'food' && p.char !== '●') {
+                p.char = '●';
+              }
+            }
+          }
+        }
+        
         // Apply velocity
         p.x += p.vx;
         p.y += p.vy;
@@ -88,8 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (p.x < 0 || p.x > particlesCanvas.width) p.vx *= -1;
         if (p.y < 0 || p.y > particlesCanvas.height) p.vy *= -1;
 
-        // Change character at randomized intervals
-        if (now - p.lastChangeTime >= p.changeInterval) {
+        // Change character at randomized intervals (only when not in snake game)
+        if (!window.getSnakeParticleTarget && now - p.lastChangeTime >= p.changeInterval) {
           p.char = getRandomChar();
           p.lastChangeTime = now;
           // Randomize next change interval for natural variation
@@ -130,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // Attract particles (from particles.js)
           if (attractEnabled && distance < connectionDistance) {
             const ax = dx / (attractRotateX * 1000);
-            const ay = dy / (attractRotateY * 1000);
+            const ay = dx / (attractRotateY * 1000);
             p.vx -= ax;
             p.vy -= ay;
             p2.vx += ax;

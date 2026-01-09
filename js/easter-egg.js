@@ -28,6 +28,7 @@
   // State for snake easter egg
   let isSnakeActive = false;
   let snakeAnimationFrame = null;
+  let particleSystem = null; // Reference to the particle system from script.js
 
   /**
    * Rolling buffer for keypress detection
@@ -412,43 +413,64 @@
   // SNAKE GAME EASTER EGG
   // ========================
 
+  // ========================
+  // PARTICLE-BASED SNAKE GAME
+  // ========================
+
   // Snake game state
-  let snakeCanvas = null;
-  let snakeCtx = null;
   let snake = [];
   let food = null;
   let direction = { x: 1, y: 0 };
   let nextDirection = { x: 1, y: 0 };
-  let gridSize = 20;
-  let snakeSpeed = 150; // ms per move
+  let gridSize = 40; // Larger grid for particle clusters
+  let snakeSpeed = 200; // ms per move
   let lastMoveTime = 0;
   let gameScore = 0;
   let closeButton = null;
   let touchStartX = 0;
   let touchStartY = 0;
+  let particleTargets = []; // Target positions for particles
+  let originalParticleState = null;
 
   /**
-   * Activate snake game
+   * Activate snake game - transform particles
    */
   function activateSnake() {
     if (isSnakeActive || isCubeActive) return;
     
     isSnakeActive = true;
     
-    // Hide particles canvas
-    const particlesBg = document.getElementById('particles-bg');
-    if (particlesBg) {
-      particlesBg.style.display = 'none';
+    // Get reference to particles from script.js
+    // We'll hook into the global particle animation
+    const particlesCanvas = document.getElementById('particles-bg');
+    if (!particlesCanvas) return;
+    
+    // Store reference to particle system
+    particleSystem = {
+      canvas: particlesCanvas,
+      ctx: particlesCanvas.getContext('2d')
+    };
+    
+    // Hide other page elements to focus on particles
+    const homeContainer = document.querySelector('.home-container');
+    if (homeContainer) {
+      homeContainer.style.opacity = '0.2';
+      homeContainer.style.pointerEvents = 'none';
     }
     
-    // Create snake canvas
-    createSnakeCanvas();
+    // Create close button
+    createCloseButton();
     
     // Initialize snake game
-    initSnakeGame();
+    initParticleSnakeGame();
     
-    // Start animation
-    animateSnake();
+    // Add input handlers
+    document.addEventListener('keydown', handleSnakeKeyDown);
+    document.addEventListener('touchstart', handleSnakeTouchStart, { passive: false });
+    document.addEventListener('touchend', handleSnakeTouchEnd, { passive: false });
+    
+    // Start game loop (separate from particle animation)
+    animateParticleSnake();
   }
 
   /**
@@ -465,53 +487,33 @@
       snakeAnimationFrame = null;
     }
     
-    // Remove event listeners before removing elements
+    // Remove event listeners
     document.removeEventListener('keydown', handleSnakeKeyDown);
-    window.removeEventListener('resize', handleSnakeResize);
-    if (snakeCanvas) {
-      snakeCanvas.removeEventListener('touchstart', handleSnakeTouchStart);
-      snakeCanvas.removeEventListener('touchend', handleSnakeTouchEnd);
-    }
+    document.removeEventListener('touchstart', handleSnakeTouchStart);
+    document.removeEventListener('touchend', handleSnakeTouchEnd);
     
-    // Remove canvas and close button
-    if (snakeCanvas && snakeCanvas.parentNode) {
-      snakeCanvas.parentNode.removeChild(snakeCanvas);
-    }
+    // Remove close button
     if (closeButton && closeButton.parentNode) {
       closeButton.parentNode.removeChild(closeButton);
     }
-    
-    snakeCanvas = null;
-    snakeCtx = null;
     closeButton = null;
     
-    // Restore particles canvas
-    const particlesBg = document.getElementById('particles-bg');
-    if (particlesBg) {
-      particlesBg.style.display = 'block';
+    // Restore page visibility
+    const homeContainer = document.querySelector('.home-container');
+    if (homeContainer) {
+      homeContainer.style.opacity = '1';
+      homeContainer.style.pointerEvents = 'auto';
     }
+    
+    // Clear particle targets - let them drift naturally
+    particleTargets = [];
+    particleSystem = null;
   }
 
   /**
-   * Create canvas for snake game
+   * Create close button overlay
    */
-  function createSnakeCanvas() {
-    snakeCanvas = document.createElement('canvas');
-    snakeCanvas.id = 'snake-game-canvas';
-    snakeCanvas.style.position = 'fixed';
-    snakeCanvas.style.top = '0';
-    snakeCanvas.style.left = '0';
-    snakeCanvas.style.width = '100%';
-    snakeCanvas.style.height = '100%';
-    snakeCanvas.style.zIndex = '9999';
-    snakeCanvas.style.backgroundColor = 'rgba(2, 6, 18, 1)';
-    snakeCanvas.width = window.innerWidth;
-    snakeCanvas.height = window.innerHeight;
-    
-    document.body.appendChild(snakeCanvas);
-    snakeCtx = snakeCanvas.getContext('2d');
-    
-    // Create close button
+  function createCloseButton() {
     closeButton = document.createElement('button');
     closeButton.textContent = '×';
     closeButton.style.position = 'fixed';
@@ -545,38 +547,25 @@
     });
     
     document.body.appendChild(closeButton);
-    
-    // Add input handlers
-    document.addEventListener('keydown', handleSnakeKeyDown);
-    snakeCanvas.addEventListener('touchstart', handleSnakeTouchStart, { passive: false });
-    snakeCanvas.addEventListener('touchend', handleSnakeTouchEnd, { passive: false });
-    
-    // Handle window resize
-    window.addEventListener('resize', handleSnakeResize);
   }
 
   /**
-   * Handle window resize for snake game
+   * Initialize particle-based snake game
    */
-  function handleSnakeResize() {
-    if (!snakeCanvas || !isSnakeActive) return;
-    snakeCanvas.width = window.innerWidth;
-    snakeCanvas.height = window.innerHeight;
-  }
-
-  /**
-   * Initialize snake game
-   */
-  function initSnakeGame() {
-    // Calculate grid size based on screen size
-    const minDimension = Math.min(snakeCanvas.width, snakeCanvas.height);
-    gridSize = Math.floor(minDimension / 25);
-    if (gridSize < 15) gridSize = 15;
-    if (gridSize > 30) gridSize = 30;
+  function initParticleSnakeGame() {
+    if (!particleSystem || !particleSystem.canvas) return;
+    
+    const canvas = particleSystem.canvas;
+    
+    // Calculate grid size
+    const minDimension = Math.min(canvas.width, canvas.height);
+    gridSize = Math.floor(minDimension / 15); // Larger cells for better particle clustering
+    if (gridSize < 30) gridSize = 30;
+    if (gridSize > 60) gridSize = 60;
     
     // Initialize snake in the center
-    const centerX = Math.floor(snakeCanvas.width / gridSize / 2);
-    const centerY = Math.floor(snakeCanvas.height / gridSize / 2);
+    const centerX = Math.floor(canvas.width / gridSize / 2);
+    const centerY = Math.floor(canvas.height / gridSize / 2);
     
     snake = [
       { x: centerX, y: centerY },
@@ -590,15 +579,20 @@
     lastMoveTime = performance.now();
     
     // Place initial food
-    placeFood();
+    placeParticleFood();
+    
+    // Create particle targets for snake and food
+    updateParticleTargets();
   }
 
   /**
    * Place food at random location
    */
-  function placeFood() {
-    const maxX = Math.floor(snakeCanvas.width / gridSize);
-    const maxY = Math.floor(snakeCanvas.height / gridSize);
+  function placeParticleFood() {
+    if (!particleSystem || !particleSystem.canvas) return;
+    
+    const maxX = Math.floor(particleSystem.canvas.width / gridSize);
+    const maxY = Math.floor(particleSystem.canvas.height / gridSize);
     
     let validPosition = false;
     let attempts = 0;
@@ -617,15 +611,60 @@
       attempts++;
     }
     
-    // If no valid position found (snake fills most of grid), place at 0,0
-    // This is extremely unlikely to happen in normal gameplay
     if (!validPosition) {
       food = { x: 0, y: 0 };
     }
   }
 
   /**
-   * Handle keyboard input for snake
+   * Update particle target positions
+   */
+  function updateParticleTargets() {
+    particleTargets = [];
+    
+    // Create targets for snake segments (green particles)
+    snake.forEach((segment, index) => {
+      const centerX = segment.x * gridSize + gridSize / 2;
+      const centerY = segment.y * gridSize + gridSize / 2;
+      
+      // Each segment gets 8-12 particles in a cluster
+      const particlesPerSegment = 10;
+      const radius = gridSize * 0.4;
+      
+      for (let i = 0; i < particlesPerSegment; i++) {
+        const angle = (i / particlesPerSegment) * Math.PI * 2;
+        const r = radius * (0.5 + Math.random() * 0.5);
+        particleTargets.push({
+          x: centerX + Math.cos(angle) * r,
+          y: centerY + Math.sin(angle) * r,
+          type: 'snake',
+          brightness: index === 0 ? 1 : 0.7 // Head is brighter
+        });
+      }
+    });
+    
+    // Create targets for food (cyan particles)
+    if (food) {
+      const centerX = food.x * gridSize + gridSize / 2;
+      const centerY = food.y * gridSize + gridSize / 2;
+      
+      const foodParticles = 8;
+      const radius = gridSize * 0.3;
+      
+      for (let i = 0; i < foodParticles; i++) {
+        const angle = (i / foodParticles) * Math.PI * 2;
+        particleTargets.push({
+          x: centerX + Math.cos(angle) * radius,
+          y: centerY + Math.sin(angle) * radius,
+          type: 'food',
+          brightness: 1
+        });
+      }
+    }
+  }
+
+  /**
+   * Handle keyboard input
    */
   function handleSnakeKeyDown(e) {
     if (!isSnakeActive) return;
@@ -667,7 +706,7 @@
   }
 
   /**
-   * Handle touch start for mobile controls
+   * Handle touch start
    */
   function handleSnakeTouchStart(e) {
     e.preventDefault();
@@ -677,7 +716,7 @@
   }
 
   /**
-   * Handle touch end for mobile controls
+   * Handle touch end
    */
   function handleSnakeTouchEnd(e) {
     e.preventDefault();
@@ -688,9 +727,7 @@
     const deltaY = touch.clientY - touchStartY;
     const minSwipeDistance = 30;
     
-    // Determine swipe direction
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
-      // Horizontal swipe
       if (Math.abs(deltaX) > minSwipeDistance) {
         if (deltaX > 0 && direction.x === 0) {
           nextDirection = { x: 1, y: 0 };
@@ -699,7 +736,6 @@
         }
       }
     } else {
-      // Vertical swipe
       if (Math.abs(deltaY) > minSwipeDistance) {
         if (deltaY > 0 && direction.y === 0) {
           nextDirection = { x: 0, y: 1 };
@@ -711,9 +747,9 @@
   }
 
   /**
-   * Update snake game state
+   * Update snake game logic
    */
-  function updateSnake(currentTime) {
+  function updateParticleSnake(currentTime) {
     if (currentTime - lastMoveTime < snakeSpeed) {
       return;
     }
@@ -729,20 +765,18 @@
     };
     
     // Check wall collision
-    const maxX = Math.floor(snakeCanvas.width / gridSize);
-    const maxY = Math.floor(snakeCanvas.height / gridSize);
+    const maxX = Math.floor(particleSystem.canvas.width / gridSize);
+    const maxY = Math.floor(particleSystem.canvas.height / gridSize);
     
     if (newHead.x < 0 || newHead.x >= maxX || 
         newHead.y < 0 || newHead.y >= maxY) {
-      // Game over
-      gameOver();
+      particleGameOver();
       return;
     }
     
     // Check self collision
     if (snake.some(segment => segment.x === newHead.x && segment.y === newHead.y)) {
-      // Game over
-      gameOver();
+      particleGameOver();
       return;
     }
     
@@ -752,109 +786,124 @@
     // Check if food eaten
     if (newHead.x === food.x && newHead.y === food.y) {
       gameScore++;
-      placeFood();
+      placeParticleFood();
       
       // Increase speed slightly
-      if (snakeSpeed > 80) {
-        snakeSpeed -= 2;
+      if (snakeSpeed > 100) {
+        snakeSpeed -= 5;
       }
     } else {
-      // Remove tail if no food eaten
+      // Remove tail
       snake.pop();
     }
+    
+    // Update particle targets to match new snake position
+    updateParticleTargets();
   }
 
   /**
-   * Draw snake game
+   * Game over for particle snake
    */
-  function drawSnake() {
-    // Clear canvas
-    snakeCtx.fillStyle = 'rgba(2, 6, 18, 1)';
-    snakeCtx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+  function particleGameOver() {
+    // Show game over overlay
+    const canvas = particleSystem.canvas;
+    const ctx = particleSystem.ctx;
     
-    // Draw snake with glow effect
-    snake.forEach((segment, index) => {
-      const x = segment.x * gridSize;
-      const y = segment.y * gridSize;
-      
-      // Draw glow
-      snakeCtx.shadowBlur = 15;
-      snakeCtx.shadowColor = 'rgba(94, 232, 125, 0.8)';
-      
-      // Head is brighter
-      if (index === 0) {
-        snakeCtx.fillStyle = 'rgba(94, 232, 125, 1)';
-      } else {
-        const opacity = 0.6 + (0.4 * (1 - index / snake.length));
-        snakeCtx.fillStyle = `rgba(94, 232, 125, ${opacity})`;
-      }
-      
-      snakeCtx.fillRect(x + 1, y + 1, gridSize - 2, gridSize - 2);
-    });
+    // Create a semi-transparent overlay
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Draw food with glow effect
-    if (food) {
-      const x = food.x * gridSize;
-      const y = food.y * gridSize;
-      
-      snakeCtx.shadowBlur = 20;
-      snakeCtx.shadowColor = 'rgba(109, 217, 232, 0.9)';
-      snakeCtx.fillStyle = 'rgba(109, 217, 232, 1)';
-      snakeCtx.fillRect(x + 2, y + 2, gridSize - 4, gridSize - 4);
-    }
+    ctx.fillStyle = 'rgba(255, 140, 140, 0.9)';
+    ctx.font = 'bold 48px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2 - 40);
     
-    // Reset shadow
-    snakeCtx.shadowBlur = 0;
+    ctx.fillStyle = 'rgba(109, 217, 232, 0.8)';
+    ctx.font = '24px system-ui, sans-serif';
+    ctx.fillText(`Score: ${gameScore}`, canvas.width / 2, canvas.height / 2 + 20);
     
-    // Draw score
-    snakeCtx.fillStyle = 'rgba(109, 217, 232, 0.8)';
-    snakeCtx.font = '20px "SF Mono", Menlo, Monaco, Consolas, monospace';
-    snakeCtx.textAlign = 'right';
-    snakeCtx.fillText(`Score: ${gameScore}`, snakeCanvas.width - 20, 40);
-    
-    // Draw controls hint
-    snakeCtx.font = '14px "SF Mono", Menlo, Monaco, Consolas, monospace';
-    snakeCtx.textAlign = 'center';
-    snakeCtx.fillStyle = 'rgba(109, 217, 232, 0.5)';
-    snakeCtx.fillText('Arrow keys or WASD to move', snakeCanvas.width / 2, snakeCanvas.height - 30);
-    snakeCtx.fillText('Swipe to move on mobile', snakeCanvas.width / 2, snakeCanvas.height - 10);
-  }
-
-  /**
-   * Game over
-   */
-  function gameOver() {
-    // Draw game over message
-    snakeCtx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-    snakeCtx.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
-    
-    snakeCtx.fillStyle = 'rgba(255, 140, 140, 0.9)';
-    snakeCtx.font = 'bold 48px system-ui, sans-serif';
-    snakeCtx.textAlign = 'center';
-    snakeCtx.textBaseline = 'middle';
-    snakeCtx.fillText('Game Over', snakeCanvas.width / 2, snakeCanvas.height / 2 - 40);
-    
-    snakeCtx.fillStyle = 'rgba(109, 217, 232, 0.8)';
-    snakeCtx.font = '24px system-ui, sans-serif';
-    snakeCtx.fillText(`Score: ${gameScore}`, snakeCanvas.width / 2, snakeCanvas.height / 2 + 20);
-    
-    // Return to normal after delay
+    // Deactivate after delay
     setTimeout(() => {
       deactivateSnake();
     }, 2000);
   }
 
   /**
-   * Animation loop for snake game
+   * Animation loop - attract particles to targets
    */
-  function animateSnake() {
+  function animateParticleSnake() {
     if (!isSnakeActive) return;
     
     const currentTime = performance.now();
-    updateSnake(currentTime);
-    drawSnake();
+    updateParticleSnake(currentTime);
     
-    snakeAnimationFrame = requestAnimationFrame(animateSnake);
+    // Draw score overlay
+    if (particleSystem && particleSystem.ctx) {
+      const ctx = particleSystem.ctx;
+      ctx.fillStyle = 'rgba(109, 217, 232, 0.8)';
+      ctx.font = '20px "SF Mono", Menlo, Monaco, Consolas, monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(`Score: ${gameScore}`, particleSystem.canvas.width - 20, 40);
+      
+      // Controls hint
+      ctx.font = '14px "SF Mono", Menlo, Monaco, Consolas, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(109, 217, 232, 0.5)';
+      ctx.fillText('Arrow keys or WASD • Swipe on mobile', particleSystem.canvas.width / 2, particleSystem.canvas.height - 20);
+    }
+    
+    snakeAnimationFrame = requestAnimationFrame(animateParticleSnake);
+  }
+
+  /**
+   * Get particle target attraction
+   * This function is called by script.js particle system
+   */
+  window.getSnakeParticleTarget = function(particle) {
+    if (!isSnakeActive || particleTargets.length === 0) {
+      return null;
+    }
+    
+    // Find closest target
+    let closestTarget = null;
+    let minDist = Infinity;
+    
+    particleTargets.forEach(target => {
+      const dx = target.x - particle.x;
+      const dy = target.y - particle.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      
+      if (dist < minDist) {
+        minDist = dist;
+        closestTarget = target;
+      }
+    });
+    
+    return closestTarget;
+  };
+
+  /**
+   * Initialize Easter egg listener
+   */
+  function init() {
+    // Only activate on home page - check for both home.html and pages with header image
+    const isHomePage = window.location.pathname.includes('home.html') || 
+                       document.querySelector('.home-header-image');
+    
+    if (!isHomePage) {
+      return;
+    }
+    
+    // Initialize cube easter egg
+    document.addEventListener('keypress', handleKeyPress);
+    
+    // Initialize snake easter egg - click on header image
+    const headerImage = document.querySelector('.home-header-image');
+    if (headerImage) {
+      headerImage.style.cursor = 'pointer';
+      headerImage.addEventListener('click', activateSnake);
+    }
   }
 
   // Auto-initialize when DOM is ready
