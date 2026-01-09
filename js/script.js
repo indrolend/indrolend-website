@@ -790,17 +790,25 @@ Dr. Wei's voice lingers at the edge of the memory:
       let clickRepulsion = null;
       let entranceComplete = false;
       
+      // Constants for mobile detection and touch handling
+      const MOBILE_BREAKPOINT_WIDTH = 768;
+      const TOUCH_DEBOUNCE_MS = 300;
+      
       // Detect mobile device for performance optimization
       // Use feature detection instead of user agent sniffing
-      const isMobile = (navigator.maxTouchPoints > 0 || 'ontouchstart' in window) 
-                       && (window.innerWidth <= 768);
+      function checkIsMobile() {
+        return (navigator.maxTouchPoints > 0 || 'ontouchstart' in window) 
+               && (window.innerWidth <= MOBILE_BREAKPOINT_WIDTH);
+      }
       
-      // Touch debounce constant
-      const TOUCH_DEBOUNCE_MS = 300;
+      let isMobile = checkIsMobile();
       
       function resizeCanvas() {
         tttGameCanvas.width = window.innerWidth;
         tttGameCanvas.height = window.innerHeight;
+        
+        // Update mobile detection on resize (handles device rotation)
+        isMobile = checkIsMobile();
         
         // Update particle target positions when canvas resizes
         particles.forEach(p => {
