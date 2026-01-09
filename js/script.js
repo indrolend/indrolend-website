@@ -1,4 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // --- Home Page Fade-In Animation ---
+  // Trigger fade-in animations when the home page loads
+  const particlesBg = document.getElementById("particles-bg");
+  if (particlesBg) {
+    // Add fade-in class to particles background
+    particlesBg.classList.add("fade-in");
+    
+    // Trigger fade-in for all elements with fade-in-element class
+    const fadeElements = document.querySelectorAll(".fade-in-element");
+    fadeElements.forEach(el => {
+      // Use setTimeout to ensure animation triggers after initial render
+      setTimeout(() => {
+        el.classList.add("animate");
+      }, 50);
+    });
+  }
+
   // --- Particles Background (replaces Matrix) ---
   const particlesCanvas = document.getElementById("particles-bg");
   if (particlesCanvas) {
