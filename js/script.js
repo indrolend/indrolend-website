@@ -1103,14 +1103,11 @@ Dr. Wei's voice lingers at the edge of the memory:
         handleClick(touch.clientX, touch.clientY);
         
         // Clear any existing timeout before setting a new one
-        if (touchDebounceTimeout) {
-          clearTimeout(touchDebounceTimeout);
-        }
+        clearTimeout(touchDebounceTimeout);
         
         // Reset after a short delay
         touchDebounceTimeout = setTimeout(() => {
           isProcessingTouch = false;
-          touchDebounceTimeout = null;
         }, TOUCH_DEBOUNCE_MS);
       }, { passive: false });
 
