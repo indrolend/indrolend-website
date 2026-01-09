@@ -8,11 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Trigger fade-in for all elements with fade-in-element class
     const fadeElements = document.querySelectorAll(".fade-in-element");
+    const ANIMATION_TRIGGER_DELAY = 50; // ms delay to ensure animation triggers after initial render
     fadeElements.forEach(el => {
-      // Use setTimeout to ensure animation triggers after initial render
       setTimeout(() => {
         el.classList.add("animate");
-      }, 50);
+      }, ANIMATION_TRIGGER_DELAY);
     });
   }
 
