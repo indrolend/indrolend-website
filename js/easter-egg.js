@@ -440,8 +440,7 @@
     
     isSnakeActive = true;
     
-    // Get reference to particles from script.js
-    // We'll hook into the global particle animation
+    // Get reference to particles canvas
     const particlesCanvas = document.getElementById('particles-bg');
     if (!particlesCanvas) return;
     
@@ -451,14 +450,14 @@
       ctx: particlesCanvas.getContext('2d')
     };
     
-    // Hide other page elements to focus on particles
+    // Fade other page elements
     const homeContainer = document.querySelector('.home-container');
     if (homeContainer) {
       homeContainer.style.opacity = '0.2';
       homeContainer.style.pointerEvents = 'none';
     }
     
-    // Create close button
+    // Create close button and overlay
     createCloseButton();
     
     // Initialize snake game
@@ -469,7 +468,7 @@
     document.addEventListener('touchstart', handleSnakeTouchStart, { passive: false });
     document.addEventListener('touchend', handleSnakeTouchEnd, { passive: false });
     
-    // Start game loop (separate from particle animation)
+    // Start game loop
     animateParticleSnake();
   }
 
@@ -596,11 +595,11 @@
     
     const canvas = particleSystem.canvas;
     
-    // Calculate grid size
+    // Calculate grid size - smaller for better playability
     const minDimension = Math.min(canvas.width, canvas.height);
-    gridSize = Math.floor(minDimension / 15); // Larger cells for better particle clustering
-    if (gridSize < 30) gridSize = 30;
-    if (gridSize > 60) gridSize = 60;
+    gridSize = Math.floor(minDimension / 20); // Smaller grid for actual gameplay
+    if (gridSize < 20) gridSize = 20;
+    if (gridSize > 40) gridSize = 40;
     
     // Initialize snake in the center
     const centerX = Math.floor(canvas.width / gridSize / 2);
@@ -620,7 +619,7 @@
     // Place initial food
     placeParticleFood();
     
-    // Create particle targets for snake and food
+    // Create particle targets for visual effect
     updateParticleTargets();
   }
 
@@ -656,42 +655,41 @@
   }
 
   /**
-   * Update particle target positions
+   * Update particle target positions - decorative orbiting effect
    */
   function updateParticleTargets() {
     particleTargets = [];
     
-    // Create targets for snake segments (green particles)
+    // Create targets that orbit around snake segments
     snake.forEach((segment, index) => {
       const centerX = segment.x * gridSize + gridSize / 2;
       const centerY = segment.y * gridSize + gridSize / 2;
       
-      // Each segment gets 8-12 particles in a cluster
-      const particlesPerSegment = 10;
-      const radius = gridSize * 0.4;
+      // Fewer particles per segment for decoration
+      const particlesPerSegment = 3;
+      const radius = gridSize * 0.6;
       
       for (let i = 0; i < particlesPerSegment; i++) {
-        const angle = (i / particlesPerSegment) * Math.PI * 2;
-        const r = radius * (0.5 + Math.random() * 0.5);
+        const angle = (i / particlesPerSegment) * Math.PI * 2 + performance.now() * 0.001;
         particleTargets.push({
-          x: centerX + Math.cos(angle) * r,
-          y: centerY + Math.sin(angle) * r,
+          x: centerX + Math.cos(angle) * radius,
+          y: centerY + Math.sin(angle) * radius,
           type: 'snake',
-          brightness: index === 0 ? 1 : 0.7 // Head is brighter
+          brightness: index === 0 ? 1 : 0.7
         });
       }
     });
     
-    // Create targets for food (cyan particles)
+    // Create targets that orbit around food
     if (food) {
       const centerX = food.x * gridSize + gridSize / 2;
       const centerY = food.y * gridSize + gridSize / 2;
       
-      const foodParticles = 8;
-      const radius = gridSize * 0.3;
+      const foodParticles = 4;
+      const radius = gridSize * 0.5;
       
       for (let i = 0; i < foodParticles; i++) {
-        const angle = (i / foodParticles) * Math.PI * 2;
+        const angle = (i / foodParticles) * Math.PI * 2 - performance.now() * 0.002;
         particleTargets.push({
           x: centerX + Math.cos(angle) * radius,
           y: centerY + Math.sin(angle) * radius,
@@ -869,13 +867,19 @@
   }
 
   /**
-   * Animation loop - update game state and score
+   * Animation loop - update game state, draw game, update particle targets
    */
   function animateParticleSnake() {
     if (!isSnakeActive) return;
     
     const currentTime = performance.now();
     updateParticleSnake(currentTime);
+    
+    // Draw the actual snake game on top of particles
+    drawSnakeGame();
+    
+    // Update particle targets for orbital effect
+    updateParticleTargets();
     
     // Update score display
     const scoreValue = document.getElementById('snake-score-value');
@@ -884,6 +888,53 @@
     }
     
     snakeAnimationFrame = requestAnimationFrame(animateParticleSnake);
+  }
+
+  /**
+   * Draw the actual snake game
+   */
+  function drawSnakeGame() {
+    if (!particleSystem || !particleSystem.ctx) return;
+    
+    const ctx = particleSystem.ctx;
+    
+    // Draw snake with glow effect
+    snake.forEach((segment, index) => {
+      const x = segment.x * gridSize;
+      const y = segment.y * gridSize;
+      
+      // Glow effect
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = 'rgba(94, 232, 125, 0.8)';
+      
+      // Head is brighter
+      if (index === 0) {
+        ctx.fillStyle = 'rgba(94, 232, 125, 1)';
+      } else {
+        const opacity = 0.6 + (0.4 * (1 - index / snake.length));
+        ctx.fillStyle = `rgba(94, 232, 125, ${opacity})`;
+      }
+      
+      ctx.fillRect(x + 2, y + 2, gridSize - 4, gridSize - 4);
+    });
+    
+    // Draw food with glow effect
+    if (food) {
+      const x = food.x * gridSize;
+      const y = food.y * gridSize;
+      
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = 'rgba(109, 217, 232, 0.9)';
+      ctx.fillStyle = 'rgba(109, 217, 232, 1)';
+      
+      // Draw as circle
+      ctx.beginPath();
+      ctx.arc(x + gridSize / 2, y + gridSize / 2, (gridSize / 2) - 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    // Reset shadow
+    ctx.shadowBlur = 0;
   }
 
   /**

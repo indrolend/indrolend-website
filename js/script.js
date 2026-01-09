@@ -92,14 +92,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const distance = Math.sqrt(dx * dx + dy * dy);
             
             if (distance > 5) {
-              // Much stronger attraction force
-              const attractionForce = 0.3;
-              p.vx += dx * attractionForce;
-              p.vy += dy * attractionForce;
+              // Gentler attraction for decorative orbiting effect
+              const attractionForce = 0.15;
+              p.vx += (dx / distance) * attractionForce;
+              p.vy += (dy / distance) * attractionForce;
               
-              // Heavy dampening to prevent wild bouncing
-              p.vx *= 0.8;
-              p.vy *= 0.8;
+              // Moderate dampening for smooth orbiting
+              p.vx *= 0.9;
+              p.vy *= 0.9;
               
               // Change char to square for game mode
               if (target.type === 'snake' && p.char !== '■') {
@@ -108,9 +108,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 p.char = '●';
               }
             } else {
-              // Very close to target - lock in place
-              p.vx *= 0.5;
-              p.vy *= 0.5;
+              // Close to target - gentle lock
+              p.vx *= 0.7;
+              p.vy *= 0.7;
             }
           }
         }
@@ -263,10 +263,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Expose reset function for Easter egg cleanup
     window.resetParticles = function() {
+      const now = performance.now();
       particles.forEach(p => {
         p.char = getRandomChar();
         p.vx = (Math.random() - 0.5) * maxSpeed;
         p.vy = (Math.random() - 0.5) * maxSpeed;
+        // Reset timing properties for consistent behavior
+        p.lastChangeTime = now;
+        p.changeInterval = Math.random() * 1200 + 300;
       });
     };
 
