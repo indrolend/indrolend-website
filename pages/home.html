@@ -11,14 +11,6 @@
   <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <title>Indrolend</title>
-  <!-- Preload critical assets -->
-  <link rel="preload" href="../assets/icons/Tiktoklogospin.gif" as="image" />
-  <link rel="preload" href="../assets/icons/Instagramlogospin.gif" as="image" />
-  <link rel="preload" href="../assets/icons/Spotifylogospin.gif" as="image" />
-  <link rel="preload" href="../assets/icons/Applemusiclogospin.gif" as="image" />
-  <link rel="preload" href="../assets/icons/Youtubelogospin.gif" as="image" />
-  <link rel="preload" href="../assets/icons/bandcamplogospin.gif" as="image" />
-  <link rel="preload" href="../assets/icons/cameralogospin.GIF" as="image" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
@@ -34,6 +26,7 @@
   <script defer src="../js/spotify-analytics.js"></script>
   <script defer src="../js/spotify-artists-stats.js"></script>
   <script defer src="../js/easter-egg.js"></script>
+  <script defer src="../js/particle-clusters.js"></script>
 </head>
 <body class="home-bg">
   <canvas id="particles-bg"></canvas>
@@ -66,50 +59,49 @@
       <div class="app-grid">
         <a class="app-card" href="https://www.tiktok.com/@indrolend" target="_blank" rel="noopener">
           <div class="app-card-media">
-            <img src="../assets/icons/Tiktoklogospin.gif" alt="TikTok" width="100" height="100" />
+            <canvas data-particle-cluster="tiktok" aria-label="TikTok"></canvas>
           </div>
           <div class="app-card-label"><span class="important-word">tiktok</span></div>
         </a>
 
         <a class="app-card" href="https://www.instagram.com/indrolend.us?igsh=dzAwdWtyOTVienF5&amp;utm_source=qr" target="_blank" rel="noopener">
           <div class="app-card-media">
-            <img src="../assets/icons/Instagramlogospin.gif" alt="Instagram" width="100" height="100" />
+            <canvas data-particle-cluster="instagram" aria-label="Instagram"></canvas>
           </div>
           <div class="app-card-label"><span class="important-word">instagram</span></div>
         </a>
 
         <a class="app-card" href="https://open.spotify.com/artist/59X3431NBfd6xWMc3Zlh0v?si=RepR9WX8Q8mX1sQoME1ckQ" target="_blank" rel="noopener">
           <div class="app-card-media">
-            <img src="../assets/icons/Spotifylogospin.gif" alt="Spotify" width="100" height="100" />
+            <canvas data-particle-cluster="spotify" aria-label="Spotify"></canvas>
           </div>
           <div class="app-card-label"><span class="important-word">spotify</span></div>
         </a>
 
         <a class="app-card" href="https://music.apple.com/us/artist/onliner/1663334902" target="_blank" rel="noopener">
           <div class="app-card-media">
-            <img src="../assets/icons/Applemusiclogospin.gif" alt="Apple Music" width="100" height="100" />
+            <canvas data-particle-cluster="applemusic" aria-label="Apple Music"></canvas>
           </div>
           <div class="app-card-label"><span class="important-word">apple music</span></div>
         </a>
 
         <a class="app-card" href="https://www.youtube.com/@indrolend" target="_blank" rel="noopener">
           <div class="app-card-media">
-            <img src="../assets/icons/Youtubelogospin.gif" alt="YouTube" width="100" height="100" />
+            <canvas data-particle-cluster="youtube" aria-label="YouTube"></canvas>
           </div>
           <div class="app-card-label"><span class="important-word">youtube</span></div>
         </a>
 
         <a class="app-card" href="https://indrolend.bandcamp.com" target="_blank" rel="noopener">
           <div class="app-card-media">
-            <img src="../assets/icons/bandcamplogospin.gif" alt="Bandcamp" width="100" height="100" />
+            <canvas data-particle-cluster="bandcamp" aria-label="Bandcamp"></canvas>
           </div>
           <div class="app-card-label"><span class="important-word">bandcamp</span></div>
         </a>
 
         <a class="app-card" id="galleryCard" href="gallery.html">
           <div class="app-card-media">
-            <img src="../assets/icons/cameralogospin.GIF" alt="image gallery" class="gallery-gif" width="100" height="100" />
-            <div class="gallery-static-icon">▢</div>
+            <canvas data-particle-cluster="gallery" aria-label="image gallery"></canvas>
           </div>
           <div class="app-card-label"><span class="important-word">image gallery</span></div>
         </a>
