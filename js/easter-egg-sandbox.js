@@ -30,6 +30,9 @@
   const SHAKE_COUNT_REQUIRED = 3; // Number of shakes to activate
   let shakeCount = 0;
   let shakeResetTimer = null;
+  
+  // Store previous acceleration for delta calculation (iOS fix)
+  let lastAcceleration = { x: 0, y: 0, z: 0 };
 
   // Initialize easter egg listener
   function initEasterEgg() {
@@ -103,12 +106,24 @@
     if (!acceleration) return;
 
     const { x, y, z } = acceleration;
-    const accelerationMagnitude = Math.sqrt(x * x + y * y + z * z);
+    
+    // Calculate the delta from the last acceleration (important for iOS)
+    // This removes the constant gravity component
+    const deltaX = Math.abs(x - lastAcceleration.x);
+    const deltaY = Math.abs(y - lastAcceleration.y);
+    const deltaZ = Math.abs(z - lastAcceleration.z);
+    
+    // Update last acceleration
+    lastAcceleration = { x, y, z };
+    
+    // Calculate change magnitude (this detects motion, not static gravity)
+    const deltaSum = deltaX + deltaY + deltaZ;
 
     const currentTime = Date.now();
     
-    // Detect significant shake
-    if (accelerationMagnitude > SHAKE_THRESHOLD) {
+    // Detect significant shake (using delta instead of absolute magnitude)
+    // Threshold of 15 for delta sum works well for shake detection
+    if (deltaSum > SHAKE_THRESHOLD) {
       if (currentTime - lastShakeTime > SHAKE_DEBOUNCE_TIME) {
         shakeCount++;
         lastShakeTime = currentTime;
