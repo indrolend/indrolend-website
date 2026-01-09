@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     applemusic: ["#FC3C44", "#FA243C", "#FFFFFF"], // Red, White
     youtube: ["#FF0000", "#282828", "#FFFFFF"], // Red, Dark Gray, White
     bandcamp: ["#629AA9", "#1DA0C3", "#FFFFFF"], // Blue tones
-    gallery: ["#6DD9E8", "#3BB8CC", "#FFFFFF"] // Terminal green theme
+    gallery: ["#6DD9E8", "#3BB8CC", "#FFFFFF"] // Cyan/teal theme colors
   };
 
   // Particle system configuration
@@ -31,6 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const mouse = { x: null, y: null, active: false };
     let animationId = null;
     let isVisible = false;
+    
+    // Use a lighter version of the first color for connection lines
+    const connectionLineColor = colors[0] || "#6DD9E8";
 
     // Set canvas size to match container
     function resizeCanvas() {
@@ -143,7 +146,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (distance < config.connectionDistance) {
             const opacity = (1 - distance / config.connectionDistance) * 0.3;
-            ctx.strokeStyle = `rgba(109, 217, 232, ${opacity})`;
+            // Convert hex color to rgba for opacity support
+            const hexColor = connectionLineColor.replace('#', '');
+            const r = parseInt(hexColor.substr(0, 2), 16);
+            const g = parseInt(hexColor.substr(2, 2), 16);
+            const b = parseInt(hexColor.substr(4, 2), 16);
+            ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
