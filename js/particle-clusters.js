@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     applemusic: ["#FC3C44", "#FA243C", "#FFFFFF"], // Red, White
     youtube: ["#FF0000", "#282828", "#FFFFFF"], // Red, Dark Gray, White
     bandcamp: ["#629AA9", "#1DA0C3", "#FFFFFF"], // Blue tones
-    gallery: ["#6DD9E8", "#3BB8CC", "#FFFFFF"] // Cyan/teal theme colors
+    gallery: ["#6DD9E8", "#FF8C8C"], // Cyan (X) and Red (O) from tic-tac-toe
+    galleryLocked: ["#888888"] // Single gray particle when locked
   };
 
   // Particle system configuration
@@ -29,7 +30,23 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize particle clusters for each platform button
   function initParticleCluster(canvas, platformKey) {
     const ctx = canvas.getContext("2d", { alpha: true });
-    const colors = platformColors[platformKey] || platformColors.gallery;
+    
+    // Special handling for gallery button - check if unlocked
+    let colors;
+    let particleCount = config.particleCount;
+    
+    if (platformKey === 'gallery') {
+      const isUnlocked = localStorage.getItem("galleryUnlocked") === "true";
+      if (isUnlocked) {
+        colors = platformColors.gallery; // Red and cyan particles
+      } else {
+        colors = platformColors.galleryLocked; // Single gray particle
+        particleCount = 1; // Only one particle when locked
+      }
+    } else {
+      colors = platformColors[platformKey] || platformColors.gallery;
+    }
+    
     const particles = [];
     const mouse = { x: null, y: null, active: false };
     let animationId = null;
@@ -64,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initialize particles in a cluster
     function initParticles() {
       particles.length = 0;
-      for (let i = 0; i < config.particleCount; i++) {
+      for (let i = 0; i < particleCount; i++) {
         const particle = createParticle();
         particle.originalX = particle.x;
         particle.originalY = particle.y;
