@@ -1618,3 +1618,77 @@ html, body {
     transform: translate(2px, -2px);
   }
 }
+
+/* ---- HOME PAGE FADE-IN ANIMATIONS ---- */
+@-webkit-keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(30px);
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(30px);
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+/* Initial state - elements are invisible */
+.fade-in-element {
+  opacity: 0;
+}
+
+/* Animated state - elements fade in */
+.fade-in-element.animate {
+  -webkit-animation: fadeInUp 0.8s ease-out forwards;
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Staggered delays for cascading effect */
+.fade-in-element.animate.delay-1 {
+  -webkit-animation-delay: 0.1s;
+  animation-delay: 0.1s;
+}
+
+.fade-in-element.animate.delay-2 {
+  -webkit-animation-delay: 0.2s;
+  animation-delay: 0.2s;
+}
+
+/* Canvas background fades in separately */
+#particles-bg.fade-in {
+  -webkit-animation: fadeIn 1.2s ease-out forwards;
+  animation: fadeIn 1.2s ease-out forwards;
+  opacity: 0;
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
