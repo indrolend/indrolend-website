@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     mouseRepelDistance: 80,
     mouseRepelForce: 0.5,
     springBackForce: 0.02, // Force to pull particles back to original position
+    springBackThreshold: 1, // Minimum distance before applying spring force
     damping: 0.98 // Velocity damping for smoother motion
   };
 
@@ -99,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const dyToOriginal = particle.originalY - particle.y;
         const distanceToOriginal = Math.sqrt(dxToOriginal * dxToOriginal + dyToOriginal * dyToOriginal);
         
-        if (distanceToOriginal > 1) {
+        if (distanceToOriginal > config.springBackThreshold) {
           // Apply spring force proportional to distance from original position
           particle.vx += dxToOriginal * config.springBackForce;
           particle.vy += dyToOriginal * config.springBackForce;
@@ -172,16 +173,13 @@ document.addEventListener("DOMContentLoaded", () => {
       mouse.y = e.clientY - rect.top;
     }
 
-    // Touch move handler
+    // Touch move handler - allows page scrolling by not preventing default
     function handleTouchMove(e) {
-      // Only prevent default if touch is on the canvas itself
-      // This allows scrolling when touching outside the canvas
       const rect = canvas.getBoundingClientRect();
       const touch = e.touches[0];
       const touchX = touch.clientX - rect.left;
       const touchY = touch.clientY - rect.top;
       
-      // Only update mouse position, don't prevent default to allow scrolling
       mouse.x = touchX;
       mouse.y = touchY;
     }
