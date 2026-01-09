@@ -20,7 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
     speed: 0.3,
     connectionDistance: 60,
     mouseRepelDistance: 80,
-    mouseRepelForce: 0.5
+    mouseRepelForce: 0.5,
+    springBackForce: 0.02, // Force to pull particles back to original position
+    damping: 0.98 // Velocity damping for smoother motion
   };
 
   // Initialize particle clusters for each platform button
@@ -74,10 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Update particle positions
     function updateParticles() {
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
-      const maxDistance = Math.min(canvas.width, canvas.height) * 0.4;
-
       particles.forEach(particle => {
         // Apply velocity
         particle.x += particle.vx;
@@ -91,44 +89,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
           if (distance < config.mouseRepelDistance) {
             const force = (config.mouseRepelDistance - distance) / config.mouseRepelDistance;
-            particle.x += (dx / distance) * force * config.mouseRepelForce * 5;
-            particle.y += (dy / distance) * force * config.mouseRepelForce * 5;
+            particle.vx += (dx / distance) * force * config.mouseRepelForce;
+            particle.vy += (dy / distance) * force * config.mouseRepelForce;
           }
         }
 
-        // Gentle attraction back to center to keep cluster together
-        const dx = centerX - particle.x;
-        const dy = centerY - particle.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance > maxDistance) {
-          particle.vx += (dx / distance) * 0.01;
-          particle.vy += (dy / distance) * 0.01;
+        // Spring back to original position (gravitational pull)
+        const dxToOriginal = particle.originalX - particle.x;
+        const dyToOriginal = particle.originalY - particle.y;
+        const distanceToOriginal = Math.sqrt(dxToOriginal * dxToOriginal + dyToOriginal * dyToOriginal);
+        
+        if (distanceToOriginal > 1) {
+          // Apply spring force proportional to distance from original position
+          particle.vx += dxToOriginal * config.springBackForce;
+          particle.vy += dyToOriginal * config.springBackForce;
         }
+
+        // Apply damping to velocity for smoother motion
+        particle.vx *= config.damping;
+        particle.vy *= config.damping;
 
         // Limit velocity
         const speed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
-        const maxSpeed = config.speed * 2;
+        const maxSpeed = config.speed * 3;
         if (speed > maxSpeed) {
           particle.vx = (particle.vx / speed) * maxSpeed;
           particle.vy = (particle.vy / speed) * maxSpeed;
-        }
-
-        // Soft boundary bounce
-        const padding = particle.radius;
-        if (particle.x < padding) {
-          particle.x = padding;
-          particle.vx *= -0.5;
-        } else if (particle.x > canvas.width - padding) {
-          particle.x = canvas.width - padding;
-          particle.vx *= -0.5;
-        }
-        if (particle.y < padding) {
-          particle.y = padding;
-          particle.vy *= -0.5;
-        } else if (particle.y > canvas.height - padding) {
-          particle.y = canvas.height - padding;
-          particle.vy *= -0.5;
         }
       });
     }
@@ -188,11 +174,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Touch move handler
     function handleTouchMove(e) {
-      e.preventDefault();
+      // Only prevent default if touch is on the canvas itself
+      // This allows scrolling when touching outside the canvas
       const rect = canvas.getBoundingClientRect();
       const touch = e.touches[0];
-      mouse.x = touch.clientX - rect.left;
-      mouse.y = touch.clientY - rect.top;
+      const touchX = touch.clientX - rect.left;
+      const touchY = touch.clientY - rect.top;
+      
+      // Only update mouse position, don't prevent default to allow scrolling
+      mouse.x = touchX;
+      mouse.y = touchY;
     }
 
     // Mouse enter handler
@@ -229,11 +220,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Event listeners
     canvas.addEventListener("mousemove", handleMouseMove);
-    canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+    canvas.addEventListener("touchmove", handleTouchMove, { passive: true });
     canvas.addEventListener("mouseenter", handleMouseEnter);
     canvas.addEventListener("mouseleave", handleMouseLeave);
-    canvas.addEventListener("touchstart", handleMouseEnter);
-    canvas.addEventListener("touchend", handleMouseLeave);
+    canvas.addEventListener("touchstart", handleMouseEnter, { passive: true });
+    canvas.addEventListener("touchend", handleMouseLeave, { passive: true });
 
     // Resize handler with debounce
     let resizeTimeout;

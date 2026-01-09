@@ -528,31 +528,28 @@ html, body {
   -ms-flex-pack: start;
   justify-content: flex-start;
   border-radius: 20px;
-  border: 1px solid var(--border-subtle);
-  background: radial-gradient(circle at top, rgba(12,30,35,0.9), rgba(3,8,15,0.95));
+  border: none;
+  background: transparent;
   padding: 10px 10px 12px;
   text-decoration: none;
   color: var(--terminal-green);
-  box-shadow: 0 14px 40px rgba(0,0,0,0.8);
-  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+  transition: transform 0.12s ease;
 }
 
 .app-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.9);
-  border-color: var(--terminal-green-soft);
-  background: radial-gradient(circle at top, rgba(20,50,60,1), rgba(2,7,14,0.98));
 }
 
 .app-card-media {
   width: 100%;
   aspect-ratio: 1 / 1;
   border-radius: 16px;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   align-items: center;
   justify-content: center;
   background: transparent;
+  position: relative;
 }
 
 .app-card-media img {
@@ -565,6 +562,52 @@ html, body {
   width: 100%;
   height: 100%;
   display: block;
+  position: relative;
+  z-index: 2;
+}
+
+.app-card-media::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.15;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Platform-specific background images */
+.app-card-media[data-bg="tiktok"]::before {
+  background-image: url('../assets/icons/Tiktoklogospin.gif');
+}
+
+.app-card-media[data-bg="spotify"]::before {
+  background-image: url('../assets/icons/Spotifylogospin.gif');
+}
+
+.app-card-media[data-bg="youtube"]::before {
+  background-image: url('../assets/icons/Youtubelogospin.gif');
+}
+
+.app-card-media[data-bg="applemusic"]::before {
+  background-image: url('../assets/icons/Applemusiclogospin.gif');
+}
+
+/* Bandcamp diamond shape */
+.app-card-media[data-bg="bandcamp"]::before {
+  background: none;
+  border: 2px solid rgba(98, 154, 169, 0.2);
+  transform: rotate(45deg);
+  width: 70%;
+  height: 70%;
+  top: 15%;
+  left: 15%;
+  border-radius: 8px;
 }
 
 .app-card-label {
