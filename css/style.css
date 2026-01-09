@@ -1668,16 +1668,6 @@ html, body {
   animation-delay: 0.2s;
 }
 
-.fade-in-element.animate.delay-3 {
-  -webkit-animation-delay: 0.3s;
-  animation-delay: 0.3s;
-}
-
-.fade-in-element.animate.delay-4 {
-  -webkit-animation-delay: 0.4s;
-  animation-delay: 0.4s;
-}
-
 /* Canvas background fades in separately */
 #particles-bg.fade-in {
   -webkit-animation: fadeIn 1.2s ease-out forwards;
