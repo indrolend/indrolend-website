@@ -906,21 +906,16 @@ html, body {
   gap: 14px;
 }
 
-/* Canvas for particle-based game */
-.ttt-game-canvas {
-  width: 100%;
-  max-width: 500px;
-  height: 500px;
+/* Canvas for particle-based game - fullscreen */
+.ttt-game-canvas-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   cursor: pointer;
-  border-radius: 8px;
-  background: rgba(2, 6, 18, 0.3);
-}
-
-@media (max-width: 640px) {
-  .ttt-game-canvas {
-    height: 400px;
-    max-width: 400px;
-  }
+  background: transparent;
+  z-index: 1;
 }
 
 .ttt-status {

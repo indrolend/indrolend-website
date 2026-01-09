@@ -764,20 +764,18 @@ Dr. Wei's voice lingers at the edge of the memory:
     renderIntroForm();
   }
 
-  // --- Tic-tac-toe gallery gate with custom particle system ---
+  // --- Tic-tac-toe gallery gate with advanced particle system ---
   const tttGameCanvas = document.getElementById("tttGameCanvas");
-  const tttStatus = document.getElementById("tttStatus");
-  const tttModal = document.getElementById("tttWinModal");
-  const tttWinOk = document.getElementById("tttWinOk");
 
-  if (tttGameCanvas && tttStatus && tttModal && tttWinOk) {
+  if (tttGameCanvas) {
     // If already unlocked, go straight to gallery
     const alreadyUnlocked = localStorage.getItem("galleryUnlocked") === "true";
     if (alreadyUnlocked) {
       window.location.href = "gallery.html";
     } else {
-      let board = Array(9).fill(null); // 'X' for player, 'O' for computer
+      let board = Array(9).fill(null);
       let gameOver = false;
+      let gameState = 'loading'; // 'loading', 'playing', 'celebrating', 'showing_message'
 
       const wins = [
         [0,1,2],[3,4,5],[6,7,8],
@@ -785,72 +783,84 @@ Dr. Wei's voice lingers at the edge of the memory:
         [0,4,8],[2,4,6]
       ];
 
-      // Custom particle system with click-only repulsion
+      // Particle system
       const ctx = tttGameCanvas.getContext("2d");
-      const particles = [];
-      const guideDots = Array(9).fill(true); // Track which guide dots are visible
-      let clickRepulsion = null; // { x, y, time, strength }
+      let particles = [];
+      const guideDots = Array(9).fill(false);
+      let clickRepulsion = null;
+      let entranceComplete = false;
       
       function resizeCanvas() {
-        const rect = tttGameCanvas.getBoundingClientRect();
-        tttGameCanvas.width = rect.width;
-        tttGameCanvas.height = rect.height;
+        tttGameCanvas.width = window.innerWidth;
+        tttGameCanvas.height = window.innerHeight;
       }
       resizeCanvas();
       window.addEventListener("resize", resizeCanvas);
 
-      // Particle class with click-based repulsion
+      // Enhanced Particle class with micro-fluctuations
       class Particle {
-        constructor(x, y, targetX, targetY, color, cellIndex, shape) {
-          this.x = x + (Math.random() - 0.5) * 10;
-          this.y = y + (Math.random() - 0.5) * 10;
+        constructor(x, y, targetX, targetY, color, cellIndex, shape, isGuide = false) {
+          this.x = x;
+          this.y = y;
           this.targetX = targetX;
           this.targetY = targetY;
           this.vx = 0;
           this.vy = 0;
           this.color = color;
-          this.radius = 2.5;
+          this.radius = isGuide ? 3 : 2.5;
           this.cellIndex = cellIndex;
           this.shape = shape;
+          this.isGuide = isGuide;
           this.returnForce = 0.04;
           this.damping = 0.88;
           this.maxSpeed = 10;
+          // Micro fluctuations
+          this.fluctuationPhase = Math.random() * Math.PI * 2;
+          this.fluctuationSpeed = 0.02 + Math.random() * 0.03;
+          this.fluctuationAmount = 0.3 + Math.random() * 0.7;
         }
 
         update() {
-          // Click-based repulsion with decay
+          // Micro fluctuations for "alive" effect
+          if (!this.isGuide && gameState === 'playing') {
+            this.fluctuationPhase += this.fluctuationSpeed;
+            const fluctX = Math.sin(this.fluctuationPhase) * this.fluctuationAmount;
+            const fluctY = Math.cos(this.fluctuationPhase * 1.3) * this.fluctuationAmount;
+            this.vx += fluctX * 0.01;
+            this.vy += fluctY * 0.01;
+          }
+
+          // Click repulsion
           if (clickRepulsion) {
             const dx = this.x - clickRepulsion.x;
             const dy = this.y - clickRepulsion.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
-            const repelDistance = 100;
             
-            if (dist < repelDistance && dist > 0) {
-              const force = (repelDistance - dist) / repelDistance;
+            if (dist < 100 && dist > 0) {
+              const force = (100 - dist) / 100;
               const repel = clickRepulsion.strength * force;
               this.vx += (dx / dist) * repel;
               this.vy += (dy / dist) * repel;
             }
           }
 
-          // Return to target position
+          // Return to target
           const tdx = this.targetX - this.x;
           const tdy = this.targetY - this.y;
           this.vx += tdx * this.returnForce;
           this.vy += tdy * this.returnForce;
 
-          // Apply damping
+          // Damping
           this.vx *= this.damping;
           this.vy *= this.damping;
 
-          // Limit speed
+          // Speed limit
           const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
           if (speed > this.maxSpeed) {
             this.vx = (this.vx / speed) * this.maxSpeed;
             this.vy = (this.vy / speed) * this.maxSpeed;
           }
 
-          // Update position
           this.x += this.vx;
           this.y += this.vy;
         }
@@ -858,7 +868,7 @@ Dr. Wei's voice lingers at the edge of the memory:
         draw() {
           ctx.save();
           ctx.fillStyle = this.color;
-          ctx.shadowBlur = 15;
+          ctx.shadowBlur = this.isGuide ? 8 : 15;
           ctx.shadowColor = this.color;
           ctx.beginPath();
           ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
@@ -867,75 +877,175 @@ Dr. Wei's voice lingers at the edge of the memory:
         }
       }
 
-      // Calculate grid cell centers
+      // Calculate grid positions
       function getCellCenter(index) {
-        const w = tttGameCanvas.width;
-        const h = tttGameCanvas.height;
-        const cellW = w / 3;
-        const cellH = h / 3;
+        const gridSize = Math.min(tttGameCanvas.width, tttGameCanvas.height) * 0.6;
+        const cellSize = gridSize / 3;
+        const startX = (tttGameCanvas.width - gridSize) / 2;
+        const startY = (tttGameCanvas.height - gridSize) / 2;
         const row = Math.floor(index / 3);
         const col = index % 3;
         return {
-          x: col * cellW + cellW / 2,
-          y: row * cellH + cellH / 2
+          x: startX + col * cellSize + cellSize / 2,
+          y: startY + row * cellSize + cellSize / 2
         };
       }
 
-      // Get cell index from coordinates
       function getCellIndex(x, y) {
-        const w = tttGameCanvas.width;
-        const h = tttGameCanvas.height;
-        const cellW = w / 3;
-        const cellH = h / 3;
-        const col = Math.floor(x / cellW);
-        const row = Math.floor(y / cellH);
+        const gridSize = Math.min(tttGameCanvas.width, tttGameCanvas.height) * 0.6;
+        const cellSize = gridSize / 3;
+        const startX = (tttGameCanvas.width - gridSize) / 2;
+        const startY = (tttGameCanvas.height - gridSize) / 2;
+        const col = Math.floor((x - startX) / cellSize);
+        const row = Math.floor((y - startY) / cellSize);
         if (col >= 0 && col < 3 && row >= 0 && row < 3) {
           return row * 3 + col;
         }
         return -1;
       }
 
-      // Create X shape with particles - bioluminescent cyan
-      function createXParticles(index) {
-        const center = getCellCenter(index);
-        const size = Math.min(tttGameCanvas.width, tttGameCanvas.height) / 8;
-        const color = 'rgba(109, 217, 232, 0.9)'; // Softer bioluminescent cyan
-        const particleCount = 40;
-
-        // Create diagonal lines forming X
-        for (let i = 0; i < particleCount; i++) {
-          const t = i / particleCount;
+      // Entrance animation - dots emerge from deep ocean
+      function createEntranceAnimation() {
+        gameState = 'loading';
+        const bottomY = tttGameCanvas.height + 100;
+        
+        for (let i = 0; i < 9; i++) {
+          const center = getCellCenter(i);
+          const startX = center.x + (Math.random() - 0.5) * 50;
           
-          // First diagonal (\)
-          if (i < particleCount / 2) {
-            const x = center.x - size/2 + size * (t * 2);
-            const y = center.y - size/2 + size * (t * 2);
-            particles.push(new Particle(center.x, center.y, x, y, color, index, 'X'));
-          }
-          // Second diagonal (/)
-          else {
-            const t2 = (i - particleCount / 2) / (particleCount / 2);
-            const x = center.x + size/2 - size * t2;
-            const y = center.y - size/2 + size * t2;
-            particles.push(new Particle(center.x, center.y, x, y, color, index, 'X'));
-          }
+          setTimeout(() => {
+            const particle = new Particle(
+              startX, bottomY,
+              center.x, center.y,
+              'rgba(255, 255, 255, 0.6)',
+              i, null, true
+            );
+            particle.returnForce = 0.02;
+            particles.push(particle);
+            guideDots[i] = true;
+            
+            if (i === 8) {
+              setTimeout(() => {
+                entranceComplete = true;
+                gameState = 'playing';
+              }, 2000);
+            }
+          }, i * 150);
         }
       }
 
-      // Create O shape with particles - bioluminescent coral/pink
+      // Create X particles
+      function createXParticles(index) {
+        const center = getCellCenter(index);
+        const size = Math.min(tttGameCanvas.width, tttGameCanvas.height) * 0.08;
+        const color = 'rgba(109, 217, 232, 0.9)';
+        const particleCount = 40;
+
+        for (let i = 0; i < particleCount; i++) {
+          const t = i / particleCount;
+          let tx, ty;
+          
+          if (i < particleCount / 2) {
+            tx = center.x - size/2 + size * (t * 2);
+            ty = center.y - size/2 + size * (t * 2);
+          } else {
+            const t2 = (i - particleCount / 2) / (particleCount / 2);
+            tx = center.x + size/2 - size * t2;
+            ty = center.y - size/2 + size * t2;
+          }
+          particles.push(new Particle(center.x, center.y, tx, ty, color, index, 'X'));
+        }
+      }
+
+      // Create O particles
       function createOParticles(index) {
         const center = getCellCenter(index);
-        const radius = Math.min(tttGameCanvas.width, tttGameCanvas.height) / 10;
-        const color = 'rgba(255, 140, 140, 0.9)'; // Softer bioluminescent coral
+        const radius = Math.min(tttGameCanvas.width, tttGameCanvas.height) * 0.05;
+        const color = 'rgba(255, 140, 140, 0.9)';
         const particleCount = 35;
 
-        // Create circle
         for (let i = 0; i < particleCount; i++) {
           const angle = (i / particleCount) * Math.PI * 2;
-          const x = center.x + Math.cos(angle) * radius;
-          const y = center.y + Math.sin(angle) * radius;
-          particles.push(new Particle(center.x, center.y, x, y, color, index, 'O'));
+          const tx = center.x + Math.cos(angle) * radius;
+          const ty = center.y + Math.sin(angle) * radius;
+          particles.push(new Particle(center.x, center.y, tx, ty, color, index, 'O'));
         }
+      }
+
+      // Create text from particles
+      function createTextParticles(text, centerY, color, onComplete) {
+        const fontSize = 40;
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCanvas.width = tttGameCanvas.width;
+        tempCanvas.height = 100;
+        
+        tempCtx.font = `${fontSize}px "SF Mono", monospace`;
+        tempCtx.textAlign = 'center';
+        tempCtx.textBaseline = 'middle';
+        tempCtx.fillStyle = 'white';
+        tempCtx.fillText(text, tempCanvas.width / 2, 50);
+        
+        const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, 100);
+        const textParticles = [];
+        
+        for (let y = 0; y < 100; y += 4) {
+          for (let x = 0; x < tempCanvas.width; x += 4) {
+            const index = (y * tempCanvas.width + x) * 4;
+            if (imageData.data[index + 3] > 128) {
+              const targetX = x;
+              const targetY = centerY - 50 + y;
+              const startAngle = Math.random() * Math.PI * 2;
+              const startRadius = 300;
+              const startX = tttGameCanvas.width / 2 + Math.cos(startAngle) * startRadius;
+              const startY = tttGameCanvas.height / 2 + Math.sin(startAngle) * startRadius;
+              
+              const p = new Particle(startX, startY, targetX, targetY, color, -1, 'text');
+              p.returnForce = 0.03;
+              textParticles.push(p);
+            }
+          }
+        }
+        
+        particles.push(...textParticles);
+        
+        if (onComplete) {
+          setTimeout(onComplete, 3000);
+        }
+      }
+
+      // Rainbow explosion
+      function createRainbowExplosion() {
+        const colors = [
+          'rgba(255, 0, 0, 0.9)',
+          'rgba(255, 127, 0, 0.9)',
+          'rgba(255, 255, 0, 0.9)',
+          'rgba(0, 255, 0, 0.9)',
+          'rgba(0, 0, 255, 0.9)',
+          'rgba(75, 0, 130, 0.9)',
+          'rgba(148, 0, 211, 0.9)'
+        ];
+        
+        particles.forEach(p => {
+          if (p.shape && p.shape !== 'text') {
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            p.color = color;
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 5 + Math.random() * 10;
+            p.vx = Math.cos(angle) * speed;
+            p.vy = Math.sin(angle) * speed;
+            p.returnForce = 0;
+            p.damping = 0.95;
+          }
+        });
+        
+        setTimeout(() => {
+          particles.length = 0;
+          gameState = 'showing_message';
+          createTextParticles('IMAGE GALLERY UNLOCKED', tttGameCanvas.height / 2 - 40, 'rgba(109, 217, 232, 0.9)', () => {
+            createTextParticles('OK', tttGameCanvas.height / 2 + 40, 'rgba(255, 255, 255, 0.8)');
+          });
+        }, 2000);
       }
 
       // Animation loop
@@ -943,22 +1053,6 @@ Dr. Wei's voice lingers at the edge of the memory:
         ctx.fillStyle = 'rgba(2, 6, 18, 0.2)';
         ctx.fillRect(0, 0, tttGameCanvas.width, tttGameCanvas.height);
 
-        // Draw guide dots for empty cells
-        for (let i = 0; i < 9; i++) {
-          if (guideDots[i] && !board[i]) {
-            const center = getCellCenter(i);
-            ctx.save();
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-            ctx.shadowBlur = 8;
-            ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
-            ctx.beginPath();
-            ctx.arc(center.x, center.y, 3, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-          }
-        }
-
-        // Update and draw particles
         particles.forEach(p => {
           p.update();
           p.draw();
@@ -974,31 +1068,29 @@ Dr. Wei's voice lingers at the edge of the memory:
 
         requestAnimationFrame(animate);
       }
-      animate();
 
-      // Handle clicks
+      // Click handler
       function handleClick(x, y) {
-        if (gameOver) return;
+        if (gameState === 'showing_message') {
+          // Check if clicked on "OK" area
+          const okY = tttGameCanvas.height / 2 + 40;
+          if (Math.abs(y - okY) < 50) {
+            window.location.href = "home.html";
+          }
+          return;
+        }
         
-        const rect = tttGameCanvas.getBoundingClientRect();
-        const canvasX = x - rect.left;
-        const canvasY = y - rect.top;
-        const idx = getCellIndex(canvasX, canvasY);
+        if (gameState !== 'playing' || gameOver) return;
         
-        if (idx === -1 || board[idx]) return;
+        const idx = getCellIndex(x, y);
+        if (idx === -1 || board[idx] || !guideDots[idx]) return;
 
-        // Hide guide dot
         guideDots[idx] = false;
+        particles = particles.filter(p => p.cellIndex !== idx || !p.isGuide);
 
-        // Create click repulsion effect
         const center = getCellCenter(idx);
-        clickRepulsion = {
-          x: center.x,
-          y: center.y,
-          strength: 0.8
-        };
+        clickRepulsion = { x: center.x, y: center.y, strength: 0.8 };
 
-        // Player move - particles emerge from white dot origin
         board[idx] = "X";
         createXParticles(idx);
 
@@ -1030,18 +1122,12 @@ Dr. Wei's voice lingers at the edge of the memory:
         return null;
       }
 
-      function updateStatus(msg) {
-        tttStatus.textContent = msg || "";
-      }
-
       function highlightWinningLine(line) {
         if (line) {
           line.forEach(idx => {
-            // Make winning particles larger and more glowing
             particles.forEach(p => {
-              if (p.cellIndex === idx) {
+              if (p.cellIndex === idx && !p.isGuide) {
                 p.radius = 3.5;
-                p.repelForce = 600;
               }
             });
           });
@@ -1054,17 +1140,11 @@ Dr. Wei's voice lingers at the edge of the memory:
         if (!empties.length) return;
 
         const choice = empties[Math.floor(Math.random() * empties.length)];
-        
-        // Hide guide dot
         guideDots[choice] = false;
+        particles = particles.filter(p => p.cellIndex !== choice || !p.isGuide);
 
-        // Create click repulsion effect for computer move
         const center = getCellCenter(choice);
-        clickRepulsion = {
-          x: center.x,
-          y: center.y,
-          strength: 0.8
-        };
+        clickRepulsion = { x: center.x, y: center.y, strength: 0.8 };
 
         board[choice] = "O";
         createOParticles(choice);
@@ -1082,8 +1162,8 @@ Dr. Wei's voice lingers at the edge of the memory:
           highlightWinningLine(result.line);
           setTimeout(() => {
             localStorage.setItem("galleryUnlocked", "true");
-            tttModal.classList.remove("hidden");
-            updateStatus("");
+            gameState = 'celebrating';
+            createRainbowExplosion();
           }, 1000);
         } else if (result.winner === "O") {
           highlightWinningLine(result.line);
@@ -1091,18 +1171,15 @@ Dr. Wei's voice lingers at the edge of the memory:
             window.location.href = "home.html";
           }, 2000);
         } else {
-          // Draw
           setTimeout(() => {
             window.location.href = "home.html";
           }, 1500);
         }
       }
 
-      tttWinOk.addEventListener("click", () => {
-        window.location.href = "home.html";
-      });
-
-      updateStatus("you are X. computer is O.");
+      // Start
+      animate();
+      createEntranceAnimation();
     }
   }
 
