@@ -431,14 +431,19 @@
   let touchStartY = 0;
   let particleTargets = []; // Target positions for particles
   let originalParticleState = null;
+  let transitionPhase = 'none'; // 'entering', 'playing', 'exiting', 'none'
+  let transitionStartTime = 0;
+  const TRANSITION_DURATION = 800; // ms
 
   /**
-   * Activate snake game - transform particles
+   * Activate snake game - transition particles then play
    */
   function activateSnake() {
     if (isSnakeActive || isCubeActive) return;
     
     isSnakeActive = true;
+    transitionPhase = 'entering';
+    transitionStartTime = performance.now();
     
     // Get reference to particles canvas
     const particlesCanvas = document.getElementById('particles-bg');
@@ -457,39 +462,81 @@
       homeContainer.style.pointerEvents = 'none';
     }
     
-    // Create close button and overlay
+    // Create close button and overlay (but hide initially)
     createCloseButton();
+    if (closeButton) closeButton.style.opacity = '0';
+    const scoreOverlay = document.getElementById('snake-score-overlay');
+    if (scoreOverlay) scoreOverlay.style.opacity = '0';
     
     // Initialize snake game
     initParticleSnakeGame();
     
-    // Add input handlers
-    document.addEventListener('keydown', handleSnakeKeyDown);
-    document.addEventListener('touchstart', handleSnakeTouchStart, { passive: false });
-    document.addEventListener('touchend', handleSnakeTouchEnd, { passive: false });
+    // Create initial particle targets for transition
+    updateParticleTargets();
     
-    // Start game loop
+    // Start transition animation
     animateParticleSnake();
+    
+    // After transition, add input handlers and show UI
+    setTimeout(() => {
+      transitionPhase = 'playing';
+      if (closeButton) closeButton.style.opacity = '1';
+      const scoreOverlay = document.getElementById('snake-score-overlay');
+      if (scoreOverlay) scoreOverlay.style.opacity = '1';
+      
+      // Add input handlers
+      document.addEventListener('keydown', handleSnakeKeyDown);
+      document.addEventListener('touchstart', handleSnakeTouchStart, { passive: false });
+      document.addEventListener('touchend', handleSnakeTouchEnd, { passive: false });
+    }, TRANSITION_DURATION);
   }
 
   /**
-   * Deactivate snake game
+   * Deactivate snake game - with exit transition
    */
   function deactivateSnake() {
     if (!isSnakeActive) return;
     
+    // Start exit transition
+    if (transitionPhase === 'playing') {
+      transitionPhase = 'exiting';
+      transitionStartTime = performance.now();
+      
+      // Hide UI immediately
+      if (closeButton) closeButton.style.opacity = '0';
+      const scoreOverlay = document.getElementById('snake-score-overlay');
+      if (scoreOverlay) scoreOverlay.style.opacity = '0';
+      
+      // Remove input handlers
+      document.removeEventListener('keydown', handleSnakeKeyDown);
+      document.removeEventListener('touchstart', handleSnakeTouchStart);
+      document.removeEventListener('touchend', handleSnakeTouchEnd);
+      
+      // Create targets back to original positions (will be empty, letting particles scatter naturally)
+      particleTargets = [];
+      
+      // After transition, complete cleanup
+      setTimeout(() => {
+        completeDeactivation();
+      }, TRANSITION_DURATION);
+    } else {
+      // If not in playing phase, deactivate immediately
+      completeDeactivation();
+    }
+  }
+  
+  /**
+   * Complete deactivation after transition
+   */
+  function completeDeactivation() {
     isSnakeActive = false;
+    transitionPhase = 'none';
     
     // Stop animation
     if (snakeAnimationFrame) {
       cancelAnimationFrame(snakeAnimationFrame);
       snakeAnimationFrame = null;
     }
-    
-    // Remove event listeners
-    document.removeEventListener('keydown', handleSnakeKeyDown);
-    document.removeEventListener('touchstart', handleSnakeTouchStart);
-    document.removeEventListener('touchend', handleSnakeTouchEnd);
     
     // Remove close button and score overlay
     if (closeButton && closeButton.parentNode) {
@@ -509,7 +556,7 @@
       homeContainer.style.pointerEvents = 'auto';
     }
     
-    // Clear particle targets - let them drift naturally
+    // Clear particle targets
     particleTargets = [];
     particleSystem = null;
     
@@ -655,41 +702,47 @@
   }
 
   /**
-   * Update particle target positions - decorative orbiting effect
+   * Update particle target positions - tight clusters during transitions
    */
   function updateParticleTargets() {
     particleTargets = [];
     
-    // Create targets that orbit around snake segments
+    // Only create targets during transition phases
+    if (transitionPhase !== 'entering') {
+      return;
+    }
+    
+    // Create tight clusters around snake segments
     snake.forEach((segment, index) => {
       const centerX = segment.x * gridSize + gridSize / 2;
       const centerY = segment.y * gridSize + gridSize / 2;
       
-      // Fewer particles per segment for decoration
-      const particlesPerSegment = 3;
-      const radius = gridSize * 0.6;
+      // More particles per segment for solid appearance during transition
+      const particlesPerSegment = 8;
+      const radius = gridSize * 0.3; // Tight clustering
       
       for (let i = 0; i < particlesPerSegment; i++) {
-        const angle = (i / particlesPerSegment) * Math.PI * 2 + performance.now() * 0.001;
+        const angle = (i / particlesPerSegment) * Math.PI * 2;
+        const r = radius * (0.5 + Math.random() * 0.5);
         particleTargets.push({
-          x: centerX + Math.cos(angle) * radius,
-          y: centerY + Math.sin(angle) * radius,
+          x: centerX + Math.cos(angle) * r,
+          y: centerY + Math.sin(angle) * r,
           type: 'snake',
           brightness: index === 0 ? 1 : 0.7
         });
       }
     });
     
-    // Create targets that orbit around food
+    // Create tight cluster around food
     if (food) {
       const centerX = food.x * gridSize + gridSize / 2;
       const centerY = food.y * gridSize + gridSize / 2;
       
-      const foodParticles = 4;
-      const radius = gridSize * 0.5;
+      const foodParticles = 6;
+      const radius = gridSize * 0.25;
       
       for (let i = 0; i < foodParticles; i++) {
-        const angle = (i / foodParticles) * Math.PI * 2 - performance.now() * 0.002;
+        const angle = (i / foodParticles) * Math.PI * 2;
         particleTargets.push({
           x: centerX + Math.cos(angle) * radius,
           y: centerY + Math.sin(angle) * radius,
@@ -839,62 +892,49 @@
   }
 
   /**
-   * Game over for particle snake
+   * Game over for particle snake - immediately return to normal
    */
   function particleGameOver() {
-    // Show game over overlay
-    const canvas = particleSystem.canvas;
-    const ctx = particleSystem.ctx;
-    
-    // Create a semi-transparent overlay
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    ctx.fillStyle = 'rgba(255, 140, 140, 0.9)';
-    ctx.font = 'bold 48px system-ui, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2 - 40);
-    
-    ctx.fillStyle = 'rgba(109, 217, 232, 0.8)';
-    ctx.font = '24px system-ui, sans-serif';
-    ctx.fillText(`Score: ${gameScore}`, canvas.width / 2, canvas.height / 2 + 20);
-    
-    // Deactivate after delay
-    setTimeout(() => {
-      deactivateSnake();
-    }, 2000);
+    // Immediately deactivate and return to normal
+    deactivateSnake();
   }
 
   /**
-   * Animation loop - update game state, draw game, update particle targets
+   * Animation loop - handle transition phases
    */
   function animateParticleSnake() {
-    if (!isSnakeActive) return;
+    if (!isSnakeActive && transitionPhase === 'none') return;
     
     const currentTime = performance.now();
-    updateParticleSnake(currentTime);
     
-    // Draw the actual snake game on top of particles
-    drawSnakeGame();
-    
-    // Update particle targets for orbital effect
-    updateParticleTargets();
-    
-    // Update score display
-    const scoreValue = document.getElementById('snake-score-value');
-    if (scoreValue) {
-      scoreValue.textContent = gameScore;
+    // Handle different transition phases
+    if (transitionPhase === 'entering' || transitionPhase === 'exiting') {
+      // During transitions, just update particle targets
+      // Particles will be visible and animating
+      if (transitionPhase === 'entering') {
+        updateParticleTargets();
+      }
+    } else if (transitionPhase === 'playing') {
+      // During gameplay, update game and draw it
+      updateParticleSnake(currentTime);
+      drawSnakeGame();
+      
+      // Update score display
+      const scoreValue = document.getElementById('snake-score-value');
+      if (scoreValue) {
+        scoreValue.textContent = gameScore;
+      }
     }
     
     snakeAnimationFrame = requestAnimationFrame(animateParticleSnake);
   }
 
   /**
-   * Draw the actual snake game
+   * Draw the actual snake game (only during play phase)
    */
   function drawSnakeGame() {
     if (!particleSystem || !particleSystem.ctx) return;
+    if (transitionPhase !== 'playing') return;
     
     const ctx = particleSystem.ctx;
     
@@ -962,6 +1002,14 @@
     });
     
     return closestTarget;
+  };
+
+  /**
+   * Get current game phase for particle visibility
+   * This function is called by script.js particle system
+   */
+  window.getSnakeGamePhase = function() {
+    return transitionPhase;
   };
 
   /**

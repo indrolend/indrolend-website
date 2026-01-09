@@ -86,20 +86,20 @@ document.addEventListener("DOMContentLoaded", () => {
           const target = window.getSnakeParticleTarget(p);
           if (target) {
             inSnakeGame = true;
-            // Strong attraction to target
+            // Strong attraction to target during transitions
             const dx = target.x - p.x;
             const dy = target.y - p.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
             
             if (distance > 5) {
-              // Gentler attraction for decorative orbiting effect
-              const attractionForce = 0.15;
+              // Very strong attraction for quick transition
+              const attractionForce = 0.5;
               p.vx += (dx / distance) * attractionForce;
               p.vy += (dy / distance) * attractionForce;
               
-              // Moderate dampening for smooth orbiting
-              p.vx *= 0.9;
-              p.vy *= 0.9;
+              // Heavy dampening for quick settling
+              p.vx *= 0.85;
+              p.vy *= 0.85;
               
               // Change char to square for game mode
               if (target.type === 'snake' && p.char !== '■') {
@@ -108,9 +108,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 p.char = '●';
               }
             } else {
-              // Close to target - gentle lock
-              p.vx *= 0.7;
-              p.vy *= 0.7;
+              // Very close to target - lock in place
+              p.vx *= 0.4;
+              p.vy *= 0.4;
             }
           }
         }
@@ -196,6 +196,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function drawParticles() {
       ctx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+
+      // Check if we should hide particles during snake game play phase
+      const gamePhase = window.getSnakeGamePhase && window.getSnakeGamePhase();
+      const hideParticles = gamePhase === 'playing';
+      
+      if (hideParticles) {
+        // Don't draw particles during active gameplay
+        return;
+      }
 
       // Draw connections between particles
       for (let i = 0; i < particles.length; i++) {
