@@ -793,6 +793,15 @@ Dr. Wei's voice lingers at the edge of the memory:
       function resizeCanvas() {
         tttGameCanvas.width = window.innerWidth;
         tttGameCanvas.height = window.innerHeight;
+        
+        // Update particle target positions when canvas resizes
+        particles.forEach(p => {
+          if (p.cellIndex !== null && p.cellIndex !== undefined) {
+            const newCenter = getCellCenter(p.cellIndex);
+            p.targetX = newCenter.x;
+            p.targetY = newCenter.y;
+          }
+        });
       }
       resizeCanvas();
       window.addEventListener("resize", resizeCanvas);
@@ -1006,7 +1015,9 @@ Dr. Wei's voice lingers at the edge of the memory:
 
       // Animation loop
       function animate() {
-        ctx.fillStyle = 'rgba(2, 6, 18, 0.2)';
+        // Use higher alpha during entrance for clean trails, then switch to lower for gameplay
+        const alphaValue = gameState === 'loading' ? 0.5 : 0.15;
+        ctx.fillStyle = `rgba(2, 6, 18, ${alphaValue})`;
         ctx.fillRect(0, 0, tttGameCanvas.width, tttGameCanvas.height);
 
         particles.forEach(p => {
