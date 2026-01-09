@@ -24,7 +24,10 @@
 
   // Shake detection for mobile
   let lastShakeTime = 0;
-  let shakeThreshold = 15; // Sensitivity threshold
+  const SHAKE_THRESHOLD = 15; // Sensitivity threshold
+  const SHAKE_DEBOUNCE_TIME = 200; // ms between shake detections
+  const SHAKE_RESET_TIMEOUT = 2000; // ms to reset shake count
+  const SHAKE_COUNT_REQUIRED = 3; // Number of shakes to activate
   let shakeCount = 0;
   let shakeResetTimer = null;
 
@@ -105,19 +108,19 @@
     const currentTime = Date.now();
     
     // Detect significant shake
-    if (accelerationMagnitude > shakeThreshold) {
-      if (currentTime - lastShakeTime > 200) { // Debounce
+    if (accelerationMagnitude > SHAKE_THRESHOLD) {
+      if (currentTime - lastShakeTime > SHAKE_DEBOUNCE_TIME) {
         shakeCount++;
         lastShakeTime = currentTime;
 
-        // Reset shake count after 2 seconds of no shaking
+        // Reset shake count after timeout
         clearTimeout(shakeResetTimer);
         shakeResetTimer = setTimeout(() => {
           shakeCount = 0;
-        }, 2000);
+        }, SHAKE_RESET_TIMEOUT);
 
-        // Activate after 3 shakes
-        if (shakeCount >= 3) {
+        // Activate after required number of shakes
+        if (shakeCount >= SHAKE_COUNT_REQUIRED) {
           shakeCount = 0;
           activateSandboxMode();
         }
