@@ -92,14 +92,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const distance = Math.sqrt(dx * dx + dy * dy);
             
             if (distance > 5) {
-              // Very strong attraction for quick transition
-              const attractionForce = 0.5;
+              // Extremely strong attraction for instant snapping
+              const attractionForce = 1.2;
               p.vx += (dx / distance) * attractionForce;
               p.vy += (dy / distance) * attractionForce;
               
-              // Heavy dampening for quick settling
-              p.vx *= 0.85;
-              p.vy *= 0.85;
+              // Minimal dampening for maximum speed
+              p.vx *= 0.95;
+              p.vy *= 0.95;
               
               // Change char to square for game mode
               if (target.type === 'snake' && p.char !== '■') {
@@ -108,9 +108,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 p.char = '●';
               }
             } else {
-              // Very close to target - lock in place
-              p.vx *= 0.4;
-              p.vy *= 0.4;
+              // Very close to target - lock in place instantly
+              p.vx *= 0.2;
+              p.vy *= 0.2;
             }
           }
         }

@@ -433,7 +433,7 @@
   let originalParticleState = null;
   let transitionPhase = 'none'; // 'entering', 'playing', 'exiting', 'none'
   let transitionStartTime = 0;
-  const TRANSITION_DURATION = 800; // ms
+  const TRANSITION_DURATION = 400; // Reduced from 800ms for faster animation
 
   /**
    * Activate snake game - transition particles then play
