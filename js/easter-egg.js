@@ -426,7 +426,6 @@
   let closeButton = null;
   let touchStartX = 0;
   let touchStartY = 0;
-  let particlesBackup = null;
 
   /**
    * Activate snake game
@@ -436,10 +435,9 @@
     
     isSnakeActive = true;
     
-    // Backup and hide particles canvas
+    // Hide particles canvas
     const particlesBg = document.getElementById('particles-bg');
     if (particlesBg) {
-      particlesBackup = particlesBg;
       particlesBg.style.display = 'none';
     }
     
@@ -487,9 +485,9 @@
     closeButton = null;
     
     // Restore particles canvas
-    if (particlesBackup) {
-      particlesBackup.style.display = 'block';
-      particlesBackup = null;
+    const particlesBg = document.getElementById('particles-bg');
+    if (particlesBg) {
+      particlesBg.style.display = 'block';
     }
   }
 
@@ -604,6 +602,12 @@
       );
       
       attempts++;
+    }
+    
+    // If no valid position found (snake fills most of grid), place at 0,0
+    // This is extremely unlikely to happen in normal gameplay
+    if (!validPosition) {
+      food = { x: 0, y: 0 };
     }
   }
 
