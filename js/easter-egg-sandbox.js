@@ -29,6 +29,8 @@
   const PULL_THRESHOLD = 100; // pixels to pull down
   const PULL_COUNT_REQUIRED = 3; // Number of pulls to activate
   const PULL_RESET_TIMEOUT = 3000; // ms to reset pull count
+  const SCROLL_BOTTOM_THRESHOLD = 10; // pixels from bottom to enable pull detection
+  const PULL_PREVENTION_THRESHOLD = 50; // pixels before preventing default scroll
 
   // Initialize easter egg listener
   function initEasterEgg() {
@@ -74,9 +76,10 @@
     if (!appGrid) return;
 
     // Add touch event listeners to the app grid
-    appGrid.addEventListener('touchstart', handleTouchStart, { passive: false });
-    appGrid.addEventListener('touchmove', handleTouchMove, { passive: false });
-    appGrid.addEventListener('touchend', handleTouchEnd, { passive: false });
+    // Using passive: true for better scroll performance, except for touchmove
+    appGrid.addEventListener('touchstart', handleTouchStart, { passive: true });
+    appGrid.addEventListener('touchmove', handleTouchMove, { passive: false }); // Need to preventDefault
+    appGrid.addEventListener('touchend', handleTouchEnd, { passive: true });
   }
 
   // Handle touch start
@@ -94,7 +97,7 @@
     const clientHeight = appGrid.clientHeight;
     
     // Only start tracking if scrolled to the bottom
-    if (scrollTop + clientHeight >= scrollHeight - 10) {
+    if (scrollTop + clientHeight >= scrollHeight - SCROLL_BOTTOM_THRESHOLD) {
       pullStartY = touch.clientY;
     }
   }
@@ -107,7 +110,7 @@
     const pullDistance = touch.clientY - pullStartY;
     
     // If pulling down past threshold, prevent default scrolling
-    if (pullDistance > 50) {
+    if (pullDistance > PULL_PREVENTION_THRESHOLD) {
       event.preventDefault();
     }
   }
