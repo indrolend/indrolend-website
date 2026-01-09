@@ -527,7 +527,6 @@ html, body {
   -moz-box-pack: start;
   -ms-flex-pack: start;
   justify-content: flex-start;
-  border-radius: 20px;
   border: none;
   background: transparent;
   padding: 10px 10px 12px;
@@ -543,7 +542,6 @@ html, body {
 .app-card-media {
   width: 100%;
   aspect-ratio: 1 / 1;
-  border-radius: 16px;
   overflow: visible;
   display: flex;
   align-items: center;
@@ -562,53 +560,8 @@ html, body {
   width: 100%;
   height: 100%;
   display: block;
-  position: relative;
-  z-index: 2;
 }
 
-.app-card-media::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0.5;
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* Platform-specific background images */
-.app-card-media[data-bg="tiktok"]::before {
-  background-image: url('../assets/icons/Tiktoklogospin.gif');
-}
-
-.app-card-media[data-bg="spotify"]::before {
-  background-image: url('../assets/icons/Spotifylogospin.gif');
-}
-
-.app-card-media[data-bg="youtube"]::before {
-  background-image: url('../assets/icons/Youtubelogospin.gif');
-}
-
-.app-card-media[data-bg="applemusic"]::before {
-  background-image: url('../assets/icons/Applemusiclogospin.gif');
-}
-
-/* Bandcamp diamond shape */
-.app-card-media[data-bg="bandcamp"]::before {
-  background: none;
-  border: 3px solid rgba(98, 154, 169, 0.5);
-  transform: rotate(45deg);
-  width: 70%;
-  height: 70%;
-  top: 15%;
-  left: 15%;
-  border-radius: 8px;
-}
 
 .app-card-label {
   margin-top: 8px;
