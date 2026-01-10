@@ -332,25 +332,15 @@
   /**
    * Lighten a color
    */
-  const colorCache = new Map();
-  
   function lightenColor(color, percent) {
-    const key = `${color}:${percent}`;
-    if (colorCache.has(key)) return colorCache.get(key);
-    const result = adjustColor(color, percent);
-    colorCache.set(key, result);
-    return result;
+    return adjustColor(color, percent);
   }
 
   /**
    * Darken a color
    */
   function darkenColor(color, percent) {
-    const key = `${color}:-${percent}`;
-    if (colorCache.has(key)) return colorCache.get(key);
-    const result = adjustColor(color, -percent);
-    colorCache.set(key, result);
-    return result;
+    return adjustColor(color, -percent);
   }
 
   /**
