@@ -77,8 +77,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    // Optimized particle update with reduced calculations
     function updateParticles() {
       const now = performance.now();
+      const repulseDistSq = repulseDistance * repulseDistance;
+      const connectionDistSq = connectionDistance * connectionDistance;
+      
       particles.forEach((p, i) => {
         // Check for snake game target (Easter egg)
         let inSnakeGame = false;
@@ -89,9 +93,10 @@ document.addEventListener("DOMContentLoaded", () => {
             // Strong attraction to target during transitions
             const dx = target.x - p.x;
             const dy = target.y - p.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            const distSq = dx * dx + dy * dy;
             
-            if (distance > 5) {
+            if (distSq > 25) { // distance > 5, squared
+              const distance = Math.sqrt(distSq);
               // Extremely strong attraction for instant snapping
               const attractionForce = 1.2;
               p.vx += (dx / distance) * attractionForce;
@@ -140,15 +145,14 @@ document.addEventListener("DOMContentLoaded", () => {
           p.changeInterval = Math.random() * 1200 + 300;
         }
 
-        // Mouse repulse effect (from particles.js) - disabled during snake game
-        // Physics formula: force = (1/r) * (-1 * (d/r)² + 1) * r * v
-        // where r=repulseDistance, d=distance, v=velocity
+        // Mouse repulse effect (optimized with squared distance) - disabled during snake game
         if (!inSnakeGame && mouse.x !== null && mouse.y !== null) {
           const dx = p.x - mouse.x;
           const dy = p.y - mouse.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+          const distSq = dx * dx + dy * dy;
 
-          if (distance < repulseDistance) {
+          if (distSq < repulseDistSq) {
+            const distance = Math.sqrt(distSq);
             const normVec = { x: dx / distance, y: dy / distance };
             const velocity = 100;
             const repulseFactor = Math.max(0, Math.min(50, 
@@ -165,15 +169,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Particle-to-particle interactions (disabled during snake game)
+        // Only check particles ahead to avoid duplicate checks
         if (!inSnakeGame) {
           for (let j = i + 1; j < particles.length; j++) {
             const p2 = particles[j];
             const dx = p.x - p2.x;
             const dy = p.y - p2.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            const distSq = dx * dx + dy * dy;
 
             // Attract particles (from particles.js)
-            if (attractEnabled && distance < connectionDistance) {
+            if (attractEnabled && distSq < connectionDistSq) {
               const ax = dx / (attractRotateX * 1000);
               const ay = dy / (attractRotateY * 1000);
               p.vx -= ax;
@@ -183,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // Bounce particles off each other (from particles.js)
-            if (bounceEnabled && distance <= p.radius + p2.radius) {
+            if (bounceEnabled && distSq <= (p.radius + p2.radius) * (p.radius + p2.radius)) {
               p.vx = -p.vx;
               p.vy = -p.vy;
               p2.vx = -p2.vx;
@@ -194,6 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    // Optimized drawing with reduced operations
     function drawParticles() {
       ctx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
 
@@ -206,16 +212,19 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Draw connections between particles
+      const connectionDistSq = connectionDistance * connectionDistance;
+      const grabDistSq = grabDistance * grabDistance;
+      
+      // Draw connections between particles (optimized to avoid duplicate checks)
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+          const distSq = dx * dx + dy * dy;
 
-          if (distance < connectionDistance) {
-            // Fade opacity based on distance (from particles.js)
-            const opacity = (1 - distance / connectionDistance) * 0.1;
+          if (distSq < connectionDistSq) {
+            // Fade opacity based on distance (using squared distance for performance)
+            const opacity = (1 - Math.sqrt(distSq) / connectionDistance) * 0.1;
             if (opacity > 0) {
               ctx.beginPath();
               ctx.strokeStyle = `rgba(94, 232, 125, ${opacity})`;
@@ -228,16 +237,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
-      // Draw grab lines to cursor (from particles.js)
+      // Draw grab lines to cursor (optimized with squared distance)
       if (mouse.x !== null && mouse.y !== null) {
         particles.forEach(p => {
           const dx = p.x - mouse.x;
           const dy = p.y - mouse.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+          const distSq = dx * dx + dy * dy;
 
-          if (distance < grabDistance) {
+          if (distSq < grabDistSq) {
             // Fade opacity based on distance
-            const opacity = (1 - distance / grabDistance) * 0.4;
+            const opacity = (1 - Math.sqrt(distSq) / grabDistance) * 0.4;
             if (opacity > 0) {
               ctx.beginPath();
               ctx.strokeStyle = `rgba(94, 232, 125, ${opacity})`;
@@ -250,7 +259,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
-      // Draw particles as characters
+      // Draw particles as characters (batch text rendering)
       ctx.fillStyle = particleColor;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";

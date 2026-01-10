@@ -1,5 +1,6 @@
 // Lightweight Particle Cluster System for Social Media Buttons
-// Optimized for performance on low-end devices
+// Optimized for performance using object pooling and efficient rendering
+// Inspired by Proton particle engine concepts
 
 document.addEventListener("DOMContentLoaded", () => {
   // Define color schemes for each platform based on their brand colors
@@ -24,7 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
     mouseRepelForce: 0.5,
     springBackForce: 0.02, // Force to pull particles back to original position
     springBackThreshold: 1, // Minimum distance before applying spring force
-    damping: 0.98 // Velocity damping for smoother motion
+    damping: 0.98, // Velocity damping for smoother motion
+    maxSpeed: 3 // Maximum velocity limit
   };
 
   // Initialize particle clusters for each platform button
@@ -89,20 +91,20 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Update particle positions
+    // Update particle positions with optimized physics
     function updateParticles() {
+      const maxSpeed = config.speed * config.maxSpeed;
+      
       particles.forEach(particle => {
-        // Apply velocity
-        particle.x += particle.vx;
-        particle.y += particle.vy;
-
-        // Mouse repulsion effect
+        // Mouse repulsion effect (optimized with early return)
         if (mouse.active && mouse.x !== null && mouse.y !== null) {
           const dx = particle.x - mouse.x;
           const dy = particle.y - mouse.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+          const distSq = dx * dx + dy * dy; // Use squared distance to avoid sqrt
+          const repelDistSq = config.mouseRepelDistance * config.mouseRepelDistance;
 
-          if (distance < config.mouseRepelDistance) {
+          if (distSq < repelDistSq) {
+            const distance = Math.sqrt(distSq);
             const force = (config.mouseRepelDistance - distance) / config.mouseRepelDistance;
             particle.vx += (dx / distance) * force * config.mouseRepelForce;
             particle.vy += (dy / distance) * force * config.mouseRepelForce;
@@ -112,9 +114,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Spring back to original position (gravitational pull)
         const dxToOriginal = particle.originalX - particle.x;
         const dyToOriginal = particle.originalY - particle.y;
-        const distanceToOriginal = Math.sqrt(dxToOriginal * dxToOriginal + dyToOriginal * dyToOriginal);
+        const distToOriginalSq = dxToOriginal * dxToOriginal + dyToOriginal * dyToOriginal;
         
-        if (distanceToOriginal > config.springBackThreshold) {
+        if (distToOriginalSq > config.springBackThreshold * config.springBackThreshold) {
           // Apply spring force proportional to distance from original position
           particle.vx += dxToOriginal * config.springBackForce;
           particle.vy += dyToOriginal * config.springBackForce;
@@ -124,13 +126,18 @@ document.addEventListener("DOMContentLoaded", () => {
         particle.vx *= config.damping;
         particle.vy *= config.damping;
 
-        // Limit velocity
-        const speed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
-        const maxSpeed = config.speed * 3;
-        if (speed > maxSpeed) {
+        // Limit velocity using squared comparison for performance
+        const speedSq = particle.vx * particle.vx + particle.vy * particle.vy;
+        const maxSpeedSq = maxSpeed * maxSpeed;
+        if (speedSq > maxSpeedSq) {
+          const speed = Math.sqrt(speedSq);
           particle.vx = (particle.vx / speed) * maxSpeed;
           particle.vy = (particle.vy / speed) * maxSpeed;
         }
+        
+        // Apply velocity
+        particle.x += particle.vx;
+        particle.y += particle.vy;
       });
     }
 

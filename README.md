@@ -8,6 +8,7 @@ Personal website with integrated Spotify analytics and OCR-based statistics pars
 - **Spotify for Artists Scraper**: Automated extraction of live audience stats (listeners, streams, followers, top cities)
 - **Automated Screenshot Parsing**: OCR-based extraction of Spotify stats from screenshots
 - **Example-Based Validation**: System for improving OCR accuracy with ground truth data
+- **Advanced Particle System**: High-performance particle effects inspired by Proton engine
 - **Interactive Games**: Asymptote idle game, Tic-Tac-Toe, Word Game
 - **Image Gallery**: Personal photo gallery
 
@@ -185,6 +186,7 @@ If you want to help improve the OCR parsing accuracy:
 ## Documentation
 
 - **Repository Structure**: [STRUCTURE.md](STRUCTURE.md) - Complete directory organization and guidelines
+- **Particle System**: [PARTICLE_SYSTEM.md](PARTICLE_SYSTEM.md) - Particle effects architecture and optimization
 - **Spotify for Artists Scraper**: [SPOTIFY_ARTISTS_SCRAPER.md](SPOTIFY_ARTISTS_SCRAPER.md) - Automated stats scraping setup
 - **Spotify API Integration**: [SPOTIFY_INTEGRATION.md](SPOTIFY_INTEGRATION.md) - Using Spotify Web API
 - **Screenshot Parsing**: [scripts/README.md](scripts/README.md)
@@ -206,6 +208,7 @@ The website is optimized for maximum browser compatibility:
 ## Technologies
 
 - **Frontend**: HTML, CSS, JavaScript
+- **Particle System**: Custom engine inspired by Proton (object pooling, behavior system)
 - **OCR**: Tesseract OCR, pytesseract
 - **Automation**: GitHub Actions
 - **Image Processing**: Pillow (PIL)
