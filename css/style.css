@@ -393,23 +393,31 @@ html, body {
   .story-main {
     padding-right: 0;
   }
-  /* Mobile: 2 columns for app grid */
+  /* Mobile: 2 columns for app grid with vertical scroll-friendly spacing */
   .app-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 16px;
+    margin-top: 20px;
   }
   /* Reduce embed size on mobile */
+  .embed-wrapper {
+    max-width: 300px;
+  }
   .embed-wrapper iframe {
-    min-height: 350px;
+    min-height: 320px;
   }
   /* Compact header on mobile */
   .home-header {
-    margin-bottom: 14px;
-    gap: 10px;
+    margin-bottom: 12px;
+    gap: 8px;
   }
   .home-header-image-wrap {
     width: 100%;
-    max-width: 400px;
+    max-width: 350px;
+  }
+  /* Add padding to bottom to make scrolling clear */
+  .home-main {
+    padding-bottom: 40px;
   }
 }
 
@@ -420,14 +428,20 @@ html, body {
   }
 }
 
-/* Small mobile: single column if very narrow */
+/* Small mobile: maintain 2 columns with tighter spacing */
 @media (max-width: 400px) {
   .app-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 14px;
   }
   .home-container {
     padding: 20px 12px 28px;
+  }
+  .embed-wrapper {
+    max-width: 280px;
+  }
+  .home-header-image-wrap {
+    max-width: 300px;
   }
 }
 
@@ -462,19 +476,19 @@ html, body {
   z-index: 1;
   max-width: 960px;
   margin: 0 auto;
-  padding: 22px 16px 40px;
+  padding: 16px 16px 30px;
 }
 
 .home-header {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .home-header-image-wrap {
-  width: min(540px, 100%);
+  width: min(480px, 100%);
   border-radius: 18px;
   overflow: hidden;
   border: 1px solid rgba(109,217,232,0.35);
@@ -499,7 +513,7 @@ html, body {
 .home-main {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
   align-items: center;
 }
 
@@ -509,7 +523,7 @@ html, body {
   border: 1px solid rgba(109,217,232,0.35);
   box-shadow: 0 16px 40px rgba(0,0,0,0.8);
   width: 100%;
-  max-width: 350px;
+  max-width: 320px;
   /* Center the embed */
   margin: 0 auto;
 }
@@ -518,13 +532,13 @@ html, body {
 .embed-wrapper iframe {
   width: 100% !important;
   height: auto !important;
-  min-height: 400px;
+  min-height: 380px;
   aspect-ratio: 350 / 442;
 }
 
 /* App grid icons - improved responsive layout */
 .app-grid {
-  margin-top: 14px;
+  margin-top: 12px;
   width: 100%;
   /* Flexbox fallback for older browsers */
   display: -webkit-box;
@@ -541,7 +555,7 @@ html, body {
   /* Explicit columns for predictable layout */
   -ms-grid-columns: 1fr 14px 1fr 14px 1fr 14px 1fr;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+  gap: 12px;
   /* Center the grid */
   justify-content: center;
 }
