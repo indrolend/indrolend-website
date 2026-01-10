@@ -393,6 +393,42 @@ html, body {
   .story-main {
     padding-right: 0;
   }
+  /* Mobile: 2 columns for app grid */
+  .app-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  /* Reduce embed size on mobile */
+  .embed-wrapper iframe {
+    min-height: 350px;
+  }
+  /* Compact header on mobile */
+  .home-header {
+    margin-bottom: 14px;
+    gap: 10px;
+  }
+  .home-header-image-wrap {
+    width: 100%;
+    max-width: 400px;
+  }
+}
+
+/* Tablet: 3 columns */
+@media (min-width: 721px) and (max-width: 960px) {
+  .app-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Small mobile: single column if very narrow */
+@media (max-width: 400px) {
+  .app-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .home-container {
+    padding: 20px 12px 28px;
+  }
 }
 
 
@@ -464,6 +500,7 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  align-items: center;
 }
 
 .embed-wrapper {
@@ -471,11 +508,24 @@ html, body {
   overflow: hidden;
   border: 1px solid rgba(109,217,232,0.35);
   box-shadow: 0 16px 40px rgba(0,0,0,0.8);
+  width: 100%;
+  max-width: 350px;
+  /* Center the embed */
+  margin: 0 auto;
 }
 
-/* App grid icons */
+/* Make iframe responsive */
+.embed-wrapper iframe {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 400px;
+  aspect-ratio: 350 / 442;
+}
+
+/* App grid icons - improved responsive layout */
 .app-grid {
   margin-top: 14px;
+  width: 100%;
   /* Flexbox fallback for older browsers */
   display: -webkit-box;
   display: -webkit-flex;
@@ -488,9 +538,12 @@ html, body {
   /* CSS Grid for modern browsers */
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: (minmax(140px, 1fr))[auto-fit];
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  /* Explicit columns for predictable layout */
+  -ms-grid-columns: 1fr 14px 1fr 14px 1fr 14px 1fr;
+  grid-template-columns: repeat(4, 1fr);
   gap: 14px;
+  /* Center the grid */
+  justify-content: center;
 }
 
 /* Fallback for browsers without gap support */
