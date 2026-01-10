@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize particle clusters for each platform button
   function initParticleCluster(canvas, platformKey) {
-    const ctx = canvas.getContext("2d", { alpha: true });
+    const ctx = canvas.getContext("2d", { alpha: true, desynchronized: true });
     
     // Special handling for gallery button - check if unlocked
     let colors;
@@ -47,8 +47,23 @@ document.addEventListener("DOMContentLoaded", () => {
       colors = platformColors[platformKey] || platformColors.gallery;
     }
     
-    const particles = [];
-    const mouse = { x: null, y: null, active: false };
+    // Typed arrays for better performance
+    const particleX = new Float32Array(particleCount);
+    const particleY = new Float32Array(particleCount);
+    const particleVX = new Float32Array(particleCount);
+    const particleVY = new Float32Array(particleCount);
+    const particleRadius = new Float32Array(particleCount);
+    const particleColors = new Array(particleCount);
+    const particleOriginalX = new Float32Array(particleCount);
+    const particleOriginalY = new Float32Array(particleCount);
+    
+    // Precompute constants
+    const mouseRepelDistanceSq = config.mouseRepelDistance * config.mouseRepelDistance;
+    const springBackThresholdSq = config.springBackThreshold * config.springBackThreshold;
+    const maxSpeedSq = (config.speed * 3) * (config.speed * 3);
+    
+    const mouse = { x: null, y: null, pendingX: null, pendingY: null, active: false };
+    let mouseUpdateScheduled = false;
     let animationId = null;
     let isVisible = false;
 
@@ -59,79 +74,86 @@ document.addEventListener("DOMContentLoaded", () => {
       canvas.height = rect.height;
     }
 
-    // Create a particle
-    function createParticle() {
+    // Create a particle at index i
+    function createParticle(i) {
       const angle = Math.random() * Math.PI * 2;
       const distance = Math.random() * Math.min(canvas.width, canvas.height) * 0.3;
-      const centerX = canvas.width / 2;
-      const centerY = canvas.height / 2;
+      const centerX = canvas.width * 0.5;
+      const centerY = canvas.height * 0.5;
       
-      return {
-        x: centerX + Math.cos(angle) * distance,
-        y: centerY + Math.sin(angle) * distance,
-        vx: (Math.random() - 0.5) * config.speed,
-        vy: (Math.random() - 0.5) * config.speed,
-        radius: Math.random() * (config.particleSize.max - config.particleSize.min) + config.particleSize.min,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        originalX: null,
-        originalY: null
-      };
+      particleX[i] = centerX + Math.cos(angle) * distance;
+      particleY[i] = centerY + Math.sin(angle) * distance;
+      particleVX[i] = (Math.random() - 0.5) * config.speed;
+      particleVY[i] = (Math.random() - 0.5) * config.speed;
+      particleRadius[i] = Math.random() * (config.particleSize.max - config.particleSize.min) + config.particleSize.min;
+      particleColors[i] = colors[Math.floor(Math.random() * colors.length)];
+      particleOriginalX[i] = particleX[i];
+      particleOriginalY[i] = particleY[i];
     }
 
     // Initialize particles in a cluster
     function initParticles() {
-      particles.length = 0;
       for (let i = 0; i < particleCount; i++) {
-        const particle = createParticle();
-        particle.originalX = particle.x;
-        particle.originalY = particle.y;
-        particles.push(particle);
+        createParticle(i);
       }
     }
 
     // Update particle positions
     function updateParticles() {
-      particles.forEach(particle => {
+      // Update mouse from pending (RAF throttled)
+      if (mouseUpdateScheduled) {
+        mouse.x = mouse.pendingX;
+        mouse.y = mouse.pendingY;
+        mouseUpdateScheduled = false;
+      }
+
+      const mouseX = mouse.x;
+      const mouseY = mouse.y;
+      const mouseActive = mouse.active;
+
+      for (let i = 0; i < particleCount; i++) {
         // Apply velocity
-        particle.x += particle.vx;
-        particle.y += particle.vy;
+        particleX[i] += particleVX[i];
+        particleY[i] += particleVY[i];
 
-        // Mouse repulsion effect
-        if (mouse.active && mouse.x !== null && mouse.y !== null) {
-          const dx = particle.x - mouse.x;
-          const dy = particle.y - mouse.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+        // Mouse repulsion effect - use squared distance
+        if (mouseActive && mouseX !== null && mouseY !== null) {
+          const dx = particleX[i] - mouseX;
+          const dy = particleY[i] - mouseY;
+          const distSq = dx * dx + dy * dy;
 
-          if (distance < config.mouseRepelDistance) {
-            const force = (config.mouseRepelDistance - distance) / config.mouseRepelDistance;
-            particle.vx += (dx / distance) * force * config.mouseRepelForce;
-            particle.vy += (dy / distance) * force * config.mouseRepelForce;
+          if (distSq < mouseRepelDistanceSq) {
+            const dist = Math.sqrt(distSq);
+            const force = (config.mouseRepelDistance - dist) / config.mouseRepelDistance;
+            particleVX[i] += (dx / dist) * force * config.mouseRepelForce;
+            particleVY[i] += (dy / dist) * force * config.mouseRepelForce;
           }
         }
 
         // Spring back to original position (gravitational pull)
-        const dxToOriginal = particle.originalX - particle.x;
-        const dyToOriginal = particle.originalY - particle.y;
-        const distanceToOriginal = Math.sqrt(dxToOriginal * dxToOriginal + dyToOriginal * dyToOriginal);
+        const dxToOriginal = particleOriginalX[i] - particleX[i];
+        const dyToOriginal = particleOriginalY[i] - particleY[i];
+        const distToOriginalSq = dxToOriginal * dxToOriginal + dyToOriginal * dyToOriginal;
         
-        if (distanceToOriginal > config.springBackThreshold) {
+        if (distToOriginalSq > springBackThresholdSq) {
           // Apply spring force proportional to distance from original position
-          particle.vx += dxToOriginal * config.springBackForce;
-          particle.vy += dyToOriginal * config.springBackForce;
+          particleVX[i] += dxToOriginal * config.springBackForce;
+          particleVY[i] += dyToOriginal * config.springBackForce;
         }
 
         // Apply damping to velocity for smoother motion
-        particle.vx *= config.damping;
-        particle.vy *= config.damping;
+        particleVX[i] *= config.damping;
+        particleVY[i] *= config.damping;
 
-        // Limit velocity
-        const speed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
-        const maxSpeed = config.speed * 3;
-        if (speed > maxSpeed) {
-          particle.vx = (particle.vx / speed) * maxSpeed;
-          particle.vy = (particle.vy / speed) * maxSpeed;
+        // Limit velocity using squared speed
+        const speedSq = particleVX[i] * particleVX[i] + particleVY[i] * particleVY[i];
+        if (speedSq > maxSpeedSq) {
+          const speed = Math.sqrt(speedSq);
+          const maxSpeed = config.speed * 3;
+          particleVX[i] = (particleVX[i] / speed) * maxSpeed;
+          particleVY[i] = (particleVY[i] / speed) * maxSpeed;
         }
-      });
+      }
     }
 
     // Draw particles and connections
@@ -139,12 +161,12 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Draw particles only (no connection lines for free-space feel)
-      particles.forEach(particle => {
-        ctx.fillStyle = particle.color;
+      for (let i = 0; i < particleCount; i++) {
+        ctx.fillStyle = particleColors[i];
         ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        ctx.arc(particleX[i], particleY[i], particleRadius[i], 0, Math.PI * 2);
         ctx.fill();
-      });
+      }
     }
 
     // Animation loop
@@ -156,27 +178,34 @@ document.addEventListener("DOMContentLoaded", () => {
       animationId = requestAnimationFrame(animate);
     }
 
-    // Mouse move handler
+    // Cache rect for mouse position calculations
+    let cachedRect = null;
+
+    // Mouse move handler - throttled to RAF
     function handleMouseMove(e) {
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
+      if (!cachedRect) cachedRect = canvas.getBoundingClientRect();
+      mouse.pendingX = e.clientX - cachedRect.left;
+      mouse.pendingY = e.clientY - cachedRect.top;
+      if (!mouseUpdateScheduled) {
+        mouseUpdateScheduled = true;
+      }
     }
 
     // Touch move handler - allows page scrolling by not preventing default
     function handleTouchMove(e) {
-      const rect = canvas.getBoundingClientRect();
+      if (!cachedRect) cachedRect = canvas.getBoundingClientRect();
       const touch = e.touches[0];
-      const touchX = touch.clientX - rect.left;
-      const touchY = touch.clientY - rect.top;
-      
-      mouse.x = touchX;
-      mouse.y = touchY;
+      mouse.pendingX = touch.clientX - cachedRect.left;
+      mouse.pendingY = touch.clientY - cachedRect.top;
+      if (!mouseUpdateScheduled) {
+        mouseUpdateScheduled = true;
+      }
     }
 
     // Mouse enter handler
     function handleMouseEnter() {
       mouse.active = true;
+      cachedRect = canvas.getBoundingClientRect();
     }
 
     // Mouse leave handler
@@ -184,6 +213,9 @@ document.addEventListener("DOMContentLoaded", () => {
       mouse.active = false;
       mouse.x = null;
       mouse.y = null;
+      mouse.pendingX = null;
+      mouse.pendingY = null;
+      cachedRect = null;
     }
 
     // Intersection Observer to start/stop animation when visible
