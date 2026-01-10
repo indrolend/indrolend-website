@@ -615,6 +615,89 @@ html, body {
   display: block;
 }
 
+/* Retro PS1/GBA-style distortion effect */
+.retro-distort {
+  overflow: hidden;
+  position: relative;
+  /* Slight pixelation for retro feel */
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+/* Platform GIF styling - base layer */
+.platform-gif {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* Subtle chromatic aberration for PS1 feel */
+  filter: contrast(1.1) saturate(1.15);
+  /* Subtle distortion animation */
+  animation: retroWobble 4s ease-in-out infinite;
+  transform-origin: center center;
+  /* Add scanline effect overlay */
+  background: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.15) 0px,
+      transparent 1px,
+      transparent 2px,
+      rgba(0, 0, 0, 0.15) 3px
+    );
+  background-blend-mode: overlay;
+}
+
+/* Particle overlay - blend with GIF using particles as distortion points */
+.particle-overlay {
+  position: absolute !important;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  /* Blend particles to create distortion effect */
+  mix-blend-mode: soft-light;
+  opacity: 0.7;
+  z-index: 2;
+}
+
+/* Subtle wobble animation mimicking PS1 vertex jitter */
+@keyframes retroWobble {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(-0.5px, 0.5px) scale(1.002);
+  }
+  50% {
+    transform: translate(0.5px, -0.3px) scale(0.998);
+  }
+  75% {
+    transform: translate(-0.3px, -0.5px) scale(1.001);
+  }
+}
+
+/* Enhanced hover effect for retro aesthetic */
+.retro-distort:hover .platform-gif {
+  filter: contrast(1.2) saturate(1.3) brightness(1.1);
+  animation: retroWobbleHover 0.3s ease-in-out infinite;
+}
+
+@keyframes retroWobbleHover {
+  0%, 100% {
+    transform: translate(0, 0) scale(1.05);
+  }
+  50% {
+    transform: translate(0.8px, -0.8px) scale(1.048);
+  }
+}
+
+/* Add slight dithering effect on hover */
+.retro-distort:hover {
+  /* Intensify the retro look on interaction */
+  filter: brightness(1.05);
+}
+
 
 .app-card-label {
   margin-top: 8px;
