@@ -393,9 +393,9 @@ html, body {
   .story-main {
     padding-right: 0;
   }
-  /* Mobile: 2 columns for app grid with vertical scroll-friendly spacing */
+  /* Mobile: single column for app grid with vertical scroll */
   .app-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 16px;
     margin-top: 20px;
   }
@@ -428,10 +428,10 @@ html, body {
   }
 }
 
-/* Small mobile: maintain 2 columns with tighter spacing */
+/* Small mobile: maintain single column with tighter spacing */
 @media (max-width: 400px) {
   .app-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 14px;
   }
   .home-container {
