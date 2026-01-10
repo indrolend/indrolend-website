@@ -561,13 +561,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Cycle font variants randomly for each letter
     // Normal speed cycle (every 400ms)
-    if (allLetterSpans.length > 0) {
+    const fontVariantsLen = fontVariants.length;
+    const allLetterSpansLen = allLetterSpans.length;
+    
+    if (allLetterSpansLen > 0) {
       setInterval(() => {
         // Change a random subset of letters each cycle
-        const numToChange = Math.max(1, Math.floor(allLetterSpans.length * 0.15));
+        const numToChange = Math.max(1, Math.floor(allLetterSpansLen * 0.15));
+        
+        // Batch DOM updates to minimize reflows
         for (let i = 0; i < numToChange; i++) {
-          const randomSpan = allLetterSpans[Math.floor(Math.random() * allLetterSpans.length)];
-          const variant = fontVariants[Math.floor(Math.random() * fontVariants.length)];
+          const randomSpan = allLetterSpans[Math.floor(Math.random() * allLetterSpansLen)];
+          const variant = fontVariants[Math.floor(Math.random() * fontVariantsLen)];
           randomSpan.style.fontWeight = variant.weight;
           randomSpan.style.fontStyle = variant.style;
         }
@@ -575,6 +580,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Fast font cycling for hovered cards (every 80ms - 5x faster)
       setInterval(() => {
+        if (hoveredCards.size === 0) return; // Skip if no cards hovered
+        
         hoveredCards.forEach(card => {
           const importantWord = card.querySelector(".important-word");
           if (!importantWord || !importantWord._letterSpans) return;
@@ -584,7 +591,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const numToChange = Math.max(1, Math.floor(letterSpans.length * 0.4));
           for (let i = 0; i < numToChange; i++) {
             const randomSpan = letterSpans[Math.floor(Math.random() * letterSpans.length)];
-            const variant = fontVariants[Math.floor(Math.random() * fontVariants.length)];
+            const variant = fontVariants[Math.floor(Math.random() * fontVariantsLen)];
             randomSpan.style.fontWeight = variant.weight;
             randomSpan.style.fontStyle = variant.style;
           }
