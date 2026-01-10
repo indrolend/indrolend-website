@@ -19,183 +19,218 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- Particles Background (replaces Matrix) ---
   const particlesCanvas = document.getElementById("particles-bg");
   if (particlesCanvas) {
-    const ctx = particlesCanvas.getContext("2d");
-    let particles = [];
+    // Clamp DPR for performance
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const ctx = particlesCanvas.getContext("2d", { alpha: true, desynchronized: true });
+    
     const particleCount = 60;
     const maxSpeed = 0.3;
     const particleColor = "rgba(94, 232, 125, 0.4)";
     const lineColor = "rgba(94, 232, 125, 0.1)";
     const connectionDistance = 120;
     
-    // Mouse interaction settings (from particles.js)
-    const mouse = {
-      x: null,
-      y: null
-    };
+    // Precompute constants for performance
+    const connectionDistanceSq = connectionDistance * connectionDistance;
     const repulseDistance = 150;
+    const repulseDistanceSq = repulseDistance * repulseDistance;
     const grabDistance = 150;
-    const attractEnabled = false; // Set to true to enable particle-to-particle attraction
+    const grabDistanceSq = grabDistance * grabDistance;
+    const repulseDistanceInv = 1 / repulseDistance;
+    const attractEnabled = false;
     const attractRotateX = 3000;
     const attractRotateY = 3000;
-    const bounceEnabled = false; // Set to true to enable particle-to-particle bounce
+    const bounceEnabled = false;
+
+    // Mouse state - throttled to RAF
+    const mouse = { x: null, y: null, pendingX: null, pendingY: null };
+    let mouseUpdateScheduled = false;
 
     // Character pool: numbers (0-9), uppercase (A-Z), lowercase (a-z), symbols
     const charPool = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%&*?!+-=";
+    const charPoolLen = charPool.length;
+
+    // Typed arrays for particle data - better memory layout and performance
+    const particleX = new Float32Array(particleCount);
+    const particleY = new Float32Array(particleCount);
+    const particleVX = new Float32Array(particleCount);
+    const particleVY = new Float32Array(particleCount);
+    const particleSize = new Uint8Array(particleCount);
+    const particleRadius = new Float32Array(particleCount);
+    const particleCharIndex = new Uint8Array(particleCount);
+    const particleChangeInterval = new Float32Array(particleCount);
+    const particleLastChangeTime = new Float32Array(particleCount);
+    const particleFonts = new Array(particleCount); // Font strings
 
     function getRandomChar() {
-      return charPool[Math.floor(Math.random() * charPool.length)];
+      return charPool[Math.floor(Math.random() * charPoolLen)];
     }
 
     function resizeCanvas() {
-      particlesCanvas.width = window.innerWidth;
-      particlesCanvas.height = window.innerHeight;
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      particlesCanvas.width = width * dpr;
+      particlesCanvas.height = height * dpr;
+      particlesCanvas.style.width = width + 'px';
+      particlesCanvas.style.height = height + 'px';
+      ctx.scale(dpr, dpr);
     }
 
-    function createParticle(x, y) {
+    function createParticle(i, x, y) {
       const size = Math.floor(Math.random() * 6 + 10); // Font size between 10-16px
-      const vx = (Math.random() - 0.5) * maxSpeed;
-      const vy = (Math.random() - 0.5) * maxSpeed;
-      return {
-        x: x !== undefined ? x : Math.random() * particlesCanvas.width,
-        y: y !== undefined ? y : Math.random() * particlesCanvas.height,
-        vx: vx,
-        vy: vy,
-        size: size,
-        radius: size / 2, // Used for collision detection
-        font: `${size}px "SF Mono", Menlo, Monaco, Consolas, monospace`, // Pre-cached font string
-        char: getRandomChar(),
-        // Each particle changes at its own random interval (300ms to 1500ms)
-        changeInterval: Math.random() * 1200 + 300,
-        lastChangeTime: performance.now()
-      };
+      particleX[i] = x !== undefined ? x : Math.random() * particlesCanvas.width;
+      particleY[i] = y !== undefined ? y : Math.random() * particlesCanvas.height;
+      particleVX[i] = (Math.random() - 0.5) * maxSpeed;
+      particleVY[i] = (Math.random() - 0.5) * maxSpeed;
+      particleSize[i] = size;
+      particleRadius[i] = size * 0.5;
+      particleFonts[i] = `${size}px "SF Mono", Menlo, Monaco, Consolas, monospace`;
+      particleCharIndex[i] = Math.floor(Math.random() * charPoolLen);
+      particleChangeInterval[i] = Math.random() * 1200 + 300;
+      particleLastChangeTime[i] = performance.now();
     }
 
     function initParticles() {
-      particles = [];
+      const now = performance.now();
       for (let i = 0; i < particleCount; i++) {
-        particles.push(createParticle());
+        createParticle(i);
+        particleLastChangeTime[i] = now;
       }
     }
 
     function updateParticles() {
       const now = performance.now();
-      particles.forEach((p, i) => {
+      const canvasWidth = particlesCanvas.width;
+      const canvasHeight = particlesCanvas.height;
+      const mouseX = mouse.x;
+      const mouseY = mouse.y;
+      const hasMousePos = mouseX !== null && mouseY !== null;
+      
+      for (let i = 0; i < particleCount; i++) {
         // Check for snake game target (Easter egg)
         let inSnakeGame = false;
         if (window.getSnakeParticleTarget && typeof window.getSnakeParticleTarget === 'function') {
+          // Create temporary object for compatibility with easter egg
+          const p = {
+            x: particleX[i],
+            y: particleY[i],
+            char: charPool[particleCharIndex[i]]
+          };
           const target = window.getSnakeParticleTarget(p);
           if (target) {
             inSnakeGame = true;
             // Strong attraction to target during transitions
-            const dx = target.x - p.x;
-            const dy = target.y - p.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+            const dx = target.x - particleX[i];
+            const dy = target.y - particleY[i];
+            const distSq = dx * dx + dy * dy;
             
-            if (distance > 5) {
-              // Extremely strong attraction for instant snapping
+            if (distSq > 25) { // distance > 5
+              const dist = Math.sqrt(distSq);
               const attractionForce = 1.2;
-              p.vx += (dx / distance) * attractionForce;
-              p.vy += (dy / distance) * attractionForce;
+              particleVX[i] += (dx / dist) * attractionForce;
+              particleVY[i] += (dy / dist) * attractionForce;
               
               // Minimal dampening for maximum speed
-              p.vx *= 0.95;
-              p.vy *= 0.95;
+              particleVX[i] *= 0.95;
+              particleVY[i] *= 0.95;
               
               // Change char to square for game mode
-              if (target.type === 'snake' && p.char !== '■') {
-                p.char = '■';
-              } else if (target.type === 'food' && p.char !== '●') {
-                p.char = '●';
+              if (target.type === 'snake') {
+                particleCharIndex[i] = charPool.indexOf('■');
+              } else if (target.type === 'food') {
+                particleCharIndex[i] = charPool.indexOf('●');
               }
             } else {
               // Very close to target - lock in place instantly
-              p.vx *= 0.2;
-              p.vy *= 0.2;
+              particleVX[i] *= 0.2;
+              particleVY[i] *= 0.2;
             }
           }
         }
         
         // Apply velocity
-        p.x += p.vx;
-        p.y += p.vy;
+        particleX[i] += particleVX[i];
+        particleY[i] += particleVY[i];
 
         // Bounce off walls (gentler during snake game)
         if (inSnakeGame) {
           // Soft boundaries during game - wrap around instead
-          if (p.x < 0) p.x = particlesCanvas.width;
-          if (p.x > particlesCanvas.width) p.x = 0;
-          if (p.y < 0) p.y = particlesCanvas.height;
-          if (p.y > particlesCanvas.height) p.y = 0;
+          if (particleX[i] < 0) particleX[i] = canvasWidth;
+          if (particleX[i] > canvasWidth) particleX[i] = 0;
+          if (particleY[i] < 0) particleY[i] = canvasHeight;
+          if (particleY[i] > canvasHeight) particleY[i] = 0;
         } else {
           // Normal bounce when not in game
-          if (p.x < 0 || p.x > particlesCanvas.width) p.vx *= -1;
-          if (p.y < 0 || p.y > particlesCanvas.height) p.vy *= -1;
+          if (particleX[i] < 0 || particleX[i] > canvasWidth) particleVX[i] *= -1;
+          if (particleY[i] < 0 || particleY[i] > canvasHeight) particleVY[i] *= -1;
         }
 
         // Change character at randomized intervals (only when not in snake game)
-        if (!inSnakeGame && now - p.lastChangeTime >= p.changeInterval) {
-          p.char = getRandomChar();
-          p.lastChangeTime = now;
+        if (!inSnakeGame && now - particleLastChangeTime[i] >= particleChangeInterval[i]) {
+          particleCharIndex[i] = Math.floor(Math.random() * charPoolLen);
+          particleLastChangeTime[i] = now;
           // Randomize next change interval for natural variation
-          p.changeInterval = Math.random() * 1200 + 300;
+          particleChangeInterval[i] = Math.random() * 1200 + 300;
         }
 
-        // Mouse repulse effect (from particles.js) - disabled during snake game
-        // Physics formula: force = (1/r) * (-1 * (d/r)² + 1) * r * v
-        // where r=repulseDistance, d=distance, v=velocity
-        if (!inSnakeGame && mouse.x !== null && mouse.y !== null) {
-          const dx = p.x - mouse.x;
-          const dy = p.y - mouse.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+        // Mouse repulse effect - disabled during snake game
+        // Use squared distance to avoid sqrt until necessary
+        if (!inSnakeGame && hasMousePos) {
+          const dx = particleX[i] - mouseX;
+          const dy = particleY[i] - mouseY;
+          const distSq = dx * dx + dy * dy;
 
-          if (distance < repulseDistance) {
-            const normVec = { x: dx / distance, y: dy / distance };
+          if (distSq < repulseDistanceSq) {
+            const dist = Math.sqrt(distSq);
+            const normX = dx / dist;
+            const normY = dy / dist;
             const velocity = 100;
+            const distRatio = dist * repulseDistanceInv;
             const repulseFactor = Math.max(0, Math.min(50, 
-              (1 / repulseDistance) * (-1 * Math.pow(distance / repulseDistance, 2) + 1) * repulseDistance * velocity
+              repulseDistanceInv * (-distRatio * distRatio + 1) * repulseDistance * velocity
             ));
             
-            const newX = p.x + normVec.x * repulseFactor * 0.02;
-            const newY = p.y + normVec.y * repulseFactor * 0.02;
+            const newX = particleX[i] + normX * repulseFactor * 0.02;
+            const newY = particleY[i] + normY * repulseFactor * 0.02;
             
             // Keep within bounds
-            if (newX > 0 && newX < particlesCanvas.width) p.x = newX;
-            if (newY > 0 && newY < particlesCanvas.height) p.y = newY;
+            if (newX > 0 && newX < canvasWidth) particleX[i] = newX;
+            if (newY > 0 && newY < canvasHeight) particleY[i] = newY;
           }
         }
 
         // Particle-to-particle interactions (disabled during snake game)
         if (!inSnakeGame) {
-          for (let j = i + 1; j < particles.length; j++) {
-            const p2 = particles[j];
-            const dx = p.x - p2.x;
-            const dy = p.y - p2.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+          for (let j = i + 1; j < particleCount; j++) {
+            const dx = particleX[i] - particleX[j];
+            const dy = particleY[i] - particleY[j];
+            const distSq = dx * dx + dy * dy;
 
             // Attract particles (from particles.js)
-            if (attractEnabled && distance < connectionDistance) {
+            if (attractEnabled && distSq < connectionDistanceSq) {
               const ax = dx / (attractRotateX * 1000);
               const ay = dy / (attractRotateY * 1000);
-              p.vx -= ax;
-              p.vy -= ay;
-              p2.vx += ax;
-              p2.vy += ay;
+              particleVX[i] -= ax;
+              particleVY[i] -= ay;
+              particleVX[j] += ax;
+              particleVY[j] += ay;
             }
 
             // Bounce particles off each other (from particles.js)
-            if (bounceEnabled && distance <= p.radius + p2.radius) {
-              p.vx = -p.vx;
-              p.vy = -p.vy;
-              p2.vx = -p2.vx;
-              p2.vy = -p2.vy;
+            const minDist = particleRadius[i] + particleRadius[j];
+            if (bounceEnabled && distSq <= minDist * minDist) {
+              particleVX[i] = -particleVX[i];
+              particleVY[i] = -particleVY[i];
+              particleVX[j] = -particleVX[j];
+              particleVY[j] = -particleVY[j];
             }
           }
         }
-      });
     }
 
     function drawParticles() {
-      ctx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+      const canvasWidth = particlesCanvas.width;
+      const canvasHeight = particlesCanvas.height;
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
       // Check if we should hide particles during snake game play phase
       const gamePhase = window.getSnakeGamePhase && window.getSnakeGamePhase();
@@ -206,22 +241,23 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Draw connections between particles
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+      // Draw connections between particles - avoid sqrt when possible
+      ctx.lineWidth = 0.5;
+      for (let i = 0; i < particleCount; i++) {
+        for (let j = i + 1; j < particleCount; j++) {
+          const dx = particleX[i] - particleX[j];
+          const dy = particleY[i] - particleY[j];
+          const distSq = dx * dx + dy * dy;
 
-          if (distance < connectionDistance) {
+          if (distSq < connectionDistanceSq) {
             // Fade opacity based on distance (from particles.js)
-            const opacity = (1 - distance / connectionDistance) * 0.1;
+            const dist = Math.sqrt(distSq);
+            const opacity = (1 - dist / connectionDistance) * 0.1;
             if (opacity > 0) {
-              ctx.beginPath();
               ctx.strokeStyle = `rgba(94, 232, 125, ${opacity})`;
-              ctx.lineWidth = 0.5;
-              ctx.moveTo(particles[i].x, particles[i].y);
-              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.beginPath();
+              ctx.moveTo(particleX[i], particleY[i]);
+              ctx.lineTo(particleX[j], particleY[j]);
               ctx.stroke();
             }
           }
@@ -229,38 +265,48 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Draw grab lines to cursor (from particles.js)
-      if (mouse.x !== null && mouse.y !== null) {
-        particles.forEach(p => {
-          const dx = p.x - mouse.x;
-          const dy = p.y - mouse.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+      const mouseX = mouse.x;
+      const mouseY = mouse.y;
+      if (mouseX !== null && mouseY !== null) {
+        ctx.lineWidth = 1;
+        for (let i = 0; i < particleCount; i++) {
+          const dx = particleX[i] - mouseX;
+          const dy = particleY[i] - mouseY;
+          const distSq = dx * dx + dy * dy;
 
-          if (distance < grabDistance) {
+          if (distSq < grabDistanceSq) {
             // Fade opacity based on distance
-            const opacity = (1 - distance / grabDistance) * 0.4;
+            const dist = Math.sqrt(distSq);
+            const opacity = (1 - dist / grabDistance) * 0.4;
             if (opacity > 0) {
-              ctx.beginPath();
               ctx.strokeStyle = `rgba(94, 232, 125, ${opacity})`;
-              ctx.lineWidth = 1;
-              ctx.moveTo(p.x, p.y);
-              ctx.lineTo(mouse.x, mouse.y);
+              ctx.beginPath();
+              ctx.moveTo(particleX[i], particleY[i]);
+              ctx.lineTo(mouseX, mouseY);
               ctx.stroke();
             }
           }
-        });
+        }
       }
 
       // Draw particles as characters
       ctx.fillStyle = particleColor;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      particles.forEach(p => {
-        ctx.font = p.font;
-        ctx.fillText(p.char, p.x, p.y);
-      });
+      for (let i = 0; i < particleCount; i++) {
+        ctx.font = particleFonts[i];
+        ctx.fillText(charPool[particleCharIndex[i]], particleX[i], particleY[i]);
+      }
     }
 
     function animateParticles() {
+      // Update mouse position from pending values (RAF throttled)
+      if (mouseUpdateScheduled) {
+        mouse.x = mouse.pendingX;
+        mouse.y = mouse.pendingY;
+        mouseUpdateScheduled = false;
+      }
+      
       updateParticles();
       drawParticles();
       requestAnimationFrame(animateParticles);
@@ -273,35 +319,38 @@ document.addEventListener("DOMContentLoaded", () => {
     // Expose reset function for Easter egg cleanup
     window.resetParticles = function() {
       const now = performance.now();
-      particles.forEach(p => {
-        p.char = getRandomChar();
-        p.vx = (Math.random() - 0.5) * maxSpeed;
-        p.vy = (Math.random() - 0.5) * maxSpeed;
+      for (let i = 0; i < particleCount; i++) {
+        particleCharIndex[i] = Math.floor(Math.random() * charPoolLen);
+        particleVX[i] = (Math.random() - 0.5) * maxSpeed;
+        particleVY[i] = (Math.random() - 0.5) * maxSpeed;
         // Reset timing properties for consistent behavior
-        p.lastChangeTime = now;
-        p.changeInterval = Math.random() * 1200 + 300;
-      });
+        particleLastChangeTime[i] = now;
+        particleChangeInterval[i] = Math.random() * 1200 + 300;
+      }
     };
 
-    // Mouse event listeners (from particles.js) - track on window level
+    // Mouse event listeners - throttled to RAF for performance
     window.addEventListener('mousemove', (e) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+      mouse.pendingX = e.clientX;
+      mouse.pendingY = e.clientY;
+      if (!mouseUpdateScheduled) {
+        mouseUpdateScheduled = true;
+      }
     });
 
     window.addEventListener('mouseleave', () => {
       mouse.x = null;
       mouse.y = null;
+      mouse.pendingX = null;
+      mouse.pendingY = null;
     });
 
     window.addEventListener('click', (e) => {
-      // Push mode: add new particles on click (from particles.js)
-      const particlesToAdd = 4;
-      for (let i = 0; i < particlesToAdd; i++) {
-        particles.push(createParticle(e.clientX, e.clientY));
-      }
+      // Push mode: add new particles on click - not implemented with typed arrays
+      // Would need dynamic reallocation, skipping for performance
     });
 
+    window.addEventListener("resize", () => {
     window.addEventListener("resize", () => {
       resizeCanvas();
       initParticles();
@@ -314,21 +363,42 @@ document.addEventListener("DOMContentLoaded", () => {
     // Add micro-interact class for button effects
     card.classList.add("micro-interact");
 
-    const handleMove = (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
+    // Cache rect for performance, update on resize
+    let cachedRect = null;
+    let rafScheduled = false;
+    let pendingX = 0;
+    let pendingY = 0;
+
+    const updateTransform = () => {
+      if (!cachedRect) cachedRect = card.getBoundingClientRect();
+      const centerX = cachedRect.width * 0.5;
+      const centerY = cachedRect.height * 0.5;
       
-      const rotateX = ((y - centerY) / centerY) * -8;
-      const rotateY = ((x - centerX) / centerX) * 8;
+      const rotateX = ((pendingY - centerY) / centerY) * -8;
+      const rotateY = ((pendingX - centerX) / centerX) * 8;
       
       card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-2px)`;
+      rafScheduled = false;
+    };
+
+    const handleMove = (e) => {
+      pendingX = e.clientX - (cachedRect?.left || 0);
+      pendingY = e.clientY - (cachedRect?.top || 0);
+      
+      if (!rafScheduled) {
+        rafScheduled = true;
+        requestAnimationFrame(updateTransform);
+      }
     };
 
     const handleLeave = () => {
       card.style.transform = "";
+      rafScheduled = false;
+      cachedRect = null;
+    };
+
+    const handleEnter = () => {
+      cachedRect = card.getBoundingClientRect();
     };
 
     const handleTouchStart = (e) => {
@@ -336,8 +406,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const rect = card.getBoundingClientRect();
       const x = touch.clientX - rect.left;
       const y = touch.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
+      const centerX = rect.width * 0.5;
+      const centerY = rect.height * 0.5;
       
       const rotateX = ((y - centerY) / centerY) * -4;
       const rotateY = ((x - centerX) / centerX) * 4;
@@ -355,9 +425,12 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => card.classList.remove("vibrating"), 300);
     });
 
+    card.addEventListener("mouseenter", handleEnter);
     card.addEventListener("mousemove", handleMove);
     card.addEventListener("mouseleave", handleLeave);
     card.addEventListener("touchstart", handleTouchStart, { passive: true });
+    card.addEventListener("touchend", handleTouchEnd);
+  });
     card.addEventListener("touchend", handleTouchEnd);
   });
 
