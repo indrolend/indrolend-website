@@ -86,6 +86,7 @@ class ParticlePool {
   constructor(size = 1000) {
     this.pool = [];
     this.active = [];
+    this.deadParticles = []; // Batch collection for dead particles
     
     // Pre-create particles
     for (let i = 0; i < size; i++) {
@@ -108,25 +109,38 @@ class ParticlePool {
   release(particle) {
     const index = this.active.indexOf(particle);
     if (index > -1) {
-      this.active.splice(index, 1);
+      // Swap-and-pop for O(1) removal
+      const last = this.active[this.active.length - 1];
+      this.active[index] = last;
+      this.active.pop();
       particle.reset();
       this.pool.push(particle);
     }
   }
 
   update(dt) {
-    // Update and clean up dead particles
-    for (let i = this.active.length - 1; i >= 0; i--) {
+    // Update particles and collect dead ones
+    this.deadParticles.length = 0;
+    
+    for (let i = 0; i < this.active.length; i++) {
       const particle = this.active[i];
       particle.update(dt);
       if (particle.dead) {
-        this.release(particle);
+        this.deadParticles.push(particle);
       }
+    }
+    
+    // Batch release dead particles
+    for (let i = 0; i < this.deadParticles.length; i++) {
+      this.release(this.deadParticles[i]);
     }
   }
 
   clear() {
-    this.active.forEach(p => this.release(p));
+    while (this.active.length > 0) {
+      const particle = this.active[this.active.length - 1];
+      this.release(particle);
+    }
   }
 
   getActiveCount() {
@@ -189,6 +203,7 @@ class AttractionBehavior extends Behavior {
     this.y = y;
     this.force = force;
     this.radius = radius;
+    this.radiusSq = radius * radius; // Pre-compute squared radius
   }
 
   apply(particle, dt) {
@@ -196,13 +211,14 @@ class AttractionBehavior extends Behavior {
     
     const dx = this.x - particle.x;
     const dy = this.y - particle.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
+    const distSq = dx * dx + dy * dy; // Use squared distance first
     
-    if (dist < this.radius && dist > 0) {
-      const strength = (this.radius - dist) / this.radius;
+    if (distSq < this.radiusSq && distSq > 0) {
+      const distance = Math.sqrt(distSq); // Only compute sqrt when needed
+      const strength = (this.radius - distance) / this.radius;
       const forceAmount = this.force * strength;
-      particle.vx += (dx / dist) * forceAmount * dt;
-      particle.vy += (dy / dist) * forceAmount * dt;
+      particle.vx += (dx / distance) * forceAmount * dt;
+      particle.vy += (dy / distance) * forceAmount * dt;
     }
   }
 }
@@ -217,6 +233,7 @@ class RepulsionBehavior extends Behavior {
     this.y = y;
     this.force = force;
     this.radius = radius;
+    this.radiusSq = radius * radius; // Pre-compute squared radius
   }
 
   apply(particle, dt) {
@@ -224,13 +241,14 @@ class RepulsionBehavior extends Behavior {
     
     const dx = particle.x - this.x;
     const dy = particle.y - this.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
+    const distSq = dx * dx + dy * dy; // Use squared distance first
     
-    if (dist < this.radius && dist > 0) {
-      const strength = (this.radius - dist) / this.radius;
+    if (distSq < this.radiusSq && distSq > 0) {
+      const distance = Math.sqrt(distSq); // Only compute sqrt when needed
+      const strength = (this.radius - distance) / this.radius;
       const forceAmount = this.force * strength;
-      particle.vx += (dx / dist) * forceAmount * dt;
-      particle.vy += (dy / dist) * forceAmount * dt;
+      particle.vx += (dx / distance) * forceAmount * dt;
+      particle.vy += (dy / distance) * forceAmount * dt;
     }
   }
 }
@@ -350,6 +368,9 @@ class Emitter {
  * ParticleEngine - Main engine managing multiple emitters
  */
 class ParticleEngine {
+  static TARGET_FPS = 60;
+  static TARGET_FRAME_TIME = 1000 / ParticleEngine.TARGET_FPS; // 16.67ms per frame
+  
   constructor() {
     this.emitters = [];
     this.running = false;
@@ -370,7 +391,7 @@ class ParticleEngine {
 
   update() {
     const now = performance.now();
-    const dt = Math.min((now - this.lastTime) / 16.67, 2); // Cap at 2x normal speed
+    const dt = Math.min((now - this.lastTime) / ParticleEngine.TARGET_FRAME_TIME, 2); // Cap at 2x normal speed
     this.lastTime = now;
     
     this.emitters.forEach(emitter => {
