@@ -1,4 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // --- Ensure viewport starts at top on page load ---
+  // Mobile browsers sometimes start mid-page after auto-deployment/reload
+  // This ensures users see the header first, not the middle of the content
+  window.scrollTo(0, 0);
+  const homeContainer = document.querySelector(".home-container");
+  if (homeContainer) {
+    homeContainer.scrollTop = 0; // Reset internal scroll position if container is scrollable
+  }
+
   // --- Home Page Fade-In Animation ---
   // Trigger fade-in animations when the home page loads
   const particlesBg = document.getElementById("particles-bg");
@@ -22,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const ctx = particlesCanvas.getContext("2d");
     let particles = [];
     const particleCount = 60;
-    const maxSpeed = 0.3;
+    const maxSpeed = 0.6; // Increased speed for better visual effect
     const particleColor = "rgba(94, 232, 125, 0.4)";
     const lineColor = "rgba(94, 232, 125, 0.1)";
     const connectionDistance = 120;
@@ -308,57 +317,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- Tilt/Parallax Hover Effect for App Cards ---
+  // --- App Cards Click Vibration Effects ---
   const appCards = document.querySelectorAll(".app-card");
   appCards.forEach(card => {
     // Add micro-interact class for button effects
     card.classList.add("micro-interact");
-
-    const handleMove = (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      
-      const rotateX = ((y - centerY) / centerY) * -8;
-      const rotateY = ((x - centerX) / centerX) * 8;
-      
-      card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-2px)`;
-    };
-
-    const handleLeave = () => {
-      card.style.transform = "";
-    };
-
-    const handleTouchStart = (e) => {
-      const touch = e.touches[0];
-      const rect = card.getBoundingClientRect();
-      const x = touch.clientX - rect.left;
-      const y = touch.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      
-      const rotateX = ((y - centerY) / centerY) * -4;
-      const rotateY = ((x - centerX) / centerX) * 4;
-      
-      card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-    };
-
-    const handleTouchEnd = () => {
-      card.style.transform = "";
-    };
 
     // Vibration effect on click
     card.addEventListener("click", () => {
       card.classList.add("vibrating");
       setTimeout(() => card.classList.remove("vibrating"), 300);
     });
-
-    card.addEventListener("mousemove", handleMove);
-    card.addEventListener("mouseleave", handleLeave);
-    card.addEventListener("touchstart", handleTouchStart, { passive: true });
-    card.addEventListener("touchend", handleTouchEnd);
   });
 
   // --- Important word fluctuation effect ---

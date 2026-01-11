@@ -400,7 +400,8 @@ html, body {
 .home-bg {
   background: radial-gradient(circle at top, #06101f 0, #020612 45%, #000 100%);
   color: var(--text-main);
-  min-height: 100vh;
+  height: 100vh; /* Fixed height to prevent scrolling */
+  overflow: hidden; /* Prevent scrolling */
   margin: 0;
   padding: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
@@ -426,15 +427,26 @@ html, body {
   z-index: 1;
   max-width: 960px;
   margin: 0 auto;
-  padding: 22px 16px 40px;
+  padding: 16px 16px 20px; /* Reduced vertical padding for better fit */
+  height: 100%; /* Take full viewport height */
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* Allow scrolling only within container if needed */
+  justify-content: flex-start; /* Align content to top */
+}
+
+@media (min-width: 1920px) {
+  .home-container {
+    max-width: 1400px; /* Expand on ultra-wide displays to utilize horizontal space */
+  }
 }
 
 .home-header {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px; /* Reduced gap */
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 12px; /* Reduced margin */
 }
 
 .home-header-image-wrap {
@@ -463,7 +475,7 @@ html, body {
 .home-main {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px; /* Reduced gap for tighter layout */
 }
 
 .embed-wrapper {
@@ -475,7 +487,7 @@ html, body {
 
 /* App grid icons */
 .app-grid {
-  margin-top: 14px;
+  margin-top: 10px; /* Reduced top margin */
   /* Flexbox fallback for older browsers */
   display: -webkit-box;
   display: -webkit-flex;
@@ -488,19 +500,46 @@ html, body {
   /* CSS Grid for modern browsers */
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: (minmax(140px, 1fr))[auto-fit];
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 14px;
+  -ms-grid-columns: (1fr)[4];
+  grid-template-columns: repeat(4, 1fr); /* 4 columns for desktop */
+  gap: 16px; /* Reduced spacing for better vertical fit */
+  justify-content: center; /* Center within container */
 }
 
 /* Fallback for browsers without gap support */
 .app-grid > * {
-  margin: 7px;
+  margin: 8px;
 }
 
-@supports (gap: 14px) {
+@supports (gap: 16px) {
   .app-grid > * {
     margin: 0;
+  }
+}
+
+@media (min-width: 1920px) {
+  .app-grid {
+    grid-template-columns: repeat(8, 1fr); /* All 8 buttons in one row on ultra-wide displays */
+    -ms-grid-columns: (1fr)[8];
+    gap: 14px; /* Further reduced gap for ultra-wide */
+  }
+  
+  /* Fallback for browsers without gap support on ultra-wide */
+  .app-grid > * {
+    margin: 7px;
+  }
+  
+  @supports (gap: 14px) {
+    .app-grid > * {
+      margin: 0;
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .app-grid {
+    grid-template-columns: 1fr; /* Mobile: Single column */
+    -ms-grid-columns: 1fr;
   }
 }
 
@@ -1122,6 +1161,14 @@ html, body {
 
 .fkrc-verifywin-container {
     padding: 8px;
+    max-width: 70%;
+    margin: 40px auto 0; /* Adds subtle vertical shift and centers horizontally */
+}
+
+@media (min-width: 1200px) {
+  .fkrc-verifywin-container {
+    max-width: 900px; /* Scales on widescreen monitors */
+  }
 }
 
 .fkrc-verifywin-header {
@@ -1200,9 +1247,16 @@ html, body {
 }
 
 .fkrc-page-wrap {
-  width: 100%;
+  max-width: 90%; /* Fluid width on smaller screens */
+  margin: 0 auto; /* Center horizontally */
   display: flex;
   justify-content: center;
+}
+
+@media (min-width: 1200px) {
+  .fkrc-page-wrap {
+    max-width: 1400px; /* Cap width on widescreen monitors */
+  }
 }
 
 .fkrc-verifywin-main {
@@ -1358,20 +1412,6 @@ html, body {
   inset: 0;
   pointer-events: none;
   z-index: 0;
-}
-
-/* ---- TILT/PARALLAX HOVER CARDS ---- */
-.app-card {
-  transform-style: preserve-3d;
-  perspective: 800px;
-  will-change: transform;
-}
-
-.app-card-inner {
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.15s ease-out;
 }
 
 /* ---- COLOR CYCLING TEXT (Gallery filenames) ---- */
