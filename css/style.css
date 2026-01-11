@@ -429,6 +429,12 @@ html, body {
   padding: 22px 16px 40px;
 }
 
+@media (min-width: 1920px) {
+  .home-container {
+    max-width: 1400px; /* Expand on ultra-wide displays to utilize horizontal space */
+  }
+}
+
 .home-header {
   display: flex;
   flex-direction: column;
@@ -488,20 +494,28 @@ html, body {
   /* CSS Grid for modern browsers */
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: (1fr)[5];
-  grid-template-columns: repeat(5, 1fr); /* 5 columns for desktop */
-  gap: 24px; /* Expanded spacing */
+  -ms-grid-columns: (1fr)[4];
+  grid-template-columns: repeat(4, 1fr); /* 4 columns for desktop */
+  gap: 20px; /* Balanced spacing */
   justify-content: center; /* Center within container */
 }
 
 /* Fallback for browsers without gap support */
 .app-grid > * {
-  margin: 12px;
+  margin: 10px;
 }
 
-@supports (gap: 24px) {
+@supports (gap: 20px) {
   .app-grid > * {
     margin: 0;
+  }
+}
+
+@media (min-width: 1920px) {
+  .app-grid {
+    grid-template-columns: repeat(8, 1fr); /* All 8 buttons in one row on ultra-wide displays */
+    -ms-grid-columns: (1fr)[8];
+    gap: 18px; /* Slightly reduced gap for better fit */
   }
 }
 
