@@ -427,11 +427,12 @@ html, body {
   z-index: 1;
   max-width: 960px;
   margin: 0 auto;
-  padding: 22px 16px 40px;
+  padding: 16px 16px 20px; /* Reduced vertical padding for better fit */
   height: 100%; /* Take full viewport height */
   display: flex;
   flex-direction: column;
   overflow-y: auto; /* Allow scrolling only within container if needed */
+  justify-content: center; /* Center content vertically */
 }
 
 @media (min-width: 1920px) {
@@ -443,9 +444,9 @@ html, body {
 .home-header {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px; /* Reduced gap */
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 12px; /* Reduced margin */
 }
 
 .home-header-image-wrap {
@@ -474,7 +475,7 @@ html, body {
 .home-main {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px; /* Reduced gap for tighter layout */
 }
 
 .embed-wrapper {
@@ -486,7 +487,7 @@ html, body {
 
 /* App grid icons */
 .app-grid {
-  margin-top: 14px;
+  margin-top: 10px; /* Reduced top margin */
   /* Flexbox fallback for older browsers */
   display: -webkit-box;
   display: -webkit-flex;
@@ -501,16 +502,16 @@ html, body {
   display: grid;
   -ms-grid-columns: (1fr)[4];
   grid-template-columns: repeat(4, 1fr); /* 4 columns for desktop */
-  gap: 20px; /* Balanced spacing */
+  gap: 16px; /* Reduced spacing for better vertical fit */
   justify-content: center; /* Center within container */
 }
 
 /* Fallback for browsers without gap support */
 .app-grid > * {
-  margin: 10px;
+  margin: 8px;
 }
 
-@supports (gap: 20px) {
+@supports (gap: 16px) {
   .app-grid > * {
     margin: 0;
   }
@@ -520,15 +521,15 @@ html, body {
   .app-grid {
     grid-template-columns: repeat(8, 1fr); /* All 8 buttons in one row on ultra-wide displays */
     -ms-grid-columns: (1fr)[8];
-    gap: 18px; /* Slightly reduced gap for better fit */
+    gap: 14px; /* Further reduced gap for ultra-wide */
   }
   
   /* Fallback for browsers without gap support on ultra-wide */
   .app-grid > * {
-    margin: 9px;
+    margin: 7px;
   }
   
-  @supports (gap: 18px) {
+  @supports (gap: 14px) {
     .app-grid > * {
       margin: 0;
     }

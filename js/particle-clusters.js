@@ -55,8 +55,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Set canvas size to match container
     function resizeCanvas() {
       const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
+      // Ensure we have valid dimensions (not 0)
+      const width = rect.width || canvas.parentElement?.offsetWidth || 140;
+      const height = rect.height || canvas.parentElement?.offsetHeight || 140;
+      canvas.width = width;
+      canvas.height = height;
     }
 
     // Create a particle
@@ -205,6 +208,12 @@ document.addEventListener("DOMContentLoaded", () => {
     resizeCanvas();
     initParticles();
     observer.observe(canvas);
+    
+    // Re-check canvas size after a short delay to handle async layout
+    setTimeout(() => {
+      resizeCanvas();
+      initParticles();
+    }, 100);
 
     // Event listeners
     canvas.addEventListener("mousemove", handleMouseMove);
