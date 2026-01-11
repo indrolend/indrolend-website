@@ -24,7 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
     mouseRepelForce: 0.5,
     springBackForce: 0.02, // Force to pull particles back to original position
     springBackThreshold: 1, // Minimum distance before applying spring force
-    damping: 0.98 // Velocity damping for smoother motion
+    damping: 0.98, // Velocity damping for smoother motion
+    defaultCanvasSize: 140, // Fallback size when layout dimensions unavailable
+    layoutDelayMs: 100 // Delay for async layout recalculation
   };
 
   // Initialize particle clusters for each platform button
@@ -55,9 +57,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Set canvas size to match container
     function resizeCanvas() {
       const rect = canvas.getBoundingClientRect();
-      // Ensure we have valid dimensions (not 0)
-      const width = rect.width || canvas.parentElement?.offsetWidth || 140;
-      const height = rect.height || canvas.parentElement?.offsetHeight || 140;
+      // Ensure we have valid dimensions (not 0) - fallback prevents squished particles on initial load
+      const width = rect.width || canvas.parentElement?.offsetWidth || config.defaultCanvasSize;
+      const height = rect.height || canvas.parentElement?.offsetHeight || config.defaultCanvasSize;
       canvas.width = width;
       canvas.height = height;
     }
@@ -209,11 +211,11 @@ document.addEventListener("DOMContentLoaded", () => {
     initParticles();
     observer.observe(canvas);
     
-    // Re-check canvas size after a short delay to handle async layout
+    // Re-check canvas size after delay to handle async layout (prevents squished buttons after auto-deployment)
     setTimeout(() => {
       resizeCanvas();
       initParticles();
-    }, 100);
+    }, config.layoutDelayMs);
 
     // Event listeners
     canvas.addEventListener("mousemove", handleMouseMove);
