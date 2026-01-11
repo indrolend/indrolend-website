@@ -488,19 +488,27 @@ html, body {
   /* CSS Grid for modern browsers */
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: (minmax(140px, 1fr))[auto-fit];
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 14px;
+  -ms-grid-columns: (1fr)[5];
+  grid-template-columns: repeat(5, 1fr); /* 5 columns for desktop */
+  gap: 24px; /* Expanded spacing */
+  justify-content: center; /* Center within container */
 }
 
 /* Fallback for browsers without gap support */
 .app-grid > * {
-  margin: 7px;
+  margin: 12px;
 }
 
-@supports (gap: 14px) {
+@supports (gap: 24px) {
   .app-grid > * {
     margin: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-grid {
+    grid-template-columns: 1fr; /* Mobile: Single column */
+    -ms-grid-columns: 1fr;
   }
 }
 
@@ -1122,6 +1130,14 @@ html, body {
 
 .fkrc-verifywin-container {
     padding: 8px;
+    max-width: 70%;
+    margin: 40px auto 0; /* Adds subtle vertical shift and centers horizontally */
+}
+
+@media (min-width: 1200px) {
+  .fkrc-verifywin-container {
+    max-width: 900px; /* Scales on widescreen monitors */
+  }
 }
 
 .fkrc-verifywin-header {
@@ -1200,9 +1216,16 @@ html, body {
 }
 
 .fkrc-page-wrap {
-  width: 100%;
+  max-width: 90%; /* Fluid width on smaller screens */
+  margin: 0 auto; /* Center horizontally */
   display: flex;
   justify-content: center;
+}
+
+@media (min-width: 1200px) {
+  .fkrc-page-wrap {
+    max-width: 1400px; /* Cap width on widescreen monitors */
+  }
 }
 
 .fkrc-verifywin-main {
