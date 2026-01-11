@@ -1,4 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // --- Ensure viewport starts at top on page load (especially for mobile) ---
+  window.scrollTo(0, 0);
+  const homeContainer = document.querySelector(".home-container");
+  if (homeContainer) {
+    homeContainer.scrollTop = 0;
+  }
+
   // --- Home Page Fade-In Animation ---
   // Trigger fade-in animations when the home page loads
   const particlesBg = document.getElementById("particles-bg");
