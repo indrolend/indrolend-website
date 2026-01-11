@@ -400,7 +400,8 @@ html, body {
 .home-bg {
   background: radial-gradient(circle at top, #06101f 0, #020612 45%, #000 100%);
   color: var(--text-main);
-  min-height: 100vh;
+  height: 100vh; /* Fixed height to prevent scrolling */
+  overflow: hidden; /* Prevent scrolling */
   margin: 0;
   padding: 0;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
@@ -427,6 +428,10 @@ html, body {
   max-width: 960px;
   margin: 0 auto;
   padding: 22px 16px 40px;
+  height: 100%; /* Take full viewport height */
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* Allow scrolling only within container if needed */
 }
 
 @media (min-width: 1920px) {
@@ -1406,20 +1411,6 @@ html, body {
   inset: 0;
   pointer-events: none;
   z-index: 0;
-}
-
-/* ---- TILT/PARALLAX HOVER CARDS ---- */
-.app-card {
-  transform-style: preserve-3d;
-  perspective: 800px;
-  will-change: transform;
-}
-
-.app-card-inner {
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.15s ease-out;
 }
 
 /* ---- COLOR CYCLING TEXT (Gallery filenames) ---- */

@@ -308,57 +308,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- Tilt/Parallax Hover Effect for App Cards ---
+  // --- App Cards Interaction Effects ---
   const appCards = document.querySelectorAll(".app-card");
   appCards.forEach(card => {
     // Add micro-interact class for button effects
     card.classList.add("micro-interact");
-
-    const handleMove = (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      
-      const rotateX = ((y - centerY) / centerY) * -8;
-      const rotateY = ((x - centerX) / centerX) * 8;
-      
-      card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-2px)`;
-    };
-
-    const handleLeave = () => {
-      card.style.transform = "";
-    };
-
-    const handleTouchStart = (e) => {
-      const touch = e.touches[0];
-      const rect = card.getBoundingClientRect();
-      const x = touch.clientX - rect.left;
-      const y = touch.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      
-      const rotateX = ((y - centerY) / centerY) * -4;
-      const rotateY = ((x - centerX) / centerX) * 4;
-      
-      card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-    };
-
-    const handleTouchEnd = () => {
-      card.style.transform = "";
-    };
 
     // Vibration effect on click
     card.addEventListener("click", () => {
       card.classList.add("vibrating");
       setTimeout(() => card.classList.remove("vibrating"), 300);
     });
-
-    card.addEventListener("mousemove", handleMove);
-    card.addEventListener("mouseleave", handleLeave);
-    card.addEventListener("touchstart", handleTouchStart, { passive: true });
-    card.addEventListener("touchend", handleTouchEnd);
   });
 
   // --- Important word fluctuation effect ---
