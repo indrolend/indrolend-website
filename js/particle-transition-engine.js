@@ -141,6 +141,12 @@
       // Performance tracking
       this.isMobile = this._detectMobile();
       
+      // Update mobile detection on resize
+      this._resizeHandler = () => {
+        this.isMobile = this._detectMobile();
+      };
+      window.addEventListener('resize', this._resizeHandler);
+      
       // Bind methods
       this._animate = this._animate.bind(this);
     }
@@ -151,6 +157,15 @@
     _detectMobile() {
       return window.innerWidth <= CONFIG.MOBILE_BREAKPOINT && 
              navigator.maxTouchPoints > 0;
+    }
+
+    /**
+     * Get current timestamp with fallback for older browsers
+     */
+    _now() {
+      return (typeof performance !== 'undefined' && performance.now) 
+        ? performance.now() 
+        : Date.now();
     }
 
     /**
@@ -350,7 +365,7 @@
      * Advance to next transition phase
      */
     _advancePhase() {
-      this.phaseStartTime = performance.now();
+      this.phaseStartTime = this._now();
 
       switch (this.transitionPhase) {
         case 'dispersing':
@@ -387,6 +402,20 @@
     }
 
     /**
+     * Clean up and destroy the engine
+     */
+    destroy() {
+      if (this.animationId) {
+        cancelAnimationFrame(this.animationId);
+        this.animationId = null;
+      }
+      this._cleanupCanvas();
+      window.removeEventListener('resize', this._resizeHandler);
+      this.particles = [];
+      this.isTransitioning = false;
+    }
+
+    /**
      * Start a transition
      * 
      * @param {Object} options - Transition options
@@ -399,7 +428,7 @@
 
       this.isTransitioning = true;
       this.transitionPhase = 'dispersing';
-      this.phaseStartTime = performance.now();
+      this.phaseStartTime = this._now();
       this.lastFrameTime = this.phaseStartTime;
       this.onCompleteCallback = options.onComplete || null;
 
@@ -445,6 +474,9 @@
     };
 
     const settings = Object.assign({}, defaultConfig, config);
+    
+    // Store observer for cleanup
+    let mutationObserver = null;
 
     /**
      * Hook into navigation links
@@ -536,7 +568,7 @@
     });
 
     // Also hook links added dynamically (with debounce)
-    const observer = new MutationObserver(() => {
+    mutationObserver = new MutationObserver(() => {
       const links = document.querySelectorAll('a:not([data-transition-hooked])');
       links.forEach(link => {
         hookNavigationLink(link);
@@ -544,10 +576,20 @@
       });
     });
 
-    observer.observe(document.body, {
+    mutationObserver.observe(document.body, {
       childList: true,
       subtree: true
     });
+    
+    // Return cleanup function
+    return {
+      disconnect: () => {
+        if (mutationObserver) {
+          mutationObserver.disconnect();
+          mutationObserver = null;
+        }
+      }
+    };
   }
 
   /**
