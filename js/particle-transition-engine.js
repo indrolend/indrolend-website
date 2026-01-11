@@ -487,9 +487,16 @@
         return;
       }
 
-      // Skip if no href or javascript: link
+      // Skip if no href or dangerous URL schemes
       const href = link.getAttribute('href');
-      if (!href || href.startsWith('javascript:') || href === '#') {
+      if (!href || href === '#') {
+        return;
+      }
+      
+      // Security: Block dangerous URL schemes
+      const dangerousSchemes = ['javascript:', 'data:', 'vbscript:', 'file:'];
+      const lowerHref = href.toLowerCase().trim();
+      if (dangerousSchemes.some(scheme => lowerHref.startsWith(scheme))) {
         return;
       }
 
