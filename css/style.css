@@ -539,10 +539,10 @@ button:hover, .icon:hover {
 
 /* Fallback for browsers without gap support */
 .app-grid > * {
-  margin: 7px;
+  margin: 8px;
 }
 
-@supports (gap: 14px) {
+@supports (gap: 16px) {
   .app-grid > * {
     margin: 0;
   }
