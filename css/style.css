@@ -517,6 +517,17 @@ html, body {
     -ms-grid-columns: (1fr)[8];
     gap: 18px; /* Slightly reduced gap for better fit */
   }
+  
+  /* Fallback for browsers without gap support on ultra-wide */
+  .app-grid > * {
+    margin: 9px;
+  }
+  
+  @supports (gap: 18px) {
+    .app-grid > * {
+      margin: 0;
+    }
+  }
 }
 
 @media (max-width: 900px) {
