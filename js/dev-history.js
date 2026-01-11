@@ -1,5 +1,12 @@
 // Load and render the DEVELOPMENT_HISTORY.md file
 document.addEventListener('DOMContentLoaded', async () => {
+  // --- Initialize Particle Page Transitions ---
+  if (typeof window.ParticleTransitionEngine !== 'undefined') {
+    window.ParticleTransitionEngine.init({
+      customBehaviors: window.ParticleTransitionEngine.behaviors
+    });
+  }
+
   const contentDiv = document.getElementById('markdown-content');
   
   try {
