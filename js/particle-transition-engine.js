@@ -143,7 +143,13 @@
       
       // Update mobile detection on resize
       this._resizeHandler = () => {
+        const wasMobile = this.isMobile;
         this.isMobile = this._detectMobile();
+        
+        // If transition is active and device type changed, abort it gracefully
+        if (this.isTransitioning && wasMobile !== this.isMobile) {
+          this._completeTransition();
+        }
       };
       window.addEventListener('resize', this._resizeHandler);
       
@@ -201,8 +207,10 @@
      */
     _cleanupCanvas() {
       if (this.canvas && this.canvas.parentElement) {
-        this.canvas.parentElement.removeChild(this.canvas);
+        this.canvas.remove(); // Modern method
       }
+      this.canvas = null;
+      this.ctx = null;
     }
 
     /**
@@ -482,9 +490,14 @@
      * Hook into navigation links
      */
     function hookNavigationLink(link) {
-      // Skip external links
-      if (link.target === '_blank' || link.hostname !== window.location.hostname) {
-        return;
+      // Skip external links - safely check hostname
+      try {
+        if (link.target === '_blank' || 
+            (link.hostname && link.hostname !== window.location.hostname)) {
+          return;
+        }
+      } catch (e) {
+        // Ignore errors from accessing hostname on relative URLs
       }
 
       // Skip if no href or dangerous URL schemes
@@ -575,12 +588,17 @@
     });
 
     // Also hook links added dynamically (with debounce)
+    let debounceTimer = null;
     mutationObserver = new MutationObserver(() => {
-      const links = document.querySelectorAll('a:not([data-transition-hooked])');
-      links.forEach(link => {
-        hookNavigationLink(link);
-        link.setAttribute('data-transition-hooked', 'true');
-      });
+      // Debounce to prevent excessive DOM queries
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const links = document.querySelectorAll('a:not([data-transition-hooked])');
+        links.forEach(link => {
+          hookNavigationLink(link);
+          link.setAttribute('data-transition-hooked', 'true');
+        });
+      }, 100); // 100ms debounce
     });
 
     mutationObserver.observe(document.body, {
