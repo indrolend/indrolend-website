@@ -308,7 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- App Cards Interaction Effects ---
+  // --- App Cards Click Vibration Effects ---
   const appCards = document.querySelectorAll(".app-card");
   appCards.forEach(card => {
     // Add micro-interact class for button effects
