@@ -1,9 +1,11 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // --- Ensure viewport starts at top on page load (especially for mobile) ---
+  // --- Ensure viewport starts at top on page load ---
+  // Mobile browsers sometimes start mid-page after auto-deployment/reload
+  // This ensures users see the header first, not the middle of the content
   window.scrollTo(0, 0);
   const homeContainer = document.querySelector(".home-container");
   if (homeContainer) {
-    homeContainer.scrollTop = 0;
+    homeContainer.scrollTop = 0; // Reset internal scroll position if container is scrollable
   }
 
   // --- Home Page Fade-In Animation ---
