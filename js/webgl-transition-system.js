@@ -179,8 +179,8 @@
       }
 
       // Remove renderer from DOM
-      if (this.renderer) {
-        if (this.renderer.domElement && this.renderer.domElement.parentElement === this.container) {
+      if (this.renderer && this.renderer.domElement) {
+        if (this.container.contains(this.renderer.domElement)) {
           this.container.removeChild(this.renderer.domElement);
         }
         this.renderer.dispose();
