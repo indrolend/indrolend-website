@@ -432,16 +432,35 @@
     // Hook all navigation links on page load
     document.addEventListener('DOMContentLoaded', () => {
       const links = document.querySelectorAll('a');
-      links.forEach(hookNavigationLink);
+      links.forEach(link => {
+        hookNavigationLink(link);
+        link.setAttribute('data-webgl-transition-hooked', 'true');
+      });
     });
     
     // Also hook links added dynamically
     let debounceTimer = null;
-    mutationObserver = new MutationObserver(() => {
+    mutationObserver = new MutationObserver((mutations) => {
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
-        const links = document.querySelectorAll('a:not([data-webgl-transition-hooked])');
-        links.forEach(link => {
+        // Process only newly added nodes
+        const newLinks = [];
+        mutations.forEach(mutation => {
+          mutation.addedNodes.forEach(node => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              if (node.tagName === 'A' && !node.hasAttribute('data-webgl-transition-hooked')) {
+                newLinks.push(node);
+              }
+              // Also check for links within added nodes
+              const innerLinks = node.querySelectorAll?.('a:not([data-webgl-transition-hooked])');
+              if (innerLinks) {
+                newLinks.push(...Array.from(innerLinks));
+              }
+            }
+          });
+        });
+        
+        newLinks.forEach(link => {
           hookNavigationLink(link);
           link.setAttribute('data-webgl-transition-hooked', 'true');
         });
