@@ -118,8 +118,9 @@ function runTests() {
     }
   }
 
-  // Load the WebGL Transition System code (simulate)
-  // In real testing, we'd use require() or import, but for this verification:
+  // Load the WebGL Transition System code
+  // Note: These tests validate logic independently of the actual Three.js implementation.
+  // For full integration testing, run this in a browser with Three.js loaded.
   
   // Test 1: Configuration constants
   test('CONFIG object has required properties', () => {

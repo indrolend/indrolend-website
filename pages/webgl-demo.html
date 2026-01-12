@@ -272,6 +272,9 @@
     let transitionSystem = null;
     let rotationInterval = null;
 
+    // Rotation configuration for visual effect
+    const ROTATION_SPEED = { x: 0.001, y: 0.002, z: 0.001 };
+
     function updateStatus(message, type) {
       const badge = document.getElementById('status-badge');
       badge.textContent = message;
@@ -311,7 +314,7 @@
       }
 
       rotationInterval = setInterval(() => {
-        transitionSystem.rotateParticles(0.001, 0.002, 0.001);
+        transitionSystem.rotateParticles(ROTATION_SPEED.x, ROTATION_SPEED.y, ROTATION_SPEED.z);
       }, 16);
 
       updateStatus('✓ Rotation started', 'success');

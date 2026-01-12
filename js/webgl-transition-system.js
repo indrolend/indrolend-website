@@ -115,7 +115,6 @@
       const material = new THREE.PointsMaterial({
         size: CONFIG.PARTICLE_SIZE,
         vertexColors: true, // Use colors from BufferAttribute
-        transparent: false,
         sizeAttenuation: true // Particles get smaller with distance
       });
 

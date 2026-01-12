@@ -172,6 +172,9 @@
     let isRotating = false;
     let rotationInterval;
 
+    // Rotation configuration for visual effect
+    const ROTATION_SPEED = { x: 0.001, y: 0.002, z: 0.001 };
+
     // Initialize the system when page loads
     window.addEventListener('DOMContentLoaded', () => {
       try {
@@ -214,7 +217,7 @@
       isRotating = true;
       rotationInterval = setInterval(() => {
         if (transitionSystem) {
-          transitionSystem.rotateParticles(0.001, 0.002, 0.001);
+          transitionSystem.rotateParticles(ROTATION_SPEED.x, ROTATION_SPEED.y, ROTATION_SPEED.z);
         }
       }, 16); // ~60fps
 
