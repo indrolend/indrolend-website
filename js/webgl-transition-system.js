@@ -180,7 +180,9 @@
 
       // Remove renderer from DOM
       if (this.renderer) {
-        this.container.removeChild(this.renderer.domElement);
+        if (this.renderer.domElement && this.renderer.domElement.parentElement === this.container) {
+          this.container.removeChild(this.renderer.domElement);
+        }
         this.renderer.dispose();
       }
 
