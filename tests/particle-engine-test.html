@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Particle Engine Test</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #020612;
+      color: #5ee87d;
+      font-family: monospace;
+      min-height: 100vh;
+    }
+    
+    h1 {
+      margin-bottom: 20px;
+    }
+    
+    .test-section {
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(94, 232, 125, 0.1);
+      border: 1px solid rgba(94, 232, 125, 0.3);
+      border-radius: 4px;
+    }
+    
+    button {
+      background: rgba(94, 232, 125, 0.2);
+      border: 1px solid rgba(94, 232, 125, 0.5);
+      color: #5ee87d;
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+      font-family: monospace;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+    
+    button:hover {
+      background: rgba(94, 232, 125, 0.3);
+    }
+    
+    .status {
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    
+    .success {
+      color: #5ee87d;
+    }
+    
+    .error {
+      color: #ff8c8c;
+    }
+    
+    .info {
+      color: #6dd9e8;
+    }
+    
+    #console-output {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 4px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+    
+    .log-entry {
+      margin: 2px 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Default canvas for particle engine -->
+  <canvas id="particle-canvas" style="display: none;"></canvas>
+  
+  <h1>Particle Transition Engine - Test Suite</h1>
+  
+  <div class="test-section">
+    <h2>1. Engine Loading Test</h2>
+    <button onclick="testEngineLoaded()">Check Engine Status</button>
+    <div id="load-status" class="status"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>2. Debug Mode Test</h2>
+    <button onclick="enableDebugMode()">Enable Debug Mode</button>
+    <button onclick="disableDebugMode()">Disable Debug Mode</button>
+    <div id="debug-status" class="status"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>3. Canvas Test</h2>
+    <button onclick="testCanvas()">Check Canvas Element</button>
+    <button onclick="testSimpleParticles()">Run Simple Particle Test</button>
+    <div id="canvas-status" class="status"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>4. Manual Transition Test</h2>
+    <button onclick="testManualTransition()">Trigger Test Transition</button>
+    <div id="transition-status" class="status"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>5. API Methods Test</h2>
+    <button onclick="testAPIMethods()">Check Available Methods</button>
+    <div id="api-status" class="status"></div>
+  </div>
+  
+  <div id="console-output">
+    <div class="info">Console output will appear here...</div>
+  </div>
+  
+  <script src="../js/particle-transition-engine.js"></script>
+  
+  <script>
+    // Capture console logs
+    const consoleOutput = document.getElementById('console-output');
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+    
+    function addLogEntry(message, type = 'log') {
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type === 'error' ? 'error' : type === 'warn' ? 'info' : 'success'}`;
+      entry.textContent = message;
+      consoleOutput.appendChild(entry);
+      consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    }
+    
+    console.log = function(...args) {
+      originalLog.apply(console, args);
+      addLogEntry(args.join(' '), 'log');
+    };
+    
+    console.error = function(...args) {
+      originalError.apply(console, args);
+      addLogEntry('ERROR: ' + args.join(' '), 'error');
+    };
+    
+    console.warn = function(...args) {
+      originalWarn.apply(console, args);
+      addLogEntry('WARN: ' + args.join(' '), 'warn');
+    };
+    
+    // Test functions
+    function testEngineLoaded() {
+      const status = document.getElementById('load-status');
+      if (typeof ParticleTransitionEngine !== 'undefined') {
+        status.className = 'status success';
+        status.innerHTML = `
+          ✓ Engine loaded successfully!<br>
+          Version: ${ParticleTransitionEngine.version || 'Unknown'}<br>
+          Available methods: ${Object.keys(ParticleTransitionEngine).join(', ')}
+        `;
+      } else {
+        status.className = 'status error';
+        status.textContent = '✗ Engine not loaded! Check console for errors.';
+      }
+    }
+    
+    function enableDebugMode() {
+      const status = document.getElementById('debug-status');
+      try {
+        ParticleTransitionEngine.setDebugMode(true);
+        status.className = 'status success';
+        status.textContent = '✓ Debug mode enabled! Check console for detailed logs.';
+      } catch (error) {
+        status.className = 'status error';
+        status.textContent = '✗ Failed to enable debug mode: ' + error.message;
+      }
+    }
+    
+    function disableDebugMode() {
+      const status = document.getElementById('debug-status');
+      try {
+        ParticleTransitionEngine.setDebugMode(false);
+        status.className = 'status info';
+        status.textContent = 'Debug mode disabled.';
+      } catch (error) {
+        status.className = 'status error';
+        status.textContent = '✗ Failed to disable debug mode: ' + error.message;
+      }
+    }
+    
+    function testCanvas() {
+      const status = document.getElementById('canvas-status');
+      const canvas = document.getElementById('particle-canvas');
+      
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        status.className = 'status success';
+        status.innerHTML = `
+          ✓ Canvas element found!<br>
+          ID: ${canvas.id}<br>
+          Context: ${ctx ? '2D context available' : 'Failed to get context'}<br>
+          Dimensions: ${canvas.width}x${canvas.height}
+        `;
+      } else {
+        status.className = 'status error';
+        status.textContent = '✗ Canvas element not found!';
+      }
+    }
+    
+    function testSimpleParticles() {
+      const status = document.getElementById('canvas-status');
+      try {
+        status.className = 'status info';
+        status.textContent = 'Running simple particle test... (check screen and console)';
+        
+        const result = ParticleTransitionEngine.testSimpleParticles();
+        
+        setTimeout(() => {
+          status.className = 'status success';
+          status.innerHTML = `
+            ✓ Simple particle test started!<br>
+            Particles: ${result.particles ? result.particles.length : 'N/A'}<br>
+            ${result.message}
+          `;
+        }, 500);
+      } catch (error) {
+        status.className = 'status error';
+        status.textContent = '✗ Test failed: ' + error.message;
+      }
+    }
+    
+    function testManualTransition() {
+      const status = document.getElementById('transition-status');
+      try {
+        status.className = 'status info';
+        status.textContent = 'Starting transition... (watch the screen)';
+        
+        ParticleTransitionEngine.engine.startTransition({
+          fromElements: document.querySelectorAll('button'),
+          colors: [
+            'rgba(94, 232, 125, 0.8)',
+            'rgba(109, 217, 232, 0.9)',
+            'rgba(255, 140, 140, 0.9)'
+          ],
+          onComplete: () => {
+            status.className = 'status success';
+            status.textContent = '✓ Transition completed successfully!';
+          }
+        });
+        
+        setTimeout(() => {
+          if (status.className.includes('info')) {
+            status.className = 'status success';
+            status.textContent = '✓ Transition running... (should complete soon)';
+          }
+        }, 1000);
+      } catch (error) {
+        status.className = 'status error';
+        status.textContent = '✗ Transition failed: ' + error.message;
+      }
+    }
+    
+    function testAPIMethods() {
+      const status = document.getElementById('api-status');
+      const methods = {
+        'init': typeof ParticleTransitionEngine.init,
+        'engine': typeof ParticleTransitionEngine.engine,
+        'behaviors': typeof ParticleTransitionEngine.behaviors,
+        'setDebugMode': typeof ParticleTransitionEngine.setDebugMode,
+        'testSimpleParticles': typeof ParticleTransitionEngine.testSimpleParticles,
+        'version': typeof ParticleTransitionEngine.version
+      };
+      
+      const allPresent = Object.values(methods).every(type => type !== 'undefined');
+      
+      status.className = allPresent ? 'status success' : 'status error';
+      status.innerHTML = `
+        ${allPresent ? '✓' : '✗'} API Methods:<br>
+        ${Object.entries(methods).map(([key, type]) => 
+          `${type !== 'undefined' ? '✓' : '✗'} ${key}: ${type}`
+        ).join('<br>')}
+      `;
+    }
+    
+    // Auto-run engine loaded test on page load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        testEngineLoaded();
+        console.log('=== Test page loaded ===');
+      }, 100);
+    });
+  </script>
+</body>
+</html>

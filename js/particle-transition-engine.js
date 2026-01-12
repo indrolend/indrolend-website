@@ -43,8 +43,31 @@
     
     // Canvas settings
     CANVAS_Z_INDEX: 9999,
-    BACKGROUND_COLOR: 'rgba(2, 6, 18, 1)' // Match website background
+    BACKGROUND_COLOR: 'rgba(2, 6, 18, 1)', // Match website background
+    
+    // Debug settings
+    DEBUG_MODE: false, // Set to true to enable debug logging and simple particle test
+    DEBUG_PARTICLE_COUNT: 50 // Simple particle count for debug mode
   };
+  
+  // Debug logging utility
+  function debugLog(message, data) {
+    if (CONFIG.DEBUG_MODE) {
+      console.log(`[ParticleEngine] ${message}`, data !== undefined ? data : '');
+    }
+  }
+  
+  function debugError(message, error) {
+    if (CONFIG.DEBUG_MODE) {
+      console.error(`[ParticleEngine ERROR] ${message}`, error);
+    }
+  }
+  
+  function debugWarn(message, data) {
+    if (CONFIG.DEBUG_MODE) {
+      console.warn(`[ParticleEngine WARN] ${message}`, data !== undefined ? data : '');
+    }
+  }
 
   /**
    * Particle class representing a single particle in the transition
@@ -128,6 +151,8 @@
    */
   class ParticleTransitionEngine {
     constructor() {
+      debugLog('Initializing ParticleTransitionEngine...');
+      
       this.canvas = null;
       this.ctx = null;
       this.particles = [];
@@ -140,6 +165,7 @@
       
       // Performance tracking
       this.isMobile = this._detectMobile();
+      debugLog('Mobile device detected:', this.isMobile);
       
       // Update mobile detection on resize
       this._resizeHandler = () => {
@@ -148,6 +174,7 @@
         
         // If transition is active and device type changed, abort it gracefully
         if (this.isTransitioning && wasMobile !== this.isMobile) {
+          debugWarn('Device type changed during transition, aborting transition');
           this._completeTransition();
         }
       };
@@ -155,6 +182,8 @@
       
       // Bind methods
       this._animate = this._animate.bind(this);
+      
+      debugLog('ParticleTransitionEngine initialized successfully');
     }
 
     /**
@@ -178,27 +207,55 @@
      * Initialize canvas for transition
      */
     _initCanvas() {
-      // Create canvas if it doesn't exist
-      if (!this.canvas) {
-        this.canvas = document.createElement('canvas');
-        this.canvas.id = 'particle-transition-canvas';
-        this.canvas.style.position = 'fixed';
-        this.canvas.style.top = '0';
-        this.canvas.style.left = '0';
-        this.canvas.style.width = '100%';
-        this.canvas.style.height = '100%';
-        this.canvas.style.zIndex = CONFIG.CANVAS_Z_INDEX;
-        this.canvas.style.pointerEvents = 'none';
-        this.ctx = this.canvas.getContext('2d', { alpha: false });
-      }
+      debugLog('Initializing canvas...');
+      
+      try {
+        // Check for existing canvas with id="particle-canvas"
+        let existingCanvas = document.getElementById('particle-canvas');
+        
+        // Create canvas if it doesn't exist
+        if (!this.canvas) {
+          if (existingCanvas) {
+            debugLog('Found existing canvas with id="particle-canvas"');
+            this.canvas = existingCanvas;
+          } else {
+            debugLog('Creating new canvas element');
+            this.canvas = document.createElement('canvas');
+            this.canvas.id = 'particle-transition-canvas';
+          }
+          
+          this.canvas.style.position = 'fixed';
+          this.canvas.style.top = '0';
+          this.canvas.style.left = '0';
+          this.canvas.style.width = '100%';
+          this.canvas.style.height = '100%';
+          this.canvas.style.zIndex = CONFIG.CANVAS_Z_INDEX;
+          this.canvas.style.pointerEvents = 'none';
+          
+          try {
+            this.ctx = this.canvas.getContext('2d', { alpha: false });
+            debugLog('Canvas 2D context acquired successfully');
+          } catch (ctxError) {
+            debugError('Failed to get 2D context from canvas', ctxError);
+            throw new Error('Could not get 2D context from canvas: ' + ctxError.message);
+          }
+        }
 
-      // Set canvas dimensions
-      this.canvas.width = window.innerWidth;
-      this.canvas.height = window.innerHeight;
+        // Set canvas dimensions
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        debugLog('Canvas dimensions set:', { width: this.canvas.width, height: this.canvas.height });
 
-      // Append to body if not already there
-      if (!this.canvas.parentElement) {
-        document.body.appendChild(this.canvas);
+        // Append to body if not already there
+        if (!this.canvas.parentElement) {
+          document.body.appendChild(this.canvas);
+          debugLog('Canvas appended to document body');
+        }
+        
+        debugLog('Canvas initialization complete');
+      } catch (error) {
+        debugError('Canvas initialization failed', error);
+        throw error;
       }
     }
 
@@ -432,31 +489,47 @@
      * @param {Function} options.onComplete - Callback when transition completes
      */
     startTransition(options = {}) {
-      if (this.isTransitioning) return;
+      debugLog('startTransition called with options:', options);
+      
+      if (this.isTransitioning) {
+        debugWarn('Transition already in progress, ignoring new request');
+        return;
+      }
 
-      this.isTransitioning = true;
-      this.transitionPhase = 'dispersing';
-      this.phaseStartTime = this._now();
-      this.lastFrameTime = this.phaseStartTime;
-      this.onCompleteCallback = options.onComplete || null;
+      try {
+        this.isTransitioning = true;
+        this.transitionPhase = 'dispersing';
+        this.phaseStartTime = this._now();
+        this.lastFrameTime = this.phaseStartTime;
+        this.onCompleteCallback = options.onComplete || null;
 
-      // Initialize canvas
-      this._initCanvas();
+        // Initialize canvas
+        debugLog('Initializing canvas for transition...');
+        this._initCanvas();
 
-      // Create particles from elements
-      this._createParticlesFromElements(options.fromElements, {
-        colors: options.colors
-      });
+        // Create particles from elements
+        debugLog('Creating particles from elements...');
+        this._createParticlesFromElements(options.fromElements, {
+          colors: options.colors
+        });
+        debugLog('Created particles count:', this.particles.length);
 
-      // Disperse particles from center
-      const centerX = this.canvas.width / 2;
-      const centerY = this.canvas.height / 2;
-      this.particles.forEach(particle => {
-        particle.disperse(centerX, centerY, CONFIG.DISPERSION_SPEED);
-      });
+        // Disperse particles from center
+        const centerX = this.canvas.width / 2;
+        const centerY = this.canvas.height / 2;
+        this.particles.forEach(particle => {
+          particle.disperse(centerX, centerY, CONFIG.DISPERSION_SPEED);
+        });
+        debugLog('Particles dispersed from center');
 
-      // Start animation
-      this.animationId = requestAnimationFrame(this._animate);
+        // Start animation
+        this.animationId = requestAnimationFrame(this._animate);
+        debugLog('Animation started, animation ID:', this.animationId);
+      } catch (error) {
+        debugError('Failed to start transition', error);
+        this.isTransitioning = false;
+        throw error;
+      }
     }
 
     /**
@@ -469,11 +542,130 @@
 
   // Create singleton instance
   const transitionEngine = new ParticleTransitionEngine();
+  
+  /**
+   * Enable or disable debug mode
+   * @param {boolean} enabled - Whether to enable debug mode
+   */
+  function setDebugMode(enabled) {
+    CONFIG.DEBUG_MODE = !!enabled;
+    debugLog('Debug mode ' + (enabled ? 'enabled' : 'disabled'));
+  }
+  
+  /**
+   * Test function to render simple particles on the canvas
+   * Useful for debugging in browser console
+   * @param {string} canvasId - Optional canvas element ID (defaults to 'particle-canvas')
+   */
+  function testSimpleParticles(canvasId = 'particle-canvas') {
+    debugLog('Starting simple particle test...');
+    
+    try {
+      // Find or create canvas
+      let canvas = document.getElementById(canvasId);
+      if (!canvas) {
+        debugLog('Canvas not found, creating new one');
+        canvas = document.createElement('canvas');
+        canvas.id = canvasId;
+        canvas.style.position = 'fixed';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.zIndex = '9999';
+        canvas.style.pointerEvents = 'none';
+        canvas.style.backgroundColor = 'rgba(2, 6, 18, 0.9)';
+        document.body.appendChild(canvas);
+        debugLog('Canvas created and appended to body');
+      } else {
+        debugLog('Found existing canvas:', canvasId);
+      }
+      
+      // Get context
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        debugError('Failed to get 2D context');
+        return;
+      }
+      debugLog('Canvas 2D context acquired');
+      
+      // Set canvas dimensions
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      debugLog('Canvas dimensions:', { width: canvas.width, height: canvas.height });
+      
+      // Create simple test particles
+      const particles = [];
+      const particleCount = CONFIG.DEBUG_PARTICLE_COUNT;
+      const colors = ['rgba(94, 232, 125, 0.8)', 'rgba(109, 217, 232, 0.9)', 'rgba(255, 140, 140, 0.9)'];
+      
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          size: 2 + Math.random() * 3
+        });
+      }
+      debugLog('Created test particles:', particleCount);
+      
+      // Animation function
+      let frameCount = 0;
+      function animate() {
+        // Clear canvas
+        ctx.fillStyle = 'rgba(2, 6, 18, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Update and draw particles
+        particles.forEach(p => {
+          // Update position
+          p.x += p.vx;
+          p.y += p.vy;
+          
+          // Bounce off edges
+          if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+          
+          // Draw particle
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        
+        frameCount++;
+        if (frameCount <= 300) { // Run for ~5 seconds at 60fps
+          requestAnimationFrame(animate);
+        } else {
+          debugLog('Test animation complete');
+          console.log('[ParticleEngine] Test complete! Canvas is still visible for inspection.');
+        }
+      }
+      
+      debugLog('Starting test animation...');
+      animate();
+      
+      return {
+        canvas: canvas,
+        particles: particles,
+        message: 'Test particles running! Check the canvas.'
+      };
+      
+    } catch (error) {
+      debugError('Test failed', error);
+      console.error('[ParticleEngine] Test failed:', error);
+      return { error: error.message };
+    }
+  }
 
   /**
    * Public API - Initialize navigation hooks for page transitions
    */
   function initPageTransitions(config = {}) {
+    debugLog('Initializing page transitions with config:', config);
+    
     // Default configuration
     const defaultConfig = {
       enabledPages: ['all'], // 'all' or array of page names
@@ -482,6 +674,7 @@
     };
 
     const settings = Object.assign({}, defaultConfig, config);
+    debugLog('Merged settings:', settings);
     
     // Store observer for cleanup
     let mutationObserver = null;
@@ -583,7 +776,9 @@
 
     // Hook all navigation links on page load
     document.addEventListener('DOMContentLoaded', () => {
+      debugLog('DOM Content Loaded, hooking navigation links');
       const links = document.querySelectorAll('a');
+      debugLog('Found links to hook:', links.length);
       links.forEach(hookNavigationLink);
     });
 
@@ -658,7 +853,20 @@
   window.ParticleTransitionEngine = {
     init: initPageTransitions,
     engine: transitionEngine,
-    behaviors: PAGE_BEHAVIORS
+    behaviors: PAGE_BEHAVIORS,
+    // Debug utilities
+    setDebugMode: setDebugMode,
+    testSimpleParticles: testSimpleParticles,
+    version: '1.1.0' // Version for tracking
   };
+  
+  // Log initialization message
+  console.log('[ParticleEngine] Particle Transition Engine loaded successfully. Version: 1.1.0');
+  console.log('[ParticleEngine] Available methods:');
+  console.log('  - ParticleTransitionEngine.init(config) - Initialize page transitions');
+  console.log('  - ParticleTransitionEngine.setDebugMode(true/false) - Enable/disable debug logging');
+  console.log('  - ParticleTransitionEngine.testSimpleParticles() - Test canvas with simple particles');
+  console.log('  - ParticleTransitionEngine.engine.startTransition(options) - Manually trigger transition');
+  debugLog('Particle Transition Engine module loaded');
 
 })(window);
