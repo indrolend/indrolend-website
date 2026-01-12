@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // --- Initialize Particle Page Transitions ---
+  // Enable particle-based transitions for internal navigation
+  if (typeof window.ParticleTransitionEngine !== 'undefined') {
+    window.ParticleTransitionEngine.init({
+      customBehaviors: window.ParticleTransitionEngine.behaviors
+    });
+  }
+
   // --- Ensure viewport starts at top on page load ---
   // Mobile browsers sometimes start mid-page after auto-deployment/reload
   // This ensures users see the header first, not the middle of the content
