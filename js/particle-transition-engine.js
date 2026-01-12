@@ -47,7 +47,7 @@
     
     // Debug settings
     DEBUG_MODE: false, // Set to true to enable debug logging and simple particle test
-    DEBUG_PARTICLE_COUNT: 50 // Simpler particle count for debug mode
+    DEBUG_PARTICLE_COUNT: 50 // Simple particle count for debug mode
   };
   
   // Debug logging utility
