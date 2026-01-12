@@ -14,14 +14,22 @@ This system renders 1000 randomly positioned and colored static particles in a 3
 - 🖥️ **Responsive**: Automatically handles window resizing
 - ⚡ **WebGL Powered**: Hardware-accelerated rendering via Three.js
 - 🌑 **Black Void Background**: Clean, minimal aesthetic
+- 🔄 **Page Transitions**: Animated transitions between pages
+- 💥 **Dispersion Effect**: Particles explode outward during transitions
+- 🎭 **Fade Animations**: Smooth opacity transitions
 
 ## Files
 
 - `js/webgl-transition-system.js` - Main system implementation
 - `pages/webgl-demo.html` - Interactive demonstration page
+- `pages/webgl-transitions-demo.html` - Page transition demo
 - `tests/webgl-transition-test.html` - Technical test page
 
 ## Quick Start
+
+### Option 1: Static Display
+
+For displaying static particles:
 
 ### 1. Include Dependencies
 
@@ -48,6 +56,40 @@ transitionSystem.rotateParticles(0.001, 0.002, 0.001);
 // Clean up when done
 transitionSystem.destroy();
 ```
+
+### Option 2: Page Transitions
+
+For animated transitions between pages:
+
+#### 1. Include Dependencies
+
+```html
+<!-- Include Three.js library from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+<!-- Include WebGL Transition System -->
+<script src="js/webgl-transition-system.js"></script>
+```
+
+#### 2. Initialize Page Transitions
+
+```javascript
+// Initialize automatic page transitions
+document.addEventListener('DOMContentLoaded', () => {
+  WebGLPageTransitions.init({
+    enabled: true
+  });
+});
+```
+
+#### 3. Done!
+
+All internal links will now trigger WebGL particle transitions automatically. When a user clicks a link:
+1. Particles disperse outward from the center
+2. Particles fade out smoothly
+3. The new page loads
+
+See `pages/webgl-transitions-demo.html` for a live demonstration.
 
 ### 3. HTML Structure
 
@@ -105,6 +147,37 @@ setInterval(() => {
 }, 16); // ~60fps
 ```
 
+#### `startTransition(options)`
+
+Starts an animated transition effect (dispersion + fade).
+
+**Parameters:**
+- `options` (Object): Transition options
+  - `onComplete` (Function): Callback function executed when transition completes
+
+**Example:**
+```javascript
+transitionSystem.startTransition({
+  onComplete: () => {
+    console.log('Transition complete!');
+    window.location.href = 'new-page.html';
+  }
+});
+```
+
+#### `isActive()`
+
+Checks if a transition is currently in progress.
+
+**Returns:** `Boolean` - `true` if transition is active, `false` otherwise.
+
+**Example:**
+```javascript
+if (transitionSystem.isActive()) {
+  console.log('Transition in progress');
+}
+```
+
 #### `destroy()`
 
 Cleans up all resources, removes event listeners, and disposes of Three.js objects.
@@ -117,6 +190,38 @@ window.addEventListener('beforeunload', () => {
 });
 ```
 
+### Page Transitions API
+
+#### `WebGLPageTransitions.init(config)`
+
+Initializes automatic page transitions for all internal links.
+
+**Parameters:**
+- `config` (Object): Configuration options
+  - `enabled` (Boolean): Enable/disable transitions (default: `true`)
+  - `customBehaviors` (Object): Custom behaviors per page (future use)
+
+**Returns:** Object with `disconnect()` method for cleanup
+
+**Example:**
+```javascript
+// Basic initialization
+const transitions = WebGLPageTransitions.init({
+  enabled: true
+});
+
+// Later, to cleanup
+transitions.disconnect();
+```
+
+**How it works:**
+1. Automatically intercepts clicks on internal links
+2. Triggers particle dispersion animation
+3. Fades out particles
+4. Navigates to the target page
+5. Security checks prevent dangerous URLs (javascript:, data:, etc.)
+6. Supports dynamically added links via MutationObserver
+
 ## Configuration
 
 You can customize the system by modifying the `CONFIG` object in `webgl-transition-system.js`:
@@ -128,7 +233,13 @@ const CONFIG = {
   SPACE_RANGE: 10,             // Distribution range (±10 on each axis)
   CAMERA_POSITION_Z: 15,       // Camera distance from origin
   BACKGROUND_COLOR: 0x000000,  // Scene background (black)
-  FOV: 75                      // Camera field of view
+  FOV: 75,                     // Camera field of view
+  
+  // Animation settings
+  DISPERSION_DURATION: 1200,   // Dispersion animation duration (ms)
+  FADE_DURATION: 500,          // Fade out duration (ms)
+  DISPERSION_FORCE: 8.0,       // Force applied to particles
+  CANVAS_Z_INDEX: 9999         // Z-index for overlay
 };
 ```
 
