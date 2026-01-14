@@ -1165,12 +1165,10 @@ Dr. Wei's voice lingers at the edge of the memory:
         
         // Get touch coordinates
         const touch = e.touches[0];
-        const rect = tttGameCanvas.getBoundingClientRect();
-        const touchX = touch.clientX - rect.left + rect.left;
-        const touchY = touch.clientY - rect.top + rect.top;
         
         // Handle the tap immediately for responsiveness
-        handleClick(touchX, touchY);
+        // Canvas is fullscreen (fixed position at 0,0), so clientX/Y are correct
+        handleClick(touch.clientX, touch.clientY);
         
         // Clear any existing timeout before setting a new one
         clearTimeout(touchDebounceTimeout);
