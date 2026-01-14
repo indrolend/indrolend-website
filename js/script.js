@@ -1161,22 +1161,28 @@ Dr. Wei's voice lingers at the edge of the memory:
       tttGameCanvas.addEventListener('touchstart', (e) => {
         // Prevent processing multiple touches at once
         if (isProcessingTouch) return;
-        isProcessingTouch = true;
         
-        // Get touch coordinates
-        const touch = e.touches[0];
-        
-        // Handle the tap immediately for responsiveness
-        // Canvas is fullscreen (fixed position at 0,0), so clientX/Y are correct
-        handleClick(touch.clientX, touch.clientY);
-        
-        // Clear any existing timeout before setting a new one
-        clearTimeout(touchDebounceTimeout);
-        
-        // Reset after debounce delay
-        touchDebounceTimeout = setTimeout(() => {
-          isProcessingTouch = false;
-        }, TOUCH_DEBOUNCE_MS);
+        try {
+          isProcessingTouch = true;
+          
+          // Get touch coordinates
+          const touch = e.touches[0];
+          
+          // Handle the tap immediately for responsiveness
+          // Canvas is fullscreen (fixed position at 0,0), so clientX/Y are correct
+          // Note: Using passive event listener, so cannot call preventDefault()
+          handleClick(touch.clientX, touch.clientY);
+        } catch (error) {
+          console.error('Error handling touch:', error);
+        } finally {
+          // Clear any existing timeout before setting a new one
+          clearTimeout(touchDebounceTimeout);
+          
+          // Reset after debounce delay (ensures reset even if error occurs)
+          touchDebounceTimeout = setTimeout(() => {
+            isProcessingTouch = false;
+          }, TOUCH_DEBOUNCE_MS);
+        }
       }, { passive: true });
 
       function checkWinner(b) {
