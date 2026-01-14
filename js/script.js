@@ -854,7 +854,7 @@ Dr. Wei's voice lingers at the edge of the memory:
       
       // Constants for mobile detection and touch handling
       const MOBILE_BREAKPOINT_WIDTH = 768;
-      const TOUCH_DEBOUNCE_MS = 300;
+      const TOUCH_DEBOUNCE_MS = 100;
       
       // Detect mobile device for performance optimization
       // Primarily use screen width for layout decisions, with touch capability as secondary check
@@ -1151,27 +1151,35 @@ Dr. Wei's voice lingers at the edge of the memory:
       let touchDebounceTimeout = null;
 
       tttGameCanvas.addEventListener('click', (e) => {
-        handleClick(e.clientX, e.clientY);
+        // Only handle click if not currently processing a touch
+        // This prevents duplicate events on devices that fire both touch and click
+        if (!isProcessingTouch) {
+          handleClick(e.clientX, e.clientY);
+        }
       });
 
       tttGameCanvas.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        
         // Prevent processing multiple touches at once
         if (isProcessingTouch) return;
         isProcessingTouch = true;
         
+        // Get touch coordinates
         const touch = e.touches[0];
-        handleClick(touch.clientX, touch.clientY);
+        const rect = tttGameCanvas.getBoundingClientRect();
+        const touchX = touch.clientX - rect.left + rect.left;
+        const touchY = touch.clientY - rect.top + rect.top;
+        
+        // Handle the tap immediately for responsiveness
+        handleClick(touchX, touchY);
         
         // Clear any existing timeout before setting a new one
         clearTimeout(touchDebounceTimeout);
         
-        // Reset after a short delay
+        // Reset after debounce delay
         touchDebounceTimeout = setTimeout(() => {
           isProcessingTouch = false;
         }, TOUCH_DEBOUNCE_MS);
-      }, { passive: false });
+      }, { passive: true });
 
       function checkWinner(b) {
         for (const [a, b1, c] of wins) {
