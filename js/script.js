@@ -854,7 +854,7 @@ Dr. Wei's voice lingers at the edge of the memory:
       
       // Constants for mobile detection and touch handling
       const MOBILE_BREAKPOINT_WIDTH = 768;
-      const TOUCH_DEBOUNCE_MS = 300;
+      const TOUCH_DEBOUNCE_MS = 100;
       
       // Detect mobile device for performance optimization
       // Primarily use screen width for layout decisions, with touch capability as secondary check
@@ -1151,27 +1151,39 @@ Dr. Wei's voice lingers at the edge of the memory:
       let touchDebounceTimeout = null;
 
       tttGameCanvas.addEventListener('click', (e) => {
-        handleClick(e.clientX, e.clientY);
+        // Only handle click if not currently processing a touch
+        // This prevents duplicate events on devices that fire both touch and click
+        if (!isProcessingTouch) {
+          handleClick(e.clientX, e.clientY);
+        }
       });
 
       tttGameCanvas.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        
         // Prevent processing multiple touches at once
         if (isProcessingTouch) return;
-        isProcessingTouch = true;
         
-        const touch = e.touches[0];
-        handleClick(touch.clientX, touch.clientY);
-        
-        // Clear any existing timeout before setting a new one
-        clearTimeout(touchDebounceTimeout);
-        
-        // Reset after a short delay
-        touchDebounceTimeout = setTimeout(() => {
-          isProcessingTouch = false;
-        }, TOUCH_DEBOUNCE_MS);
-      }, { passive: false });
+        try {
+          isProcessingTouch = true;
+          
+          // Get touch coordinates
+          const touch = e.touches[0];
+          
+          // Handle the tap immediately for responsiveness
+          // Canvas is fullscreen (fixed position at 0,0), so clientX/Y are correct
+          // Note: Using passive event listener, so cannot call preventDefault()
+          handleClick(touch.clientX, touch.clientY);
+        } catch (error) {
+          console.error('Error handling touch:', error);
+        } finally {
+          // Clear any existing timeout before setting a new one
+          clearTimeout(touchDebounceTimeout);
+          
+          // Reset after debounce delay (ensures reset even if error occurs)
+          touchDebounceTimeout = setTimeout(() => {
+            isProcessingTouch = false;
+          }, TOUCH_DEBOUNCE_MS);
+        }
+      }, { passive: true });
 
       function checkWinner(b) {
         for (const [a, b1, c] of wins) {

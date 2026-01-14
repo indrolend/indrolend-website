@@ -958,7 +958,7 @@ html, body {
   background: transparent;
   z-index: 1;
   /* Improve touch responsiveness on mobile */
-  touch-action: manipulation;
+  touch-action: none;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
