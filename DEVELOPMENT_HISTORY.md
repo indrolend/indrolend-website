@@ -39,11 +39,11 @@ Thus begins the chronicle of **45 Pull Requests**, divided into several epic sag
 - **PR #35** (Jan 1, *minutes later*): "Fix workflow push failures from concurrent screenshot uploads" - Turns out parallel processing is hard, WHO KNEW?
 - **PR #36** (Jan 1): "Clean up screenshots folder for automation testing" - Manually deletes 20 files. Automation working great!
 - **PR #37** (Jan 1-2): "Integrate screenshot-parsed analytics data with homepage display" - Five PRs later, finally uses the data.
-- **PR #39** (Jan 2): "Fix screenshot OCR parsing inaccuracies" - "Wait, it was reading the *wrong numbers*?"
 - **PR #40** (Jan 2): "Add OCR example screenshots system with ground truth validation" - Builds testing framework *after* deploying to production
 - **PR #41** (Jan 2): "Add ground truth JSON generation" - Still building that testing framework...
+- **PR #39** (Jan 2): "Fix screenshot OCR parsing inaccuracies" - Still open. The numbers were wrong all along. Still wrong.
 
-**The Moral**: Bro really did 10 pull requests for an OCR feature that definitely should've been developed with tests first. But hey, production is the best testing environment, right?
+**The Moral**: Bro really did 10 pull requests for an OCR feature that definitely should've been developed with tests first. And it's *still* not accurate. But hey, production is the best testing environment, right?
 
 ---
 
