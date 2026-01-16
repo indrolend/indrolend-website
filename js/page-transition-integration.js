@@ -87,8 +87,9 @@ class PageTransitionEngine {
    */
   async captureCurrentPage() {
     return new Promise((resolve) => {
-      // Use html2canvas if available
+      // Check if html2canvas is available and loaded
       if (typeof html2canvas !== 'undefined') {
+        console.log('[PageTransition] Using html2canvas for page capture');
         html2canvas(document.body, {
           scale: this.config.captureQuality,
           logging: false,
@@ -97,7 +98,14 @@ class PageTransitionEngine {
           backgroundColor: getComputedStyle(document.body).backgroundColor || '#020612'
         }).then(canvas => {
           const img = new Image();
-          img.onload = () => resolve(img);
+          img.onload = () => {
+            console.log('[PageTransition] Image captured via html2canvas');
+            resolve(img);
+          };
+          img.onerror = () => {
+            console.error('[PageTransition] Image load failed, using fallback');
+            resolve(this._fallbackCapture());
+          };
           img.src = canvas.toDataURL('image/png');
         }).catch(err => {
           console.error('[PageTransition] html2canvas failed:', err);
@@ -105,6 +113,7 @@ class PageTransitionEngine {
         });
       } else {
         // Fallback capture method
+        console.log('[PageTransition] html2canvas not available, using fallback');
         resolve(this._fallbackCapture());
       }
     });
@@ -114,23 +123,34 @@ class PageTransitionEngine {
    * Fallback page capture without html2canvas
    */
   _fallbackCapture() {
+    console.log('[PageTransition] Creating fallback capture');
     const canvas = document.createElement('canvas');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     const ctx = canvas.getContext('2d');
     
     // Fill with background
-    ctx.fillStyle = getComputedStyle(document.body).backgroundColor || '#020612';
+    const bgColor = getComputedStyle(document.body).backgroundColor || '#020612';
+    ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Add simple text
+    // Add page content representation
     ctx.fillStyle = '#5ee87d';
-    ctx.font = '48px Arial';
+    ctx.font = 'bold 64px Arial';
     ctx.textAlign = 'center';
-    ctx.fillText('Transitioning...', canvas.width / 2, canvas.height / 2);
+    ctx.textBaseline = 'middle';
+    ctx.fillText('INDROLEND', canvas.width / 2, canvas.height / 2 - 100);
+    
+    ctx.font = '32px Arial';
+    ctx.fillText('Page Transition', canvas.width / 2, canvas.height / 2);
+    
+    ctx.font = '20px Arial';
+    ctx.fillStyle = '#6dd9e8';
+    ctx.fillText('WebGL Hybrid Effect', canvas.width / 2, canvas.height / 2 + 60);
     
     const img = new Image();
     img.src = canvas.toDataURL('image/png');
+    console.log('[PageTransition] Fallback image created');
     return img;
   }
 
@@ -147,25 +167,44 @@ class PageTransitionEngine {
     this.isTransitioning = true;
     this.pendingNavigation = targetUrl;
     
-    // Show canvas
-    this.canvas.style.display = 'block';
-    
     try {
       // Step 1: Capture current page
       console.log('[PageTransition] Capturing current page...');
       const currentPageImage = await this.captureCurrentPage();
       
-      // Step 2: Initialize particles from current page
+      // Ensure image is loaded before proceeding
+      await new Promise((resolve) => {
+        if (currentPageImage.complete) {
+          resolve();
+        } else {
+          currentPageImage.onload = () => resolve();
+          currentPageImage.onerror = () => {
+            console.error('[PageTransition] Image failed to load');
+            resolve(); // Continue anyway
+          };
+        }
+      });
+      
+      // Step 2: Show canvas
+      this.canvas.style.display = 'block';
+      console.log('[PageTransition] Canvas displayed');
+      
+      // Step 3: Initialize particles from current page
       console.log('[PageTransition] Initializing particles...');
       this.engine.initializeFromSolidImage(currentPageImage, 0); // Don't auto-disintegrate
       
-      // Step 3: Start the engine
+      // Step 4: Start the engine to render the solid image
       this.engine.start();
+      console.log('[PageTransition] Engine started');
       
-      // Step 4: Fade out page opacity while keeping particles solid
+      // Give the engine a moment to render the first frame
+      await this._wait(100);
+      
+      // Step 5: Fade out page opacity while keeping particles solid
+      console.log('[PageTransition] Fading out page...');
       await this._fadeOutPage();
       
-      // Step 5: Start the hybrid transition preset
+      // Step 6: Start the hybrid transition preset
       const preset = new HybridTransitionPreset({
         explosionIntensity: this.config.explosionIntensity,
         explosionTime: this.config.explosionTime,
@@ -174,27 +213,45 @@ class PageTransitionEngine {
       });
       
       this.engine.registerPreset('pageTransition', preset);
+      console.log('[PageTransition] Preset registered');
       
-      // Step 6: Disintegrate the solid image into particles
+      // Step 7: Disintegrate the solid image into particles
+      console.log('[PageTransition] Starting disintegration...');
       this.engine.startDisintegration(400); // Quick disintegration to particles
       
       await this._wait(500); // Wait for disintegration
       
-      // Step 7: Activate the hybrid transition
+      // Step 8: Activate the hybrid transition
+      console.log('[PageTransition] Activating preset...');
       this.engine.activatePreset('pageTransition');
       
-      // Wait for transition to reach recombination phase
+      // Wait for explosion phase
       await this._wait(this.config.explosionTime);
-      
-      // Step 8: Load target page in background
-      console.log('[PageTransition] Loading target page...');
-      // Here we would ideally load the target page content, but for now just navigate
+      console.log('[PageTransition] Explosion complete');
       
       // Wait for recombination to complete
       await this._wait(this.config.recombinationDuration);
+      console.log('[PageTransition] Recombination complete');
       
-      // Step 9: Fade in the new page
-      await this._fadeInPage();
+      // Step 9: Fade canvas out and navigate
+      this.canvas.style.opacity = '1';
+      await new Promise((resolve) => {
+        const startTime = Date.now();
+        const fadeDuration = 400;
+        
+        const fade = () => {
+          const elapsed = Date.now() - startTime;
+          const progress = Math.min(elapsed / fadeDuration, 1);
+          this.canvas.style.opacity = (1 - progress).toString();
+          
+          if (progress < 1) {
+            requestAnimationFrame(fade);
+          } else {
+            resolve();
+          }
+        };
+        fade();
+      });
       
       // Step 10: Navigate to target page
       console.log('[PageTransition] Navigating to:', targetUrl);
@@ -202,6 +259,7 @@ class PageTransitionEngine {
       
     } catch (error) {
       console.error('[PageTransition] Transition failed:', error);
+      this.cleanup();
       // Fallback: just navigate
       window.location.href = targetUrl;
     }
