@@ -20,7 +20,8 @@
   <link rel="stylesheet" href="../css/spotify-artists-stats.css" />
   <!-- Security utilities must load first -->
   <script defer src="../js/security-utils.js"></script>
-  <script defer src="../js/particle-transition-engine.js"></script>
+  <!-- WebGL Hybrid Page Transition Engine -->
+  <script type="module" src="../js/page-transition-integration.js"></script>
   <script defer src="../js/script.js"></script>
   <script defer src="../js/spotify-integration.js"></script>
   <script defer src="../js/spotify-analytics-data.js"></script>
@@ -28,6 +29,8 @@
   <script defer src="../js/spotify-artists-stats.js"></script>
   <script defer src="../js/easter-egg.js"></script>
   <script defer src="../js/particle-clusters.js"></script>
+  <!-- Optional: html2canvas for better page capturing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body class="home-bg">
   <canvas id="particles-bg"></canvas>

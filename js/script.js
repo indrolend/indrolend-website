@@ -1,10 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // --- Initialize Particle Page Transitions ---
-  // Enabled: hybrid complete transition with 3-phase morphing
-  if (typeof window.ParticleTransitionEngine !== 'undefined') {
-    window.ParticleTransitionEngine.init({
-      customBehaviors: window.ParticleTransitionEngine.behaviors
-    });
+  // --- Initialize WebGL Hybrid Page Transitions ---
+  // Uses the WebGL particle engine for full-page image-based transitions
+  // Features: opacity fade, explosion, recombination, and blend effects
+  if (typeof window.initPageTransitions !== 'undefined') {
+    window.initPageTransitions();
   }
 
   // --- Ensure viewport starts at top on page load ---
