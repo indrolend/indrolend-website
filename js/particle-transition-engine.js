@@ -408,10 +408,13 @@
 
       switch (this.transitionPhase) {
         case 'dispersing':
+          // Skip morphing phase for now - go directly to fading for simpler effect
+          // To enable morphing: change 'fading' to 'morphing' and set particle targets
           this.transitionPhase = 'fading';
           break;
 
         case 'morphing':
+          // Morphing phase transitions to fading
           this.transitionPhase = 'fading';
           break;
 
@@ -443,11 +446,14 @@
       // Clean up canvas
       this._cleanupCanvas();
 
-      // Execute callback
+      // Execute callback if it exists
       if (this.onCompleteCallback) {
         const callback = this.onCompleteCallback;
         this.onCompleteCallback = null;
-        callback();
+        // Only call if callback is a function
+        if (typeof callback === 'function') {
+          callback();
+        }
       }
     }
 
