@@ -204,10 +204,34 @@ class WebGLPageTransition {
       setTimeout(() => {
         this.engine.activatePreset('hybridTransition');
         
-        // Create target image for recombination (simulate next page)
+        // For the target, we use a slightly modified version of the mock image
+        // In a real implementation, this would be the actual next page content
+        // For now, we'll create a variation by adjusting colors slightly
         this.createMockImageFromElements(fromElements).then(targetImage => {
           if (targetImage) {
-            this.engine.transitionPresetTo('image', targetImage, this.config.recombinationDuration);
+            // Add some visual variation to the target to show the transition
+            const canvas = document.createElement('canvas');
+            canvas.width = targetImage.width;
+            canvas.height = targetImage.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(targetImage, 0, 0);
+            
+            // Apply a subtle color shift to show transition
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+              // Slightly adjust colors to create visual difference
+              data[i] = Math.min(255, data[i] * 1.1);     // R
+              data[i + 1] = Math.min(255, data[i + 1] * 1.05); // G
+              data[i + 2] = Math.min(255, data[i + 2] * 0.95); // B
+            }
+            ctx.putImageData(imageData, 0, 0);
+            
+            const modifiedTarget = new Image();
+            modifiedTarget.onload = () => {
+              this.engine.transitionPresetTo('image', modifiedTarget, this.config.recombinationDuration);
+            };
+            modifiedTarget.src = canvas.toDataURL();
           }
         });
       }, this.config.disintegrationDuration + 100);
