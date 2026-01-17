@@ -40,6 +40,7 @@
     DISPERSION_DURATION: 1200, // ms
     MORPH_DURATION: 1000, // ms
     FADE_DURATION: 300, // ms
+    SAFETY_TIMEOUT_BUFFER: 2000, // ms - Extra time before forcing transition cleanup
     
     // Canvas settings
     CANVAS_Z_INDEX: 9999,
@@ -321,11 +322,15 @@
         if (this.transitionPhase === 'dispersing') {
           // Fade in background during dispersing (0 to 0.95)
           bgOpacity = progress * 0.95;
+        } else if (this.transitionPhase === 'morphing') {
+          // Keep background solid during morphing
+          bgOpacity = 0.95;
         } else if (this.transitionPhase === 'fading') {
           // Fade out background during fading (0.95 to 0)
           bgOpacity = (1 - progress) * 0.95;
         } else {
-          bgOpacity = 0.95;
+          // Default case for any unexpected phase - fade to transparent
+          bgOpacity = 0;
         }
 
         // Clear canvas with dynamic opacity
@@ -491,12 +496,12 @@
           particle.disperse(centerX, centerY, CONFIG.DISPERSION_SPEED);
         });
 
-        // Set safety timeout to prevent stuck transitions (5 seconds max)
+        // Set safety timeout to prevent stuck transitions
         const totalDuration = CONFIG.DISPERSION_DURATION + CONFIG.MORPH_DURATION + CONFIG.FADE_DURATION;
         this.transitionTimeout = setTimeout(() => {
           console.warn('Particle transition timeout - forcing completion');
           this._completeTransition();
-        }, totalDuration + 2000); // Add 2s buffer
+        }, totalDuration + CONFIG.SAFETY_TIMEOUT_BUFFER);
 
         // Start animation
         this.animationId = requestAnimationFrame(this._animate);
