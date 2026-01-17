@@ -51,6 +51,7 @@ class PageTransitionEngine {
     this.canvas.style.zIndex = '9999';
     this.canvas.style.pointerEvents = 'none';
     this.canvas.style.display = 'none';
+    this.canvas.style.backgroundColor = '#020612'; // Match page background
     
     // Set canvas size
     this.canvas.width = window.innerWidth;
@@ -64,7 +65,7 @@ class PageTransitionEngine {
       this.engine = new HybridEngine(this.canvas, {
         particleCount: this.config.particleCount,
         speed: 1.0,
-        autoResize: true
+        autoResize: false // Disable auto-resize, we'll manage canvas size manually
       });
       
       console.log('[PageTransition] Engine initialized successfully');
@@ -73,10 +74,13 @@ class PageTransitionEngine {
       return false;
     }
     
-    // Handle window resize
+    // Handle window resize manually
     window.addEventListener('resize', () => {
       this.canvas.width = window.innerWidth;
       this.canvas.height = window.innerHeight;
+      if (this.engine) {
+        this.engine.resize(window.innerWidth, window.innerHeight);
+      }
     });
     
     return true;
@@ -185,9 +189,14 @@ class PageTransitionEngine {
         }
       });
       
-      // Step 2: Show canvas
+      // Step 2: Ensure canvas has proper dimensions and show it
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
       this.canvas.style.display = 'block';
-      console.log('[PageTransition] Canvas displayed');
+      console.log('[PageTransition] Canvas displayed with dimensions:', this.canvas.width, 'x', this.canvas.height);
+      
+      // Resize the engine to match canvas
+      this.engine.resize(this.canvas.width, this.canvas.height);
       
       // Step 3: Initialize particles from current page
       console.log('[PageTransition] Initializing particles...');
