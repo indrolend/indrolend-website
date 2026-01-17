@@ -1,11 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
   // --- Initialize Particle Page Transitions ---
-  // Disabled: particle transitions were slow and buggy
-  // if (typeof window.ParticleTransitionEngine !== 'undefined') {
-  //   window.ParticleTransitionEngine.init({
-  //     customBehaviors: window.ParticleTransitionEngine.behaviors
-  //   });
-  // }
+  // Enable particle-based page transitions with custom behaviors
+  if (typeof window.ParticleTransitionEngine !== 'undefined') {
+    try {
+      window.ParticleTransitionEngine.init({
+        customBehaviors: window.ParticleTransitionEngine.behaviors
+      });
+    } catch (error) {
+      console.error('Failed to initialize particle transitions:', error);
+    }
+  }
 
   // --- Ensure viewport starts at top on page load ---
   // Mobile browsers sometimes start mid-page after auto-deployment/reload
