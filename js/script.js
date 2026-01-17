@@ -1,14 +1,101 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // --- Initialize Particle Page Transitions ---
-  // Enable particle-based page transitions with custom behaviors
-  if (typeof window.ParticleTransitionEngine !== 'undefined') {
+  // --- Initialize WebGL Particle Page Transitions ---
+  // Enable WebGL-powered hybrid particle transitions
+  if (typeof window.WebGLPageTransition !== 'undefined') {
     try {
-      window.ParticleTransitionEngine.init({
-        customBehaviors: window.ParticleTransitionEngine.behaviors
-      });
+      console.log('[Main] Initializing WebGL particle transitions...');
+      // Hook navigation links for WebGL transitions
+      initWebGLTransitions();
     } catch (error) {
-      console.error('Failed to initialize particle transitions:', error);
+      console.error('Failed to initialize WebGL particle transitions:', error);
     }
+  }
+
+  /**
+   * Initialize WebGL particle transitions on navigation links
+   */
+  function initWebGLTransitions() {
+    const links = document.querySelectorAll('a');
+    
+    links.forEach(link => {
+      // Skip external links
+      try {
+        if (link.target === '_blank' || 
+            (link.hostname && link.hostname !== window.location.hostname)) {
+          return;
+        }
+      } catch (e) {
+        // Ignore errors from accessing hostname
+      }
+
+      // Skip dangerous URLs
+      const href = link.getAttribute('href');
+      if (!href || href === '#') return;
+      
+      const dangerousSchemes = ['javascript:', 'data:', 'vbscript:', 'file:'];
+      const lowerHref = href.toLowerCase().trim();
+      if (dangerousSchemes.some(scheme => lowerHref.startsWith(scheme))) {
+        return;
+      }
+
+      // Add click listener for WebGL transition
+      link.addEventListener('click', function(e) {
+        // Skip if transition already active
+        if (window.WebGLPageTransition.isActive()) {
+          e.preventDefault();
+          return;
+        }
+
+        e.preventDefault();
+        
+        // Get elements to sample for particles
+        const elementsToSample = getPageElements();
+        
+        // Start WebGL hybrid transition
+        console.log('[Main] Starting WebGL hybrid transition to:', href);
+        window.WebGLPageTransition.start({
+          fromElements: elementsToSample,
+          onComplete: () => {
+            // Navigate to new page after transition
+            console.log('[Main] Transition complete, navigating to:', href);
+            window.location.href = href;
+          }
+        });
+      });
+    });
+    
+    console.log('[Main] WebGL transitions initialized on', links.length, 'links');
+  }
+
+  /**
+   * Get key page elements for particle sampling
+   */
+  function getPageElements() {
+    const selectors = [
+      '.important-word',
+      '.app-card',
+      '.fkrc-verifywin-word',
+      'button',
+      'h1',
+      'h2',
+      '.gallery-filename',
+      '.home-header',
+      '.home-main'
+    ];
+
+    let elements = [];
+    selectors.forEach(selector => {
+      const found = document.querySelectorAll(selector);
+      elements = elements.concat(Array.from(found));
+    });
+
+    // Filter to visible elements
+    elements = elements.filter(el => {
+      const rect = el.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
+
+    return elements.slice(0, 30); // Limit for performance
   }
 
   // --- Ensure viewport starts at top on page load ---
