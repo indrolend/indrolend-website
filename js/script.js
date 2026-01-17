@@ -1,11 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // --- Initialize Particle Page Transitions ---
-  // Disabled: particle transitions were slow and buggy
-  // if (typeof window.ParticleTransitionEngine !== 'undefined') {
-  //   window.ParticleTransitionEngine.init({
-  //     customBehaviors: window.ParticleTransitionEngine.behaviors
-  //   });
-  // }
+  // --- Particle Page Transitions Disabled ---
+  // WebGL transitions were causing black screens and navigation failures
+  // Transitions are disabled until a working implementation can be tested
+  // Users can navigate normally without transitions
+  
+  console.log('[Main] Page transitions disabled - normal navigation active');
 
   // --- Ensure viewport starts at top on page load ---
   // Mobile browsers sometimes start mid-page after auto-deployment/reload

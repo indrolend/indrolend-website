@@ -40,10 +40,12 @@
     DISPERSION_DURATION: 1200, // ms
     MORPH_DURATION: 1000, // ms
     FADE_DURATION: 300, // ms
+    SAFETY_TIMEOUT_BUFFER: 2000, // ms - Extra time before forcing transition cleanup
     
     // Canvas settings
     CANVAS_Z_INDEX: 9999,
-    BACKGROUND_COLOR: 'rgba(2, 6, 18, 1)' // Match website background
+    BACKGROUND_RGB: { r: 2, g: 6, b: 18 }, // Base background color (dark blue-black)
+    BACKGROUND_MAX_OPACITY: 0.95 // Maximum opacity during transitions (slightly transparent to prevent full blackout)
   };
 
   /**
@@ -137,6 +139,7 @@
       this.lastFrameTime = 0;
       this.animationId = null;
       this.onCompleteCallback = null;
+      this.transitionTimeout = null; // Safety timeout to prevent stuck transitions
       
       // Performance tracking
       this.isMobile = this._detectMobile();
@@ -200,6 +203,9 @@
       if (!this.canvas.parentElement) {
         document.body.appendChild(this.canvas);
       }
+
+      // Make canvas transparent initially
+      this.canvas.style.backgroundColor = 'transparent';
     }
 
     /**
@@ -299,35 +305,60 @@
     _animate(currentTime) {
       if (!this.isTransitioning) return;
 
-      // FPS throttling
-      const elapsed = currentTime - this.lastFrameTime;
-      if (elapsed < CONFIG.FRAME_TIME) {
+      try {
+        // FPS throttling
+        const elapsed = currentTime - this.lastFrameTime;
+        if (elapsed < CONFIG.FRAME_TIME) {
+          this.animationId = requestAnimationFrame(this._animate);
+          return;
+        }
+        this.lastFrameTime = currentTime - (elapsed % CONFIG.FRAME_TIME);
+
+        // Calculate phase progress
+        const phaseElapsed = currentTime - this.phaseStartTime;
+        const progress = Math.min(phaseElapsed / this._getPhaseDuration(), 1);
+
+        // Calculate background opacity based on phase
+        let bgOpacity = 0;
+        if (this.transitionPhase === 'dispersing') {
+          // Fade in background during dispersing (0 to max opacity)
+          bgOpacity = progress * CONFIG.BACKGROUND_MAX_OPACITY;
+        } else if (this.transitionPhase === 'morphing') {
+          // Keep background solid during morphing
+          bgOpacity = CONFIG.BACKGROUND_MAX_OPACITY;
+        } else if (this.transitionPhase === 'fading') {
+          // Fade out background during fading (max opacity to 0)
+          bgOpacity = (1 - progress) * CONFIG.BACKGROUND_MAX_OPACITY;
+        } else {
+          // Default case for any unexpected phase - fade to transparent
+          bgOpacity = 0;
+        }
+
+        // Clear canvas with dynamic opacity
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        if (bgOpacity > 0) {
+          const { r, g, b } = CONFIG.BACKGROUND_RGB;
+          this.ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${bgOpacity})`;
+          this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+
+        // Update and draw particles based on phase
+        this._updatePhase(progress);
+
+        // Draw all particles
+        this.particles.forEach(particle => particle.draw(this.ctx));
+
+        // Check if phase is complete
+        if (progress >= 1) {
+          this._advancePhase();
+        }
+
+        // Continue animation
         this.animationId = requestAnimationFrame(this._animate);
-        return;
+      } catch (error) {
+        console.error('Particle transition animation error:', error);
+        this._completeTransition();
       }
-      this.lastFrameTime = currentTime - (elapsed % CONFIG.FRAME_TIME);
-
-      // Calculate phase progress
-      const phaseElapsed = currentTime - this.phaseStartTime;
-      const progress = Math.min(phaseElapsed / this._getPhaseDuration(), 1);
-
-      // Clear canvas
-      this.ctx.fillStyle = CONFIG.BACKGROUND_COLOR;
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-      // Update and draw particles based on phase
-      this._updatePhase(progress);
-
-      // Draw all particles
-      this.particles.forEach(particle => particle.draw(this.ctx));
-
-      // Check if phase is complete
-      if (progress >= 1) {
-        this._advancePhase();
-      }
-
-      // Continue animation
-      this.animationId = requestAnimationFrame(this._animate);
     }
 
     /**
@@ -377,10 +408,13 @@
 
       switch (this.transitionPhase) {
         case 'dispersing':
+          // Skip morphing phase for now - go directly to fading for simpler effect
+          // To enable morphing: change 'fading' to 'morphing' and set particle targets
           this.transitionPhase = 'fading';
           break;
 
         case 'morphing':
+          // Morphing phase transitions to fading
           this.transitionPhase = 'fading';
           break;
 
@@ -396,16 +430,30 @@
      */
     _completeTransition() {
       this.isTransitioning = false;
+      
+      // Clear animation frame
       if (this.animationId) {
         cancelAnimationFrame(this.animationId);
         this.animationId = null;
       }
       
+      // Clear safety timeout
+      if (this.transitionTimeout) {
+        clearTimeout(this.transitionTimeout);
+        this.transitionTimeout = null;
+      }
+      
+      // Clean up canvas
       this._cleanupCanvas();
 
+      // Execute callback if it exists
       if (this.onCompleteCallback) {
-        this.onCompleteCallback();
+        const callback = this.onCompleteCallback;
         this.onCompleteCallback = null;
+        // Only call if callback is a function
+        if (typeof callback === 'function') {
+          callback();
+        }
       }
     }
 
@@ -434,29 +482,41 @@
     startTransition(options = {}) {
       if (this.isTransitioning) return;
 
-      this.isTransitioning = true;
-      this.transitionPhase = 'dispersing';
-      this.phaseStartTime = this._now();
-      this.lastFrameTime = this.phaseStartTime;
-      this.onCompleteCallback = options.onComplete || null;
+      try {
+        this.isTransitioning = true;
+        this.transitionPhase = 'dispersing';
+        this.phaseStartTime = this._now();
+        this.lastFrameTime = this.phaseStartTime;
+        this.onCompleteCallback = options.onComplete || null;
 
-      // Initialize canvas
-      this._initCanvas();
+        // Initialize canvas
+        this._initCanvas();
 
-      // Create particles from elements
-      this._createParticlesFromElements(options.fromElements, {
-        colors: options.colors
-      });
+        // Create particles from elements
+        this._createParticlesFromElements(options.fromElements, {
+          colors: options.colors
+        });
 
-      // Disperse particles from center
-      const centerX = this.canvas.width / 2;
-      const centerY = this.canvas.height / 2;
-      this.particles.forEach(particle => {
-        particle.disperse(centerX, centerY, CONFIG.DISPERSION_SPEED);
-      });
+        // Disperse particles from center
+        const centerX = this.canvas.width / 2;
+        const centerY = this.canvas.height / 2;
+        this.particles.forEach(particle => {
+          particle.disperse(centerX, centerY, CONFIG.DISPERSION_SPEED);
+        });
 
-      // Start animation
-      this.animationId = requestAnimationFrame(this._animate);
+        // Set safety timeout to prevent stuck transitions
+        const totalDuration = CONFIG.DISPERSION_DURATION + CONFIG.MORPH_DURATION + CONFIG.FADE_DURATION;
+        this.transitionTimeout = setTimeout(() => {
+          console.warn('Particle transition timeout - forcing completion');
+          this._completeTransition();
+        }, totalDuration + CONFIG.SAFETY_TIMEOUT_BUFFER);
+
+        // Start animation
+        this.animationId = requestAnimationFrame(this._animate);
+      } catch (error) {
+        console.error('Failed to start particle transition:', error);
+        this._completeTransition();
+      }
     }
 
     /**
