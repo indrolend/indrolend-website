@@ -354,7 +354,8 @@
           break;
 
         case 'morphing':
-          const morphStrength = CONFIG.MORPH_SPEED * (1 - progress);
+          // Morph strength increases over time to pull particles to targets
+          const morphStrength = CONFIG.MORPH_SPEED;
           this.particles.forEach(particle => {
             particle.update(morphStrength);
           });
@@ -377,7 +378,8 @@
 
       switch (this.transitionPhase) {
         case 'dispersing':
-          this.transitionPhase = 'fading';
+          // Complete hybrid transition: disperse → morph → fade
+          this.transitionPhase = 'morphing';
           break;
 
         case 'morphing':
@@ -424,10 +426,46 @@
     }
 
     /**
+     * Set morphing targets for particles
+     * Creates visually appealing target positions for the morphing phase
+     */
+    _setMorphTargets(toElements) {
+      if (!this.particles || this.particles.length === 0) return;
+
+      // If target elements provided, distribute particles across them
+      if (toElements && toElements.length > 0) {
+        this.particles.forEach((particle, index) => {
+          const element = toElements[index % toElements.length];
+          const rect = element.getBoundingClientRect();
+          
+          // Random position within the element bounds
+          const targetX = rect.left + Math.random() * rect.width;
+          const targetY = rect.top + Math.random() * rect.height;
+          particle.setTarget(targetX, targetY);
+        });
+      } else {
+        // No elements provided - create a visually pleasing geometric pattern
+        // Spiral pattern emanating from center
+        const centerX = this.canvas.width / 2;
+        const centerY = this.canvas.height / 2;
+        const particleCount = this.particles.length;
+        
+        this.particles.forEach((particle, index) => {
+          const angle = (index / particleCount) * Math.PI * 4; // 2 full rotations
+          const radius = (index / particleCount) * Math.min(this.canvas.width, this.canvas.height) * 0.4;
+          const targetX = centerX + Math.cos(angle) * radius;
+          const targetY = centerY + Math.sin(angle) * radius;
+          particle.setTarget(targetX, targetY);
+        });
+      }
+    }
+
+    /**
      * Start a transition
      * 
      * @param {Object} options - Transition options
      * @param {Array} options.fromElements - DOM elements to create particles from
+     * @param {Array} options.toElements - DOM elements to morph particles toward (optional)
      * @param {Array} options.colors - Custom particle colors
      * @param {Function} options.onComplete - Callback when transition completes
      */
@@ -454,6 +492,10 @@
       this.particles.forEach(particle => {
         particle.disperse(centerX, centerY, CONFIG.DISPERSION_SPEED);
       });
+
+      // Set morphing targets for hybrid transition
+      // Particles will morph to these positions after dispersing
+      this._setMorphTargets(options.toElements);
 
       // Start animation
       this.animationId = requestAnimationFrame(this._animate);

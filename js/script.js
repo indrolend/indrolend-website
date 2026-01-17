@@ -1,11 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // --- Initialize Particle Page Transitions ---
-  // Disabled: particle transitions were slow and buggy
-  // if (typeof window.ParticleTransitionEngine !== 'undefined') {
-  //   window.ParticleTransitionEngine.init({
-  //     customBehaviors: window.ParticleTransitionEngine.behaviors
-  //   });
-  // }
+  // --- Initialize WebGL Hybrid Page Transitions ---
+  // Uses the WebGL particle engine for full-page image-based transitions
+  // Features: opacity fade, explosion, recombination, and blend effects
+  if (typeof window.initPageTransitions !== 'undefined') {
+    window.initPageTransitions();
+  }
 
   // --- Ensure viewport starts at top on page load ---
   // Mobile browsers sometimes start mid-page after auto-deployment/reload

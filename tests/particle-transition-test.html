@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Particle Transition Engine - Hybrid Complete Test</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #020612;
+      color: #5ee87d;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .test-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .test-button {
+      padding: 15px 30px;
+      background: #5ee87d;
+      color: #020612;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .test-button:hover {
+      background: #6df98f;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(94, 232, 125, 0.3);
+    }
+
+    .test-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .test-elements {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .test-element {
+      padding: 20px;
+      background: rgba(94, 232, 125, 0.1);
+      border: 2px solid rgba(94, 232, 125, 0.3);
+      border-radius: 8px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 5px;
+      border-left: 4px solid #5ee87d;
+    }
+
+    .phase-indicator {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #6dd9e8;
+    }
+
+    .success {
+      color: #5ee87d;
+    }
+
+    .error {
+      color: #ff8c8c;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎆 Hybrid Transition Test</h1>
+
+  <div class="test-container">
+    <div>
+      <button id="testBasicTransition" class="test-button">
+        Test Basic Hybrid Transition (No Target Elements)
+      </button>
+      <p>Tests: dispersing → morphing (spiral) → fading</p>
+    </div>
+
+    <div>
+      <button id="testWithTargets" class="test-button">
+        Test Hybrid Transition With Target Elements
+      </button>
+      <p>Tests: dispersing → morphing (to boxes below) → fading</p>
+    </div>
+
+    <div class="test-elements">
+      <div class="test-element">Box 1</div>
+      <div class="test-element">Box 2</div>
+      <div class="test-element">Box 3</div>
+      <div class="test-element">Box 4</div>
+      <div class="test-element">Box 5</div>
+      <div class="test-element">Box 6</div>
+    </div>
+
+    <div class="status">
+      <div><strong>Status:</strong> <span id="status">Ready</span></div>
+      <div class="phase-indicator"><strong>Current Phase:</strong> <span id="phase">idle</span></div>
+      <div class="phase-indicator"><strong>Test Result:</strong> <span id="result">-</span></div>
+    </div>
+  </div>
+
+  <script src="../js/particle-transition-engine.js"></script>
+  <script>
+    const engine = window.ParticleTransitionEngine.engine;
+    const statusEl = document.getElementById('status');
+    const phaseEl = document.getElementById('phase');
+    const resultEl = document.getElementById('result');
+    const basicBtn = document.getElementById('testBasicTransition');
+    const targetBtn = document.getElementById('testWithTargets');
+
+    let phaseMonitorInterval = null;
+
+    function updateStatus(message) {
+      statusEl.textContent = message;
+    }
+
+    function monitorPhase() {
+      phaseMonitorInterval = setInterval(() => {
+        if (engine.isTransitioning) {
+          phaseEl.textContent = engine.transitionPhase;
+        } else {
+          phaseEl.textContent = 'idle';
+          if (phaseMonitorInterval) {
+            clearInterval(phaseMonitorInterval);
+            phaseMonitorInterval = null;
+          }
+        }
+      }, 50);
+    }
+
+    function testBasicTransition() {
+      if (engine.isActive()) return;
+
+      basicBtn.disabled = true;
+      targetBtn.disabled = true;
+      updateStatus('Running basic transition test...');
+      resultEl.textContent = 'Testing...';
+      resultEl.className = '';
+
+      const phases = [];
+      const originalAdvancePhase = engine._advancePhase.bind(engine);
+      
+      // Track phases
+      engine._advancePhase = function() {
+        phases.push(this.transitionPhase);
+        originalAdvancePhase();
+      };
+
+      monitorPhase();
+
+      const fromElements = document.querySelectorAll('.test-element');
+      
+      engine.startTransition({
+        fromElements: Array.from(fromElements),
+        colors: ['rgba(94, 232, 125, 0.8)', 'rgba(109, 217, 232, 0.8)'],
+        onComplete: () => {
+          // Restore original method
+          engine._advancePhase = originalAdvancePhase;
+
+          // Verify the hybrid transition worked correctly
+          const expectedPhases = ['dispersing', 'morphing', 'fading'];
+          const success = JSON.stringify(phases) === JSON.stringify(expectedPhases);
+
+          if (success) {
+            resultEl.textContent = `✅ SUCCESS! Phases: ${phases.join(' → ')}`;
+            resultEl.className = 'success';
+          } else {
+            resultEl.textContent = `❌ FAILED! Expected: ${expectedPhases.join(' → ')}, Got: ${phases.join(' → ')}`;
+            resultEl.className = 'error';
+          }
+
+          updateStatus('Test complete');
+          basicBtn.disabled = false;
+          targetBtn.disabled = false;
+        }
+      });
+    }
+
+    function testWithTargets() {
+      if (engine.isActive()) return;
+
+      basicBtn.disabled = true;
+      targetBtn.disabled = true;
+      updateStatus('Running target elements transition test...');
+      resultEl.textContent = 'Testing...';
+      resultEl.className = '';
+
+      const phases = [];
+      const originalAdvancePhase = engine._advancePhase.bind(engine);
+      
+      // Track phases
+      engine._advancePhase = function() {
+        phases.push(this.transitionPhase);
+        originalAdvancePhase();
+      };
+
+      monitorPhase();
+
+      const fromElements = [document.querySelector('h1')];
+      const toElements = document.querySelectorAll('.test-element');
+      
+      engine.startTransition({
+        fromElements: Array.from(fromElements),
+        toElements: Array.from(toElements),
+        colors: ['rgba(94, 232, 125, 0.8)', 'rgba(109, 217, 232, 0.8)', 'rgba(255, 140, 140, 0.8)'],
+        onComplete: () => {
+          // Restore original method
+          engine._advancePhase = originalAdvancePhase;
+
+          // Verify the hybrid transition worked correctly
+          const expectedPhases = ['dispersing', 'morphing', 'fading'];
+          const success = JSON.stringify(phases) === JSON.stringify(expectedPhases);
+
+          if (success) {
+            resultEl.textContent = `✅ SUCCESS! Phases: ${phases.join(' → ')}`;
+            resultEl.className = 'success';
+          } else {
+            resultEl.textContent = `❌ FAILED! Expected: ${expectedPhases.join(' → ')}, Got: ${phases.join(' → ')}`;
+            resultEl.className = 'error';
+          }
+
+          updateStatus('Test complete');
+          basicBtn.disabled = false;
+          targetBtn.disabled = false;
+        }
+      });
+    }
+
+    basicBtn.addEventListener('click', testBasicTransition);
+    targetBtn.addEventListener('click', testWithTargets);
+
+    // Initial status
+    updateStatus('Ready - Click a button to test');
+  </script>
+</body>
+</html>
