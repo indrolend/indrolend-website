@@ -91,8 +91,23 @@ class WebGLTransitionAPI {
         ctx.fillStyle = 'rgb(2, 6, 18)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Sample visible elements
-        const elements = document.querySelectorAll('h1, h2, button, .app-card, .home-header, .gallery-header');
+        // Sample visible elements (configurable selectors)
+        const selectors = [
+          'h1', 'h2', 'h3', 'button', 'a',
+          '.app-card', '.home-header', '.gallery-header',
+          '.fkrc-verifywin-word', '.important-word'
+        ];
+        
+        const elements = [];
+        selectors.forEach(selector => {
+          try {
+            const found = document.querySelectorAll(selector);
+            elements.push(...Array.from(found));
+          } catch (e) {
+            // Ignore invalid selectors
+          }
+        });
+        
         elements.forEach(element => {
           const rect = element.getBoundingClientRect();
           if (rect.width > 0 && rect.height > 0) {
@@ -319,24 +334,27 @@ const setupTransitions = () => {
     
     // Check if internal link
     try {
-      if (link.hostname && link.hostname !== window.location.hostname) return;
+      const linkOrigin = new URL(href, window.location.href).origin;
+      if (linkOrigin !== window.location.origin && href.startsWith('http')) return;
     } catch (err) {
-      // Ignore hostname check errors
+      // Relative links are internal
     }
     
-    // Check for dangerous schemes
-    const dangerousSchemes = ['javascript:', 'data:', 'vbscript:', 'file:'];
+    // Check for dangerous schemes (whitelist approach)
     const lowerHref = href.toLowerCase().trim();
-    if (dangerousSchemes.some(scheme => lowerHref.startsWith(scheme))) return;
+    const allowedSchemes = ['http:', 'https:', '/', '.'];
+    const isAllowed = allowedSchemes.some(scheme => lowerHref.startsWith(scheme));
+    if (!isAllowed && lowerHref.includes(':')) return;
     
     // Play exit animation, then navigate
     e.preventDefault();
     api.playExitAnimation();
     
-    // Navigate after animation starts (don't wait for completion)
+    // Navigate after disintegration completes
+    const navDelay = api.config.disintegrationDuration + 100;
     setTimeout(() => {
       window.location.href = href;
-    }, this.config.disintegrationDuration + 100);
+    }, navDelay);
   }, true);
 };
 
