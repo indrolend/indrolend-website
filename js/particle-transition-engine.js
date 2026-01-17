@@ -44,7 +44,8 @@
     
     // Canvas settings
     CANVAS_Z_INDEX: 9999,
-    BACKGROUND_COLOR: 'rgba(2, 6, 18, 0.95)' // Slightly transparent to prevent full blackout
+    BACKGROUND_RGB: { r: 2, g: 6, b: 18 }, // Base background color (dark blue-black)
+    BACKGROUND_MAX_OPACITY: 0.95 // Maximum opacity during transitions (slightly transparent to prevent full blackout)
   };
 
   /**
@@ -320,14 +321,14 @@
         // Calculate background opacity based on phase
         let bgOpacity = 0;
         if (this.transitionPhase === 'dispersing') {
-          // Fade in background during dispersing (0 to 0.95)
-          bgOpacity = progress * 0.95;
+          // Fade in background during dispersing (0 to max opacity)
+          bgOpacity = progress * CONFIG.BACKGROUND_MAX_OPACITY;
         } else if (this.transitionPhase === 'morphing') {
           // Keep background solid during morphing
-          bgOpacity = 0.95;
+          bgOpacity = CONFIG.BACKGROUND_MAX_OPACITY;
         } else if (this.transitionPhase === 'fading') {
-          // Fade out background during fading (0.95 to 0)
-          bgOpacity = (1 - progress) * 0.95;
+          // Fade out background during fading (max opacity to 0)
+          bgOpacity = (1 - progress) * CONFIG.BACKGROUND_MAX_OPACITY;
         } else {
           // Default case for any unexpected phase - fade to transparent
           bgOpacity = 0;
@@ -336,7 +337,8 @@
         // Clear canvas with dynamic opacity
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         if (bgOpacity > 0) {
-          this.ctx.fillStyle = `rgba(2, 6, 18, ${bgOpacity})`;
+          const { r, g, b } = CONFIG.BACKGROUND_RGB;
+          this.ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${bgOpacity})`;
           this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         }
 
