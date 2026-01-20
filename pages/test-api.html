@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" data-hybrid-transitions>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Test</title>
+  <style>
+    body {
+      font-family: monospace;
+      background: #020612;
+      color: #5ee87d;
+      padding: 20px;
+    }
+    .test-result {
+      padding: 10px;
+      margin: 10px 0;
+      border-left: 4px solid;
+    }
+    .pass {
+      border-color: #5ee87d;
+      background: rgba(94, 232, 125, 0.1);
+    }
+    .fail {
+      border-color: #ff8c8c;
+      background: rgba(255, 140, 140, 0.1);
+    }
+  </style>
+  <script defer src="../js/hybrid-page-transition-api.js"></script>
+  <script defer src="../js/hybrid-page-transition-config.js"></script>
+  <script defer src="../js/hybrid-page-transition-init.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const results = document.getElementById('results');
+        
+        // Test 1: API loaded
+        const test1 = document.createElement('div');
+        test1.className = 'test-result ' + (typeof window.HybridPageTransitionAPI !== 'undefined' ? 'pass' : 'fail');
+        test1.textContent = '✓ Test 1: HybridPageTransitionAPI loaded - ' + (typeof window.HybridPageTransitionAPI !== 'undefined' ? 'PASS' : 'FAIL');
+        results.appendChild(test1);
+        
+        // Test 2: Config loaded
+        const test2 = document.createElement('div');
+        test2.className = 'test-result ' + (typeof window.HybridPageTransitionConfig !== 'undefined' ? 'pass' : 'fail');
+        test2.textContent = '✓ Test 2: HybridPageTransitionConfig loaded - ' + (typeof window.HybridPageTransitionConfig !== 'undefined' ? 'PASS' : 'FAIL');
+        results.appendChild(test2);
+        
+        if (typeof window.HybridPageTransitionAPI !== 'undefined') {
+          const api = window.HybridPageTransitionAPI.instance;
+          
+          // Test 3: API instance exists
+          const test3 = document.createElement('div');
+          test3.className = 'test-result ' + (api ? 'pass' : 'fail');
+          test3.textContent = '✓ Test 3: API instance exists - ' + (api ? 'PASS' : 'FAIL');
+          results.appendChild(test3);
+          
+          if (api) {
+            // Test 4: Device profile detection
+            const profile = api.getDeviceProfile();
+            const test4 = document.createElement('div');
+            test4.className = 'test-result pass';
+            test4.textContent = '✓ Test 4: Device profile detected - ' + profile.name + ' - PASS';
+            results.appendChild(test4);
+            
+            // Test 5: Methods exist
+            const methods = ['startTransition', 'isActive', 'updateConfig', 'setDebug', 'destroy'];
+            const test5 = document.createElement('div');
+            const allMethodsExist = methods.every(m => typeof api[m] === 'function');
+            test5.className = 'test-result ' + (allMethodsExist ? 'pass' : 'fail');
+            test5.textContent = '✓ Test 5: Core methods exist - ' + (allMethodsExist ? 'PASS' : 'FAIL');
+            results.appendChild(test5);
+            
+            // Test 6: Device capabilities
+            const caps = profile.capabilities;
+            const test6 = document.createElement('div');
+            test6.className = 'test-result pass';
+            test6.textContent = `✓ Test 6: WebGL support - ${caps.webgl2 ? 'WebGL 2.0' : caps.webgl1 ? 'WebGL 1.0' : 'No WebGL'} - PASS`;
+            results.appendChild(test6);
+            
+            // Summary
+            const summary = document.createElement('div');
+            summary.style.marginTop = '20px';
+            summary.style.padding = '15px';
+            summary.style.background = 'rgba(94, 232, 125, 0.2)';
+            summary.innerHTML = `
+              <h3>Summary</h3>
+              <p>Profile: ${profile.name}</p>
+              <p>Particle Count: ${profile.config.particleCount}</p>
+              <p>Target FPS: ${profile.config.targetFPS}</p>
+              <p>Renderer: ${profile.config.useWebGL ? 'WebGL' : 'Canvas 2D'}</p>
+              <p>GPU Tier: ${caps.gpuTier}</p>
+              <p>Memory: ${caps.memory} GB</p>
+              <p>CPU Cores: ${caps.cpuCores}</p>
+            `;
+            results.appendChild(summary);
+          }
+        }
+      }, 100);
+    });
+  </script>
+</head>
+<body>
+  <h1>Hybrid Page Transition API - Test Suite</h1>
+  <div id="results"></div>
+</body>
+</html>
