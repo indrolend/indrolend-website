@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" data-hybrid-transitions>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Hybrid Page Transition API - Examples</title>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #020612 0%, #0a1628 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #5ee87d;
+      text-align: center;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #6dd9e8;
+      margin-bottom: 3rem;
+      font-size: 1.2rem;
+    }
+    
+    .section {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(94, 232, 125, 0.2);
+    }
+    
+    h2 {
+      color: #5ee87d;
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+    }
+    
+    h3 {
+      color: #6dd9e8;
+      margin-bottom: 0.8rem;
+      margin-top: 1.5rem;
+      font-size: 1.3rem;
+    }
+    
+    p {
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      color: #5ee87d;
+    }
+    
+    pre {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 15px 0;
+      border: 1px solid rgba(94, 232, 125, 0.3);
+    }
+    
+    pre code {
+      background: none;
+      padding: 0;
+      color: #5ee87d;
+    }
+    
+    .buttons {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    
+    button, .link-button {
+      background: linear-gradient(135deg, #5ee87d 0%, #4bc76d 100%);
+      color: #020612;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    button:hover, .link-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(94, 232, 125, 0.4);
+    }
+    
+    button:active, .link-button:active {
+      transform: translateY(0);
+    }
+    
+    .info-box {
+      background: rgba(109, 217, 232, 0.1);
+      border-left: 4px solid #6dd9e8;
+      padding: 15px 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    
+    .warning-box {
+      background: rgba(255, 140, 140, 0.1);
+      border-left: 4px solid #ff8c8c;
+      padding: 15px 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    
+    .device-info {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 15px;
+      border-radius: 8px;
+      margin: 15px 0;
+    }
+    
+    .device-info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .device-info-row:last-child {
+      border-bottom: none;
+    }
+    
+    .label {
+      color: #6dd9e8;
+      font-weight: 600;
+    }
+    
+    .value {
+      color: #5ee87d;
+      font-family: monospace;
+    }
+    
+    .debug-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10000;
+      background: rgba(94, 232, 125, 0.9);
+      color: #020612;
+      border: none;
+      padding: 15px 20px;
+      border-radius: 50px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(94, 232, 125, 0.4);
+    }
+  </style>
+  
+  <!-- Hybrid Page Transition API -->
+  <script defer src="../js/hybrid-page-transition-api.js"></script>
+  <script defer src="../js/hybrid-page-transition-config.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Hybrid Page Transition API</h1>
+    <p class="subtitle">WebGL-powered particle transitions with intelligent device optimization</p>
+    
+    <!-- Example 1: Basic Usage -->
+    <div class="section">
+      <h2>1. Basic Navigation Transitions</h2>
+      <p>Click these links to see automatic page transitions in action:</p>
+      
+      <div class="buttons">
+        <a href="home.html" class="link-button">Home Page</a>
+        <a href="gallery.html" class="link-button">Gallery</a>
+        <a href="tictactoe.html" class="link-button">Tic-Tac-Toe</a>
+        <a href="../index.html" class="link-button">Landing Page</a>
+      </div>
+      
+      <div class="info-box">
+        <strong>ℹ️ Info:</strong> These links are automatically intercepted by the API. 
+        When clicked, a particle transition effect plays before navigation occurs.
+      </div>
+    </div>
+    
+    <!-- Example 2: Manual Transitions -->
+    <div class="section">
+      <h2>2. Manual Transition Control</h2>
+      <p>Trigger transitions programmatically with custom settings:</p>
+      
+      <div class="buttons">
+        <button onclick="triggerDefaultTransition()">Default Transition</button>
+        <button onclick="triggerExplosiveTransition()">Explosive Transition</button>
+        <button onclick="triggerCustomColors()">Custom Colors</button>
+        <button onclick="triggerManyParticles()">Many Particles</button>
+      </div>
+      
+      <h3>Code Example:</h3>
+      <pre><code>// Get API instance
+const api = window.HybridPageTransitionAPI.instance;
+
+// Start custom transition
+api.startTransition({
+  fromElements: document.querySelectorAll('h1, h2'),
+  colors: ['rgba(255, 0, 0, 0.9)', 'rgba(0, 255, 0, 0.9)'],
+  particleCount: 200,
+  explosionIntensity: 1.5,
+  onComplete: () => {
+    console.log('Transition complete!');
+  }
+});</code></pre>
+    </div>
+    
+    <!-- Example 3: Device Detection -->
+    <div class="section">
+      <h2>3. Device Profile Detection</h2>
+      <p>The API automatically detects device capabilities and optimizes performance:</p>
+      
+      <div class="device-info" id="device-info">
+        <div class="device-info-row">
+          <span class="label">Loading device information...</span>
+        </div>
+      </div>
+      
+      <button onclick="showDeviceInfo()">Refresh Device Info</button>
+      
+      <div class="info-box">
+        <strong>ℹ️ Auto-Optimization:</strong> The API automatically adjusts particle count, 
+        rendering method, and effects based on your device's GPU, memory, and CPU capabilities.
+      </div>
+    </div>
+    
+    <!-- Example 4: Configuration -->
+    <div class="section">
+      <h2>4. Runtime Configuration</h2>
+      <p>Update configuration on the fly:</p>
+      
+      <div class="buttons">
+        <button onclick="setLowParticles()">Low Particles (60)</button>
+        <button onclick="setMediumParticles()">Medium (150)</button>
+        <button onclick="setHighParticles()">High (300)</button>
+        <button onclick="toggleAutoOptimize()">Toggle Auto-Optimize</button>
+      </div>
+      
+      <h3>Code Example:</h3>
+      <pre><code>// Update particle count
+api.updateConfig({ particleCount: 150 });
+
+// Toggle auto-optimization
+api.updateConfig({ autoOptimize: true });
+
+// Add page-specific behavior
+window.HybridPageTransitionConfig.addPageBehavior('custom', {
+  particleCount: 200,
+  explosionIntensity: 1.5,
+  colors: ['rgba(255, 0, 0, 0.9)']
+});</code></pre>
+    </div>
+    
+    <!-- Example 5: Debug Mode -->
+    <div class="section">
+      <h2>5. Debug Mode</h2>
+      <p>Enable debug mode to see real-time performance metrics:</p>
+      
+      <div class="buttons">
+        <button onclick="toggleDebugMode()">Toggle Debug Mode</button>
+        <button onclick="showApiStatus()">Show API Status</button>
+      </div>
+      
+      <div class="warning-box">
+        <strong>⚠️ Debug Info:</strong> When debug mode is enabled, you'll see an overlay 
+        during transitions showing FPS, particle count, current phase, and device profile.
+        <br><br>
+        <strong>Keyboard Shortcut:</strong> Press <code>Ctrl+Shift+D</code> to toggle debug mode.
+      </div>
+      
+      <div id="api-status" style="display: none;">
+        <h3>API Status:</h3>
+        <pre><code id="status-output"></code></pre>
+      </div>
+    </div>
+    
+    <!-- Example 6: CSS Fallback -->
+    <div class="section">
+      <h2>6. CSS Fallback for Non-WebGL Devices</h2>
+      <p>For devices without WebGL support, the API automatically falls back to Canvas 2D or CSS transitions:</p>
+      
+      <button onclick="triggerCSSFallback()">Test CSS Fallback</button>
+      
+      <h3>Code Example:</h3>
+      <pre><code>// Manually trigger CSS fallback
+window.HybridPageTransitionAPI.CSSFallback.applyTransition(() => {
+  window.location.href = 'next-page.html';
+});</code></pre>
+    </div>
+  </div>
+  
+  <!-- Debug Toggle Button -->
+  <button class="debug-toggle" onclick="toggleDebugMode()">🐛 Debug</button>
+  
+  <!-- Example Scripts -->
+  <script>
+    // Wait for API to load
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check if API is available
+      if (typeof window.HybridPageTransitionAPI === 'undefined') {
+        alert('HybridPageTransitionAPI not loaded. Make sure the script is included.');
+        return;
+      }
+      
+      // Initialize manually (data attribute is present, but we want custom config)
+      const api = window.HybridPageTransitionAPI.instance;
+      
+      // Show device info on load
+      setTimeout(showDeviceInfo, 500);
+    });
+    
+    // Example 2: Manual Transitions
+    function triggerDefaultTransition() {
+      const api = window.HybridPageTransitionAPI.instance;
+      const elements = document.querySelectorAll('h1, h2, button');
+      
+      api.startTransition({
+        fromElements: Array.from(elements).slice(0, 10),
+        onComplete: () => {
+          console.log('Default transition complete!');
+        }
+      });
+    }
+    
+    function triggerExplosiveTransition() {
+      const api = window.HybridPageTransitionAPI.instance;
+      const elements = document.querySelectorAll('.section');
+      
+      api.startTransition({
+        fromElements: Array.from(elements),
+        explosionIntensity: 2.5,
+        onComplete: () => {
+          console.log('Explosive transition complete!');
+        }
+      });
+    }
+    
+    function triggerCustomColors() {
+      const api = window.HybridPageTransitionAPI.instance;
+      const elements = document.querySelectorAll('button, .link-button');
+      
+      api.startTransition({
+        fromElements: Array.from(elements),
+        colors: [
+          'rgba(255, 0, 0, 0.9)',
+          'rgba(0, 255, 0, 0.9)',
+          'rgba(0, 0, 255, 0.9)',
+          'rgba(255, 255, 0, 0.9)'
+        ],
+        onComplete: () => {
+          console.log('Custom colors transition complete!');
+        }
+      });
+    }
+    
+    function triggerManyParticles() {
+      const api = window.HybridPageTransitionAPI.instance;
+      const elements = document.querySelectorAll('*');
+      
+      api.startTransition({
+        fromElements: Array.from(elements).slice(0, 20),
+        particleCount: 400,
+        explosionIntensity: 1.8,
+        onComplete: () => {
+          console.log('Many particles transition complete!');
+        }
+      });
+    }
+    
+    // Example 3: Device Detection
+    function showDeviceInfo() {
+      const api = window.HybridPageTransitionAPI.instance;
+      const profile = api.getDeviceProfile();
+      const container = document.getElementById('device-info');
+      
+      container.innerHTML = `
+        <div class="device-info-row">
+          <span class="label">Device Profile:</span>
+          <span class="value">${profile.name}</span>
+        </div>
+        <div class="device-info-row">
+          <span class="label">Particle Count:</span>
+          <span class="value">${profile.config.particleCount}</span>
+        </div>
+        <div class="device-info-row">
+          <span class="label">Target FPS:</span>
+          <span class="value">${profile.config.targetFPS}</span>
+        </div>
+        <div class="device-info-row">
+          <span class="label">Renderer:</span>
+          <span class="value">${profile.config.useWebGL ? 'WebGL' : 'Canvas 2D'}</span>
+        </div>
+        <div class="device-info-row">
+          <span class="label">WebGL 2.0:</span>
+          <span class="value">${profile.capabilities.webgl2 ? 'Yes' : 'No'}</span>
+        </div>
+        <div class="device-info-row">
+          <span class="label">WebGL 1.0:</span>
+          <span class="value">${profile.capabilities.webgl1 ? 'Yes' : 'No'}</span>
+        </div>
+        <div class="device-info-row">
+          <span class="label">GPU Tier:</span>
+          <span class="value">${profile.capabilities.gpuTier}</span>
+        </div>
+        <div class="device-info-row">
+          <span class="label">Device Memory:</span>
+          <span class="value">${profile.capabilities.memory} GB</span>
+        </div>
+        <div class="device-info-row">
+          <span class="label">CPU Cores:</span>
+          <span class="value">${profile.capabilities.cpuCores}</span>
+        </div>
+        <div class="device-info-row">
+          <span class="label">Mobile:</span>
+          <span class="value">${profile.capabilities.isMobile ? 'Yes' : 'No'}</span>
+        </div>
+        <div class="device-info-row">
+          <span class="label">Touch Device:</span>
+          <span class="value">${profile.capabilities.isTouch ? 'Yes' : 'No'}</span>
+        </div>
+        <div class="device-info-row">
+          <span class="label">Pixel Ratio:</span>
+          <span class="value">${profile.capabilities.pixelRatio}x</span>
+        </div>
+      `;
+    }
+    
+    // Example 4: Configuration
+    function setLowParticles() {
+      const api = window.HybridPageTransitionAPI.instance;
+      api.updateConfig({ particleCount: 60 });
+      alert('Particle count set to 60 (Low)');
+    }
+    
+    function setMediumParticles() {
+      const api = window.HybridPageTransitionAPI.instance;
+      api.updateConfig({ particleCount: 150 });
+      alert('Particle count set to 150 (Medium)');
+    }
+    
+    function setHighParticles() {
+      const api = window.HybridPageTransitionAPI.instance;
+      api.updateConfig({ particleCount: 300 });
+      alert('Particle count set to 300 (High)');
+    }
+    
+    function toggleAutoOptimize() {
+      const api = window.HybridPageTransitionAPI.instance;
+      api.autoOptimize = !api.autoOptimize;
+      alert('Auto-optimize: ' + (api.autoOptimize ? 'ON' : 'OFF'));
+    }
+    
+    // Example 5: Debug Mode
+    function toggleDebugMode() {
+      const api = window.HybridPageTransitionAPI.instance;
+      api.setDebug(!api.debug);
+      alert('Debug mode: ' + (api.debug ? 'ON' : 'OFF'));
+    }
+    
+    function showApiStatus() {
+      const api = window.HybridPageTransitionAPI.instance;
+      const statusDiv = document.getElementById('api-status');
+      const output = document.getElementById('status-output');
+      
+      const status = {
+        isActive: api.isActive(),
+        debug: api.debug,
+        autoOptimize: api.autoOptimize,
+        transitionPhase: api.transitionPhase,
+        particleCount: api.particles.length,
+        config: api.config
+      };
+      
+      output.textContent = JSON.stringify(status, null, 2);
+      statusDiv.style.display = 'block';
+    }
+    
+    // Example 6: CSS Fallback
+    function triggerCSSFallback() {
+      window.HybridPageTransitionAPI.CSSFallback.applyTransition(() => {
+        console.log('CSS fallback transition complete!');
+      });
+    }
+  </script>
+</body>
+</html>
