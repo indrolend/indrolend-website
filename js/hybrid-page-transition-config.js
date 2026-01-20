@@ -142,7 +142,7 @@
     disabledPages: [],
     
     // Fallback to CSS fade on low-performance devices
-    cssF allbackEnabled: true,
+    cssFallbackEnabled: true,
     
     // Minimum FPS before auto-optimization kicks in
     minFPS: 25
