@@ -1,15 +1,42 @@
 # Indrolend Website
 
-Personal website with integrated Spotify analytics and OCR-based statistics parsing.
+Personal website with integrated Spotify analytics, OCR-based statistics parsing, and WebGL-powered page transitions.
 
 ## Features
 
+- **Hybrid Page Transition API**: WebGL-based particle transitions with intelligent device optimization
 - **Spotify Analytics Dashboard**: Visual display of streaming statistics
 - **Spotify for Artists Scraper**: Automated extraction of live audience stats (listeners, streams, followers, top cities)
 - **Automated Screenshot Parsing**: OCR-based extraction of Spotify stats from screenshots
 - **Example-Based Validation**: System for improving OCR accuracy with ground truth data
 - **Interactive Games**: Asymptote idle game, Tic-Tac-Toe, Word Game
 - **Image Gallery**: Personal photo gallery
+
+## Hybrid Page Transition API
+
+The website now features a powerful WebGL-based particle transition system for seamless page navigation:
+
+- ✨ **WebGL 2.0/1.0 Rendering** with automatic Canvas 2D fallback
+- 🎯 **Automatic Device Detection** (High-end, Mid-range, Low-end, Mobile)
+- ⚡ **Auto-optimization** based on real-time performance monitoring
+- 🎨 **Customizable Effects** per page with unique particle behaviors
+- 🔧 **Debug Mode** for development and testing
+- ♿ **Accessibility Support** (respects `prefers-reduced-motion`)
+
+### Quick Start
+
+The API is automatically initialized on all pages with the `data-hybrid-transitions` attribute. See [HYBRID_TRANSITION_API.md](HYBRID_TRANSITION_API.md) for complete documentation and examples.
+
+**Example Usage:**
+```html
+<html data-hybrid-transitions>
+  <script defer src="js/hybrid-page-transition-api.js"></script>
+  <script defer src="js/hybrid-page-transition-config.js"></script>
+  <script defer src="js/hybrid-page-transition-init.js"></script>
+</html>
+```
+
+**Live Examples:** Visit `/pages/hybrid-transition-examples.html` to see interactive demos.
 
 ## Spotify Statistics System
 
