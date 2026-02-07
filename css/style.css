@@ -1732,3 +1732,24 @@ html, body {
     opacity: 1;
   }
 }
+
+/* ============================================
+   CURSOR CHARACTER EFFECT
+   ============================================ */
+.cursor-char {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  color: rgba(94, 232, 125, 0.8);
+  font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
+  font-weight: 500;
+  opacity: 1;
+  -webkit-transition: opacity 0.8s ease-out;
+  -moz-transition: opacity 0.8s ease-out;
+  transition: opacity 0.8s ease-out;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-shadow: 0 0 5px rgba(94, 232, 125, 0.5);
+}
