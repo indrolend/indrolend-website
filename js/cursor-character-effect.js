@@ -119,6 +119,44 @@
   }
 
   /**
+   * Debounce helper function
+   */
+  function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
+  }
+
+  /**
+   * Handle window resize with device check
+   */
+  function handleResize() {
+    const wasDesktop = isDesktop;
+    isDesktop = checkIfDesktop();
+    
+    if (wasDesktop && !isDesktop) {
+      // Switched to mobile
+      isEnabled = false;
+      // Clean up existing characters
+      characterElements.forEach(char => {
+        if (char.parentNode) {
+          char.parentNode.removeChild(char);
+        }
+      });
+      characterElements = [];
+    } else if (!wasDesktop && isDesktop) {
+      // Switched to desktop
+      isEnabled = true;
+    }
+  }
+
+  /**
    * Initialize the cursor character effect
    */
   function init() {
@@ -135,26 +173,9 @@
     // Add mouse move listener
     document.addEventListener('mousemove', handleMouseMove);
 
-    // Re-check on resize (in case device orientation changes)
-    window.addEventListener('resize', () => {
-      const wasDesktop = isDesktop;
-      isDesktop = checkIfDesktop();
-      
-      if (wasDesktop && !isDesktop) {
-        // Switched to mobile
-        isEnabled = false;
-        // Clean up existing characters
-        characterElements.forEach(char => {
-          if (char.parentNode) {
-            char.parentNode.removeChild(char);
-          }
-        });
-        characterElements = [];
-      } else if (!wasDesktop && isDesktop) {
-        // Switched to desktop
-        isEnabled = true;
-      }
-    });
+    // Re-check on resize with debouncing (in case device orientation changes)
+    const debouncedResize = debounce(handleResize, 250);
+    window.addEventListener('resize', debouncedResize);
   }
 
   // Initialize when DOM is ready
