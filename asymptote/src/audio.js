@@ -1,7 +1,7 @@
 // Audio management for background music
 
 // Configuration
-const MUSIC_FILE = 'asymptote music loop.mp3';
+const MUSIC_FILE = 'asymptote_asymptote music loop.mp3';
 const DEFAULT_VOLUME = 0.5; // 50%
 
 class AudioManager {
