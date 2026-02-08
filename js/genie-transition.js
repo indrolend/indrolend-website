@@ -200,13 +200,16 @@
       }
     }
 
-    // Add fade effect
-    ctx.globalAlpha = 1 - progress * 0.5;
-    ctx.globalAlpha = 1;
+    // Fade effect during transition
+    ctx.globalAlpha = 1 - progress * 0.3;
   }
 
   /**
    * Capture current page as image
+   * NOTE: This is a simplified implementation that returns an empty canvas.
+   * The genie transition will work but without actual page content capture.
+   * For full visual fidelity, consider using a library like html2canvas.
+   * Current behavior: Animation frame distorts but shows a blank/transparent effect.
    */
   function capturePageAsImage() {
     // Create a temporary canvas to capture the page

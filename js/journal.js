@@ -50,10 +50,10 @@
     html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
     html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
 
-    // Convert bold text
+    // Convert bold text BEFORE italic to avoid conflicts
     html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 
-    // Convert italic text
+    // Convert italic text (after bold is already processed)
     html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
 
     // Convert horizontal rules
