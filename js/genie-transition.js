@@ -226,7 +226,7 @@
   /**
    * Store button position in sessionStorage before navigation
    */
-  function storeButtonPosition(buttonId, event) {
+  function storeButtonPosition(event) {
     event.preventDefault();
     
     const button = event.currentTarget;
