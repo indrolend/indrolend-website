@@ -895,6 +895,12 @@
    * Game over for particle snake - immediately return to normal
    */
   function particleGameOver() {
+    // Save high score to localStorage
+    const currentHighScore = parseInt(localStorage.getItem('snake_high_score') || '0', 10);
+    if (gameScore > currentHighScore) {
+      localStorage.setItem('snake_high_score', gameScore.toString());
+    }
+    
     // Immediately deactivate and return to normal
     deactivateSnake();
   }
