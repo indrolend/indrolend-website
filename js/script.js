@@ -1479,3 +1479,16 @@ function checkGlitchyButton() {
   }
 }
 checkGlitchyButton();
+
+// --- Journal Button ---
+// Show the journal button if snake game high score is greater than 10
+function checkJournalButton() {
+  const journalBtn = document.getElementById('journalCard');
+  if (journalBtn) {
+    const snakeHighScore = parseInt(localStorage.getItem('snake_high_score') || '0', 10);
+    if (snakeHighScore > 10) {
+      journalBtn.style.display = 'block';
+    }
+  }
+}
+checkJournalButton();

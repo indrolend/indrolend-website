@@ -11,7 +11,8 @@ document.addEventListener("DOMContentLoaded", () => {
     youtube: ["#FF0000", "#282828", "#FFFFFF"], // Red, Dark Gray, White
     bandcamp: ["#629AA9", "#1DA0C3", "#FFFFFF"], // Blue tones
     gallery: ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#9400D3"], // Rainbow explosion colors
-    galleryLocked: ["#888888"] // Single gray particle when locked
+    galleryLocked: ["#888888"], // Single gray particle when locked
+    journal: ["#6dd9e8", "#5ee87d", "#FFFFFF"] // Terminal green/cyan theme
   };
 
   // Particle system configuration

@@ -1,0 +1,274 @@
+/* ============================================
+   JOURNAL PAGE STYLES
+   ============================================ */
+
+.journal-bg {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+#particles-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.journal-container {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.journal-header {
+  text-align: center;
+  margin-bottom: 60px;
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--terminal-green);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border: 1px solid var(--terminal-green);
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  background: rgba(109, 217, 232, 0.05);
+}
+
+.back-button:hover {
+  background: rgba(109, 217, 232, 0.15);
+  -webkit-box-shadow: 0 0 15px rgba(109, 217, 232, 0.3);
+  -moz-box-shadow: 0 0 15px rgba(109, 217, 232, 0.3);
+  box-shadow: 0 0 15px rgba(109, 217, 232, 0.3);
+}
+
+.journal-title {
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--terminal-green);
+  margin: 20px 0 10px;
+  text-shadow: 0 0 20px rgba(109, 217, 232, 0.5);
+}
+
+.journal-subtitle {
+  font-size: 18px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 0;
+}
+
+.journal-content {
+  background: rgba(5, 12, 28, 0.85);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 40px;
+  -webkit-box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  -moz-box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.loading-message {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.error-message {
+  text-align: center;
+  padding: 40px;
+  color: #ff6b6b;
+  font-style: italic;
+}
+
+/* Markdown Content Styles */
+.markdown-body {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-main);
+}
+
+.markdown-body h1 {
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--terminal-green);
+  margin-top: 0;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid var(--border-subtle);
+}
+
+.markdown-body h2 {
+  font-family: "EB Garamond", Georgia, serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--terminal-green-soft);
+  margin-top: 50px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.markdown-body h3 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--terminal-green-soft);
+  margin-top: 35px;
+  margin-bottom: 15px;
+}
+
+.markdown-body h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-top: 25px;
+  margin-bottom: 12px;
+}
+
+.markdown-body p {
+  margin: 15px 0;
+  color: var(--text-main);
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  margin: 15px 0;
+  padding-left: 30px;
+}
+
+.markdown-body li {
+  margin: 8px 0;
+  color: var(--text-main);
+}
+
+.markdown-body strong {
+  color: var(--terminal-green);
+  font-weight: 700;
+}
+
+.markdown-body em {
+  color: var(--terminal-green-soft);
+  font-style: italic;
+}
+
+.markdown-body code {
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--terminal-green);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: "SF Mono", Menlo, Monaco, Consolas, monospace;
+  font-size: 14px;
+}
+
+.markdown-body pre {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 15px;
+  border-radius: 6px;
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+}
+
+.markdown-body pre code {
+  background: none;
+  padding: 0;
+}
+
+.markdown-body a {
+  color: var(--terminal-green);
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.markdown-body a:hover {
+  color: var(--terminal-green-soft);
+  text-shadow: 0 0 8px rgba(109, 217, 232, 0.6);
+}
+
+.markdown-body hr {
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  margin: 40px 0;
+}
+
+.markdown-body blockquote {
+  border-left: 4px solid var(--terminal-green);
+  padding-left: 20px;
+  margin: 20px 0;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Entry Styling */
+.markdown-body h2 {
+  position: relative;
+  padding-left: 20px;
+}
+
+.markdown-body h2::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: var(--terminal-green);
+  font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .journal-container {
+    padding: 20px 15px;
+  }
+
+  .journal-header {
+    margin-bottom: 40px;
+  }
+
+  .back-button {
+    position: static;
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+
+  .journal-title {
+    font-size: 36px;
+  }
+
+  .journal-subtitle {
+    font-size: 16px;
+  }
+
+  .journal-content {
+    padding: 25px 20px;
+  }
+
+  .markdown-body {
+    font-size: 15px;
+  }
+
+  .markdown-body h1 {
+    font-size: 28px;
+  }
+
+  .markdown-body h2 {
+    font-size: 24px;
+    margin-top: 35px;
+  }
+
+  .markdown-body h3 {
+    font-size: 20px;
+    margin-top: 25px;
+  }
+}
