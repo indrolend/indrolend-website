@@ -1487,7 +1487,7 @@ function checkJournalButton(animate = false) {
   const journalBtn = document.getElementById('journalCard');
   if (journalBtn) {
     const snakeHighScore = parseInt(localStorage.getItem('snake_high_score') || '0', 10);
-    if (snakeHighScore > 10) {
+    if (snakeHighScore >= 10) {
       // Add transition for smooth fade-in
       if (animate) {
         journalBtn.style.transition = 'opacity 0.6s ease-in-out';

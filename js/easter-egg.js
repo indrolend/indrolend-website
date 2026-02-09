@@ -853,11 +853,19 @@
   function animateJournalUnlock(foodCanvasX, foodCanvasY) {
     // Check if journal is already unlocked
     const snakeHighScore = parseInt(localStorage.getItem('snake_high_score') || '0', 10);
-    if (snakeHighScore > 10) {
+    if (snakeHighScore >= 10) {
       return; // Already unlocked, skip animation
     }
     
     journalUnlockAnimationActive = true;
+    
+    // Get canvas offset to convert food coordinates to viewport coordinates
+    const canvas = particleSystem?.canvas;
+    if (!canvas) return;
+    
+    const canvasRect = canvas.getBoundingClientRect();
+    const startX = canvasRect.left + foodCanvasX;
+    const startY = canvasRect.top + foodCanvasY;
     
     // Get journal button position - need to calculate where it will be
     const journalBtn = document.getElementById('journalCard');
@@ -888,30 +896,30 @@
     const particleCount = 20;
     journalUnlockParticles = [];
     
+    // Calculate distance for frame-rate independent animation
+    const dx = targetX - startX;
+    const dy = targetY - startY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const duration = 1500; // 1.5 seconds animation
+    
     for (let i = 0; i < particleCount; i++) {
-      // Start position: food location on canvas (add slight randomness)
-      const startX = foodCanvasX + (Math.random() - 0.5) * 10;
-      const startY = foodCanvasY + (Math.random() - 0.5) * 10;
-      
-      // Calculate velocity toward target with some randomness
-      const dx = targetX - startX;
-      const dy = targetY - startY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      const duration = 1500; // 1.5 seconds animation
-      const speed = distance / duration * 16; // pixels per frame (assuming ~60fps)
+      // Start position: food location with slight randomness
+      const particleStartX = startX + (Math.random() - 0.5) * 10;
+      const particleStartY = startY + (Math.random() - 0.5) * 10;
       
       // Add randomness to trajectory
       const angle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 0.4;
-      const velocityX = Math.cos(angle) * speed;
-      const velocityY = Math.sin(angle) * speed;
       
       journalUnlockParticles.push({
-        x: startX,
-        y: startY,
-        vx: velocityX,
-        vy: velocityY,
+        startX: particleStartX,
+        startY: particleStartY,
+        x: particleStartX,
+        y: particleStartY,
         targetX: targetX,
         targetY: targetY,
+        angle: angle,
+        distance: distance,
+        duration: duration,
         color: journalColors[Math.floor(Math.random() * journalColors.length)],
         size: 3 + Math.random() * 3, // 3-6px
         life: 1.0, // opacity
@@ -935,7 +943,7 @@
     
     const particleCtx = particleCanvas.getContext('2d');
     
-    // Animation loop
+    // Animation loop with frame-rate independent timing
     function animateParticles() {
       if (!journalUnlockAnimationActive) return;
       
@@ -945,9 +953,13 @@
       let allParticlesGone = true;
       
       journalUnlockParticles.forEach(particle => {
-        // Update position
-        particle.x += particle.vx;
-        particle.y += particle.vy;
+        const age = currentTime - particle.createdAt;
+        const progress = Math.min(1, age / particle.duration);
+        
+        // Frame-rate independent position calculation
+        const travelDistance = progress * particle.distance;
+        particle.x = particle.startX + Math.cos(particle.angle) * travelDistance;
+        particle.y = particle.startY + Math.sin(particle.angle) * travelDistance;
         
         // Check if near target
         const dx = particle.targetX - particle.x;
@@ -959,10 +971,9 @@
           particle.life = Math.max(0, distToTarget / 100);
         }
         
-        // Fade out after 1.5 seconds
-        const age = currentTime - particle.createdAt;
-        if (age > 1500) {
-          particle.life = Math.max(0, 1 - (age - 1500) / 300);
+        // Fade out after duration completes
+        if (age > particle.duration) {
+          particle.life = Math.max(0, 1 - (age - particle.duration) / 300);
         }
         
         if (particle.life > 0) {
