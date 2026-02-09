@@ -434,6 +434,11 @@
   let transitionPhase = 'none'; // 'entering', 'playing', 'exiting', 'none'
   let transitionStartTime = 0;
   const TRANSITION_DURATION = 400; // Reduced from 800ms for faster animation
+  
+  // Journal unlock animation state
+  let journalUnlockAnimationActive = false;
+  let journalUnlockParticles = [];
+  let journalUnlockAnimationFrame = null;
 
   /**
    * Activate snake game - transition particles then play
@@ -536,6 +541,12 @@
     if (snakeAnimationFrame) {
       cancelAnimationFrame(snakeAnimationFrame);
       snakeAnimationFrame = null;
+    }
+    
+    // Stop journal unlock animation if active and let it complete gracefully
+    if (journalUnlockAnimationActive) {
+      // Don't cancel it - let the animation finish even if game closes
+      // This provides better UX
     }
     
     // Remove close button and score overlay
@@ -837,6 +848,161 @@
   }
 
   /**
+   * Animate journal unlock with particles flying from food to button
+   */
+  function animateJournalUnlock(foodCanvasX, foodCanvasY) {
+    // Check if journal is already unlocked
+    const snakeHighScore = parseInt(localStorage.getItem('snake_high_score') || '0', 10);
+    if (snakeHighScore > 10) {
+      return; // Already unlocked, skip animation
+    }
+    
+    journalUnlockAnimationActive = true;
+    
+    // Get journal button position - need to calculate where it will be
+    const journalBtn = document.getElementById('journalCard');
+    if (!journalBtn) return;
+    
+    // The button might be display:none, so we need to get its parent container position
+    // and estimate where it will appear
+    const appCardsContainer = journalBtn.parentElement;
+    const containerRect = appCardsContainer ? appCardsContainer.getBoundingClientRect() : null;
+    
+    // Target position: center of where journal button will appear
+    // Since we don't know exact position yet, aim for approximate center-bottom area
+    let targetX, targetY;
+    if (containerRect) {
+      // Estimate journal button position (it's in the grid, likely middle area)
+      targetX = containerRect.left + containerRect.width / 2;
+      targetY = containerRect.top + containerRect.height / 2;
+    } else {
+      // Fallback to center-bottom of screen
+      targetX = window.innerWidth / 2;
+      targetY = window.innerHeight * 0.7;
+    }
+    
+    // Journal color scheme from particle-clusters.js
+    const journalColors = ['#6dd9e8', '#5ee87d', '#FFFFFF'];
+    
+    // Create 20 particles
+    const particleCount = 20;
+    journalUnlockParticles = [];
+    
+    for (let i = 0; i < particleCount; i++) {
+      // Start position: food location on canvas (add slight randomness)
+      const startX = foodCanvasX + (Math.random() - 0.5) * 10;
+      const startY = foodCanvasY + (Math.random() - 0.5) * 10;
+      
+      // Calculate velocity toward target with some randomness
+      const dx = targetX - startX;
+      const dy = targetY - startY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const duration = 1500; // 1.5 seconds animation
+      const speed = distance / duration * 16; // pixels per frame (assuming ~60fps)
+      
+      // Add randomness to trajectory
+      const angle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 0.4;
+      const velocityX = Math.cos(angle) * speed;
+      const velocityY = Math.sin(angle) * speed;
+      
+      journalUnlockParticles.push({
+        x: startX,
+        y: startY,
+        vx: velocityX,
+        vy: velocityY,
+        targetX: targetX,
+        targetY: targetY,
+        color: journalColors[Math.floor(Math.random() * journalColors.length)],
+        size: 3 + Math.random() * 3, // 3-6px
+        life: 1.0, // opacity
+        createdAt: performance.now()
+      });
+    }
+    
+    // Create overlay canvas for particles
+    const particleCanvas = document.createElement('canvas');
+    particleCanvas.id = 'journal-unlock-particles';
+    particleCanvas.style.position = 'fixed';
+    particleCanvas.style.top = '0';
+    particleCanvas.style.left = '0';
+    particleCanvas.style.width = '100%';
+    particleCanvas.style.height = '100%';
+    particleCanvas.style.zIndex = '9998'; // Below close button (10000) but above game
+    particleCanvas.style.pointerEvents = 'none';
+    particleCanvas.width = window.innerWidth;
+    particleCanvas.height = window.innerHeight;
+    document.body.appendChild(particleCanvas);
+    
+    const particleCtx = particleCanvas.getContext('2d');
+    
+    // Animation loop
+    function animateParticles() {
+      if (!journalUnlockAnimationActive) return;
+      
+      const currentTime = performance.now();
+      particleCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+      
+      let allParticlesGone = true;
+      
+      journalUnlockParticles.forEach(particle => {
+        // Update position
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        
+        // Check if near target
+        const dx = particle.targetX - particle.x;
+        const dy = particle.targetY - particle.y;
+        const distToTarget = Math.sqrt(dx * dx + dy * dy);
+        
+        // Fade out as approaching target
+        if (distToTarget < 100) {
+          particle.life = Math.max(0, distToTarget / 100);
+        }
+        
+        // Fade out after 1.5 seconds
+        const age = currentTime - particle.createdAt;
+        if (age > 1500) {
+          particle.life = Math.max(0, 1 - (age - 1500) / 300);
+        }
+        
+        if (particle.life > 0) {
+          allParticlesGone = false;
+          
+          // Draw particle with glow
+          particleCtx.shadowBlur = 10;
+          particleCtx.shadowColor = particle.color;
+          particleCtx.fillStyle = particle.color;
+          particleCtx.globalAlpha = particle.life;
+          particleCtx.beginPath();
+          particleCtx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+          particleCtx.fill();
+        }
+      });
+      
+      particleCtx.globalAlpha = 1;
+      particleCtx.shadowBlur = 0;
+      
+      if (allParticlesGone) {
+        // Animation complete - reveal journal button
+        journalUnlockAnimationActive = false;
+        if (particleCanvas.parentNode) {
+          particleCanvas.parentNode.removeChild(particleCanvas);
+        }
+        
+        // Call checkJournalButton with animation
+        if (window.checkJournalButton) {
+          window.checkJournalButton(true);
+        }
+        return;
+      }
+      
+      journalUnlockAnimationFrame = requestAnimationFrame(animateParticles);
+    }
+    
+    animateParticles();
+  }
+
+  /**
    * Update snake game logic
    */
   function updateParticleSnake(currentTime) {
@@ -875,7 +1041,20 @@
     
     // Check if food eaten
     if (newHead.x === food.x && newHead.y === food.y) {
+      // Store food canvas position BEFORE incrementing score and placing new food
+      const foodCanvasX = food.x * gridSize + gridSize / 2;
+      const foodCanvasY = food.y * gridSize + gridSize / 2;
+      
+      // Track previous score
+      const previousScore = gameScore;
       gameScore++;
+      
+      // Check if we just reached score 10 (unlocks journal)
+      if (previousScore === 9 && gameScore === 10 && !journalUnlockAnimationActive) {
+        // Trigger journal unlock animation from food position
+        animateJournalUnlock(foodCanvasX, foodCanvasY);
+      }
+      
       placeParticleFood();
       
       // Increase speed slightly

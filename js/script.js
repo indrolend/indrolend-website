@@ -1482,13 +1482,30 @@ checkGlitchyButton();
 
 // --- Journal Button ---
 // Show the journal button if snake game high score is greater than 10
-function checkJournalButton() {
+// animate parameter: if true, smoothly fade in the button; if false, show instantly
+function checkJournalButton(animate = false) {
   const journalBtn = document.getElementById('journalCard');
   if (journalBtn) {
     const snakeHighScore = parseInt(localStorage.getItem('snake_high_score') || '0', 10);
     if (snakeHighScore > 10) {
-      journalBtn.style.display = 'block';
+      // Add transition for smooth fade-in
+      if (animate) {
+        journalBtn.style.transition = 'opacity 0.6s ease-in-out';
+        journalBtn.style.opacity = '0';
+        journalBtn.style.display = 'block';
+        // Trigger fade in after a small delay to ensure display:block is applied
+        setTimeout(() => {
+          journalBtn.style.opacity = '1';
+        }, 50);
+      } else {
+        journalBtn.style.display = 'block';
+        journalBtn.style.opacity = '1';
+      }
     }
   }
 }
+
+// Make globally accessible for easter-egg.js
+window.checkJournalButton = checkJournalButton;
+
 checkJournalButton();
