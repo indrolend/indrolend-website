@@ -1062,8 +1062,14 @@
       
       // Check if we just reached score 10 (unlocks journal)
       if (previousScore === 9 && gameScore === 10 && !journalUnlockAnimationActive) {
-        // Trigger journal unlock animation from food position
-        animateJournalUnlock(foodCanvasX, foodCanvasY);
+        // Unlock journal button immediately (no particle animation)
+        // Button will appear behind the snake overlay, visible when game closes
+        journalUnlockAnimationActive = true; // Set flag to prevent multiple unlocks
+        if (window.checkJournalButton) {
+          // false = no fade animation, instant display
+          // false = don't restore container (keep dimmed during game)
+          window.checkJournalButton(false, false);
+        }
       }
       
       placeParticleFood();

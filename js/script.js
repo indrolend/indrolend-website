@@ -1483,7 +1483,8 @@ checkGlitchyButton();
 // --- Journal Button ---
 // Show the journal button if snake game high score is greater than 10
 // animate parameter: if true, smoothly fade in the button; if false, show instantly
-function checkJournalButton(animate = false) {
+// restoreContainer parameter: if true, restore parent container opacity; if false, leave dimmed
+function checkJournalButton(animate = false, restoreContainer = true) {
   const journalBtn = document.getElementById('journalCard');
   if (journalBtn) {
     const snakeHighScore = parseInt(localStorage.getItem('snake_high_score') || '0', 10);
@@ -1491,14 +1492,14 @@ function checkJournalButton(animate = false) {
       // Make button visible in the layout (flex to match other app-cards)
       journalBtn.style.display = 'flex';
       
-      // IMPORTANT: Override parent container dimming from snake game
-      // The snake game sets home-container to opacity 0.2, but we need the journal
-      // button to be fully visible when unlocked even during the game
-      const homeContainer = document.querySelector('.home-container');
-      if (homeContainer && homeContainer.style.opacity === '0.2') {
-        // Temporarily restore container visibility for journal button unlock
-        homeContainer.style.opacity = '1';
-        homeContainer.style.pointerEvents = 'auto';
+      // Only restore container visibility if requested (not during snake game)
+      if (restoreContainer) {
+        const homeContainer = document.querySelector('.home-container');
+        if (homeContainer && homeContainer.style.opacity === '0.2') {
+          // Restore container visibility for journal button unlock
+          homeContainer.style.opacity = '1';
+          homeContainer.style.pointerEvents = 'auto';
+        }
       }
       
       // Ensure pointer events are enabled for clickability
