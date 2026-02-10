@@ -1491,6 +1491,16 @@ function checkJournalButton(animate = false) {
       // Make button visible in the layout (flex to match other app-cards)
       journalBtn.style.display = 'flex';
       
+      // IMPORTANT: Override parent container dimming from snake game
+      // The snake game sets home-container to opacity 0.2, but we need the journal
+      // button to be fully visible when unlocked even during the game
+      const homeContainer = document.querySelector('.home-container');
+      if (homeContainer && homeContainer.style.opacity === '0.2') {
+        // Temporarily restore container visibility for journal button unlock
+        homeContainer.style.opacity = '1';
+        homeContainer.style.pointerEvents = 'auto';
+      }
+      
       // Ensure pointer events are enabled for clickability
       journalBtn.style.pointerEvents = 'auto';
       
