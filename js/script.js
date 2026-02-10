@@ -1488,17 +1488,19 @@ function checkJournalButton(animate = false) {
   if (journalBtn) {
     const snakeHighScore = parseInt(localStorage.getItem('snake_high_score') || '0', 10);
     if (snakeHighScore >= 10) {
+      // Make button visible and interactable
+      journalBtn.style.visibility = 'visible';
+      journalBtn.style.pointerEvents = 'auto';
+      
       // Add transition for smooth fade-in
       if (animate) {
         journalBtn.style.transition = 'opacity 0.6s ease-in-out';
         journalBtn.style.opacity = '0';
-        journalBtn.style.display = 'block';
-        // Trigger fade in after a small delay to ensure display:block is applied
+        // Trigger fade in after a small delay to ensure visibility is applied
         setTimeout(() => {
           journalBtn.style.opacity = '1';
         }, 50);
       } else {
-        journalBtn.style.display = 'block';
         journalBtn.style.opacity = '1';
       }
     }
