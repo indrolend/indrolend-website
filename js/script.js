@@ -1494,6 +1494,14 @@ function checkJournalButton(animate = false) {
       // Ensure pointer events are enabled for clickability
       journalBtn.style.pointerEvents = 'auto';
       
+      // Reinitialize particle canvas now that button is visible
+      // Wait a tiny bit for display:flex to apply and canvas to have dimensions
+      setTimeout(() => {
+        if (window.reinitJournalParticles) {
+          window.reinitJournalParticles();
+        }
+      }, 10);
+      
       // Add transition for smooth fade-in
       if (animate) {
         journalBtn.style.transition = 'opacity 0.6s ease-in-out';
