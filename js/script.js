@@ -1482,13 +1482,53 @@ checkGlitchyButton();
 
 // --- Journal Button ---
 // Show the journal button if snake game high score is greater than 10
-function checkJournalButton() {
+// animate parameter: if true, smoothly fade in the button; if false, show instantly
+// restoreContainer parameter: if true, restore parent container opacity; if false, leave dimmed
+function checkJournalButton(animate = false, restoreContainer = true) {
   const journalBtn = document.getElementById('journalCard');
   if (journalBtn) {
     const snakeHighScore = parseInt(localStorage.getItem('snake_high_score') || '0', 10);
-    if (snakeHighScore > 10) {
-      journalBtn.style.display = 'block';
+    if (snakeHighScore >= 10) {
+      // Make button visible in the layout (flex to match other app-cards)
+      journalBtn.style.display = 'flex';
+      
+      // Only restore container visibility if requested (not during snake game)
+      if (restoreContainer) {
+        const homeContainer = document.querySelector('.home-container');
+        if (homeContainer && homeContainer.style.opacity === '0.2') {
+          // Restore container visibility for journal button unlock
+          homeContainer.style.opacity = '1';
+          homeContainer.style.pointerEvents = 'auto';
+        }
+      }
+      
+      // Ensure pointer events are enabled for clickability
+      journalBtn.style.pointerEvents = 'auto';
+      
+      // Reinitialize particle canvas now that button is visible
+      // Wait a tiny bit for display:flex to apply and canvas to have dimensions
+      setTimeout(() => {
+        if (window.reinitJournalParticles) {
+          window.reinitJournalParticles();
+        }
+      }, 10);
+      
+      // Add transition for smooth fade-in
+      if (animate) {
+        journalBtn.style.transition = 'opacity 0.6s ease-in-out';
+        journalBtn.style.opacity = '0';
+        // Trigger fade in after a small delay to ensure display:flex is applied
+        setTimeout(() => {
+          journalBtn.style.opacity = '1';
+        }, 50);
+      } else {
+        journalBtn.style.opacity = '1';
+      }
     }
   }
 }
+
+// Make globally accessible for easter-egg.js
+window.checkJournalButton = checkJournalButton;
+
 checkJournalButton();

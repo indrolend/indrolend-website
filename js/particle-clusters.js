@@ -258,4 +258,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const platformKey = canvas.getAttribute("data-particle-cluster");
     initParticleCluster(canvas, platformKey);
   });
+
+  // Expose function to reinitialize journal particles after unlock
+  window.reinitJournalParticles = function() {
+    const journalCanvas = document.querySelector('[data-particle-cluster="journal"]');
+    if (journalCanvas) {
+      // Force canvas to recalculate size and reinitialize particles
+      const rect = journalCanvas.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        // Canvas is now visible, reinitialize it
+        initParticleCluster(journalCanvas, 'journal');
+      }
+    }
+  };
 });
