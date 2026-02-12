@@ -1163,6 +1163,11 @@
    * Show leaderboard modal for score submission
    */
   function showLeaderboardModal() {
+    // Pause game and remove event handlers immediately to prevent continued gameplay
+    document.removeEventListener('keydown', handleSnakeKeyDown);
+    document.removeEventListener('touchstart', handleSnakeTouchStart);
+    document.removeEventListener('touchend', handleSnakeTouchEnd);
+    
     // Create modal overlay
     const modal = document.createElement('div');
     modal.id = 'snake-leaderboard-modal';
@@ -1178,6 +1183,7 @@
     modal.style.justifyContent = 'center';
     modal.style.padding = '20px';
     modal.style.boxSizing = 'border-box';
+    modal.style.pointerEvents = 'auto';
     
     // Get existing leaderboard
     const leaderboard = getLeaderboard();
@@ -1215,11 +1221,11 @@
         width: 100%;
         max-height: 90vh;
         overflow-y: auto;
-        font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', Inter, sans-serif;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        pointer-events: auto;
       ">
         <div style="text-align: center; margin-bottom: 25px;">
-          <div style="font-size: 28px; font-weight: bold; color: rgba(109, 217, 232, 0.9); margin-bottom: 10px;">Game Over!</div>
           <div style="font-size: 36px; font-weight: bold; color: rgba(109, 217, 232, 1);">Score: ${gameScore}</div>
         </div>
         
@@ -1238,10 +1244,11 @@
                 border: 1px solid rgba(109, 217, 232, 0.3);
                 border-radius: 6px;
                 color: rgba(109, 217, 232, 0.9);
-                font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', Inter, sans-serif;
                 font-size: 14px;
                 box-sizing: border-box;
                 outline: none;
+                pointer-events: auto;
               "
             />
           </div>
@@ -1263,10 +1270,11 @@
                 border: 1px solid rgba(109, 217, 232, 0.3);
                 border-radius: 6px;
                 color: rgba(109, 217, 232, 0.9);
-                font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', Inter, sans-serif;
                 font-size: 14px;
                 box-sizing: border-box;
                 outline: none;
+                pointer-events: auto;
               "
             />
           </div>
@@ -1281,11 +1289,12 @@
               border: 2px solid rgba(109, 217, 232, 0.5);
               border-radius: 8px;
               color: rgba(109, 217, 232, 0.9);
-              font-family: 'SF Mono', Menlo, Monaco, Consolas, monospace;
+              font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', Inter, sans-serif;
               font-size: 16px;
               font-weight: bold;
               cursor: pointer;
               transition: all 0.2s ease;
+              pointer-events: auto;
             "
           >
             Submit Score
