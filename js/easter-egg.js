@@ -1245,10 +1245,11 @@
                 border-radius: 6px;
                 color: rgba(109, 217, 232, 0.9);
                 font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', Inter, sans-serif;
-                font-size: 14px;
+                font-size: 16px;
                 box-sizing: border-box;
                 outline: none;
                 pointer-events: auto;
+                touch-action: manipulation;
               "
             />
           </div>
@@ -1271,10 +1272,11 @@
                 border-radius: 6px;
                 color: rgba(109, 217, 232, 0.9);
                 font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', Inter, sans-serif;
-                font-size: 14px;
+                font-size: 16px;
                 box-sizing: border-box;
                 outline: none;
                 pointer-events: auto;
+                touch-action: manipulation;
               "
             />
           </div>
