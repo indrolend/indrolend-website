@@ -22,7 +22,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
   /* Fallback for older browsers */
   background: #01030a;
   background: -webkit-radial-gradient(circle at top, #050b20 0, #01030a 55%, #000000 100%);
@@ -328,7 +328,7 @@ html, body {
   padding: 6px 8px;
   color: var(--text-main);
   font-size: 12px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
   resize: vertical;
 }
 
@@ -404,7 +404,7 @@ html, body {
   overflow: hidden; /* Prevent scrolling */
   margin: 0;
   padding: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 }
 
 .matrix-bg {
@@ -708,7 +708,7 @@ html, body {
   padding: 6px 8px;
   color: var(--text-main);
   font-size: 12px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 }
 
 .story-choices-full {

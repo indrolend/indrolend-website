@@ -426,6 +426,7 @@
   let snakeSpeed = 200; // ms per move
   let lastMoveTime = 0;
   let gameScore = 0;
+  let isGameOver = false; // Flag to prevent multiple game over triggers
   let closeButton = null;
   let touchStartX = 0;
   let touchStartY = 0;
@@ -839,6 +840,7 @@
     direction = { x: 1, y: 0 };
     nextDirection = { x: 1, y: 0 };
     gameScore = 0;
+    isGameOver = false; // Reset game over flag
     lastMoveTime = performance.now();
     
     // Place initial food
@@ -1075,17 +1077,316 @@
   }
 
   /**
-   * Game over for particle snake - immediately return to normal
+   * Escape HTML to prevent XSS attacks
+   * Uses the escapeHtml function from security-utils.js if available
+   */
+  function escapeHtml(text) {
+    if (window.SecurityUtils && typeof window.SecurityUtils.escapeHtml === 'function') {
+      return window.SecurityUtils.escapeHtml(text);
+    }
+    // Fallback implementation
+    if (typeof text !== 'string') {
+      text = String(text);
+    }
+    const htmlEscapeMap = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;'
+    };
+    return text.replace(/[&<>"']/g, char => htmlEscapeMap[char]);
+  }
+
+  /**
+   * Get leaderboard from localStorage
+   */
+  function getLeaderboard() {
+    try {
+      const data = localStorage.getItem('snake_leaderboard');
+      if (!data) return [];
+      const leaderboard = JSON.parse(data);
+      return Array.isArray(leaderboard) ? leaderboard : [];
+    } catch (e) {
+      console.error('Error loading leaderboard:', e);
+      return [];
+    }
+  }
+
+  /**
+   * Save leaderboard to localStorage
+   */
+  function saveLeaderboard(leaderboard) {
+    try {
+      localStorage.setItem('snake_leaderboard', JSON.stringify(leaderboard));
+    } catch (e) {
+      console.error('Error saving leaderboard:', e);
+    }
+  }
+
+  /**
+   * Add entry to leaderboard and maintain top 5
+   */
+  function addToLeaderboard(name, message, score) {
+    const leaderboard = getLeaderboard();
+    
+    // Sanitize inputs
+    const sanitizedName = escapeHtml((name || '').trim().substring(0, 20) || 'Anonymous');
+    const sanitizedMessage = escapeHtml((message || '').trim().substring(0, 30) || 'No message');
+    
+    // Add new entry
+    leaderboard.push({
+      name: sanitizedName,
+      message: sanitizedMessage,
+      score: score,
+      date: new Date().toISOString()
+    });
+    
+    // Sort by score (highest first) and keep top 5
+    leaderboard.sort((a, b) => b.score - a.score);
+    const top5 = leaderboard.slice(0, 5);
+    
+    saveLeaderboard(top5);
+    return top5;
+  }
+
+  /**
+   * Check if score qualifies for leaderboard (top 5)
+   */
+  function qualifiesForLeaderboard(score) {
+    const leaderboard = getLeaderboard();
+    if (leaderboard.length < 5) return true;
+    return score > leaderboard[4].score;
+  }
+
+  /**
+   * Show leaderboard modal for score submission
+   */
+  function showLeaderboardModal() {
+    // Pause game and remove event handlers immediately to prevent continued gameplay
+    document.removeEventListener('keydown', handleSnakeKeyDown);
+    document.removeEventListener('touchstart', handleSnakeTouchStart);
+    document.removeEventListener('touchend', handleSnakeTouchEnd);
+    
+    // Create modal overlay
+    const modal = document.createElement('div');
+    modal.id = 'snake-leaderboard-modal';
+    modal.style.position = 'fixed';
+    modal.style.top = '0';
+    modal.style.left = '0';
+    modal.style.width = '100%';
+    modal.style.height = '100%';
+    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    modal.style.zIndex = '10001';
+    modal.style.display = 'flex';
+    modal.style.alignItems = 'center';
+    modal.style.justifyContent = 'center';
+    modal.style.padding = '20px';
+    modal.style.boxSizing = 'border-box';
+    modal.style.pointerEvents = 'auto';
+    
+    // Get existing leaderboard
+    const leaderboard = getLeaderboard();
+    
+    // Build leaderboard display HTML
+    let leaderboardHtml = '';
+    if (leaderboard.length > 0) {
+      leaderboardHtml = '<div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(109, 217, 232, 0.3);">';
+      leaderboardHtml += '<div style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: rgba(109, 217, 232, 0.9);">Top 5 Leaderboard</div>';
+      
+      leaderboard.forEach((entry, index) => {
+        leaderboardHtml += `
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid rgba(109, 217, 232, 0.15);">
+            <div style="flex: 1;">
+              <div style="font-size: 14px; color: rgba(109, 217, 232, 0.6);">#${index + 1}</div>
+              <div style="font-weight: bold; font-size: 16px; color: rgba(109, 217, 232, 0.9); margin: 4px 0;">${escapeHtml(entry.name)}</div>
+              <div style="font-style: italic; font-size: 12px; color: rgba(109, 217, 232, 0.5);">${escapeHtml(entry.message)}</div>
+            </div>
+            <div style="font-weight: bold; font-size: 20px; color: rgba(109, 217, 232, 0.9); margin-left: 20px;">${entry.score}</div>
+          </div>
+        `;
+      });
+      
+      leaderboardHtml += '</div>';
+    }
+    
+    // Create modal content
+    modal.innerHTML = `
+      <div style="
+        background: rgba(5, 12, 28, 0.95);
+        border: 2px solid rgba(109, 217, 232, 0.5);
+        border-radius: 12px;
+        padding: 30px;
+        max-width: 500px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        pointer-events: auto;
+      ">
+        <div style="text-align: center; margin-bottom: 25px;">
+          <div style="font-size: 36px; font-weight: bold; color: rgba(109, 217, 232, 1);">Score: ${gameScore}</div>
+        </div>
+        
+        <form id="leaderboard-form" style="margin-top: 25px;">
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; margin-bottom: 8px; color: rgba(109, 217, 232, 0.8); font-size: 14px;">Name</label>
+            <input 
+              type="text" 
+              id="player-name" 
+              maxlength="20" 
+              placeholder="Enter your name"
+              style="
+                width: 100%;
+                padding: 12px;
+                background: rgba(5, 12, 28, 0.8);
+                border: 1px solid rgba(109, 217, 232, 0.3);
+                border-radius: 6px;
+                color: rgba(109, 217, 232, 0.9);
+                font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+                font-size: 16px;
+                box-sizing: border-box;
+                outline: none;
+                pointer-events: auto;
+                touch-action: manipulation;
+              "
+            />
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label style="color: rgba(109, 217, 232, 0.8); font-size: 14px;">Tell the world</label>
+              <span id="char-countdown" style="color: rgba(109, 217, 232, 0.6); font-size: 12px;">30</span>
+            </div>
+            <input 
+              type="text" 
+              id="player-message" 
+              maxlength="30" 
+              placeholder="Your message here..."
+              style="
+                width: 100%;
+                padding: 12px;
+                background: rgba(5, 12, 28, 0.8);
+                border: 1px solid rgba(109, 217, 232, 0.3);
+                border-radius: 6px;
+                color: rgba(109, 217, 232, 0.9);
+                font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+                font-size: 16px;
+                box-sizing: border-box;
+                outline: none;
+                pointer-events: auto;
+                touch-action: manipulation;
+              "
+            />
+          </div>
+          
+          <button 
+            type="submit"
+            id="submit-score"
+            style="
+              width: 100%;
+              padding: 14px;
+              background: rgba(109, 217, 232, 0.2);
+              border: 2px solid rgba(109, 217, 232, 0.5);
+              border-radius: 8px;
+              color: rgba(109, 217, 232, 0.9);
+              font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+              font-size: 16px;
+              font-weight: bold;
+              cursor: pointer;
+              transition: all 0.2s ease;
+              pointer-events: auto;
+            "
+          >
+            Submit Score
+          </button>
+        </form>
+        
+        ${leaderboardHtml}
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Get form elements
+    const form = document.getElementById('leaderboard-form');
+    const nameInput = document.getElementById('player-name');
+    const messageInput = document.getElementById('player-message');
+    const charCountdown = document.getElementById('char-countdown');
+    const submitButton = document.getElementById('submit-score');
+    
+    // Auto-focus name input
+    setTimeout(() => nameInput.focus(), 100);
+    
+    // Character countdown
+    messageInput.addEventListener('input', () => {
+      const remaining = 30 - messageInput.value.length;
+      charCountdown.textContent = remaining;
+      
+      // Change color to red when less than 10 characters remain
+      if (remaining < 10) {
+        charCountdown.style.color = 'rgba(255, 82, 82, 0.9)';
+      } else {
+        charCountdown.style.color = 'rgba(109, 217, 232, 0.6)';
+      }
+    });
+    
+    // Hover effects for submit button
+    submitButton.addEventListener('mouseenter', () => {
+      submitButton.style.background = 'rgba(109, 217, 232, 0.3)';
+      submitButton.style.borderColor = 'rgba(109, 217, 232, 0.9)';
+    });
+    
+    submitButton.addEventListener('mouseleave', () => {
+      submitButton.style.background = 'rgba(109, 217, 232, 0.2)';
+      submitButton.style.borderColor = 'rgba(109, 217, 232, 0.5)';
+    });
+    
+    // Form submission
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = nameInput.value.trim() || 'Anonymous';
+      const message = messageInput.value.trim() || 'No message';
+      
+      // Add to leaderboard
+      addToLeaderboard(name, message, gameScore);
+      
+      // Remove modal
+      if (modal.parentNode) {
+        modal.parentNode.removeChild(modal);
+      }
+      
+      // Deactivate game
+      deactivateSnake();
+    });
+  }
+
+  /**
+   * Game over for particle snake - show leaderboard if qualified
    */
   function particleGameOver() {
+    // Prevent multiple calls
+    if (isGameOver) return;
+    isGameOver = true;
+    
     // Save high score to localStorage
     const currentHighScore = parseInt(localStorage.getItem('snake_high_score') || '0', 10);
     if (gameScore > currentHighScore) {
       localStorage.setItem('snake_high_score', gameScore.toString());
     }
     
-    // Immediately deactivate and return to normal
-    deactivateSnake();
+    // Check if score qualifies for top 5
+    if (qualifiesForLeaderboard(gameScore)) {
+      // Show leaderboard modal
+      showLeaderboardModal();
+    } else {
+      // Wait 1 second then deactivate
+      setTimeout(() => {
+        deactivateSnake();
+      }, 1000);
+    }
   }
 
   /**
