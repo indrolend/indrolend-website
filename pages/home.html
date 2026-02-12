@@ -1,15 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7JHVQW5F3M"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-7JHVQW5F3M');
+  </script>
+  
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="description" content="Indrolend - Music, content, and interactive experiences" />
+  <meta name="description" content="Music by Indrolend. Available on Spotify, Apple Music, YouTube, and Bandcamp." />
+  <meta name="keywords" content="Indrolend, electronic music, experimental music, ambient music, music artist, indie musician" />
+  <meta name="author" content="Indrolend" />
   <meta name="theme-color" content="#020612" />
   <!-- Security Headers -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
+  
+  <link rel="canonical" href="https://indrolend.com/pages/home.html" />
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Indrolend - Music, Art & Interactive Experiences" />
+  <meta property="og:description" content="Music by Indrolend. Available on Spotify, Apple Music, YouTube, and Bandcamp." />
+  <meta property="og:url" content="https://indrolend.com/pages/home.html" />
+  <meta property="og:image" content="https://indrolend.com/assets/images/5992CDB8.jpg" />
+  <meta property="og:site_name" content="Indrolend" />
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Indrolend - Music, Art & Interactive Experiences" />
+  <meta name="twitter:description" content="Music by Indrolend. Available on Spotify, Apple Music, YouTube, and Bandcamp." />
+  <meta name="twitter:image" content="https://indrolend.com/assets/images/5992CDB8.jpg" />
+  
   <title>Indrolend</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,6 +58,26 @@
   <script defer src="../js/particle-clusters.js"></script>
   <script defer src="../js/cursor-character-effect.js"></script>
   <script defer src="../js/genie-transition.js"></script>
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "MusicGroup",
+    "name": "Indrolend",
+    "genre": ["Electronic", "Experimental", "Ambient"],
+    "url": "https://indrolend.com",
+    "sameAs": [
+      "https://www.tiktok.com/@indrolend",
+      "https://www.instagram.com/indrolend.us",
+      "https://open.spotify.com/artist/59X3431NBfd6xWMc3Zlh0v",
+      "https://music.apple.com/us/artist/onliner/1663334902",
+      "https://www.youtube.com/@indrolend",
+      "https://indrolend.bandcamp.com"
+    ],
+    "image": "https://indrolend.com/assets/images/5992CDB8.jpg"
+  }
+  </script>
 </head>
 <body class="home-bg">
   <canvas id="particles-bg"></canvas>
@@ -37,7 +85,7 @@
   <div class="home-container">
     <header class="home-header fade-in-element">
       <div class="home-header-image-wrap">
-        <img src="../assets/images/5992CDB8.jpg" alt="Indrolend header" class="home-header-image" />
+        <img src="../assets/images/5992CDB8.jpg" alt="Indrolend - Electronic and Experimental Music Artist" class="home-header-image" />
       </div>
       <!-- Glitchy button (only shown when all Asymptote upgrades purchased) -->
       <a id="glitchy-dev-history-btn" class="glitchy-button" href="dev-history.html" style="display: none;">
