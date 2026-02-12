@@ -22,7 +22,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
   /* Fallback for older browsers */
   background: #01030a;
   background: -webkit-radial-gradient(circle at top, #050b20 0, #01030a 55%, #000000 100%);
@@ -328,7 +328,7 @@ html, body {
   padding: 6px 8px;
   color: var(--text-main);
   font-size: 12px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
   resize: vertical;
 }
 
@@ -404,7 +404,7 @@ html, body {
   overflow: hidden; /* Prevent scrolling */
   margin: 0;
   padding: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 }
 
 .matrix-bg {
@@ -708,7 +708,7 @@ html, body {
   padding: 6px 8px;
   color: var(--text-main);
   font-size: 12px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 }
 
 .story-choices-full {
@@ -1054,7 +1054,7 @@ html, body {
 
 /* Fake reCAPTCHA styles */
 .fkrc-container {
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
 }
 
 .fkrc-m-p {
@@ -1092,7 +1092,7 @@ html, body {
     border: 2px solid #c1c1c1;
     margin: 21px 0 0 12px;
     outline: none;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
     transition: width 500ms, height 500ms, border-radius 500ms, margin-top 500ms, margin-left 500ms, opacity 700ms;
 }
 
