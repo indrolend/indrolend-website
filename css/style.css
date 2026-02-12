@@ -1054,7 +1054,7 @@ html, body {
 
 /* Fake reCAPTCHA styles */
 .fkrc-container {
-    font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+    font-family: 'Source Sans Pro', sans-serif;
 }
 
 .fkrc-m-p {
@@ -1092,7 +1092,7 @@ html, body {
     border: 2px solid #c1c1c1;
     margin: 21px 0 0 12px;
     outline: none;
-    font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+    font-family: Arial, Helvetica, sans-serif;
     transition: width 500ms, height 500ms, border-radius 500ms, margin-top 500ms, margin-left 500ms, opacity 700ms;
 }
 
