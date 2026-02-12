@@ -1131,8 +1131,8 @@
     const leaderboard = getLeaderboard();
     
     // Sanitize inputs
-    const sanitizedName = escapeHtml((name || 'Anonymous').trim().substring(0, 20) || 'Anonymous');
-    const sanitizedMessage = escapeHtml((message || 'No message').trim().substring(0, 30) || 'No message');
+    const sanitizedName = escapeHtml((name || '').trim().substring(0, 20) || 'Anonymous');
+    const sanitizedMessage = escapeHtml((message || '').trim().substring(0, 30) || 'No message');
     
     // Add new entry
     leaderboard.push({
@@ -1193,8 +1193,8 @@
           <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid rgba(109, 217, 232, 0.15);">
             <div style="flex: 1;">
               <div style="font-size: 14px; color: rgba(109, 217, 232, 0.6);">#${index + 1}</div>
-              <div style="font-weight: bold; font-size: 16px; color: rgba(109, 217, 232, 0.9); margin: 4px 0;">${entry.name}</div>
-              <div style="font-style: italic; font-size: 12px; color: rgba(109, 217, 232, 0.5);">${entry.message}</div>
+              <div style="font-weight: bold; font-size: 16px; color: rgba(109, 217, 232, 0.9); margin: 4px 0;">${escapeHtml(entry.name)}</div>
+              <div style="font-style: italic; font-size: 12px; color: rgba(109, 217, 232, 0.5);">${escapeHtml(entry.message)}</div>
             </div>
             <div style="font-weight: bold; font-size: 20px; color: rgba(109, 217, 232, 0.9); margin-left: 20px;">${entry.score}</div>
           </div>
