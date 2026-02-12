@@ -438,6 +438,7 @@
   // Audio reactive system
   let audioContext = null;
   let audioElement = null;
+  let audioSource = null; // Track the media source to prevent recreation
   let analyser = null;
   let audioDataArray = null;
   let audioBufferLength = 0;
@@ -448,26 +449,53 @@
    */
   function initSnakeAudio() {
     try {
+      // If already initialized, just restart playback
+      if (audioElement && audioSource) {
+        audioElement.currentTime = 0;
+        audioElement.volume = 0;
+        const playPromise = audioElement.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            fadeInAudio();
+          }).catch(error => {
+            console.warn('Audio autoplay prevented:', error);
+          });
+        }
+        return;
+      }
+      
       // Create or resume audio context
       if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
       }
       
-      // Create audio element
-      audioElement = new Audio('snake.mp3');
-      audioElement.loop = true;
-      audioElement.volume = 0; // Start at 0 for fade in
+      // Create audio element only once
+      if (!audioElement) {
+        audioElement = new Audio('snake.mp3');
+        audioElement.loop = true;
+        audioElement.volume = 0; // Start at 0 for fade in
+        
+        // Add error handler for file loading
+        audioElement.addEventListener('error', (e) => {
+          console.error('Failed to load audio file snake.mp3:', e);
+          console.error('Please ensure the file exists in the correct path');
+        });
+      }
       
       // Create analyser node for visualization
-      analyser = audioContext.createAnalyser();
-      analyser.fftSize = 256; // Frequency bins (128 frequency values)
-      audioBufferLength = analyser.frequencyBinCount;
-      audioDataArray = new Uint8Array(audioBufferLength);
+      if (!analyser) {
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256; // Frequency bins (128 frequency values)
+        audioBufferLength = analyser.frequencyBinCount;
+        audioDataArray = new Uint8Array(audioBufferLength);
+      }
       
-      // Connect audio element to analyser
-      const source = audioContext.createMediaElementSource(audioElement);
-      source.connect(analyser);
-      analyser.connect(audioContext.destination);
+      // Connect audio element to analyser (only once)
+      if (!audioSource) {
+        audioSource = audioContext.createMediaElementSource(audioElement);
+        audioSource.connect(analyser);
+        analyser.connect(audioContext.destination);
+      }
       
       // Start playing
       const playPromise = audioElement.play();
@@ -570,10 +598,10 @@
       trebleSum += audioDataArray[i];
     }
     
-    // Normalize to 0-1 range
-    const bass = (bassSum / bassEnd) / 255;
-    const mid = (midSum / (midEnd - bassEnd)) / 255;
-    const treble = (trebleSum / (audioBufferLength - midEnd)) / 255;
+    // Normalize to 0-1 range with guards against division by zero
+    const bass = bassEnd > 0 ? (bassSum / bassEnd) / 255 : 0;
+    const mid = (midEnd - bassEnd) > 0 ? (midSum / (midEnd - bassEnd)) / 255 : 0;
+    const treble = (audioBufferLength - midEnd) > 0 ? (trebleSum / (audioBufferLength - midEnd)) / 255 : 0;
     const average = (bass + mid + treble) / 3;
     
     return { bass, mid, treble, average };
@@ -1117,19 +1145,19 @@
       
       // Audio-reactive glow - pulses with music
       ctx.shadowBlur = trebleGlow;
-      ctx.shadowColor = `rgba(94, ${232 + midIntensity}, 125, ${0.6 + audioData.average * 0.4})`;
+      ctx.shadowColor = `rgba(94, ${Math.min(232 + midIntensity, 255)}, 125, ${Math.min(0.6 + audioData.average * 0.4, 1)})`;
       
       // Head is brighter and more reactive
       if (index === 0) {
         // Snake head color reacts to bass (more cyan on bass hits)
-        const r = 94 + bassIntensity;
+        const r = Math.min(94 + bassIntensity, 255);
         const g = 232;
-        const b = 125 + Math.floor(audioData.mid * 50);
+        const b = Math.min(125 + Math.floor(audioData.mid * 50), 255);
         ctx.fillStyle = `rgba(${r}, ${g}, ${b}, 1)`;
       } else {
         // Body reacts more subtly
         const opacity = 0.6 + (0.4 * (1 - index / snake.length)) + (audioData.average * 0.1);
-        const g = 232 + Math.floor(midIntensity * 0.5);
+        const g = Math.min(232 + Math.floor(midIntensity * 0.5), 255);
         ctx.fillStyle = `rgba(94, ${g}, 125, ${Math.min(opacity, 1)})`;
       }
       
@@ -1144,10 +1172,10 @@
       // Food pulses with treble
       const foodGlow = 20 + (audioData.treble * 30); // 20-50 glow
       ctx.shadowBlur = foodGlow;
-      ctx.shadowColor = `rgba(109, 217, 232, ${0.7 + audioData.average * 0.3})`;
+      ctx.shadowColor = `rgba(109, 217, 232, ${Math.min(0.7 + audioData.average * 0.3, 1)})`;
       
       // Food color slightly reactive
-      const cyan = Math.floor(217 + audioData.mid * 38); // 217-255
+      const cyan = Math.min(Math.floor(217 + audioData.mid * 38), 255); // 217-255 clamped
       ctx.fillStyle = `rgba(109, ${cyan}, 232, 1)`;
       
       // Draw as circle
