@@ -471,13 +471,13 @@
       
       // Create audio element only once
       if (!audioElement) {
-        audioElement = new Audio('../snake.mp3');
+        audioElement = new Audio('/snake.mp3');
         audioElement.loop = true;
         audioElement.volume = 0; // Start at 0 for fade in
         
         // Add error handler for file loading
         audioElement.addEventListener('error', (e) => {
-          console.error('Failed to load audio file ../snake.mp3:', e);
+          console.error('Failed to load audio file /snake.mp3:', e);
           console.error('Please ensure the file exists in the root directory');
         });
       }
@@ -1175,6 +1175,7 @@
       ctx.shadowColor = `rgba(109, 217, 232, ${Math.min(0.7 + audioData.average * 0.3, 1)})`;
       
       // Food color slightly reactive
+      // Base cyan value is 217, with +38 scaling to reach max of 255 at full audio
       const cyan = Math.min(Math.floor(217 + audioData.mid * 38), 255); // 217-255 clamped
       ctx.fillStyle = `rgba(109, ${cyan}, 232, 1)`;
       
