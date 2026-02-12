@@ -1221,7 +1221,7 @@
         width: 100%;
         max-height: 90vh;
         overflow-y: auto;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', Inter, sans-serif;
+        font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         pointer-events: auto;
       ">
@@ -1244,7 +1244,7 @@
                 border: 1px solid rgba(109, 217, 232, 0.3);
                 border-radius: 6px;
                 color: rgba(109, 217, 232, 0.9);
-                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', Inter, sans-serif;
+                font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
                 font-size: 16px;
                 box-sizing: border-box;
                 outline: none;
@@ -1271,7 +1271,7 @@
                 border: 1px solid rgba(109, 217, 232, 0.3);
                 border-radius: 6px;
                 color: rgba(109, 217, 232, 0.9);
-                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', Inter, sans-serif;
+                font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
                 font-size: 16px;
                 box-sizing: border-box;
                 outline: none;
@@ -1291,7 +1291,7 @@
               border: 2px solid rgba(109, 217, 232, 0.5);
               border-radius: 8px;
               color: rgba(109, 217, 232, 0.9);
-              font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', Inter, sans-serif;
+              font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
               font-size: 16px;
               font-weight: bold;
               cursor: pointer;
