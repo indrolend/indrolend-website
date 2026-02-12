@@ -471,14 +471,14 @@
       
       // Create audio element only once
       if (!audioElement) {
-        audioElement = new Audio('snake.mp3');
+        audioElement = new Audio('../snake.mp3');
         audioElement.loop = true;
         audioElement.volume = 0; // Start at 0 for fade in
         
         // Add error handler for file loading
         audioElement.addEventListener('error', (e) => {
-          console.error('Failed to load audio file snake.mp3:', e);
-          console.error('Please ensure the file exists in the correct path');
+          console.error('Failed to load audio file ../snake.mp3:', e);
+          console.error('Please ensure the file exists in the root directory');
         });
       }
       
