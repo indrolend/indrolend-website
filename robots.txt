@@ -3,5 +3,10 @@ Allow: /
 Disallow: /js/
 Disallow: /css/
 Disallow: /assets/
+Disallow: /pages/journal.html
+Disallow: /pages/dev-history.html
+Disallow: /pages/gallery.html
+Disallow: /pages/tictactoe.html
+Disallow: /pages/wordgame.html
 
 Sitemap: https://indrolend.com/sitemap.xml
