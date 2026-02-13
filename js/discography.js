@@ -418,15 +418,6 @@ function formatYear(dateString) {
   return new Date(dateString).getFullYear();
 }
 
-// Get album artwork URL from Spotify Open Graph
-function getArtworkUrl(spotifyId) {
-  if (!spotifyId) {
-    return null;
-  }
-  // Use Spotify's Open Graph image URL which works without authentication
-  return `https://i.scdn.co/image/ab67616d0000b273${spotifyId.split('').slice(0, 40).join('')}`;
-}
-
 // Create fallback gradient background
 function createFallbackArtwork(title) {
   // Create a simple gradient based on title
