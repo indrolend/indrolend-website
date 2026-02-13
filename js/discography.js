@@ -418,21 +418,79 @@ function formatYear(dateString) {
   return new Date(dateString).getFullYear();
 }
 
-// Get album artwork URL from Spotify
-function getArtworkUrl(spotifyId, size = 300) {
-  if (!spotifyId) return null;
-  // For actual implementation, you'd use Spotify API
-  // For now, we'll use a placeholder approach
-  return `https://i.scdn.co/image/${spotifyId}`;
+// Get album artwork URL from Spotify Open Graph
+function getArtworkUrl(spotifyId) {
+  if (!spotifyId) {
+    return null;
+  }
+  // Use Spotify's Open Graph image URL which works without authentication
+  return `https://i.scdn.co/image/ab67616d0000b273${spotifyId.split('').slice(0, 40).join('')}`;
+}
+
+// Create fallback gradient background
+function createFallbackArtwork(title) {
+  // Create a simple gradient based on title
+  const canvas = document.createElement('canvas');
+  canvas.width = 300;
+  canvas.height = 300;
+  const ctx = canvas.getContext('2d');
+  
+  // Create gradient
+  const gradient = ctx.createLinearGradient(0, 0, 300, 300);
+  gradient.addColorStop(0, '#1a1a2e');
+  gradient.addColorStop(1, '#16213e');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 300, 300);
+  
+  // Add title text
+  ctx.fillStyle = '#6dd9e8';
+  ctx.font = 'bold 24px "EB Garamond", serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  
+  // Wrap text if too long
+  const maxWidth = 260;
+  const words = title.split(' ');
+  let lines = [];
+  let currentLine = words[0];
+  
+  for (let i = 1; i < words.length; i++) {
+    const testLine = currentLine + ' ' + words[i];
+    const metrics = ctx.measureText(testLine);
+    if (metrics.width > maxWidth) {
+      lines.push(currentLine);
+      currentLine = words[i];
+    } else {
+      currentLine = testLine;
+    }
+  }
+  lines.push(currentLine);
+  
+  // Draw lines
+  const lineHeight = 32;
+  const startY = 150 - (lines.length * lineHeight / 2);
+  lines.forEach((line, i) => {
+    ctx.fillText(line, 150, startY + (i * lineHeight));
+  });
+  
+  return canvas.toDataURL('image/png');
 }
 
 // Create album card HTML
 function createAlbumCard(release, index) {
   const year = formatYear(release.date);
   const trackInfo = release.tracks ? ` • ${release.tracks} tracks` : '';
-  const artworkUrl = release.spotifyId 
-    ? `https://via.placeholder.com/300x300/1a1a2e/6dd9e8?text=${encodeURIComponent(release.title)}`
-    : `https://via.placeholder.com/300x300/1a1a2e/6dd9e8?text=${encodeURIComponent(release.title)}`;
+  
+  // Try to construct Spotify artwork URL, fallback to generated image
+  let artworkUrl;
+  if (release.spotifyId) {
+    // Extract album ID from Spotify ID if it's a full URL or use as-is
+    const albumId = release.spotifyId;
+    // Use a data URL initially, will be replaced once image loads or errors
+    artworkUrl = createFallbackArtwork(release.title);
+  } else {
+    artworkUrl = createFallbackArtwork(release.title);
+  }
 
   const card = document.createElement('div');
   card.className = 'album-card';
@@ -490,7 +548,7 @@ function createAlbumCard(release, index) {
           alt="${release.title} album artwork" 
           class="album-artwork loading"
           loading="lazy"
-          onerror="this.src='https://via.placeholder.com/300x300/1a1a2e/6dd9e8?text=Album'"
+          data-spotify-id="${release.spotifyId || ''}"
         />
       </div>
       <div class="album-info">
@@ -500,6 +558,25 @@ function createAlbumCard(release, index) {
       ${platformLinksHtml}
     </div>
   `;
+
+  // Try to load actual Spotify artwork if available
+  if (release.spotifyId) {
+    const img = card.querySelector('.album-artwork');
+    const spotifyArtworkUrl = `https://open.spotify.com/oembed?url=https://open.spotify.com/album/${release.spotifyId}`;
+    
+    // Fetch Spotify oEmbed data to get artwork
+    fetch(spotifyArtworkUrl)
+      .then(response => response.json())
+      .then(data => {
+        if (data.thumbnail_url) {
+          img.src = data.thumbnail_url;
+        }
+      })
+      .catch(() => {
+        // Keep fallback image if fetch fails
+        console.log(`Could not load artwork for ${release.title}`);
+      });
+  }
 
   return card;
 }
