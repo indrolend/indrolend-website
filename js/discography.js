@@ -274,7 +274,7 @@ const discographyData = {
       links: {
         spotify: "https://open.spotify.com/album/2C9nVilxroWlkcKduZvkYe",
         apple: "https://music.apple.com/us/album/cutlass-single/1867584705",
-        bandcamp: "https://indrolend.bandcamp.com/track/cutlass"
+        bandcamp: "https://indrolend.bandcamp.com/album/cutlass"
       }
     },
     {
