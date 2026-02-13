@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /js/
+Disallow: /css/
+Disallow: /assets/
+
+Sitemap: https://indrolend.com/sitemap.xml
