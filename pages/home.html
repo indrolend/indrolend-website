@@ -58,6 +58,7 @@
   <script defer src="../js/particle-clusters.js"></script>
   <script defer src="../js/cursor-character-effect.js"></script>
   <script defer src="../js/genie-transition.js"></script>
+  <script defer src="../js/language-selector.js"></script>
   
   <!-- Structured Data -->
   <script type="application/ld+json">
@@ -83,6 +84,7 @@
   <canvas id="particles-bg"></canvas>
 
   <div class="home-container">
+    <div id="site-language-mount" class="site-language-control"></div>
     <header class="home-header fade-in-element">
       <div class="home-header-image-wrap">
         <img src="../assets/images/5992CDB8.jpg" alt="Indrolend - Electronic and Experimental Music Artist" class="home-header-image" />
@@ -154,21 +156,21 @@
           <div class="app-card-media">
             <canvas data-particle-cluster="gallery" aria-label="image gallery"></canvas>
           </div>
-          <div class="app-card-label"><span class="important-word">image gallery</span></div>
+          <div class="app-card-label"><span class="important-word" data-i18n="gallery">image gallery</span></div>
         </a>
 
         <a class="app-card" id="journalCard" href="journal.html" style="display: none;">
           <div class="app-card-media">
             <canvas data-particle-cluster="journal" aria-label="journal"></canvas>
           </div>
-          <div class="app-card-label"><span class="important-word">journal</span></div>
+          <div class="app-card-label"><span class="important-word" data-i18n="journal">journal</span></div>
         </a>
 
         <a class="app-card" href="../asymptote/index.html">
           <div class="app-card-media wordgame-icon-wrap">
             <span id="wordgameIcon" class="wordgame-icon-char">X</span>
           </div>
-          <div class="app-card-label"><span class="important-word">Asymptote engine</span></div>
+          <div class="app-card-label"><span class="important-word" data-i18n="asymptote">Asymptote engine</span></div>
         </a>
       </div>
     </section>

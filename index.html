@@ -34,9 +34,11 @@
   <script defer src="js/particle-transition-engine.js"></script>
   <script defer src="js/script.js"></script>
   <script defer src="js/cursor-character-effect.js"></script>
+  <script defer src="js/language-selector.js"></script>
 </head>
 <body class="fkrc-body">
   <div class="fkrc-page-wrap">
+  <div id="site-language-mount" class="site-language-control"></div>
  <!-- Fake captcha start -->
     <div class="fkrc-container fkrc-m-p">
         <!-- Captcha checkbox widget -->
@@ -44,10 +46,10 @@
             <div class="fkrc-checkbox-container fkrc-m-p">
                 <button type="button" id="fkrc-checkbox" class="fkrc-checkbox fkrc-m-p fkrc-line-normal"></button>
             </div>
-            <p class="fkrc-im-not-a-robot fkrc-m-p fkrc-line-normal">I'm not a robot</p>
+            <p class="fkrc-im-not-a-robot fkrc-m-p fkrc-line-normal" data-i18n="notRobot">I'm not a robot</p>
             <img src="images/captcha_logo.svg" class="fkrc-captcha-logo fkrc-line-normal" alt="">
             <p class="fkrc-checkbox-desc fkrc-m-p fkrc-line-normal">CAPTCHA</p>
-            <p class="fkrc-checkbox-desc fkrc-m-p fkrc-line-normal">Privacy - Terms</p>
+            <p class="fkrc-checkbox-desc fkrc-m-p fkrc-line-normal" data-i18n="privacyTerms">Privacy - Terms</p>
             <img src="images/captcha_spinner.gif" class="fkrc-spinner fkrc-m-p fkrc-line-normal" alt="" id="fkrc-spinner">
         </div>
         <!-- Captcha checkbox verification window -->
@@ -68,9 +70,9 @@
             </div>
             <footer class="fkrc-verifywin-container fkrc-verifywin-footer">
                 <div class="fkrc-verifywin-footer-left">
-                    Press the verify button to proceed.
+                    <span data-i18n="verifyPrompt">Press the verify button to proceed.</span>
                 </div>
-                <button type="button" class="fkrc-verifywin-verify-button fkrc-block" id="fkrc-verifywin-verify-button">Verify</button>
+                <button type="button" class="fkrc-verifywin-verify-button fkrc-block" id="fkrc-verifywin-verify-button" data-i18n="verifyButton">Verify</button>
             </footer>
         </div>
         <img src="images/captcha_arrow.svg" alt="" class="fkrc-verifywin-window-arrow" id="fkrc-verifywin-window-arrow"/>
