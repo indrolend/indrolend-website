@@ -15,6 +15,85 @@
     { code: 'ur', label: 'اردو' }
   ];
 
+  const TRANSLATIONS = {
+    en: {
+      'ui.language': 'Language',
+      'captcha.notRobot': "I'm not a robot",
+      'captcha.privacyTerms': 'Privacy - Terms',
+      'captcha.pressVerify': 'Press the verify button to proceed.',
+      'captcha.verify': 'Verify',
+      'home.developmentHistory': 'DEVELOPMENT HISTORY',
+      'home.imageGallery': 'Image Gallery',
+      'home.journal': 'Journal',
+      'home.engine': 'Engine',
+      'asymptote.titleLead': 'The',
+      'asymptote.titleTail': 'Engine',
+      'asymptote.science': 'Science',
+      'asymptote.art': 'Art',
+      'asymptote.faith': 'Faith',
+      'asymptote.gatheringMode': 'Gathering Mode',
+      'asymptote.simulationMode': 'Simulation Mode',
+      'asymptote.rpgMode': 'RPG Mode',
+      'asymptote.population': 'Population:',
+      'asymptote.health': 'Health:',
+      'asymptote.resources': 'Resources:',
+      'asymptote.understanding': 'Understanding:',
+      'asymptote.meaning': 'Meaning:',
+      'asymptote.instability': 'Instability:',
+      'asymptote.backHome': '← Back to Home'
+    },
+    es: {
+      'ui.language': 'Idioma',
+      'captcha.notRobot': 'No soy un robot',
+      'captcha.privacyTerms': 'Privacidad - Términos',
+      'captcha.pressVerify': 'Pulsa el botón de verificar para continuar.',
+      'captcha.verify': 'Verificar',
+      'home.developmentHistory': 'HISTORIAL DE DESARROLLO',
+      'home.imageGallery': 'Galería de imágenes',
+      'home.journal': 'Diario',
+      'home.engine': 'Engine',
+      'asymptote.titleLead': 'El',
+      'asymptote.titleTail': 'Engine',
+      'asymptote.science': 'Ciencia',
+      'asymptote.art': 'Arte',
+      'asymptote.faith': 'Fe',
+      'asymptote.gatheringMode': 'Modo de recolección',
+      'asymptote.simulationMode': 'Modo de simulación',
+      'asymptote.rpgMode': 'Modo RPG',
+      'asymptote.population': 'Población:',
+      'asymptote.health': 'Salud:',
+      'asymptote.resources': 'Recursos:',
+      'asymptote.understanding': 'Comprensión:',
+      'asymptote.meaning': 'Significado:',
+      'asymptote.instability': 'Inestabilidad:',
+      'asymptote.backHome': '← Volver al inicio'
+    },
+    fr: {
+      'ui.language': 'Langue','home.imageGallery':'Galerie d’images','home.journal':'Journal','home.engine':'Engine','asymptote.backHome':'← Retour à l’accueil'
+    },
+    pt: {
+      'ui.language': 'Idioma','home.imageGallery':'Galeria de imagens','home.journal':'Diário','home.engine':'Engine','asymptote.backHome':'← Voltar para início'
+    },
+    'zh-CN': {
+      'ui.language': '语言','home.imageGallery':'图片库','home.journal':'日志','home.engine':'Engine','asymptote.backHome':'← 返回主页'
+    },
+    hi: {
+      'ui.language': 'भाषा','home.imageGallery':'छवि गैलरी','home.journal':'जर्नल','home.engine':'Engine','asymptote.backHome':'← होम पर वापस जाएँ'
+    },
+    ar: {
+      'ui.language': 'اللغة','home.imageGallery':'معرض الصور','home.journal':'اليومية','home.engine':'Engine','asymptote.backHome':'← العودة إلى الصفحة الرئيسية'
+    },
+    bn: {
+      'ui.language': 'ভাষা','home.imageGallery':'ইমেজ গ্যালারি','home.journal':'জার্নাল','home.engine':'Engine','asymptote.backHome':'← হোমে ফিরুন'
+    },
+    ru: {
+      'ui.language': 'Язык','home.imageGallery':'Галерея изображений','home.journal':'Журнал','home.engine':'Engine','asymptote.backHome':'← Назад на главную'
+    },
+    ur: {
+      'ui.language': 'زبان','home.imageGallery':'تصویری گیلری','home.journal':'جرنل','home.engine':'Engine','asymptote.backHome':'← ہوم پر واپس جائیں'
+    }
+  };
+
   function setCookie(name, value) {
     const expires = new Date();
     expires.setFullYear(expires.getFullYear() + 1);
@@ -37,6 +116,34 @@
     }
 
     return DEFAULT_LANG;
+  }
+
+  function t(langCode, key) {
+    return (TRANSLATIONS[langCode] && TRANSLATIONS[langCode][key]) || (TRANSLATIONS.en && TRANSLATIONS.en[key]) || null;
+  }
+
+  function applyContextualTranslations(langCode) {
+    const safeCode = LANGUAGES.some((lang) => lang.code === langCode) ? langCode : DEFAULT_LANG;
+
+    const languageLabel = document.querySelector('#indrolend-language-toggle label');
+    const localizedLabel = t(safeCode, 'ui.language');
+    if (languageLabel && localizedLabel) {
+      languageLabel.textContent = localizedLabel;
+    }
+
+    const nodes = document.querySelectorAll('[data-i18n]');
+    nodes.forEach((node) => {
+      const key = node.getAttribute('data-i18n');
+      const value = t(safeCode, key);
+      if (value) {
+        node.textContent = value;
+      }
+    });
+
+    document.querySelectorAll('[data-brand]').forEach((node) => {
+      node.classList.add('notranslate');
+      node.setAttribute('translate', 'no');
+    });
   }
 
   function applyLanguage(langCode) {
@@ -110,7 +217,7 @@
 
     const label = document.createElement('label');
     label.setAttribute('for', 'indrolend-language-select');
-    label.textContent = 'Language';
+    label.textContent = t(getSavedLanguage(), 'ui.language') || 'Language';
 
     const select = document.createElement('select');
     select.id = 'indrolend-language-select';
@@ -152,6 +259,7 @@
   function init() {
     injectStyles();
     injectToggle();
+    applyContextualTranslations(getSavedLanguage());
     injectScript();
   }
 
