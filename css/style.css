@@ -486,6 +486,29 @@ html, body {
 }
 
 /* App grid icons */
+
+.home-intro {
+  max-width: 880px;
+  margin: 8px auto 18px;
+  text-align: center;
+  padding: 10px 12px;
+}
+
+.home-intro-title {
+  margin: 0 0 8px;
+  font-size: clamp(20px, 2.2vw, 30px);
+  letter-spacing: 0.05em;
+  color: var(--terminal-green-soft);
+  text-transform: uppercase;
+}
+
+.home-intro-text {
+  margin: 0;
+  font-size: clamp(14px, 1.25vw, 18px);
+  color: var(--text-main);
+  line-height: 1.35;
+}
+
 .app-grid {
   margin-top: 10px; /* Reduced top margin */
   /* Flexbox fallback for older browsers */
