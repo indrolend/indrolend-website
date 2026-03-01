@@ -25,35 +25,37 @@
   
   <title>The Asymptote Engine</title>
   <link rel="stylesheet" href="styles/style.css" />
+  <script src="../js/i18n.js"></script>
 </head>
 <body>
+  <div class="lang-picker-container"></div>
   <div class="container">
     <header>
-      <h1>The Asymptote Engine</h1>
+      <h1 data-i18n="asymptote.title">The Asymptote Engine</h1>
     </header>
 
     <div class="controls">
       <div class="slider-group">
-        <label for="scienceSlider">Science</label>
+        <label for="scienceSlider" data-i18n="asymptote.science">Science</label>
         <input type="range" id="scienceSlider" min="0" max="100" value="40" />
         <span id="scienceValue">0.40</span>
       </div>
       <div class="slider-group">
-        <label for="artSlider">Art</label>
+        <label for="artSlider" data-i18n="asymptote.art">Art</label>
         <input type="range" id="artSlider" min="0" max="100" value="30" />
         <span id="artValue">0.30</span>
       </div>
       <div class="slider-group">
-        <label for="faithSlider">Faith</label>
+        <label for="faithSlider" data-i18n="asymptote.faith">Faith</label>
         <input type="range" id="faithSlider" min="0" max="100" value="30" />
         <span id="faithValue">0.30</span>
       </div>
     </div>
 
     <div class="mode-controls">
-      <button id="gatheringModeBtn" class="mode-btn">Gathering Mode</button>
-      <button id="simModeBtn" class="mode-btn">Simulation Mode</button>
-      <button id="rpgModeBtn" class="mode-btn">RPG Mode</button>
+      <button id="gatheringModeBtn" class="mode-btn" data-i18n="asymptote.gathering_mode">Gathering Mode</button>
+      <button id="simModeBtn" class="mode-btn" data-i18n="asymptote.simulation_mode">Simulation Mode</button>
+      <button id="rpgModeBtn" class="mode-btn" data-i18n="asymptote.rpg_mode">RPG Mode</button>
     </div>
 
     <div class="canvas-container">
@@ -67,33 +69,33 @@
 
     <div class="stats-display">
       <div class="stat-item">
-        <span class="stat-label">Population:</span>
+        <span class="stat-label" data-i18n="asymptote.population">Population:</span>
         <span id="stat-population">0</span>
       </div>
       <div class="stat-item">
-        <span class="stat-label">Health:</span>
+        <span class="stat-label" data-i18n="asymptote.health">Health:</span>
         <span id="stat-health">0.00</span>
       </div>
       <div class="stat-item">
-        <span class="stat-label">Resources:</span>
+        <span class="stat-label" data-i18n="asymptote.resources">Resources:</span>
         <span id="stat-resources">0.00</span>
       </div>
       <div class="stat-item">
-        <span class="stat-label">Understanding:</span>
+        <span class="stat-label" data-i18n="asymptote.understanding">Understanding:</span>
         <span id="stat-understanding">0.00</span>
       </div>
       <div class="stat-item">
-        <span class="stat-label">Meaning:</span>
+        <span class="stat-label" data-i18n="asymptote.meaning">Meaning:</span>
         <span id="stat-meaning">0.00</span>
       </div>
       <div class="stat-item">
-        <span class="stat-label">Instability:</span>
+        <span class="stat-label" data-i18n="asymptote.instability">Instability:</span>
         <span id="stat-instability">0.00</span>
       </div>
     </div>
 
     <footer>
-      <a href="../home.html" class="back-link">← back to home</a>
+      <a href="../pages/home.html" class="back-link" data-i18n="asymptote.back_home">← back to home</a>
     </footer>
   </div>
 
