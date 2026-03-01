@@ -46,6 +46,7 @@
   <link rel="stylesheet" href="../css/discography.css" />
   <script defer src="../js/security-utils.js"></script>
   <script defer src="../js/particle-transition-engine.js"></script>
+  <script src="../js/i18n.js"></script>
   <script defer src="../js/discography.js"></script>
   
   <!-- Structured Data for MusicGroup -->
@@ -213,13 +214,14 @@
   </script>
 </head>
 <body class="discography-bg">
+  <div class="lang-picker-container"></div>
   <canvas id="particles-bg"></canvas>
 
   <div class="discography-container">
     <header class="discography-header">
-      <h1 class="discography-title">DISCOGRAPHY</h1>
+      <h1 class="discography-title" data-i18n="discography.title">DISCOGRAPHY</h1>
       <nav class="discography-nav">
-        <a href="home.html" class="back-link">← Back to Home</a>
+        <a href="home.html" class="back-link" data-i18n="discography.back_home">← Back to Home</a>
       </nav>
     </header>
 
@@ -240,7 +242,7 @@
 
     <!-- Albums Section -->
     <section class="gallery-section" aria-labelledby="albums-heading">
-      <h2 id="albums-heading" class="section-title">ALBUMS</h2>
+      <h2 id="albums-heading" class="section-title" data-i18n="discography.albums">ALBUMS</h2>
       <div class="gallery-scroll" id="albums-gallery">
         <!-- Album cards will be dynamically inserted here -->
       </div>
@@ -248,7 +250,7 @@
 
     <!-- EPs Section -->
     <section class="gallery-section" aria-labelledby="eps-heading">
-      <h2 id="eps-heading" class="section-title">EPs</h2>
+      <h2 id="eps-heading" class="section-title" data-i18n="discography.eps">EPs</h2>
       <div class="gallery-scroll" id="eps-gallery">
         <!-- EP cards will be dynamically inserted here -->
       </div>
@@ -256,7 +258,7 @@
 
     <!-- Singles Section -->
     <section class="gallery-section" aria-labelledby="singles-heading">
-      <h2 id="singles-heading" class="section-title">SINGLES</h2>
+      <h2 id="singles-heading" class="section-title" data-i18n="discography.singles">SINGLES</h2>
       <div class="gallery-scroll" id="singles-gallery">
         <!-- Single cards will be dynamically inserted here -->
       </div>
@@ -264,29 +266,29 @@
 
     <!-- SoundCloud Archives Section -->
     <section class="archives-section" aria-labelledby="archives-heading">
-      <h2 id="archives-heading" class="section-title">SOUNDCLOUD ARCHIVES</h2>
+      <h2 id="archives-heading" class="section-title" data-i18n="discography.soundcloud_archives">SOUNDCLOUD ARCHIVES</h2>
       <div class="archives-list">
         <a href="https://soundcloud.com/indrolend-783494030" class="archive-link" target="_blank" rel="noopener noreferrer">
-          <span class="archive-year">2024-2025 Archive</span>
+          <span class="archive-year" data-i18n="discography.archive_2024_2025">2024-2025 Archive</span>
           <span class="archive-icon">→</span>
         </a>
         <a href="https://soundcloud.com/indrolend1" class="archive-link" target="_blank" rel="noopener noreferrer">
-          <span class="archive-year">2024 Archive</span>
+          <span class="archive-year" data-i18n="discography.archive_2024">2024 Archive</span>
           <span class="archive-icon">→</span>
         </a>
         <a href="https://soundcloud.com/indrolend" class="archive-link" target="_blank" rel="noopener noreferrer">
-          <span class="archive-year">2023 Archive</span>
+          <span class="archive-year" data-i18n="discography.archive_2023">2023 Archive</span>
           <span class="archive-icon">→</span>
         </a>
         <a href="https://soundcloud.com/indrolendarchive2022" class="archive-link" target="_blank" rel="noopener noreferrer">
-          <span class="archive-year">2022 Archive</span>
+          <span class="archive-year" data-i18n="discography.archive_2022">2022 Archive</span>
           <span class="archive-icon">→</span>
         </a>
       </div>
     </section>
 
     <footer class="discography-footer">
-      <p>&copy; 2026 Indrolend. All rights reserved.</p>
+      <p data-i18n="discography.footer">&copy; 2026 Indrolend. All rights reserved.</p>
     </footer>
   </div>
 

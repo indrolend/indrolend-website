@@ -58,6 +58,7 @@
   <script defer src="../js/particle-clusters.js"></script>
   <script defer src="../js/cursor-character-effect.js"></script>
   <script defer src="../js/genie-transition.js"></script>
+  <script src="../js/i18n.js"></script>
   
   <!-- Structured Data -->
   <script type="application/ld+json">
@@ -81,6 +82,7 @@
 </head>
 <body class="home-bg">
   <canvas id="particles-bg"></canvas>
+  <div class="lang-picker-container"></div>
 
   <div class="home-container">
     <header class="home-header fade-in-element">
@@ -89,7 +91,7 @@
       </div>
       <!-- Glitchy button (only shown when all Asymptote upgrades purchased) -->
       <a id="glitchy-dev-history-btn" class="glitchy-button" href="dev-history.html" style="display: none;">
-        <span class="glitch-text" data-text="DEVELOPMENT HISTORY">DEVELOPMENT HISTORY</span>
+        <span class="glitch-text" data-text="DEVELOPMENT HISTORY" data-i18n="home.dev_history">DEVELOPMENT HISTORY</span>
       </a>
     </header>
 
@@ -154,21 +156,28 @@
           <div class="app-card-media">
             <canvas data-particle-cluster="gallery" aria-label="image gallery"></canvas>
           </div>
-          <div class="app-card-label"><span class="important-word">image gallery</span></div>
+          <div class="app-card-label"><span class="important-word" data-i18n="home.image_gallery">image gallery</span></div>
         </a>
 
         <a class="app-card" id="journalCard" href="journal.html" style="display: none;">
           <div class="app-card-media">
             <canvas data-particle-cluster="journal" aria-label="journal"></canvas>
           </div>
-          <div class="app-card-label"><span class="important-word">journal</span></div>
+          <div class="app-card-label"><span class="important-word" data-i18n="home.journal">journal</span></div>
         </a>
 
         <a class="app-card" href="../asymptote/index.html">
           <div class="app-card-media wordgame-icon-wrap">
             <span id="wordgameIcon" class="wordgame-icon-char">X</span>
           </div>
-          <div class="app-card-label"><span class="important-word">Asymptote engine</span></div>
+          <div class="app-card-label"><span class="important-word" data-i18n="home.asymptote_engine">Asymptote engine</span></div>
+        </a>
+
+        <a class="app-card" id="gamesCard" href="games.html">
+          <div class="app-card-media wordgame-icon-wrap">
+            <span class="wordgame-icon-char" style="font-style:normal;">🕹️</span>
+          </div>
+          <div class="app-card-label"><span class="important-word" data-i18n="home.games">Games</span></div>
         </a>
       </div>
     </section>

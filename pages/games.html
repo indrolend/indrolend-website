@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7JHVQW5F3M"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-7JHVQW5F3M');
+  </script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="Indrolend Games — Play Pool solo vs the computer or with friends." />
+  <meta name="author" content="Indrolend" />
+  <meta name="theme-color" content="#020612" />
+
+  <link rel="canonical" href="https://indrolend.com/pages/games.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Games — Indrolend" />
+  <meta property="og:description" content="Arcade-style games hub. Play Pool solo vs the computer or with friends." />
+  <meta property="og:url" content="https://indrolend.com/pages/games.html" />
+  <meta property="og:image" content="https://indrolend.com/assets/images/5992CDB8.jpg" />
+
+  <title>Games — Indrolend</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/games.css" />
+  <script src="../js/i18n.js"></script>
+</head>
+<body>
+  <!-- ============================================================
+       GAMES HUB PAGE
+       To add a new game once it's ready:
+         1. Copy the Pool card block below.
+         2. Update the icon, name, description, and href.
+         3. Create /games/<name>.html following pool.html's pattern.
+       See README.md → "Adding a New Game" for full step-by-step.
+       ============================================================ -->
+
+  <!-- Language picker (auto-injected by i18n.js) -->
+  <div class="lang-picker-container"></div>
+
+  <div class="games-page">
+
+    <!-- Back to homepage -->
+    <a class="games-back-btn" href="home.html" data-i18n="games.back_home">← Back to Home</a>
+
+    <!-- Page heading -->
+    <h1 class="games-title">🕹️ <span data-i18n="games.hub_title">Games</span></h1>
+    <p class="games-subtitle" data-i18n="games.hub_subtitle">Pick a game and play solo or with friends.</p>
+
+    <!-- ========================
+         GAME CARDS GRID
+         ======================== -->
+    <div class="games-grid">
+
+      <!-- ── POOL (FEATURED) ─────────────────────────────────── -->
+      <!--
+        HOW TO UPDATE THIS CARD:
+        • Change the emoji in .game-card-icon.
+        • Update .game-card-name with the game's name.
+        • Update .game-card-desc with a fun description.
+        • Change href to point to the game's page.
+        • Remove class="featured" if you no longer want the glow/badge.
+      -->
+      <a class="game-card featured" href="../games/pool.html" aria-label="Play Pool">
+        <span class="game-card-badge" data-i18n="games.featured_badge">Featured</span>
+        <span class="game-card-icon">🎱</span>
+        <h2 class="game-card-name" data-i18n="games.pool_name">Pool</h2>
+        <p class="game-card-desc" data-i18n="games.pool_desc">
+          Pocket all the balls before your opponent.
+          Play solo vs the computer or challenge friends with a room code.
+        </p>
+      </a>
+
+      <!--
+        ──────────────────────────────────────────────────────────
+        OTHER GAMES (Chess, Tanks, Archery, etc.) are hidden until
+        they are ready to play. To add a new game:
+          1. Copy the Pool card block above.
+          2. Change the icon, name, description, and href.
+          3. Create the /games/<name>.html page (copy pool.html).
+          4. Drop the minigame into /games/<name>-minigame/index.html.
+        ──────────────────────────────────────────────────────────
+      -->
+
+    </div><!-- end .games-grid -->
+
+  </div><!-- end .games-page -->
+
+</body>
+</html>
