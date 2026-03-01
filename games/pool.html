@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7JHVQW5F3M"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-7JHVQW5F3M');
+  </script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="Play Pool — Indrolend Games. Play vs the computer or get ready for multiplayer." />
+  <meta name="author" content="Indrolend" />
+  <meta name="theme-color" content="#020612" />
+
+  <link rel="canonical" href="https://indrolend.com/games/pool.html" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Pool — Indrolend Games" />
+  <meta property="og:description" content="Play Pool vs the computer or challenge friends with a room code." />
+  <meta property="og:url" content="https://indrolend.com/games/pool.html" />
+  <meta property="og:image" content="https://indrolend.com/assets/images/5992CDB8.jpg" />
+
+  <title>Pool — Indrolend Games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/games.css" />
+</head>
+<body>
+  <!-- ============================================================
+       POOL GAME PAGE
+       - "Play vs Computer" loads the iframe minigame below.
+       - "Play with People" opens the multiplayer stub modal.
+       To swap the minigame: replace /games/pool-minigame/index.html
+       with any self-contained HTML5 game file.
+       ============================================================ -->
+
+  <div class="games-page">
+
+    <!-- Back link -->
+    <a class="games-back-btn" href="../pages/games.html">← Games Hub</a>
+
+    <!-- Title -->
+    <h1 class="games-title">🎱 Pool</h1>
+    <p class="games-subtitle">Sink all the balls before your opponent does.</p>
+
+    <!-- CHOICE SCREEN — shown by default -->
+    <div class="pool-choice-wrap" id="choice-screen">
+
+      <!-- Play vs Computer -->
+      <button class="pool-choice-btn" onclick="startVsComputer()" aria-label="Play Pool vs Computer">
+        <span class="pool-choice-icon">🖥️</span>
+        <span class="pool-choice-label">Play vs Computer</span>
+        <p class="pool-choice-desc">Solo game against the CPU.<br>Jump straight in, no account needed.</p>
+      </button>
+
+      <!-- Play with People (stub — multiplayer coming soon) -->
+      <button class="pool-choice-btn" onclick="openMultiplayerModal()" aria-label="Play Pool with friends or strangers">
+        <span class="pool-choice-icon">🌐</span>
+        <span class="pool-choice-label">Play with People</span>
+        <span class="pool-choice-tag">Coming Soon</span>
+        <p class="pool-choice-desc">Room codes &amp; quick match.<br>Challenge friends or strangers online.</p>
+      </button>
+
+    </div>
+
+    <!-- GAME AREA — shown after choosing "Play vs Computer" -->
+    <div class="pool-game-area" id="game-area">
+      <div class="pool-game-frame-wrap">
+        <!--
+          The pool minigame lives in /games/pool-minigame/index.html.
+          To swap the game: replace that file with any HTML5 game.
+          The iframe keeps it sandboxed and self-contained.
+        -->
+        <iframe
+          id="pool-frame"
+          src="pool-minigame/index.html"
+          title="Pool Minigame"
+          allowfullscreen
+          sandbox="allow-scripts allow-same-origin"
+        ></iframe>
+      </div>
+      <button class="pool-back-to-choice" onclick="backToChoice()">← Choose a different mode</button>
+    </div>
+
+  </div>
+
+  <!-- ============================================================
+       MULTIPLAYER STUB MODAL
+       These buttons are real UI stubs — the actual networking
+       will be wired in a future PR (Jackbox-style room codes).
+       ============================================================ -->
+  <div class="modal-overlay" id="mp-modal" role="dialog" aria-modal="true" aria-labelledby="mp-modal-title">
+    <div class="modal-box">
+      <button class="modal-close-btn" onclick="closeMultiplayerModal()" aria-label="Close">✕</button>
+      <h2 class="modal-title" id="mp-modal-title">🌐 Play with People</h2>
+      <p class="modal-subtitle">
+        Multiplayer is coming soon!<br>
+        Below are the options that will be available.
+      </p>
+
+      <!-- Room-code / quick-match buttons (stubs) -->
+      <div class="modal-actions">
+        <button class="modal-btn primary" onclick="stubAction('Create Room')" aria-label="Create a new room">
+          ＋ Create Room
+        </button>
+        <button class="modal-btn" onclick="stubAction('Quick Match')" aria-label="Find a quick match">
+          ⚡ Quick Match
+        </button>
+      </div>
+
+      <!-- Join by room code -->
+      <input
+        class="modal-input"
+        id="room-code-input"
+        type="text"
+        maxlength="6"
+        placeholder="ROOM CODE"
+        aria-label="Enter room code"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button class="modal-btn primary" style="width:100%;margin-bottom:18px;" onclick="stubAction('Join Room')" aria-label="Join room with entered code">
+        Join Room
+      </button>
+
+      <p class="modal-note">
+        <!-- TODO (future PR): Wire up real room-code server logic here. -->
+        Room codes &amp; quick match will be available in a future update.<br>
+        For now, try <strong>Play vs Computer</strong> above!
+      </p>
+    </div>
+  </div>
+
+  <script>
+    /* ----------------------------------------------------------------
+       POOL PAGE — UI LOGIC
+       ---------------------------------------------------------------- */
+
+    function startVsComputer() {
+      document.getElementById('choice-screen').style.display = 'none';
+      document.getElementById('game-area').classList.add('active');
+    }
+
+    function backToChoice() {
+      document.getElementById('game-area').classList.remove('active');
+      document.getElementById('choice-screen').style.display = '';
+    }
+
+    function openMultiplayerModal() {
+      document.getElementById('mp-modal').classList.add('open');
+      document.getElementById('room-code-input').focus();
+    }
+
+    function closeMultiplayerModal() {
+      document.getElementById('mp-modal').classList.remove('open');
+    }
+
+    /* Stub handler for multiplayer buttons — alerts the user
+       that this feature is coming soon. Replace this function
+       with real networking logic in a future PR. */
+    function stubAction(action) {
+      const code = document.getElementById('room-code-input').value.trim().toUpperCase();
+      if (action === 'Join Room' && code.length > 0) {
+        alert('Multiplayer is coming soon!\n\nYou tried to join room: ' + code + '\nCheck back in a future update.');
+      } else {
+        alert('Multiplayer is coming soon!\n\n"' + action + '" will be available in a future update.\nFor now, try Play vs Computer!');
+      }
+    }
+
+    /* Close modal when clicking outside the modal box */
+    document.getElementById('mp-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeMultiplayerModal();
+    });
+
+    /* Close modal on Escape key */
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeMultiplayerModal();
+    });
+  </script>
+</body>
+</html>

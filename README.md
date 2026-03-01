@@ -8,7 +8,7 @@ Personal website with integrated Spotify analytics and OCR-based statistics pars
 - **Spotify for Artists Scraper**: Automated extraction of live audience stats (listeners, streams, followers, top cities)
 - **Automated Screenshot Parsing**: OCR-based extraction of Spotify stats from screenshots
 - **Example-Based Validation**: System for improving OCR accuracy with ground truth data
-- **Interactive Games**: Asymptote idle game, Tic-Tac-Toe, Word Game
+- **Interactive Games**: Arcade Games Hub (Pool, Chess, Tanks, Archery and more), Asymptote idle game, Tic-Tac-Toe, Word Game
 - **Image Gallery**: Personal photo gallery
 
 ## Spotify Statistics System
@@ -181,6 +181,105 @@ If you want to help improve the OCR parsing accuracy:
    python scripts/validate_ocr_examples.py
    ```
 4. Review accuracy metrics and improve parsing logic
+
+## Arcade Games Hub
+
+The **Games Hub** (`pages/games.html`) is an arcade-style picker page. Pool is featured and fully playable; Chess, Tanks, and Archery are stubs ready to be filled in.
+
+### How the Games Pages Are Structured
+
+```
+pages/
+  games.html              ← The hub / picker page (what you see first)
+games/
+  pool.html               ← Pool game page (choice screen + embedded game)
+  pool-minigame/
+    index.html            ← The actual pool game (HTML5 canvas, self-contained)
+  chess.html              ← (TODO) Chess game page
+  tanks.html              ← (TODO) Tanks game page
+  archery.html            ← (TODO) Archery game page
+css/
+  games.css               ← Shared styles for all games pages
+```
+
+---
+
+### Adding a New Game (No Coding Experience Required!)
+
+Follow these steps to add a brand-new game (e.g. "Snake") to the hub:
+
+#### Step 1 — Add the game card to the hub
+
+Open `pages/games.html` and find the `<!-- ── MORE GAMES PLACEHOLDER -->` comment.
+Copy any existing game card block (e.g. the Chess block) and paste it above the placeholder.
+Change:
+- The emoji inside `<span class="game-card-icon">` to your game's icon (e.g. `🐍`)
+- The text inside `<h2 class="game-card-name">` to your game's name (e.g. `Snake`)
+- The text inside `<p class="game-card-desc">` to a fun description
+- The `href` attribute to `../games/snake.html`
+- Remove `class="locked"` from the `<div>` and change `<div>` to `<a>` (so it's clickable)
+
+Example final result:
+```html
+<a class="game-card" href="../games/snake.html" aria-label="Play Snake">
+  <span class="game-card-icon">🐍</span>
+  <h2 class="game-card-name">Snake</h2>
+  <p class="game-card-desc">Eat the food, grow longer, don't crash!</p>
+</a>
+```
+
+#### Step 2 — Create the game page
+
+Copy `games/pool.html` to `games/snake.html`.
+In your new file, update:
+- The `<title>` tag: `Snake — Indrolend Games`
+- The heading: `🐍 Snake`
+- The subtitle: your description
+- The iframe `src`: `snake-minigame/index.html`
+- The back button `aria-label` and content
+
+#### Step 3 — Add the minigame
+
+Create a folder `games/snake-minigame/` and put your game's HTML file inside as `index.html`.
+This file should be a **self-contained HTML5 game** — all CSS and JavaScript in one file.
+The pool minigame at `games/pool-minigame/index.html` is a good template to start from.
+
+#### Step 4 — Done!
+
+Open `pages/games.html` in your browser and your new game should appear in the grid.
+
+---
+
+### Swapping the Pool Minigame
+
+To replace the pool game with a different one:
+1. Find any free/open-source HTML5 billiards or pool game online.
+2. Download it as a single HTML file (or bundle everything into one file).
+3. Replace `games/pool-minigame/index.html` with the new file.
+4. The pool page (`games/pool.html`) will automatically load the new game.
+
+---
+
+### Updating Game Icons, Descriptions, and Translations
+
+All game icons and descriptions are plain text/emoji inside `pages/games.html`.
+Just open the file and change the text — no coding needed.
+
+For the pool page title/description, edit `games/pool.html` directly.
+
+---
+
+### Multiplayer (Room Code / Jackbox-style) — Future Work
+
+The "Play with People" button on `games/pool.html` already shows a stub modal
+with Create Room, Quick Match, and Join Room (with room code input) buttons.
+To wire up real multiplayer:
+1. Open `games/pool.html`.
+2. Find the `stubAction` JavaScript function.
+3. Replace the `alert(...)` calls with real networking/WebSocket logic.
+4. Add your room-code server logic in `backend/` or a new service.
+
+---
 
 ## Documentation
 
