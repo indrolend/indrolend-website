@@ -78,6 +78,7 @@
     "image": "https://indrolend.com/assets/images/5992CDB8.jpg"
   }
   </script>
+  <script defer src="../js/language-toggle.js"></script>
 </head>
 <body class="home-bg">
   <canvas id="particles-bg"></canvas>
@@ -89,11 +90,17 @@
       </div>
       <!-- Glitchy button (only shown when all Asymptote upgrades purchased) -->
       <a id="glitchy-dev-history-btn" class="glitchy-button" href="dev-history.html" style="display: none;">
-        <span class="glitch-text" data-text="DEVELOPMENT HISTORY">DEVELOPMENT HISTORY</span>
+        <span class="glitch-text" data-text="DEVELOPMENT HISTORY"><span data-i18n="home.developmentHistory">DEVELOPMENT HISTORY</span></span>
       </a>
     </header>
 
     <section class="home-main">
+
+    <section class="home-intro fade-in-element delay-1">
+      <h1 class="home-intro-title" data-i18n="home.hubTitle">Indrolend Access Hub</h1>
+      <p class="home-intro-text" data-i18n="home.hubDescription">Start here. Use the links below to listen, watch, explore visuals, read updates, and play the Asymptote Engine.</p>
+    </section>
+
       <!-- Spotify for Artists Stats (from scraper) -->
       <div id="spotify-artists-stats" style="display: none;"></div>
 
@@ -112,63 +119,63 @@
           <div class="app-card-media" data-bg="tiktok">
             <canvas data-particle-cluster="tiktok" aria-label="TikTok"></canvas>
           </div>
-          <div class="app-card-label"><span class="important-word">tiktok</span></div>
+          <div class="app-card-label"><span class="important-word notranslate" translate="no" data-brand="tiktok">TikTok</span></div>
         </a>
 
         <a class="app-card" href="https://www.instagram.com/indrolend.us?igsh=dzAwdWtyOTVienF5&amp;utm_source=qr" target="_blank" rel="noopener">
           <div class="app-card-media">
             <canvas data-particle-cluster="instagram" aria-label="Instagram"></canvas>
           </div>
-          <div class="app-card-label"><span class="important-word">instagram</span></div>
+          <div class="app-card-label"><span class="important-word notranslate" translate="no" data-brand="instagram">Instagram</span></div>
         </a>
 
         <a class="app-card" href="https://open.spotify.com/artist/59X3431NBfd6xWMc3Zlh0v?si=RepR9WX8Q8mX1sQoME1ckQ" target="_blank" rel="noopener">
           <div class="app-card-media" data-bg="spotify">
             <canvas data-particle-cluster="spotify" aria-label="Spotify"></canvas>
           </div>
-          <div class="app-card-label"><span class="important-word">spotify</span></div>
+          <div class="app-card-label"><span class="important-word notranslate" translate="no" data-brand="spotify">Spotify</span></div>
         </a>
 
         <a class="app-card" href="https://music.apple.com/us/artist/onliner/1663334902" target="_blank" rel="noopener">
           <div class="app-card-media" data-bg="applemusic">
             <canvas data-particle-cluster="applemusic" aria-label="Apple Music"></canvas>
           </div>
-          <div class="app-card-label"><span class="important-word">apple music</span></div>
+          <div class="app-card-label"><span class="important-word notranslate" translate="no" data-brand="apple music">Apple Music</span></div>
         </a>
 
         <a class="app-card" href="https://www.youtube.com/@indrolend" target="_blank" rel="noopener">
           <div class="app-card-media" data-bg="youtube">
             <canvas data-particle-cluster="youtube" aria-label="YouTube"></canvas>
           </div>
-          <div class="app-card-label"><span class="important-word">youtube</span></div>
+          <div class="app-card-label"><span class="important-word notranslate" translate="no" data-brand="youtube">YouTube</span></div>
         </a>
 
         <a class="app-card" href="https://indrolend.bandcamp.com" target="_blank" rel="noopener">
           <div class="app-card-media" data-bg="bandcamp">
             <canvas data-particle-cluster="bandcamp" aria-label="Bandcamp"></canvas>
           </div>
-          <div class="app-card-label"><span class="important-word">bandcamp</span></div>
+          <div class="app-card-label"><span class="important-word notranslate" translate="no" data-brand="bandcamp">Bandcamp</span></div>
         </a>
 
         <a class="app-card" id="galleryCard" href="gallery.html">
           <div class="app-card-media">
             <canvas data-particle-cluster="gallery" aria-label="image gallery"></canvas>
           </div>
-          <div class="app-card-label"><span class="important-word">image gallery</span></div>
+          <div class="app-card-label"><span class="important-word" data-i18n="home.imageGallery">Image Gallery</span></div>
         </a>
 
         <a class="app-card" id="journalCard" href="journal.html" style="display: none;">
           <div class="app-card-media">
             <canvas data-particle-cluster="journal" aria-label="journal"></canvas>
           </div>
-          <div class="app-card-label"><span class="important-word">journal</span></div>
+          <div class="app-card-label"><span class="important-word" data-i18n="home.journal">Journal</span></div>
         </a>
 
         <a class="app-card" href="../asymptote/index.html">
           <div class="app-card-media wordgame-icon-wrap">
             <span id="wordgameIcon" class="wordgame-icon-char">X</span>
           </div>
-          <div class="app-card-label"><span class="important-word">Asymptote engine</span></div>
+          <div class="app-card-label"><span class="important-word"><span class="notranslate" translate="no" data-brand="asymptote">Asymptote</span> <span data-i18n="home.engine">Engine</span></span></div>
         </a>
       </div>
     </section>
