@@ -1753,3 +1753,74 @@ html, body {
   user-select: none;
   text-shadow: 0 0 5px rgba(94, 232, 125, 0.5);
 }
+
+/* ============================================
+   LANGUAGE PICKER
+   ============================================ */
+.lang-picker-container {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -moz-box-pack: end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  padding: 8px 14px 4px;
+  position: relative;
+  z-index: 200;
+}
+
+.lang-picker {
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -moz-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -moz-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.lang-picker-select {
+  background: rgba(5, 12, 28, 0.92);
+  border: 1px solid rgba(109, 217, 232, 0.4);
+  color: #6dd9e8;
+  color: var(--terminal-green);
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  font-size: 12px;
+  padding: 5px 24px 5px 8px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+  letter-spacing: 0.04em;
+  -webkit-transition: border-color 0.2s ease, -webkit-box-shadow 0.2s ease;
+  -moz-transition: border-color 0.2s ease, -moz-box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* Custom dropdown arrow */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236dd9e8'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 7px center;
+}
+
+.lang-picker-select:hover,
+.lang-picker-select:focus {
+  border-color: rgba(109, 217, 232, 0.8);
+  -webkit-box-shadow: 0 0 6px rgba(109, 217, 232, 0.2);
+  -moz-box-shadow: 0 0 6px rgba(109, 217, 232, 0.2);
+  box-shadow: 0 0 6px rgba(109, 217, 232, 0.2);
+}
+
+.lang-picker-select option {
+  background: #020612;
+  color: #6dd9e8;
+}

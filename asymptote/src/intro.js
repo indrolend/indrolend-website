@@ -5,7 +5,8 @@ const TYPING_DELAY_MS = 30;
 const SCREEN_TRANSITION_DELAY = 500;
 const MAX_RESOURCE_SELECTIONS = 3;
 
-const introText = `OK OK listen—
+// Default (English) intro text — overridden by i18n when available
+const introTextDefault = `OK OK listen—
 
 Your brain? Too SMALL for the universe.
 
@@ -16,6 +17,20 @@ You get CLOSER but never GET there.
 That's the asymptote thingy.
 
 Let's DO this.`;
+
+/** Return translated string, falling back to the supplied default. */
+function _t(key, def, replacements) {
+  if (window.i18n && typeof window.i18n.t === 'function') {
+    var val = window.i18n.t(key, replacements);
+    return (val && val !== key) ? val : def;
+  }
+  if (replacements && def) {
+    Object.keys(replacements).forEach(function (k) {
+      def = def.replace('{' + k + '}', replacements[k]);
+    });
+  }
+  return def;
+}
 
 let currentCharIndex = 0;
 let typingInterval = null;
@@ -46,9 +61,10 @@ export function showIntroScreen() {
   textElement.className = 'intro-text';
   textElement.id = 'intro-text';
   
+  const beginLabel = _t('asymptote.begin', 'begin?');
   const beginButton = document.createElement('button');
   beginButton.className = 'begin-btn';
-  beginButton.innerHTML = wrapLettersInSpans('begin?');
+  beginButton.innerHTML = wrapLettersInSpans(beginLabel);
   beginButton.style.display = 'none';
   beginButton.id = 'begin-btn';
   
@@ -57,6 +73,7 @@ export function showIntroScreen() {
   introOverlay.appendChild(introContent);
   document.body.appendChild(introOverlay);
   
+  const introText = _t('asymptote.intro', introTextDefault);
   // Start typing animation
   typeText(textElement, introText, () => {
     beginButton.style.display = 'block';
@@ -112,11 +129,11 @@ export function showSetupScreen(onComplete) {
   setupContent.className = 'setup-content';
   
   const title = document.createElement('h2');
-  title.textContent = 'OK Pick 3 Things';
+  title.textContent = _t('asymptote.setup_title', 'OK Pick 3 Things');
   title.className = 'setup-title';
   
   const subtitle = document.createElement('p');
-  subtitle.textContent = 'Just pick em. Trust me.';
+  subtitle.textContent = _t('asymptote.setup_subtitle', 'Just pick em. Trust me.');
   subtitle.className = 'setup-subtitle';
   
   const resourcesContainer = document.createElement('div');
@@ -125,27 +142,27 @@ export function showSetupScreen(onComplete) {
   const resources = [
     { 
       id: 'wood', 
-      name: 'Wood', 
-      description: 'Builds frameworks, grows back',
-      effect: 'structures that hold together'
+      name: _t('asymptote.wood', 'Wood'),
+      description: _t('asymptote.wood_desc', 'Builds frameworks, grows back'),
+      effect: _t('asymptote.wood_effect', 'structures that hold together')
     },
     { 
       id: 'stone', 
-      name: 'Stone', 
-      description: 'Decisions that fossilize',
-      effect: 'permanent but inflexible'
+      name: _t('asymptote.stone', 'Stone'),
+      description: _t('asymptote.stone_desc', 'Decisions that fossilize'),
+      effect: _t('asymptote.stone_effect', 'permanent but inflexible')
     },
     { 
       id: 'food', 
-      name: 'Food', 
-      description: 'Thermodynamic constraint',
-      effect: 'bodies need energy to run'
+      name: _t('asymptote.food', 'Food'),
+      description: _t('asymptote.food_desc', 'Thermodynamic constraint'),
+      effect: _t('asymptote.food_effect', 'bodies need energy to run')
     },
     { 
       id: 'metal', 
-      name: 'Metal', 
-      description: 'Tools that emulate nature',
-      effect: 'reproducing effects, not essence'
+      name: _t('asymptote.metal', 'Metal'),
+      description: _t('asymptote.metal_desc', 'Tools that emulate nature'),
+      effect: _t('asymptote.metal_effect', 'reproducing effects, not essence')
     }
   ];
   
@@ -187,9 +204,10 @@ export function showSetupScreen(onComplete) {
     resourcesContainer.appendChild(card);
   });
   
+  const letsGoLabel = _t('asymptote.lets_go', 'LETS GOOOO');
   const startButton = document.createElement('button');
   startButton.className = 'start-btn';
-  startButton.innerHTML = wrapLettersInSpans('LETS GOOOO');
+  startButton.innerHTML = wrapLettersInSpans(letsGoLabel);
   startButton.disabled = true;
   startButton.id = 'start-btn';
   
@@ -197,14 +215,20 @@ export function showSetupScreen(onComplete) {
     startButton.disabled = selectedResources.size !== maxSelections;
     const counter = document.getElementById('selection-counter');
     if (counter) {
-      counter.textContent = `Selected: ${selectedResources.size}/${maxSelections}`;
+      counter.textContent = _t('asymptote.selected', 'Selected: {count}/{max}', {
+        count: selectedResources.size,
+        max: maxSelections
+      });
     }
   }
   
   const selectionCounter = document.createElement('p');
   selectionCounter.id = 'selection-counter';
   selectionCounter.className = 'selection-counter';
-  selectionCounter.textContent = `Selected: 0/${maxSelections}`;
+  selectionCounter.textContent = _t('asymptote.selected', 'Selected: {count}/{max}', {
+    count: 0,
+    max: maxSelections
+  });
   
   startButton.addEventListener('click', () => {
     const selected = Array.from(selectedResources);
@@ -275,3 +299,4 @@ export function applyStartingResources(selectedResources, state) {
   // Adjust resources
   state.R += selectedResources.length * 0.5;
 }
+

@@ -10,6 +10,95 @@ Personal website with integrated Spotify analytics and OCR-based statistics pars
 - **Example-Based Validation**: System for improving OCR accuracy with ground truth data
 - **Interactive Games**: Asymptote idle game, Tic-Tac-Toe, Word Game
 - **Image Gallery**: Personal photo gallery
+- **Native Translation System**: Full i18n support in English, Spanish, Chinese, German, Hindi, and Dutch
+
+## Translation System (i18n)
+
+The website has a built-in translation system — **no plugins, no Google Translate**. Every
+supported language is stored as a plain JSON file in the `/locales/` folder.
+
+### Supported Languages
+
+| Code | Language   | Native Name |
+|------|------------|-------------|
+| en   | English    | English     |
+| es   | Spanish    | Español     |
+| zh   | Chinese    | 中文         |
+| de   | German     | Deutsch     |
+| hi   | Hindi      | हिन्दी      |
+| nl   | Dutch      | Nederlands  |
+
+### How It Works
+
+1. On first visit the website detects the visitor's browser language.  
+   If that language is supported it is shown automatically.
+2. A **language picker** (dropdown) appears at the top of every main page.  
+   The visitor can switch at any time; the choice is saved in the browser.
+3. If a translation key is missing the text falls back to English.
+4. Brand names and proper nouns (Indrolend, Spotify, Instagram, TikTok, Bandcamp, Apple Music,
+   YouTube, SoundCloud, Asymptote, album names, etc.) are **never translated**.
+
+### How to Edit Translations (Non-coders Welcome!)
+
+Translation files live in `/locales/`:
+
+```
+locales/
+  en.json   ← English (the "source of truth")
+  es.json   ← Spanish
+  zh.json   ← Chinese
+  de.json   ← German
+  hi.json   ← Hindi
+  nl.json   ← Dutch
+```
+
+Each file is a simple list of **key → text** pairs:
+
+```json
+{
+  "captcha.verify": "Verify",
+  "discography.title": "DISCOGRAPHY",
+  "asymptote.begin": "begin?"
+}
+```
+
+**To change a translation:**
+1. Open the relevant `.json` file in any text editor (or on GitHub — just click the file and then
+   the ✏️ pencil icon).
+2. Find the key you want to change and update the text after the colon.
+3. Save/commit the file. The website updates immediately on the next page load.
+
+**Rules to follow:**
+- **Do NOT change the key** (the part before the `:`).  
+  Only change the value (the part after the `:`).
+- **Do NOT translate** brand/proper names: `Indrolend`, `Spotify`, `Instagram`, `TikTok`,
+  `Bandcamp`, `Apple Music`, `YouTube`, `SoundCloud`, `Asymptote`, album titles, etc.
+- Keep JSON syntax valid: every line ends with a comma except the last one, and all text
+  must be wrapped in `"double quotes"`.
+
+### How to Add a New Phrase
+
+1. Add the phrase to **`en.json`** first:
+   ```json
+   "section.new_phrase": "My new phrase in English"
+   ```
+2. Add the same key (but translated) to every other language file.
+3. In the HTML, add `data-i18n="section.new_phrase"` to the element:
+   ```html
+   <p data-i18n="section.new_phrase">My new phrase in English</p>
+   ```
+   The JavaScript will replace the text automatically.
+
+### How to Add a New Language
+
+1. Copy `locales/en.json` and rename it to the [ISO 639-1 two-letter code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) of the new language (e.g. `fr.json` for French).
+2. Translate each value (leave keys and brand names unchanged).
+3. In `js/i18n.js`, add the code to the `SUPPORTED` array and add the native name to `LANG_NAMES`:
+   ```js
+   var SUPPORTED = ['en', 'es', 'zh', 'de', 'hi', 'nl', 'fr'];
+   var LANG_NAMES = { ..., fr: 'Français' };
+   ```
+4. The picker will automatically show the new language.
 
 ## Spotify Statistics System
 
