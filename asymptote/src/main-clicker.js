@@ -6,6 +6,7 @@ import { checkClickerFragments, getDiscoveredClickerFragments } from './clicker-
 import { settingsManager, showSettingsPopup, initSettings } from './settings.js';
 import { checkAchievements, getUnlockedAchievements, getAchievementStats } from './achievements.js';
 import { state } from './state.js';
+import { renderAsymptoteLanguageSelector, applyStaticTranslations } from './i18n.js';
 
 let game = null;
 let lastUpdateTime = Date.now();
@@ -30,6 +31,10 @@ let narrativeTriggers = {
 };
 
 function init() {
+  renderAsymptoteLanguageSelector();
+  applyStaticTranslations();
+  document.addEventListener('asymptote-language-changed', () => window.location.reload());
+
   // Initialize settings first
   initSettings();
   

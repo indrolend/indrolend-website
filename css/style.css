@@ -1753,3 +1753,26 @@ html, body {
   user-select: none;
   text-shadow: 0 0 5px rgba(94, 232, 125, 0.5);
 }
+
+.site-language-control {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 9999;
+  background: rgba(2, 6, 18, 0.78);
+  border: 1px solid rgba(94, 232, 125, 0.4);
+  border-radius: 10px;
+  padding: 8px 10px;
+  color: #eafff0;
+  font-size: 0.85rem;
+  backdrop-filter: blur(4px);
+}
+
+.site-language-control select {
+  margin-left: 6px;
+  border-radius: 6px;
+  border: 1px solid rgba(94, 232, 125, 0.4);
+  background: #020612;
+  color: #eafff0;
+  padding: 4px 6px;
+}

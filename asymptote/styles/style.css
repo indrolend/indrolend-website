@@ -1281,3 +1281,13 @@ footer {
   }
 }
 
+
+.asymptote-language-control {
+  margin-top: 10px;
+}
+
+.asymptote-language-control select {
+  margin-left: 6px;
+  padding: 4px 6px;
+  border-radius: 6px;
+}

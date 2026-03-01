@@ -1,22 +1,23 @@
 import { state } from './state.js';
+import { t } from './i18n.js';
 
 export function describeState() {
   const narratives = [];
   
   // COMPRESSION AND EMULATION (Reality is too dense)
   if (state.K > 0.3 && state.C > 0.5) {
-    narratives.push("They can't hold it all. So they compress. Select what matters, discard the rest. Every model leaves something behind.");
+    narratives.push(t('n1'));
   } else if (state.K > 0.5 && state.U < 0.4) {
-    narratives.push("More facts, less clarity. The map grows but understanding doesn't follow.");
+    narratives.push(t('n2'));
   }
   
   // Understanding as ASYMPTOTIC APPROACH
   if (state.U > 0.8) {
-    narratives.push("They stand close now. Close enough to see the edge they cannot cross. Truth approaches but never arrives.");
+    narratives.push(t('n3'));
   } else if (state.U > 0.5 && state.U < 0.7) {
-    narratives.push("Patterns emerge from noise. Each compression reveals structure, loses detail. This is the trade.");
+    narratives.push(t('n4'));
   } else if (state.U < 0.2) {
-    narratives.push("In the dark, they build models of shadows. Guessing at structure too dense to perceive.");
+    narratives.push(t('n5'));
   }
   
   // LAYERING AND INTERFACES (Systems hide complexity)
@@ -117,7 +118,7 @@ export function describeState() {
   
   // Default minimal narrative
   if (narratives.length === 0) {
-    narratives.push("Bounded agents in a dense universe. Compressing, acting, updating.");
+    narratives.push(t('n_default'));
   }
   
   return narratives.join('\n\n');
