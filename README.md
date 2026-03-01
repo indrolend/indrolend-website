@@ -8,8 +8,128 @@ Personal website with integrated Spotify analytics and OCR-based statistics pars
 - **Spotify for Artists Scraper**: Automated extraction of live audience stats (listeners, streams, followers, top cities)
 - **Automated Screenshot Parsing**: OCR-based extraction of Spotify stats from screenshots
 - **Example-Based Validation**: System for improving OCR accuracy with ground truth data
-- **Interactive Games**: Arcade Games Hub (Pool, Chess, Tanks, Archery and more), Asymptote idle game, Tic-Tac-Toe, Word Game
+- **Interactive Games**: Arcade Games Hub (Pool — fully playable, more coming), Asymptote idle game, Tic-Tac-Toe, Word Game
 - **Image Gallery**: Personal photo gallery
+- **Native Translation System**: Full i18n support in English, Spanish, Chinese, German, Hindi, and Dutch
+
+## Translation System (i18n)
+
+The website has a built-in translation system — **no plugins, no Google Translate**. Every
+supported language is stored as a plain JSON file in the `/locales/` folder.
+
+### Supported Languages
+
+| Code | Language   | Native Name |
+|------|------------|-------------|
+| en   | English    | English     |
+| es   | Spanish    | Español     |
+| zh   | Chinese    | 中文         |
+| de   | German     | Deutsch     |
+| hi   | Hindi      | हिन्दी      |
+| nl   | Dutch      | Nederlands  |
+
+### How It Works
+
+1. On first visit the website detects the visitor's browser language.
+   If that language is supported it is shown automatically.
+2. A **language picker** (dropdown) appears at the top of every main page.
+   The visitor can switch at any time; the choice is saved in the browser.
+3. If a translation key is missing the text falls back to English.
+4. Brand names and proper nouns (Indrolend, Spotify, Instagram, TikTok, Bandcamp, Apple Music,
+   YouTube, SoundCloud, Asymptote, album names, etc.) are **never translated**.
+
+### How to Edit Translations (Non-coders Welcome!)
+
+Translation files live in `/locales/`:
+
+```
+locales/
+  en.json   ← English (the "source of truth")
+  es.json   ← Spanish
+  zh.json   ← Chinese
+  de.json   ← German
+  hi.json   ← Hindi
+  nl.json   ← Dutch
+```
+
+Each file is a simple list of **key → text** pairs:
+
+```json
+{
+  "captcha.verify": "Verify",
+  "discography.title": "DISCOGRAPHY",
+  "asymptote.begin": "begin?"
+}
+```
+
+**To change a translation:**
+1. Open the relevant `.json` file in any text editor (or on GitHub — click the file, then the ✏️ pencil icon).
+2. Find the key you want to change and update the text after the colon.
+3. Save/commit the file. The website updates immediately on the next page load.
+
+**Rules to follow:**
+- **Do NOT change the key** (the part before the `:`). Only change the value (the part after the `:`).
+- **Do NOT translate** brand/proper names: `Indrolend`, `Spotify`, `Instagram`, `TikTok`,
+  `Bandcamp`, `Apple Music`, `YouTube`, `SoundCloud`, `Asymptote`, album titles, etc.
+- Keep JSON syntax valid: every line ends with a comma except the last one, and all text
+  must be wrapped in `"double quotes"`.
+
+### How to Add a New Language
+
+1. Copy `locales/en.json` and rename it to the [ISO 639-1 two-letter code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) of the new language (e.g. `fr.json` for French).
+2. Translate each value (leave keys and brand names unchanged).
+3. In `js/i18n.js`, add the code to the `SUPPORTED` array and add the native name to `LANG_NAMES`:
+   ```js
+   var SUPPORTED = ['en', 'es', 'zh', 'de', 'hi', 'nl', 'fr'];
+   var LANG_NAMES = { ..., fr: 'Français' };
+   ```
+4. The picker will automatically show the new language.
+
+## Arcade Games Hub
+
+The **Games Hub** (`pages/games.html`) is an arcade-style picker page. Pool is the featured
+game and fully playable. Other games will appear here once they are ready.
+
+### File Layout
+
+```
+pages/
+  games.html              ← Games hub (picker page)
+games/
+  pool.html               ← Pool game page (choice screen + iframe)
+  pool-minigame/
+    index.html            ← Self-contained HTML5 8-ball pool game
+  chess.html              ← (TODO) Chess game page
+  chess-minigame/         ← (TODO) Chess minigame folder
+  tanks.html              ← (TODO) Tanks game page
+  archery.html            ← (TODO) Archery game page
+```
+
+### How to Add a New Game (Step-by-Step for Non-coders)
+
+1. **Open `pages/games.html`** in a text editor or on GitHub.
+2. Copy the Pool card block (the `<a class="game-card featured" …>` block).
+3. Paste it below the Pool card and update:
+   - The `href` to point to `../games/<newgame>.html`
+   - The emoji in `.game-card-icon`
+   - The `.game-card-name` text
+   - The `.game-card-desc` text
+4. Create `games/<newgame>.html` by copying `games/pool.html`.
+   - Update the title, subtitle, and iframe `src` to `<newgame>-minigame/index.html`.
+5. Drop your HTML5 minigame into `games/<newgame>-minigame/index.html`.
+   - Any self-contained HTML file works (no external dependencies needed).
+
+### How to Swap the Pool Minigame
+
+Replace the file `games/pool-minigame/index.html` with any self-contained HTML5 game.
+The parent page (`games/pool.html`) loads it inside an `<iframe>`, so it is fully isolated.
+
+### Multiplayer (Coming Soon)
+
+The "Play with People" button on each game page opens a modal stub with Create Room,
+Quick Match, and Join Room. Real room-code networking will be wired in a future PR.
+To connect it: replace the `stubAction()` function in `games/pool.html` with real
+WebSocket or WebRTC logic.
 
 ## Spotify Statistics System
 
@@ -181,105 +301,6 @@ If you want to help improve the OCR parsing accuracy:
    python scripts/validate_ocr_examples.py
    ```
 4. Review accuracy metrics and improve parsing logic
-
-## Arcade Games Hub
-
-The **Games Hub** (`pages/games.html`) is an arcade-style picker page. Pool is featured and fully playable; Chess, Tanks, and Archery are stubs ready to be filled in.
-
-### How the Games Pages Are Structured
-
-```
-pages/
-  games.html              ← The hub / picker page (what you see first)
-games/
-  pool.html               ← Pool game page (choice screen + embedded game)
-  pool-minigame/
-    index.html            ← The actual pool game (HTML5 canvas, self-contained)
-  chess.html              ← (TODO) Chess game page
-  tanks.html              ← (TODO) Tanks game page
-  archery.html            ← (TODO) Archery game page
-css/
-  games.css               ← Shared styles for all games pages
-```
-
----
-
-### Adding a New Game (No Coding Experience Required!)
-
-Follow these steps to add a brand-new game (e.g. "Snake") to the hub:
-
-#### Step 1 — Add the game card to the hub
-
-Open `pages/games.html` and find the `<!-- ── MORE GAMES PLACEHOLDER -->` comment.
-Copy any existing game card block (e.g. the Chess block) and paste it above the placeholder.
-Change:
-- The emoji inside `<span class="game-card-icon">` to your game's icon (e.g. `🐍`)
-- The text inside `<h2 class="game-card-name">` to your game's name (e.g. `Snake`)
-- The text inside `<p class="game-card-desc">` to a fun description
-- The `href` attribute to `../games/snake.html`
-- Remove `class="locked"` from the `<div>` and change `<div>` to `<a>` (so it's clickable)
-
-Example final result:
-```html
-<a class="game-card" href="../games/snake.html" aria-label="Play Snake">
-  <span class="game-card-icon">🐍</span>
-  <h2 class="game-card-name">Snake</h2>
-  <p class="game-card-desc">Eat the food, grow longer, don't crash!</p>
-</a>
-```
-
-#### Step 2 — Create the game page
-
-Copy `games/pool.html` to `games/snake.html`.
-In your new file, update:
-- The `<title>` tag: `Snake — Indrolend Games`
-- The heading: `🐍 Snake`
-- The subtitle: your description
-- The iframe `src`: `snake-minigame/index.html`
-- The back button `aria-label` and content
-
-#### Step 3 — Add the minigame
-
-Create a folder `games/snake-minigame/` and put your game's HTML file inside as `index.html`.
-This file should be a **self-contained HTML5 game** — all CSS and JavaScript in one file.
-The pool minigame at `games/pool-minigame/index.html` is a good template to start from.
-
-#### Step 4 — Done!
-
-Open `pages/games.html` in your browser and your new game should appear in the grid.
-
----
-
-### Swapping the Pool Minigame
-
-To replace the pool game with a different one:
-1. Find any free/open-source HTML5 billiards or pool game online.
-2. Download it as a single HTML file (or bundle everything into one file).
-3. Replace `games/pool-minigame/index.html` with the new file.
-4. The pool page (`games/pool.html`) will automatically load the new game.
-
----
-
-### Updating Game Icons, Descriptions, and Translations
-
-All game icons and descriptions are plain text/emoji inside `pages/games.html`.
-Just open the file and change the text — no coding needed.
-
-For the pool page title/description, edit `games/pool.html` directly.
-
----
-
-### Multiplayer (Room Code / Jackbox-style) — Future Work
-
-The "Play with People" button on `games/pool.html` already shows a stub modal
-with Create Room, Quick Match, and Join Room (with room code input) buttons.
-To wire up real multiplayer:
-1. Open `games/pool.html`.
-2. Find the `stubAction` JavaScript function.
-3. Replace the `alert(...)` calls with real networking/WebSocket logic.
-4. Add your room-code server logic in `backend/` or a new service.
-
----
 
 ## Documentation
 

@@ -13,7 +13,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="description" content="Indrolend Games — Play Pool, Chess, Tanks, Archery and more. Solo vs computer or with friends." />
+  <meta name="description" content="Indrolend Games — Play Pool solo vs the computer or with friends." />
   <meta name="author" content="Indrolend" />
   <meta name="theme-color" content="#020612" />
 
@@ -21,7 +21,7 @@
 
   <!-- Open Graph -->
   <meta property="og:title" content="Games — Indrolend" />
-  <meta property="og:description" content="Arcade-style games hub. Play Pool, Chess, Tanks, Archery and more. Solo vs computer or with friends." />
+  <meta property="og:description" content="Arcade-style games hub. Play Pool solo vs the computer or with friends." />
   <meta property="og:url" content="https://indrolend.com/pages/games.html" />
   <meta property="og:image" content="https://indrolend.com/assets/images/5992CDB8.jpg" />
 
@@ -31,120 +31,64 @@
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css" />
   <link rel="stylesheet" href="../css/games.css" />
+  <script src="../js/i18n.js"></script>
 </head>
 <body>
   <!-- ============================================================
        GAMES HUB PAGE
-       Add a new game by copying any .game-card block below,
-       updating the icon, name, description, and href.
-       Set class="game-card locked" for "coming soon" games.
+       To add a new game once it's ready:
+         1. Copy the Pool card block below.
+         2. Update the icon, name, description, and href.
+         3. Create /games/<name>.html following pool.html's pattern.
+       See README.md → "Adding a New Game" for full step-by-step.
        ============================================================ -->
+
+  <!-- Language picker (auto-injected by i18n.js) -->
+  <div class="lang-picker-container"></div>
 
   <div class="games-page">
 
     <!-- Back to homepage -->
-    <a class="games-back-btn" href="home.html">← Back to Home</a>
+    <a class="games-back-btn" href="home.html" data-i18n="games.back_home">← Back to Home</a>
 
     <!-- Page heading -->
-    <h1 class="games-title">🕹️ Games</h1>
-    <p class="games-subtitle">Pick a game and play solo or with friends.</p>
+    <h1 class="games-title">🕹️ <span data-i18n="games.hub_title">Games</span></h1>
+    <p class="games-subtitle" data-i18n="games.hub_subtitle">Pick a game and play solo or with friends.</p>
 
     <!-- ========================
          GAME CARDS GRID
          ======================== -->
     <div class="games-grid">
 
-      <!-- ── POOL (FEATURED) ─────────────────────────── -->
+      <!-- ── POOL (FEATURED) ─────────────────────────────────── -->
       <!--
         HOW TO UPDATE THIS CARD:
-        • Change the emoji in .game-card-icon to a different icon.
+        • Change the emoji in .game-card-icon.
         • Update .game-card-name with the game's name.
         • Update .game-card-desc with a fun description.
         • Change href to point to the game's page.
-        • Remove class="featured" if you don't want the glow/badge.
+        • Remove class="featured" if you no longer want the glow/badge.
       -->
       <a class="game-card featured" href="../games/pool.html" aria-label="Play Pool">
-        <span class="game-card-badge">Featured</span>
+        <span class="game-card-badge" data-i18n="games.featured_badge">Featured</span>
         <span class="game-card-icon">🎱</span>
-        <h2 class="game-card-name">Pool</h2>
-        <p class="game-card-desc">
-          Pocket all the balls before your opponent.<br>
+        <h2 class="game-card-name" data-i18n="games.pool_name">Pool</h2>
+        <p class="game-card-desc" data-i18n="games.pool_desc">
+          Pocket all the balls before your opponent.
           Play solo vs the computer or challenge friends with a room code.
         </p>
       </a>
 
-      <!-- ── CHESS (COMING SOON) ──────────────────────── -->
       <!--
-        TODO: When Chess is ready:
-        1. Remove class="locked" from this card.
-        2. Add href="../games/chess.html" to the <a> tag.
-        3. Change <div> to <a> and update the badge to "New".
-        4. Create /games/chess.html following the same pattern
-           as pool.html (choice screen + iframe minigame).
+        ──────────────────────────────────────────────────────────
+        OTHER GAMES (Chess, Tanks, Archery, etc.) are hidden until
+        they are ready to play. To add a new game:
+          1. Copy the Pool card block above.
+          2. Change the icon, name, description, and href.
+          3. Create the /games/<name>.html page (copy pool.html).
+          4. Drop the minigame into /games/<name>-minigame/index.html.
+        ──────────────────────────────────────────────────────────
       -->
-      <div class="game-card locked" aria-label="Chess — Coming Soon">
-        <span class="game-card-badge coming-soon">Coming Soon</span>
-        <span class="game-card-icon">♟️</span>
-        <h2 class="game-card-name">Chess</h2>
-        <p class="game-card-desc">
-          Classic strategy game.<br>
-          Play vs an AI or challenge a friend in real time.
-        </p>
-      </div>
-
-      <!-- ── TANKS (COMING SOON) ──────────────────────── -->
-      <!--
-        TODO: When Tanks is ready:
-        1. Remove class="locked".
-        2. Add href="../games/tanks.html" to a converted <a> tag.
-        3. Create /games/tanks.html following the pool.html pattern.
-      -->
-      <div class="game-card locked" aria-label="Tanks — Coming Soon">
-        <span class="game-card-badge coming-soon">Coming Soon</span>
-        <span class="game-card-icon">🪖</span>
-        <h2 class="game-card-name">Tanks</h2>
-        <p class="game-card-desc">
-          Aim, fire, and destroy the enemy.<br>
-          Turn-based artillery action for 1 or 2 players.
-        </p>
-      </div>
-
-      <!-- ── ARCHERY (COMING SOON) ────────────────────── -->
-      <!--
-        TODO: When Archery is ready:
-        1. Remove class="locked".
-        2. Add href="../games/archery.html".
-        3. Create /games/archery.html following the pool.html pattern.
-      -->
-      <div class="game-card locked" aria-label="Archery — Coming Soon">
-        <span class="game-card-badge coming-soon">Coming Soon</span>
-        <span class="game-card-icon">🏹</span>
-        <h2 class="game-card-name">Archery</h2>
-        <p class="game-card-desc">
-          Draw back your bow and hit the bullseye.<br>
-          Wind, distance, and timing all matter.
-        </p>
-      </div>
-
-      <!-- ── MORE GAMES PLACEHOLDER ───────────────────── -->
-      <!--
-        HOW TO ADD A NEW GAME:
-        1. Copy any game-card block above.
-        2. Update the icon, name, description, and href.
-        3. Create the corresponding /games/<name>.html file.
-        4. For a playable game, add an iframe pointing to
-           /games/<name>-minigame/index.html.
-        See README.md → "Adding a New Game" for full steps.
-      -->
-      <div class="game-card locked" aria-label="More games coming soon">
-        <span class="game-card-badge coming-soon">Coming Soon</span>
-        <span class="game-card-icon">🎮</span>
-        <h2 class="game-card-name">More Games</h2>
-        <p class="game-card-desc">
-          More games are on the way.<br>
-          Suggestions? Open a GitHub issue!
-        </p>
-      </div>
 
     </div><!-- end .games-grid -->
 

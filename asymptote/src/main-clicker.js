@@ -1439,9 +1439,17 @@ function initFragmentButton() {
   header.appendChild(achievementsBtn);
 }
 
-// Start the application when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
+// Start the application — wait for i18n translations to load first (if available)
+function startApp() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+}
+
+if (window.i18n) {
+  window.addEventListener('i18n:ready', startApp, { once: true });
 } else {
-  init();
+  startApp();
 }
