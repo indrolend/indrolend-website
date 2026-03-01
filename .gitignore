@@ -40,3 +40,4 @@ __pycache__/
 # Screenshots are auto-deleted after processing, but keep examples
 # Note: screenshots/examples/ directory should be committed to git
 # !screenshots/examples/**
+nohup.out
