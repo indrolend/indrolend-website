@@ -20,6 +20,16 @@ const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 // This is the public artist ID visible in the Spotify link on home.html
 const ARTIST_ID = process.env.SPOTIFY_ARTIST_ID || '59X3431NBfd6xWMc3Zlh0v';
 
+// GitHub credentials for leaderboard persistence
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+const GITHUB_OWNER = process.env.GITHUB_OWNER || 'indrolend';
+const GITHUB_REPO = process.env.GITHUB_REPO || 'indrolend-website';
+const LEADERBOARD_FILE_PATH = 'data/leaderboard.json';
+const LEADERBOARD_COMMITTER_NAME = process.env.LEADERBOARD_COMMITTER_NAME || 'indrolend-backend';
+const LEADERBOARD_COMMITTER_EMAIL = process.env.LEADERBOARD_COMMITTER_EMAIL || 'noreply@indrolend.com';
+const MAX_LEADERBOARD_SIZE = 10;
+const MAX_SCORE = 10000;
+
 // Cache for access token
 let accessToken = null;
 let tokenExpirationTime = null;
@@ -28,6 +38,11 @@ let tokenExpirationTime = null;
 let cachedArtistData = null;
 let artistDataCacheTime = null;
 const ARTIST_DATA_CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+// Cache for leaderboard (30-second TTL so updates are visible quickly)
+let leaderboardCache = null;
+let leaderboardCacheTime = null;
+const LEADERBOARD_CACHE_DURATION = 30 * 1000;
 
 /**
  * Get Spotify access token using Client Credentials Flow
@@ -231,6 +246,152 @@ app.post('/api/spotify/refresh-cache', async (req, res) => {
   }
 });
 
+// ─── Leaderboard helpers (GitHub API persistence) ───────────────────────────
+
+/**
+ * Fetch the leaderboard array from GitHub and return it along with the file SHA
+ * required for subsequent writes.
+ */
+async function getLeaderboardFromGitHub() {
+  const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${LEADERBOARD_FILE_PATH}`;
+  const headers = {
+    'Accept': 'application/vnd.github.v3+json',
+    'User-Agent': 'indrolend-backend'
+  };
+  if (GITHUB_TOKEN) {
+    headers['Authorization'] = `token ${GITHUB_TOKEN}`;
+  }
+
+  const response = await fetch(url, { headers });
+  if (!response.ok) {
+    if (response.status === 404) return { data: [], sha: null };
+    throw new Error(`GitHub API read error: ${response.status}`);
+  }
+
+  const fileData = await response.json();
+  const content = Buffer.from(fileData.content, 'base64').toString('utf-8');
+  let data;
+  try {
+    data = JSON.parse(content);
+  } catch {
+    data = [];
+  }
+  return { data: Array.isArray(data) ? data : [], sha: fileData.sha };
+}
+
+/**
+ * Write the leaderboard array back to GitHub.
+ * `sha` is required when updating an existing file.
+ */
+async function saveLeaderboardToGitHub(leaderboard, sha) {
+  if (!GITHUB_TOKEN) {
+    throw new Error('GITHUB_TOKEN not configured – cannot persist leaderboard');
+  }
+
+  const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${LEADERBOARD_FILE_PATH}`;
+  const content = Buffer.from(JSON.stringify(leaderboard, null, 2) + '\n').toString('base64');
+  const body = {
+    message: 'chore: update snake leaderboard [skip ci]',
+    content,
+    committer: {
+      name: LEADERBOARD_COMMITTER_NAME,
+      email: LEADERBOARD_COMMITTER_EMAIL
+    }
+  };
+  if (sha) body.sha = sha;
+
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `token ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json',
+      'User-Agent': 'indrolend-backend'
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`GitHub API write error: ${response.status} ${errorText}`);
+  }
+  return await response.json();
+}
+
+// ─── Leaderboard endpoints ───────────────────────────────────────────────────
+
+/**
+ * GET /api/leaderboard
+ * Returns the current global top-10 leaderboard.
+ */
+app.get('/api/leaderboard', async (req, res) => {
+  try {
+    if (leaderboardCache && leaderboardCacheTime && (Date.now() - leaderboardCacheTime < LEADERBOARD_CACHE_DURATION)) {
+      return res.json(leaderboardCache);
+    }
+
+    const { data } = await getLeaderboardFromGitHub();
+    leaderboardCache = data;
+    leaderboardCacheTime = Date.now();
+    res.json(data);
+  } catch (error) {
+    console.error('Error fetching leaderboard:', error);
+    res.status(500).json({ error: 'Unable to retrieve leaderboard at this time.' });
+  }
+});
+
+/**
+ * POST /api/leaderboard
+ * Adds a new entry to the global leaderboard (top 10).
+ * Body: { name: string, message: string, score: number }
+ */
+app.post('/api/leaderboard', async (req, res) => {
+  try {
+    const { name, message, score } = req.body || {};
+
+    // Basic validation
+    if (typeof score !== 'number' || !Number.isInteger(score) || score < 1 || score > MAX_SCORE) {
+      return res.status(400).json({ error: 'Invalid score value.' });
+    }
+
+    const sanitizedName = String(name || '').trim().substring(0, 20) || 'Anonymous';
+    const sanitizedMessage = String(message || '').trim().substring(0, 30) || 'No message';
+
+    // Fetch current leaderboard (bypassing cache for writes)
+    const { data: leaderboard, sha } = await getLeaderboardFromGitHub();
+
+    // Check if the score qualifies for the leaderboard
+    const qualifies = leaderboard.length < MAX_LEADERBOARD_SIZE || score > leaderboard[leaderboard.length - 1].score;
+    if (!qualifies) {
+      return res.status(200).json({ qualified: false, leaderboard });
+    }
+
+    // Add entry, sort, trim to max size
+    leaderboard.push({
+      name: sanitizedName,
+      message: sanitizedMessage,
+      score,
+      date: new Date().toISOString()
+    });
+    leaderboard.sort((a, b) => b.score - a.score);
+    const updated = leaderboard.slice(0, MAX_LEADERBOARD_SIZE);
+
+    // Persist to GitHub
+    await saveLeaderboardToGitHub(updated, sha);
+
+    // Update cache immediately
+    leaderboardCache = updated;
+    leaderboardCacheTime = Date.now();
+
+    res.json({ qualified: true, leaderboard: updated });
+  } catch (error) {
+    console.error('Error saving leaderboard entry:', error);
+    res.status(500).json({ error: 'Unable to save leaderboard entry at this time.' });
+  }
+});
+
+// ─── Health / root endpoints ─────────────────────────────────────────────────
+
 /**
  * Health check endpoint
  */
@@ -246,6 +407,7 @@ app.get('/', (req, res) => {
     message: 'Spotify Backend API',
     endpoints: {
       '/api/spotify': 'Get artist data and top tracks',
+      '/api/leaderboard': 'GET/POST snake game leaderboard',
       '/health': 'Health check'
     }
   });

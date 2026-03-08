@@ -435,6 +435,11 @@
   let transitionPhase = 'none'; // 'entering', 'playing', 'exiting', 'none'
   let transitionStartTime = 0;
   const TRANSITION_DURATION = 400; // Reduced from 800ms for faster animation
+
+  // Leaderboard API base URL (same backend used for Spotify)
+  const LEADERBOARD_API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3000'
+    : 'https://spotify-stats-backend-y8hb.onrender.com';
   
   // Audio reactive system
   let audioContext = null;
@@ -1099,70 +1104,77 @@
   }
 
   /**
-   * Get leaderboard from localStorage
+   * Fetch the live global leaderboard from the backend API.
+   * Falls back to localStorage if the API is unavailable.
    */
-  function getLeaderboard() {
+  async function getLeaderboard() {
     try {
-      const data = localStorage.getItem('snake_leaderboard');
-      if (!data) return [];
-      const leaderboard = JSON.parse(data);
-      return Array.isArray(leaderboard) ? leaderboard : [];
+      const response = await fetch(`${LEADERBOARD_API_BASE}/api/leaderboard`);
+      if (!response.ok) throw new Error(`API error: ${response.status}`);
+      const data = await response.json();
+      return Array.isArray(data) ? data : [];
     } catch (e) {
-      console.error('Error loading leaderboard:', e);
-      return [];
+      console.warn('Leaderboard API unavailable, falling back to localStorage:', e);
+      try {
+        const data = localStorage.getItem('snake_leaderboard');
+        if (!data) return [];
+        const leaderboard = JSON.parse(data);
+        return Array.isArray(leaderboard) ? leaderboard : [];
+      } catch {
+        return [];
+      }
     }
   }
 
   /**
-   * Save leaderboard to localStorage
+   * Submit a new score to the live global leaderboard API.
+   * Falls back to localStorage if the API is unavailable.
+   * Returns the updated leaderboard array and a `qualified` flag.
    */
-  function saveLeaderboard(leaderboard) {
-    try {
-      localStorage.setItem('snake_leaderboard', JSON.stringify(leaderboard));
-    } catch (e) {
-      console.error('Error saving leaderboard:', e);
-    }
-  }
-
-  /**
-   * Add entry to leaderboard and maintain top 5
-   */
-  function addToLeaderboard(name, message, score) {
-    const leaderboard = getLeaderboard();
-    
-    // Sanitize inputs
+  async function addToLeaderboard(name, message, score) {
     const sanitizedName = escapeHtml((name || '').trim().substring(0, 20) || 'Anonymous');
     const sanitizedMessage = escapeHtml((message || '').trim().substring(0, 30) || 'No message');
-    
-    // Add new entry
-    leaderboard.push({
-      name: sanitizedName,
-      message: sanitizedMessage,
-      score: score,
-      date: new Date().toISOString()
-    });
-    
-    // Sort by score (highest first) and keep top 5
-    leaderboard.sort((a, b) => b.score - a.score);
-    const top5 = leaderboard.slice(0, 5);
-    
-    saveLeaderboard(top5);
-    return top5;
+
+    try {
+      const response = await fetch(`${LEADERBOARD_API_BASE}/api/leaderboard`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: sanitizedName, message: sanitizedMessage, score })
+      });
+      if (!response.ok) throw new Error(`API error: ${response.status}`);
+      const result = await response.json();
+      // Also persist locally as a cache/fallback
+      try {
+        localStorage.setItem('snake_leaderboard', JSON.stringify(result.leaderboard));
+      } catch { /* ignore */ }
+      return result;
+    } catch (e) {
+      console.warn('Leaderboard API unavailable, saving to localStorage:', e);
+      // Offline fallback: update localStorage only
+      const leaderboard = await getLeaderboard();
+      leaderboard.push({ name: sanitizedName, message: sanitizedMessage, score, date: new Date().toISOString() });
+      leaderboard.sort((a, b) => b.score - a.score);
+      const top = leaderboard.slice(0, 10);
+      try {
+        localStorage.setItem('snake_leaderboard', JSON.stringify(top));
+      } catch { /* ignore */ }
+      return { qualified: true, leaderboard: top };
+    }
   }
 
   /**
-   * Check if score qualifies for leaderboard (top 5)
+   * Check asynchronously whether a score qualifies for the top 10 leaderboard.
    */
-  function qualifiesForLeaderboard(score) {
-    const leaderboard = getLeaderboard();
-    if (leaderboard.length < 5) return true;
-    return score > leaderboard[4].score;
+  async function qualifiesForLeaderboard(score) {
+    const leaderboard = await getLeaderboard();
+    if (leaderboard.length < 10) return true;
+    return score > leaderboard[leaderboard.length - 1].score;
   }
 
   /**
    * Show leaderboard modal for score submission
    */
-  function showLeaderboardModal() {
+  async function showLeaderboardModal() {
     // Pause game and remove event handlers immediately to prevent continued gameplay
     document.removeEventListener('keydown', handleSnakeKeyDown);
     document.removeEventListener('touchstart', handleSnakeTouchStart);
@@ -1184,18 +1196,16 @@
     modal.style.padding = '20px';
     modal.style.boxSizing = 'border-box';
     modal.style.pointerEvents = 'auto';
-    
-    // Get existing leaderboard
-    const leaderboard = getLeaderboard();
-    
-    // Build leaderboard display HTML
-    let leaderboardHtml = '';
-    if (leaderboard.length > 0) {
-      leaderboardHtml = '<div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(109, 217, 232, 0.3);">';
-      leaderboardHtml += '<div style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: rgba(109, 217, 232, 0.9);">Top 5 Leaderboard</div>';
-      
+
+    /**
+     * Build the leaderboard rows HTML from an array of entries.
+     */
+    function buildLeaderboardHtml(leaderboard) {
+      if (!leaderboard || leaderboard.length === 0) return '';
+      let html = '<div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(109, 217, 232, 0.3);">';
+      html += '<div style="font-size: 18px; font-weight: bold; margin-bottom: 15px; color: rgba(109, 217, 232, 0.9);">Global Leaderboard</div>';
       leaderboard.forEach((entry, index) => {
-        leaderboardHtml += `
+        html += `
           <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid rgba(109, 217, 232, 0.15);">
             <div style="flex: 1;">
               <div style="font-size: 14px; color: rgba(109, 217, 232, 0.6);">#${index + 1}</div>
@@ -1206,9 +1216,12 @@
           </div>
         `;
       });
-      
-      leaderboardHtml += '</div>';
+      html += '</div>';
+      return html;
     }
+
+    // Fetch the live leaderboard before rendering the modal
+    const leaderboard = await getLeaderboard();
     
     // Create modal content
     modal.innerHTML = `
@@ -1303,7 +1316,7 @@
           </button>
         </form>
         
-        ${leaderboardHtml}
+        <div id="leaderboard-section">${buildLeaderboardHtml(leaderboard)}</div>
       </div>
     `;
     
@@ -1344,22 +1357,33 @@
     });
     
     // Form submission
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      // Disable button while submitting
+      submitButton.disabled = true;
+      submitButton.textContent = 'Submitting...';
       
       const name = nameInput.value.trim() || 'Anonymous';
       const message = messageInput.value.trim() || 'No message';
       
-      // Add to leaderboard
-      addToLeaderboard(name, message, gameScore);
-      
-      // Remove modal
-      if (modal.parentNode) {
-        modal.parentNode.removeChild(modal);
+      // Submit to the live leaderboard
+      const result = await addToLeaderboard(name, message, gameScore);
+
+      // Refresh the leaderboard section with the updated data
+      const section = document.getElementById('leaderboard-section');
+      if (section) {
+        section.innerHTML = buildLeaderboardHtml(result.leaderboard);
       }
-      
-      // Deactivate game
-      deactivateSnake();
+
+      // Remove modal after a brief moment so the player can see the result
+      setTimeout(() => {
+        if (modal.parentNode) {
+          modal.parentNode.removeChild(modal);
+        }
+        // Deactivate game
+        deactivateSnake();
+      }, 1500);
     });
   }
 
@@ -1377,16 +1401,17 @@
       localStorage.setItem('snake_high_score', gameScore.toString());
     }
     
-    // Check if score qualifies for top 5
-    if (qualifiesForLeaderboard(gameScore)) {
-      // Show leaderboard modal
-      showLeaderboardModal();
-    } else {
-      // Wait 1 second then deactivate
-      setTimeout(() => {
-        deactivateSnake();
-      }, 1000);
-    }
+    // Check if score qualifies for the live leaderboard (async)
+    qualifiesForLeaderboard(gameScore).then(qualifies => {
+      if (qualifies) {
+        showLeaderboardModal();
+      } else {
+        // Wait 1 second then deactivate
+        setTimeout(() => {
+          deactivateSnake();
+        }, 1000);
+      }
+    });
   }
 
   /**
