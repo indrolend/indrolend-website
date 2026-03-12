@@ -117,15 +117,36 @@
       }
     }
 
+    // Check if this view manages its own item-level transitions (e.g. GifCarouselPanel).
+    // If so, skip the SPA transition engine for same-section item changes and instead
+    // hold the transitioning flag for the carousel animation duration.
+    var viewSkipsTransition =
+      fromSectionId === sectionId &&
+      window.__SPA_Views && window.__SPA_Views[sectionId] &&
+      window.__SPA_Views[sectionId].skipItemTransition;
+
     // Run transition only when switching between two real views
-    if (!skipTransition && fromView && window.__SPA_Transition) {
-      transitioning = true;
-      var fromCanvas = null;
-      if (window.__SPA_Views && window.__SPA_Views[fromSectionId] &&
-          typeof window.__SPA_Views[fromSectionId].getTransitionCanvas === 'function') {
-        fromCanvas = window.__SPA_Views[fromSectionId].getTransitionCanvas(fromItemId);
+    if (!skipTransition && fromView) {
+      if (viewSkipsTransition) {
+        // Carousel view handles its own animation — just swap view divs immediately
+        // but hold transitioning = true briefly to prevent rapid double-swipes.
+        transitioning = true;
+        doShow(); // sets transitioning = false internally
+        // Re-assert the lock for the carousel animation window (~900 ms covers
+        // both the explode phase and the spring-morph + GIF-load phases).
+        transitioning = true;
+        setTimeout(function () { transitioning = false; }, 900);
+      } else if (window.__SPA_Transition) {
+        transitioning = true;
+        var fromCanvas = null;
+        if (window.__SPA_Views && window.__SPA_Views[fromSectionId] &&
+            typeof window.__SPA_Views[fromSectionId].getTransitionCanvas === 'function') {
+          fromCanvas = window.__SPA_Views[fromSectionId].getTransitionCanvas(fromItemId);
+        }
+        window.__SPA_Transition.transition(fromCanvas, null, doShow);
+      } else {
+        doShow();
       }
-      window.__SPA_Transition.transition(fromCanvas, null, doShow);
     } else {
       doShow();
     }

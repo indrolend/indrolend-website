@@ -31,18 +31,24 @@
     Script load order (all deferred — execute in document order
     just before DOMContentLoaded fires):
 
-    1. particle-clusters.js  — exposes window.__SPA_initParticleCluster
-    2. importantWords.js     — exposes window.__SPA_ImportantWords
-    3. routes.js             — defines window.__INDROLEND_ROUTES__
-    4. transitionEngine.js   — exposes window.__SPA_Transition
-    5. overlayManager.js     — exposes window.__SPA_Overlay
-    6. views/*               — populate window.__SPA_Views
-    7. router.js             — exposes + auto-inits window.__SPA_Router
-    8. gestures.js           — exposes + auto-inits window.__SPA_Gestures
+    1. particle-clusters.js     — exposes window.__SPA_initParticleCluster
+    2. importantWords.js        — exposes window.__SPA_ImportantWords
+    3. routes.js                — defines window.__INDROLEND_ROUTES__
+    4. gifler.min.js            — exposes window.gifler (GIF frame decoder/player)
+    5. particlecarousel.engine.js — exposes window.ParticleCarouselEngine
+    6. gifCarouselPanel.js      — exposes window.GifCarouselPanel (SPA wrapper)
+    7. transitionEngine.js      — exposes window.__SPA_Transition
+    8. overlayManager.js        — exposes window.__SPA_Overlay
+    9. views/*                  — populate window.__SPA_Views
+    10. router.js               — exposes + auto-inits window.__SPA_Router
+    11. gestures.js             — exposes + auto-inits window.__SPA_Gestures
   -->
   <script defer src="js/particle-clusters.js"></script>
   <script defer src="js/spa/typography/importantWords.js"></script>
   <script defer src="js/spa/routes.js"></script>
+  <script defer src="js/gifler.min.js"></script>
+  <script defer src="js/particlecarousel.engine.js"></script>
+  <script defer src="js/spa/gifCarouselPanel.js"></script>
   <script defer src="js/spa/transitionEngine.js"></script>
   <script defer src="js/spa/overlayManager.js"></script>
   <script defer src="js/spa/views/homeView.js"></script>

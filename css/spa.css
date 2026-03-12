@@ -103,6 +103,55 @@ body.spa-mode {
   height: 100%;
 }
 
+/* ── GIF Carousel Panel (Social / Music animated-GIF items) ─────────────────── */
+/* The container is absolute-fill inside #spa-view-host, above empty view divs.  */
+.spa-carousel-host {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* Particle canvas — filled to viewport by the engine's _resize() */
+.spa-carousel-particle {
+  position: absolute;
+  inset: 0;
+}
+
+/* GIF canvas — centred; gifler sets intrinsic width/height to GIF dimensions.
+   CSS scales the element for display while keeping the bitmap 1:1.             */
+.spa-carousel-gif {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  max-width: min(70vw, 420px);
+  max-height: min(calc(var(--vh, 1vh) * 65), 420px);
+  width: auto;
+  height: auto;
+  pointer-events: auto;
+  cursor: pointer;
+  display: none; /* revealed by engine when first GIF frame is ready */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.spa-carousel-gif.visible {
+  display: block;
+}
+
+/* ── About section links ────────────────────────────────────────────────────── */
+.spa-about-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.spa-about-link:hover .important-word-letter,
+.spa-about-link:focus .important-word-letter {
+  font-style: italic;
+}
+
 .spa-poster-label {
   text-align: center;
   font-size: 2rem;
