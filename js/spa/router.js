@@ -16,6 +16,10 @@
   var currentItem    = null;
   var transitioning  = false;
 
+  // Duration (ms) to hold the transitioning lock when a carousel view handles its
+  // own item-level animation (explode + spring-morph + GIF load).
+  var CAROUSEL_ANIMATION_DURATION = 900;
+
   // ─── helpers ────────────────────────────────────────────────────────────────
 
   function getViewHost() {
@@ -132,10 +136,10 @@
         // but hold transitioning = true briefly to prevent rapid double-swipes.
         transitioning = true;
         doShow(); // sets transitioning = false internally
-        // Re-assert the lock for the carousel animation window (~900 ms covers
-        // both the explode phase and the spring-morph + GIF-load phases).
+        // Re-assert the lock for the carousel animation window.
+        // CAROUSEL_ANIMATION_DURATION covers explode + spring-morph + GIF-load phases.
         transitioning = true;
-        setTimeout(function () { transitioning = false; }, 900);
+        setTimeout(function () { transitioning = false; }, CAROUSEL_ANIMATION_DURATION);
       } else if (window.__SPA_Transition) {
         transitioning = true;
         var fromCanvas = null;

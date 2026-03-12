@@ -41,8 +41,7 @@
     self.gifCanvas.addEventListener('click', function () {
       var slide = self.slides[self._currentIdx];
       if (slide && slide.href) {
-        var win = window.open(slide.href, '_blank');
-        if (win) win.opener = null;
+        window.open(slide.href, '_blank', 'noopener,noreferrer');
       }
     });
   }
