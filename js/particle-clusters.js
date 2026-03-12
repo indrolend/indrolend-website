@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     applemusic: ["#FC3C44", "#FA243C", "#FFFFFF"], // Red, White
     youtube: ["#FF0000", "#282828", "#FFFFFF"], // Red, Dark Gray, White
     bandcamp: ["#629AA9", "#1DA0C3", "#FFFFFF"], // Blue tones
+    soundcloud: ["#FF5500", "#FF7700", "#FFAA00"], // Orange tones
     gallery: ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#9400D3"], // Rainbow explosion colors
     galleryLocked: ["#888888"], // Single gray particle when locked
     journal: ["#6dd9e8", "#5ee87d", "#FFFFFF"] // Terminal green/cyan theme
@@ -258,4 +259,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const platformKey = canvas.getAttribute("data-particle-cluster");
     initParticleCluster(canvas, platformKey);
   });
+
+  // Expose for SPA dynamic view mounting (canvases created after DOMContentLoaded).
+  // Guards against double-initialisation via canvas.dataset.clusterInit.
+  // Uses requestAnimationFrame so the canvas has correct layout dimensions
+  // even when called synchronously during a DOMContentLoaded handler.
+  window.__SPA_initParticleCluster = function(canvas, platformKey) {
+    if (canvas.dataset.clusterInit) return;
+    canvas.dataset.clusterInit = 'true';
+    requestAnimationFrame(function() {
+      initParticleCluster(canvas, platformKey);
+    });
+  };
 });
