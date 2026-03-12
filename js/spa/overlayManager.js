@@ -10,21 +10,19 @@
   var overlayRoot = null;
   var _isOpen = false;
 
-  // SoundCloud archive year links (placeholders — update URLs per release)
+  // SoundCloud archive links — year ranges match the discography page
   var SOUNDCLOUD_YEARS = [
-    { year: 2020, url: 'https://soundcloud.com/indrolend' },
-    { year: 2021, url: 'https://soundcloud.com/indrolend' },
-    { year: 2022, url: 'https://soundcloud.com/indrolend' },
-    { year: 2023, url: 'https://soundcloud.com/indrolend' },
-    { year: 2024, url: 'https://soundcloud.com/indrolend' },
-    { year: 2025, url: 'https://soundcloud.com/indrolend' }
+    { label: '2024\u20132025', url: 'https://soundcloud.com/indrolend-783494030' },
+    { label: '2024',           url: 'https://soundcloud.com/indrolend1'           },
+    { label: '2023',           url: 'https://soundcloud.com/indrolend'            },
+    { label: '2022',           url: 'https://soundcloud.com/indrolendarchive2022' }
   ];
 
   var overlayBuilders = {
     soundcloudArchiveMenu: function () {
       var linksHtml = SOUNDCLOUD_YEARS.map(function (entry) {
         return '<a class="spa-overlay-link" href="' + entry.url + '" target="_blank" rel="noopener">' +
-               entry.year + ' Archive' +
+               entry.label + ' Archive' +
                '</a>';
       }).join('');
 

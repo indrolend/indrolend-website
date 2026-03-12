@@ -262,6 +262,7 @@ body.spa-mode {
 .spa-overlay-title {
   font-size: 2rem;
   text-align: center;
+  white-space: nowrap;
 }
 
 .spa-overlay-subtitle {

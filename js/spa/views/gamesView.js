@@ -12,7 +12,6 @@
               '<span class="important-word">Asymptote engine</span>' +
             '</a>' +
           '</div>' +
-          '<p class="spa-poster-hint">idle game engine &mdash; tap to play</p>' +
         '</div>' +
       '</div>';
   }
