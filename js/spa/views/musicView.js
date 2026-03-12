@@ -29,11 +29,10 @@
           '</div>' +
         '</div>';
 
+      // Store canvas reference; particle cluster is initialised in onActivate
+      // so the canvas has correct dimensions when the view is actually visible.
       var cv = container.querySelector('[data-particle-cluster]');
-      if (cv) {
-        mountedCanvases[itemId] = cv;
-        initCluster(cv, item.platform);
-      }
+      if (cv) mountedCanvases[itemId] = cv;
 
     } else {
       // Text poster for SoundCloud
@@ -60,19 +59,14 @@
     }
   }
 
-  function initCluster(cv, platform) {
-    if (cv.dataset.clusterInit) return;
-    cv.dataset.clusterInit = 'true';
-    if (window.__SPA_initParticleCluster) {
-      window.__SPA_initParticleCluster(cv, platform);
-    }
-  }
-
+  // Called after the view becomes visible — safe to read layout dimensions here.
   function onActivate(itemId) {
     var item = META[itemId];
     if (!item || item.type !== 'canvas') return;
     var cv = mountedCanvases[itemId];
-    if (cv) initCluster(cv, item.platform);
+    if (cv && window.__SPA_initParticleCluster) {
+      window.__SPA_initParticleCluster(cv, item.platform);
+    }
   }
 
   function getTransitionCanvas(itemId) {

@@ -262,9 +262,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Expose for SPA dynamic view mounting (canvases created after DOMContentLoaded).
   // Guards against double-initialisation via canvas.dataset.clusterInit.
+  // Uses requestAnimationFrame so the canvas has correct layout dimensions
+  // even when called synchronously during a DOMContentLoaded handler.
   window.__SPA_initParticleCluster = function(canvas, platformKey) {
     if (canvas.dataset.clusterInit) return;
     canvas.dataset.clusterInit = 'true';
-    initParticleCluster(canvas, platformKey);
+    requestAnimationFrame(function() {
+      initParticleCluster(canvas, platformKey);
+    });
   };
 });
