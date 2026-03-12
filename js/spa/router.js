@@ -200,7 +200,6 @@
   function updateNav() {
     updateSectionLinks();
     updateItemDots();
-    updateSectionIndicator();
   }
 
   function updateSectionLinks() {
@@ -243,13 +242,6 @@
       btn.addEventListener('click', function () { go(currentSection, iid); });
       itemNavEl.appendChild(btn);
     });
-  }
-
-  function updateSectionIndicator() {
-    var el = document.getElementById('spa-section-indicator');
-    if (!el || !currentSection || !currentItem) return;
-    var meta = routes.items[viewKey(currentSection, currentItem)];
-    el.textContent = meta ? meta.label : currentItem;
   }
 
   // ─── hash change handler ────────────────────────────────────────────────────
