@@ -38,9 +38,11 @@
     self.container.appendChild(self.particleCanvas);
     self.container.appendChild(self.gifCanvas);
 
-  // Milliseconds to debounce rapid clicks (prevents double-fire when both
-  // gifCanvas and particleCanvas receive a pointer event simultaneously).
-  var CLICK_DEBOUNCE_MS = 350;
+    // Milliseconds to debounce rapid clicks (prevents double-fire when both
+    // gifCanvas and particleCanvas receive a pointer event simultaneously).
+    var CLICK_DEBOUNCE_MS = 350;
+    var clickPending      = false;
+
     function handleClick() {
       if (clickPending) return;
       clickPending = true;

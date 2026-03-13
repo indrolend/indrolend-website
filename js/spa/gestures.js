@@ -46,6 +46,8 @@
 
   function onTouchStart(e) {
     if (e.touches.length !== 1) return;
+    // homeView owns all interactions while the home section is active
+    if (document.body.classList.contains('spa-at-home')) return;
     var t = e.touches[0];
     startX = t.clientX;
     startY = t.clientY;
@@ -58,6 +60,8 @@
   function onTouchEnd(e) {
     if (!active) return;
     active = false;
+    // homeView owns all interactions while the home section is active
+    if (document.body.classList.contains('spa-at-home')) return;
 
     if (!e.changedTouches || e.changedTouches.length === 0) return;
 
