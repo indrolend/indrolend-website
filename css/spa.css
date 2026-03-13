@@ -52,24 +52,73 @@ body.spa-mode {
   font-size: 2rem;
 }
 
-/* ── Home swarm ─────────────────────────────────────────────────────────────── */
+/* ── Home canvas (legacy — kept for reference; homeView no longer uses a canvas) */
 .spa-home-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: auto;
+  display: none;
 }
 
-.spa-home-label {
-  position: absolute;
-  bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
-  left: 0;
-  right: 0;
-  text-align: center;
-  pointer-events: none;
-  font-size: 1.8rem;
-  z-index: 2;
+/* ── Home nav (5 section words, centered on home screen) ───────────────────── */
+.spa-home-nav {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  height: 100%;
+  gap: 0.85rem;
+}
+
+.spa-home-nav-word {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  font-size: clamp(2rem, 6.5vw, 3.8rem);
+  color: var(--text-main, #f5f7ff);
+  padding: 0.15rem 1.2rem;
+  letter-spacing: 0.07em;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-transition: color 0.18s;
+  transition: color 0.18s;
+}
+
+.spa-home-nav-word:hover .important-word-letter,
+.spa-home-nav-word:focus .important-word-letter {
+  color: var(--terminal-green, #6dd9e8);
+}
+
+/* Flash animation — "home" word pulses teal on first entry as a tap hint */
+@-webkit-keyframes spa-home-flash {
+  0%, 100% { color: var(--text-main, #f5f7ff); text-shadow: none; }
+  50%  {
+    color: var(--terminal-green, #6dd9e8);
+    text-shadow: 0 0 18px rgba(109,217,232,0.75), 0 0 36px rgba(109,217,232,0.35);
+  }
+}
+@keyframes spa-home-flash {
+  0%, 100% { color: var(--text-main, #f5f7ff); text-shadow: none; }
+  50%  {
+    color: var(--terminal-green, #6dd9e8);
+    text-shadow: 0 0 18px rgba(109,217,232,0.75), 0 0 36px rgba(109,217,232,0.35);
+  }
+}
+
+.spa-home-flash {
+  -webkit-animation: spa-home-flash 0.48s ease-in-out 3;
+  animation: spa-home-flash 0.48s ease-in-out 3;
+}
+
+/* Hide top nav bar and item dots while on the home screen */
+body.spa-at-home #spa-nav,
+body.spa-at-home #spa-item-nav {
+  display: none;
 }
 
 /* ── Poster views (Social / Music canvas items) ─────────────────────────────── */

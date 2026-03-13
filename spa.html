@@ -37,11 +37,13 @@
     4. gifler.min.js            — exposes window.gifler (GIF frame decoder/player)
     5. particlecarousel.engine.js — exposes window.ParticleCarouselEngine
     6. gifCarouselPanel.js      — exposes window.GifCarouselPanel (SPA wrapper)
-    7. transitionEngine.js      — exposes window.__SPA_Transition
-    8. overlayManager.js        — exposes window.__SPA_Overlay
-    9. views/*                  — populate window.__SPA_Views
-    10. router.js               — exposes + auto-inits window.__SPA_Router
-    11. gestures.js             — exposes + auto-inits window.__SPA_Gestures
+    7. textPoster.js            — exposes window.__SPA_TextPoster (text → Image utility)
+    8. introAnimation.js        — exposes window.__SPA_IntroAnimation (chaos-emerald swirl)
+    9. transitionEngine.js      — exposes window.__SPA_Transition
+    10. overlayManager.js       — exposes window.__SPA_Overlay
+    11. views/*                 — populate window.__SPA_Views
+    12. router.js               — exposes + auto-inits window.__SPA_Router (after intro)
+    13. gestures.js             — exposes + auto-inits window.__SPA_Gestures
   -->
   <script defer src="js/particle-clusters.js"></script>
   <script defer src="js/spa/typography/importantWords.js"></script>
@@ -49,6 +51,8 @@
   <script defer src="js/gifler.min.js"></script>
   <script defer src="js/particlecarousel.engine.js"></script>
   <script defer src="js/spa/gifCarouselPanel.js"></script>
+  <script defer src="js/spa/textPoster.js"></script>
+  <script defer src="js/spa/introAnimation.js"></script>
   <script defer src="js/spa/transitionEngine.js"></script>
   <script defer src="js/spa/overlayManager.js"></script>
   <script defer src="js/spa/views/homeView.js"></script>

@@ -22,7 +22,7 @@
     soundcloudArchiveMenu: function () {
       var linksHtml = SOUNDCLOUD_YEARS.map(function (entry) {
         return '<a class="spa-overlay-link" href="' + entry.url + '" target="_blank" rel="noopener">' +
-               entry.label + ' Archive' +
+               entry.label +
                '</a>';
       }).join('');
 

@@ -310,8 +310,12 @@
     getCurrentRoute: getCurrentRoute
   };
 
-  // Self-initialize on DOMContentLoaded
+  // Self-initialize on DOMContentLoaded — delayed until after intro animation
   document.addEventListener('DOMContentLoaded', function () {
-    init();
+    if (typeof window.__SPA_IntroAnimation !== 'undefined') {
+      window.__SPA_IntroAnimation.run(function () { init(); });
+    } else {
+      init();
+    }
   });
 }());

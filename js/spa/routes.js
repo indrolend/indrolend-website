@@ -78,25 +78,25 @@ window.__INDROLEND_ROUTES__ = {
     'about/spotifyAnalytics': {
       label: 'spotify analytics',
       transitionSource: 'textPoster',
-      scroll: { mode: 'vertical', edgeGatedSwipe: true },
+      scroll: { mode: 'none', edgeGatedSwipe: false },
       clickAction: 'none'
     },
     'about/discography': {
       label: 'discography',
       transitionSource: 'textPoster',
-      scroll: { mode: 'vertical', edgeGatedSwipe: true },
+      scroll: { mode: 'none', edgeGatedSwipe: false },
       clickAction: 'none'
     },
     'about/devHistory': {
       label: 'development history',
       transitionSource: 'textPoster',
-      scroll: { mode: 'vertical', edgeGatedSwipe: true },
+      scroll: { mode: 'none', edgeGatedSwipe: false },
       clickAction: 'none'
     },
     'about/journal': {
       label: 'journal',
       transitionSource: 'textPoster',
-      scroll: { mode: 'vertical', edgeGatedSwipe: true },
+      scroll: { mode: 'none', edgeGatedSwipe: false },
       clickAction: 'none'
     }
   }
