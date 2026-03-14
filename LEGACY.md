@@ -4,11 +4,12 @@
 
 The legacy MPA (Multi-Page Application) is the original Indrolend website — a
 set of traditional HTML pages with individual scripts and CSS. It has been
-**frozen** and relocated into the `/legacy` directory as part of the hard
-cutover to the SPA as the canonical entry point.
+relocated into the `/legacy` directory as part of the SPA/legacy separation
+refactor and is the **current production default**.
 
-No new features will be added to the legacy MPA. Bug fixes and content updates
-should happen in the SPA (`spa.html`).
+`index.html` redirects here. New features will be developed in the SPA
+(`spa.html`), but the legacy MPA remains the live site until the SPA is
+promoted from beta.
 
 ---
 
@@ -59,8 +60,8 @@ Open any page directly by navigating to its path:
 | Dev History     | `legacy/pages/dev-history.html`   |
 | Asymptote game  | `asymptote/index.html`            |
 
-The legacy pages are **not** linked from `index.html` or `spa.html`. They are
-preserved for reference and backward compatibility only.
+The legacy pages are linked from `index.html` (via redirect) but not from
+`spa.html`.
 
 ---
 
@@ -81,7 +82,10 @@ are unchanged because all pages moved together.
 
 ---
 
-## Canonical entry point
+## Entry point
 
-`index.html` now redirects immediately to `spa.html`. The SPA is the canonical
-entry point for the site.
+`index.html` redirects to `legacy/pages/home.html` — the legacy MPA is the
+current production default.
+
+The SPA is available at `spa.html` (beta). When the SPA is ready to be
+promoted, `index.html` will be updated to point there instead.

@@ -4,8 +4,8 @@
 
 ```
 indrolend-website/
-├── index.html                 # Canonical entry point — redirects to spa.html
-├── spa.html                   # SPA shell (primary experience)
+├── index.html                 # Site entry point — redirects to legacy/pages/home.html
+├── spa.html                   # SPA shell (beta — open directly at /spa.html)
 ├── legacy/                    # Frozen MPA (preserved, not linked from SPA)
 │   ├── pages/                 # Legacy HTML pages
 │   │   ├── home.html         # Legacy main home page
@@ -80,10 +80,10 @@ indrolend-website/
 ## File Relationships
 
 ### Entry Flow
-1. **index.html** → immediate redirect → **spa.html** (SPA, canonical)
-2. **spa.html** → SPA router → hash-based views (home, social, music, games, about)
+1. **index.html** → immediate redirect → **legacy/pages/home.html** (legacy MPA, current default)
+2. **spa.html** → SPA router → hash-based views (home, social, music, games, about) *(beta — open directly)*
 
-### Legacy MPA (access directly, not via index.html)
+### Legacy MPA (current default, reached via index.html)
 1. **legacy/pages/home.html** → Legacy hub with social links and mini-apps
 2. **legacy/pages/tictactoe.html** → Win to unlock **legacy/pages/gallery.html**
 3. **legacy/pages/gallery.html** → Browse image collection

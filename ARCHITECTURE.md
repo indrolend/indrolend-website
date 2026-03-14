@@ -2,29 +2,29 @@
 
 ## Overview
 
-`index.html` is the canonical entry point. It performs an immediate redirect to
-`spa.html`, making the SPA the primary experience for all visitors.
+`index.html` is the site entry point. It redirects to the **legacy MPA**
+(`legacy/pages/home.html`), which is the current production default.
 
-The legacy MPA (Multi-Page Application) has been relocated into `/legacy` and
-is frozen. See [LEGACY.md](LEGACY.md) for details.
+The **SPA** (`spa.html`) is available as a beta experience at its own URL. It
+is not the default yet.
 
-1. **SPA mode** — canonical entry `index.html` → `spa.html`. A single-page
-   application built in vanilla JS without a framework. Hash-based routing,
-   canvas-heavy views, fullscreen transition effects.
-2. **Legacy MPA** — frozen traditional pages under `legacy/pages/`. Preserved
-   for reference; not linked from the SPA.
+1. **Legacy MPA** — current default. `index.html` → `legacy/pages/home.html`.
+   Traditional multi-page application; pages share CSS with the SPA.
+2. **SPA (beta)** — accessible at `spa.html`. Single-page application built in
+   vanilla JS without a framework. Hash-based routing, canvas-heavy views,
+   fullscreen transition effects.
 
-This document covers SPA mode.
+The `/legacy` directory holds the frozen MPA code. See [LEGACY.md](LEGACY.md)
+for details.
+
+This document covers SPA mode internals.
 
 ---
 
 ## SPA Layer Diagram
 
 ```
-index.html  (redirect only — forwards immediately to spa.html)
-    │
-    ▼
-spa.html
+spa.html  (beta — open directly at /spa.html)
 │
 ├── css/style.css          shared base styles
 ├── css/spa.css            SPA layout overrides
