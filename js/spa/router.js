@@ -99,8 +99,7 @@
       if (window.__SPA_Views && window.__SPA_Views[sectionId]) {
         window.__SPA_Views[sectionId].mount(itemId, el);
       } else {
-        var itemKey = modeViewKey('item', sectionId, itemId);
-        var meta    = routes.items[itemKey];
+        var meta = routes.items[sectionId + '/' + itemId];
         var label   = meta ? meta.label : itemKey;
         el.innerHTML =
           '<div class="spa-view-fallback">' +
