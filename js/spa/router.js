@@ -1,17 +1,22 @@
 // SPA Hash Router
-// Manages view mounting/caching, hash-based navigation, and the nav indicator UI.
+// Manages view mounting/caching, hash-based navigation, and nav UI.
+// Supports three route modes:
+//   idle    → #/idle
+//   section → #/<sectionId>
+//   item    → #/<sectionId>/<itemId>
 //
 // Public API: window.__SPA_Router
 //   .init()
-//   .go(sectionId, itemId)
-//   .nextSection() / .prevSection()
-//   .nextItem()    / .prevItem()
-//   .getCurrentRoute() → { sectionId, itemId }
+//   .go(sectionId, itemId)         — navigate to item mode
+//   .nextSection() / .prevSection() — wrap-around section navigation (section mode)
+//   .nextItem()    / .prevItem()    — wrap-around item navigation (item mode)
+//   .getCurrentRoute() → { mode, sectionId, itemId }
 
 (function () {
-  var routes = null;        // set during init from window.__INDROLEND_ROUTES__
-  var viewHost = null;
-  var mountedViews = {};    // "sectionId/itemId" → DOM element
+  var routes       = null;     // set during init from window.__INDROLEND_ROUTES__
+  var viewHost     = null;
+  var mountedViews = {};       // viewKey → DOM element
+  var currentMode    = null;   // 'idle' | 'section' | 'item'
   var currentSection = null;
   var currentItem    = null;
   var transitioning  = false;
@@ -23,13 +28,43 @@
     return viewHost;
   }
 
+  // Returns { mode, sectionId, itemId } or { mode: 'redirect', target }
   function parseHash(hash) {
-    var parts = (hash || '').replace(/^#\/?/, '').split('/');
-    return { sectionId: parts[0] || 'home', itemId: parts[1] || null };
+    var raw = (hash || '').replace(/^#\/?/, '');
+
+    // Empty hash → idle
+    if (!raw) return { mode: 'idle', sectionId: null, itemId: null };
+
+    var parts   = raw.split('/');
+    var first   = parts[0];
+    var second  = parts[1] || null;
+
+    // Explicit idle
+    if (first === 'idle') return { mode: 'idle', sectionId: null, itemId: null };
+
+    // Legacy home routes → idle
+    if (first === 'home') return { mode: 'redirect', target: '#/idle' };
+
+    // Unknown section → idle
+    if (!routes.sections[first]) return { mode: 'redirect', target: '#/idle' };
+
+    // Section only
+    if (!second) return { mode: 'section', sectionId: first, itemId: null };
+
+    // Valid section + item
+    var sectionItems = routes.sections[first].items;
+    if (sectionItems.indexOf(second) !== -1) {
+      return { mode: 'item', sectionId: first, itemId: second };
+    }
+
+    // Invalid item → fall back to section mode
+    return { mode: 'redirect', target: '#/' + first };
   }
 
-  function buildHash(sectionId, itemId) {
-    return '#/' + sectionId + (itemId ? '/' + itemId : '');
+  function modeViewKey(mode, sectionId, itemId) {
+    if (mode === 'idle')    return '__idle__';
+    if (mode === 'section') return '__section__:' + sectionId;
+    return sectionId + '/' + itemId;
   }
 
   function defaultItem(sectionId) {
@@ -37,14 +72,10 @@
     return s ? s.items[0] : null;
   }
 
-  function viewKey(sectionId, itemId) {
-    return sectionId + '/' + itemId;
-  }
-
   // ─── view mounting ──────────────────────────────────────────────────────────
 
-  function mountView(sectionId, itemId) {
-    var key = viewKey(sectionId, itemId);
+  function mountView(mode, sectionId, itemId) {
+    var key = modeViewKey(mode, sectionId, itemId);
     if (mountedViews[key]) return mountedViews[key];
 
     var host = getViewHost();
@@ -55,19 +86,32 @@
     el.dataset.spaView = key;
     el.style.display = 'none';
 
-    // Delegate to section view module if available
-    if (window.__SPA_Views && window.__SPA_Views[sectionId]) {
-      window.__SPA_Views[sectionId].mount(itemId, el);
+    if (mode === 'idle') {
+      if (window.__SPA_Views && window.__SPA_Views.idle) {
+        window.__SPA_Views.idle.mount(el);
+      }
+    } else if (mode === 'section') {
+      if (window.__SPA_Views && window.__SPA_Views.sectionCarousel) {
+        window.__SPA_Views.sectionCarousel.mount(sectionId, el);
+      }
     } else {
-      var meta  = routes.items[key];
-      var label = meta ? meta.label : key;
-      el.innerHTML = '<div class="spa-view-fallback"><span class="important-word">' + label + '</span></div>';
+      // item mode — delegate to section view module
+      if (window.__SPA_Views && window.__SPA_Views[sectionId]) {
+        window.__SPA_Views[sectionId].mount(itemId, el);
+      } else {
+        var itemKey = modeViewKey('item', sectionId, itemId);
+        var meta    = routes.items[itemKey];
+        var label   = meta ? meta.label : itemKey;
+        el.innerHTML =
+          '<div class="spa-view-fallback">' +
+            '<span class="important-word">' + label + '</span>' +
+          '</div>';
+      }
     }
 
     host.appendChild(el);
     mountedViews[key] = el;
 
-    // Run important-word initialisation for any text in the new view
     if (window.__SPA_ImportantWords) {
       window.__SPA_ImportantWords.init(el);
     }
@@ -77,20 +121,21 @@
 
   // ─── view display ───────────────────────────────────────────────────────────
 
-  function showView(sectionId, itemId, skipTransition) {
-    var key       = viewKey(sectionId, itemId);
-    var view      = mountView(sectionId, itemId);
+  function showView(mode, sectionId, itemId, skipTransition) {
+    var view = mountView(mode, sectionId, itemId);
     if (!view) return;
 
-    var fromSectionId = currentSection;
-    var fromItemId    = currentItem;
-    var fromKey       = fromSectionId && fromItemId ? viewKey(fromSectionId, fromItemId) : null;
-    var fromView      = fromKey ? mountedViews[fromKey] : null;
+    var fromMode    = currentMode;
+    var fromSection = currentSection;
+    var fromItem    = currentItem;
+    var fromKey     = fromMode ? modeViewKey(fromMode, fromSection, fromItem) : null;
+    var fromView    = fromKey ? mountedViews[fromKey] : null;
 
-    // Notify old view it is being deactivated (e.g. stop particle loops)
-    if (fromSectionId && window.__SPA_Views && window.__SPA_Views[fromSectionId] &&
-        typeof window.__SPA_Views[fromSectionId].onDeactivate === 'function') {
-      window.__SPA_Views[fromSectionId].onDeactivate(fromItemId);
+    // Notify old item view it is being deactivated
+    if (fromMode === 'item' && fromSection &&
+        window.__SPA_Views && window.__SPA_Views[fromSection] &&
+        typeof window.__SPA_Views[fromSection].onDeactivate === 'function') {
+      window.__SPA_Views[fromSection].onDeactivate(fromItem);
     }
 
     function doShow() {
@@ -104,26 +149,30 @@
       view.style.display = '';
       view.classList.add('spa-view-active');
 
+      currentMode    = mode;
       currentSection = sectionId;
       currentItem    = itemId;
       transitioning  = false;
 
       updateNav();
+      updateBackButton(mode);
 
-      // Notify new view it is now active (e.g. start particle loops)
-      if (window.__SPA_Views && window.__SPA_Views[sectionId] &&
+      // Notify new item view it is now active
+      if (mode === 'item' &&
+          window.__SPA_Views && window.__SPA_Views[sectionId] &&
           typeof window.__SPA_Views[sectionId].onActivate === 'function') {
         window.__SPA_Views[sectionId].onActivate(itemId, view);
       }
     }
 
-    // Run transition only when switching between two real views
+    // Run transition when switching between two real views
     if (!skipTransition && fromView && window.__SPA_Transition) {
       transitioning = true;
       var fromCanvas = null;
-      if (window.__SPA_Views && window.__SPA_Views[fromSectionId] &&
-          typeof window.__SPA_Views[fromSectionId].getTransitionCanvas === 'function') {
-        fromCanvas = window.__SPA_Views[fromSectionId].getTransitionCanvas(fromItemId);
+      if (fromMode === 'item' &&
+          window.__SPA_Views && window.__SPA_Views[fromSection] &&
+          typeof window.__SPA_Views[fromSection].getTransitionCanvas === 'function') {
+        fromCanvas = window.__SPA_Views[fromSection].getTransitionCanvas(fromItem);
       }
       window.__SPA_Transition.transition(fromCanvas, null, doShow);
     } else {
@@ -133,19 +182,28 @@
 
   // ─── navigation API ─────────────────────────────────────────────────────────
 
-  function navigate(sectionId, itemId, skipTransition) {
+  function navigate(mode, sectionId, itemId, skipTransition) {
     if (transitioning) return;
-    if (!routes.sections[sectionId]) return;
 
-    itemId = itemId || defaultItem(sectionId);
-    var items = routes.sections[sectionId].items;
-    if (items.indexOf(itemId) === -1) itemId = defaultItem(sectionId);
+    var newHash;
 
-    var newHash = buildHash(sectionId, itemId);
+    if (mode === 'idle') {
+      newHash = '#/idle';
+    } else if (mode === 'section') {
+      if (!routes.sections[sectionId]) return;
+      newHash = '#/' + sectionId;
+    } else {
+      // item mode
+      if (!routes.sections[sectionId]) return;
+      itemId = itemId || defaultItem(sectionId);
+      var items = routes.sections[sectionId].items;
+      if (items.indexOf(itemId) === -1) itemId = defaultItem(sectionId);
+      newHash = '#/' + sectionId + '/' + itemId;
+    }
 
     if (window.location.hash === newHash) {
-      // Already here — just make sure it's shown (e.g. on first load)
-      showView(sectionId, itemId, skipTransition);
+      // Already here — ensure it's shown (e.g. on first load)
+      showView(mode, sectionId, itemId, skipTransition);
       return;
     }
 
@@ -153,49 +211,56 @@
     window.location.hash = newHash;
   }
 
+  // go() preserves backward-compatible item-mode navigation
   function go(sectionId, itemId) {
-    navigate(sectionId, itemId);
+    navigate('item', sectionId, itemId);
   }
 
   function nextSection() {
     if (!currentSection) return;
-    var idx = routes.sectionOrder.indexOf(currentSection);
-    if (idx < routes.sectionOrder.length - 1) {
-      go(routes.sectionOrder[idx + 1]);
-    }
+    var order  = routes.sectionOrder;
+    var idx    = order.indexOf(currentSection);
+    var next   = (idx + 1) % order.length;
+    navigate('section', order[next], null);
   }
 
   function prevSection() {
     if (!currentSection) return;
-    var idx = routes.sectionOrder.indexOf(currentSection);
-    if (idx > 0) {
-      go(routes.sectionOrder[idx - 1]);
-    }
+    var order  = routes.sectionOrder;
+    var idx    = order.indexOf(currentSection);
+    var prev   = (idx - 1 + order.length) % order.length;
+    navigate('section', order[prev], null);
   }
 
   function nextItem() {
-    if (!currentSection || !currentItem) return;
+    if (currentMode !== 'item' || !currentSection || !currentItem) return;
     var items = routes.sections[currentSection].items;
-    var idx = items.indexOf(currentItem);
-    if (idx < items.length - 1) {
-      go(currentSection, items[idx + 1]);
-    }
+    var idx   = items.indexOf(currentItem);
+    var next  = (idx + 1) % items.length;
+    navigate('item', currentSection, items[next]);
   }
 
   function prevItem() {
-    if (!currentSection || !currentItem) return;
+    if (currentMode !== 'item' || !currentSection || !currentItem) return;
     var items = routes.sections[currentSection].items;
-    var idx = items.indexOf(currentItem);
-    if (idx > 0) {
-      go(currentSection, items[idx - 1]);
-    }
+    var idx   = items.indexOf(currentItem);
+    var prev  = (idx - 1 + items.length) % items.length;
+    navigate('item', currentSection, items[prev]);
   }
 
   function getCurrentRoute() {
-    return { sectionId: currentSection, itemId: currentItem };
+    return { mode: currentMode, sectionId: currentSection, itemId: currentItem };
   }
 
-  // ─── nav UI ─────────────────────────────────────────────────────────────────
+  // ─── back button ────────────────────────────────────────────────────────────
+
+  function updateBackButton(mode) {
+    var btn = document.getElementById('spa-back-btn');
+    if (!btn) return;
+    btn.style.display = (mode === 'item') ? 'block' : 'none';
+  }
+
+  // ─── nav UI (kept functional; hidden via CSS) ───────────────────────────────
 
   function updateNav() {
     updateSectionLinks();
@@ -206,14 +271,13 @@
     var sectionsEl = document.getElementById('spa-nav-sections');
     if (!sectionsEl) return;
 
-    // Build links on first call
     if (!sectionsEl.dataset.built) {
       sectionsEl.dataset.built = 'true';
       routes.sectionOrder.forEach(function (sid) {
         var a = document.createElement('a');
         a.className = 'spa-nav-section-link';
         a.textContent = routes.sections[sid].label;
-        a.href = buildHash(sid, routes.sections[sid].items[0]);
+        a.href = '#/' + sid;
         a.dataset.section = sid;
         sectionsEl.appendChild(a);
       });
@@ -236,7 +300,7 @@
       btn.className = 'spa-item-dot' + (iid === currentItem ? ' active' : '');
       btn.dataset.section = currentSection;
       btn.dataset.item    = iid;
-      var meta = routes.items[viewKey(currentSection, iid)];
+      var meta = routes.items[currentSection + '/' + iid];
       btn.title = meta ? meta.label : iid;
       btn.setAttribute('aria-label', meta ? meta.label : iid);
       btn.addEventListener('click', function () { go(currentSection, iid); });
@@ -248,15 +312,20 @@
 
   function handleHashChange() {
     if (transitioning) return;
+
     var parsed = parseHash(window.location.hash);
-    var sid    = parsed.sectionId;
-    var iid    = parsed.itemId;
 
-    if (!routes.sections[sid]) { sid = 'home'; iid = null; }
-    iid = iid || defaultItem(sid);
+    if (parsed.mode === 'redirect') {
+      window.location.hash = parsed.target;
+      return;
+    }
 
-    if (sid === currentSection && iid === currentItem) return;
-    showView(sid, iid);
+    // Skip if already on this route
+    if (parsed.mode    === currentMode &&
+        parsed.sectionId === currentSection &&
+        parsed.itemId    === currentItem) return;
+
+    showView(parsed.mode, parsed.sectionId, parsed.itemId);
   }
 
   // ─── init ───────────────────────────────────────────────────────────────────
@@ -267,9 +336,17 @@
 
     window.addEventListener('hashchange', handleHashChange);
 
+    // Wire up back button
+    var backBtn = document.getElementById('spa-back-btn');
+    if (backBtn) {
+      backBtn.addEventListener('click', function () {
+        if (currentSection) navigate('section', currentSection, null);
+      });
+    }
+
     var hash = window.location.hash;
     if (!hash || hash === '#' || hash === '#/') {
-      window.location.hash = '#/home/swarm';
+      window.location.hash = '#/idle';
     } else {
       handleHashChange();
     }

@@ -325,93 +325,119 @@ body.spa-mode {
   color: var(--text-main, #f5f7ff);
 }
 
-/* ── Top navigation bar ─────────────────────────────────────────────────────── */
+/* ── Top navigation bar (hidden — navigation is now tap + swipe only) ────────── */
 #spa-nav {
+  display: none;
+}
+
+/* ── Item navigation dots (hidden — navigation is now tap + swipe only) ─────── */
+#spa-item-nav {
+  display: none;
+}
+
+/* ── Back button ────────────────────────────────────────────────────────────── */
+#spa-back-btn {
   position: fixed;
-  top: env(safe-area-inset-top, 0px);
-  left: 0;
-  right: 0;
+  top: calc(env(safe-area-inset-top, 0px) + 1rem);
+  left: calc(env(safe-area-inset-left, 0px) + 1rem);
   z-index: 50;
-  pointer-events: none; /* Allow clicks only on children */
-}
-
-.spa-nav-sections {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  justify-content: center;
-  gap: 0.15rem;
-  padding: 0.6rem 1rem 0.4rem;
-  background: rgba(0, 0, 0, 0.55);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  pointer-events: auto;
-}
-
-.spa-nav-section-link {
-  display: inline-block;
+  background: none;
+  border: 1px solid var(--border-subtle, rgba(109, 217, 232, 0.3));
   color: var(--text-muted, #8a92b3);
-  text-decoration: none;
-  font-size: 0.7rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.4rem;
   padding: 0.3rem 0.7rem;
-  border-radius: 3px;
+  border-radius: 4px;
+  cursor: pointer;
   -webkit-transition: color 0.2s, background 0.2s;
   transition: color 0.2s, background 0.2s;
-  font-family: 'EB Garamond', Georgia, serif;
+  /* Hidden by default; router shows it in item mode */
+  display: none;
 }
 
-.spa-nav-section-link:hover,
-.spa-nav-section-link:focus {
+#spa-back-btn:hover,
+#spa-back-btn:focus {
   color: var(--text-main, #f5f7ff);
   background: rgba(255, 255, 255, 0.06);
   outline: none;
 }
 
-.spa-nav-section-link.active {
-  color: var(--terminal-green, #6dd9e8);
-  background: rgba(109, 217, 232, 0.08);
-}
-
-/* ── Item navigation dots ───────────────────────────────────────────────────── */
-#spa-item-nav {
-  position: fixed;
-  bottom: calc(1.4rem + env(safe-area-inset-bottom, 0px));
-  left: 0;
-  right: 0;
+/* ── Idle view ──────────────────────────────────────────────────────────────── */
+.spa-idle-view {
   display: -webkit-box;
   display: -webkit-flex;
   display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
   -webkit-box-pack: center;
   -webkit-justify-content: center;
   justify-content: center;
-  gap: 0.55rem;
-  z-index: 50;
+  width: 100%;
+  height: 100%;
 }
 
-.spa-item-dot {
-  width: 7px;
-  height: 7px;
+.spa-idle-cluster {
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  border: none;
-  padding: 0;
+  background: radial-gradient(circle at 40% 40%,
+    rgba(109, 217, 232, 0.5) 0%,
+    rgba(109, 217, 232, 0.08) 60%,
+    transparent 100%);
+  border: 1px solid var(--border-subtle, rgba(109, 217, 232, 0.35));
   cursor: pointer;
-  background: rgba(109, 217, 232, 0.28);
-  -webkit-transition: background 0.25s, -webkit-transform 0.25s;
-  transition: background 0.25s, transform 0.25s;
+  -webkit-animation: spa-idle-pulse 2.4s ease-in-out infinite;
+  animation: spa-idle-pulse 2.4s ease-in-out infinite;
 }
 
-.spa-item-dot.active {
-  background: var(--terminal-green, #6dd9e8);
-  -webkit-transform: scale(1.35);
-  transform: scale(1.35);
+.spa-idle-cluster:hover,
+.spa-idle-cluster:focus {
+  outline: none;
+  border-color: var(--terminal-green, #6dd9e8);
 }
 
-.spa-item-dot:hover {
-  background: rgba(109, 217, 232, 0.6);
+@-webkit-keyframes spa-idle-pulse {
+  0%, 100% { -webkit-transform: scale(1);    opacity: 0.85; }
+  50%       { -webkit-transform: scale(1.12); opacity: 1;    }
+}
+@keyframes spa-idle-pulse {
+  0%, 100% { transform: scale(1);    opacity: 0.85; }
+  50%       { transform: scale(1.12); opacity: 1;    }
+}
+
+/* ── Section carousel view ──────────────────────────────────────────────────── */
+.spa-section-carousel-view {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.spa-section-hero-word {
+  font-size: clamp(3rem, 12vw, 8rem);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-weight: 500;
+  color: var(--text-main, #f5f7ff);
+  cursor: pointer;
+  letter-spacing: -0.02em;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-transition: opacity 0.2s;
+  transition: opacity 0.2s;
+}
+
+.spa-section-hero-word:hover,
+.spa-section-hero-word:focus {
+  outline: none;
+  opacity: 0.75;
 }
 
 /* ── Responsive tweaks ──────────────────────────────────────────────────────── */

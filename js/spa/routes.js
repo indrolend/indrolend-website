@@ -5,25 +5,17 @@
 window.__INDROLEND_ROUTES__ = {
 
   // Ordered list of top-level sections (horizontal swipe axis)
-  sectionOrder: ['home', 'social', 'music', 'games', 'about'],
+  sectionOrder: ['social', 'music', 'games', 'about'],
 
   sections: {
-    home:   { label: 'Home',   items: ['swarm'] },
     social: { label: 'Social', items: ['tiktok', 'instagram', 'youtube'] },
     music:  { label: 'Music',  items: ['spotify', 'appleMusic', 'bandcamp', 'soundcloud'] },
     games:  { label: 'Games',  items: ['asymptote'] },
-    about:  { label: 'About',  items: ['spotifyAnalytics', 'discography', 'devHistory', 'journal'] }
+    about:  { label: 'About',  items: ['journal', 'discography', 'devHistory'] }
   },
 
   // Per-item metadata keyed by "sectionId/itemId"
   items: {
-    'home/swarm': {
-      label: 'swarm',
-      transitionSource: 'canvasLive',
-      scroll: { mode: 'none', edgeGatedSwipe: false },
-      clickAction: 'none'
-    },
-
     'social/tiktok': {
       label: 'tiktok',
       transitionSource: 'canvasPoster',
@@ -75,8 +67,8 @@ window.__INDROLEND_ROUTES__ = {
       clickAction: 'asymptote/index.html'
     },
 
-    'about/spotifyAnalytics': {
-      label: 'spotify analytics',
+    'about/journal': {
+      label: 'journal',
       transitionSource: 'textPoster',
       scroll: { mode: 'vertical', edgeGatedSwipe: true },
       clickAction: 'none'
@@ -89,12 +81,6 @@ window.__INDROLEND_ROUTES__ = {
     },
     'about/devHistory': {
       label: 'development history',
-      transitionSource: 'textPoster',
-      scroll: { mode: 'vertical', edgeGatedSwipe: true },
-      clickAction: 'none'
-    },
-    'about/journal': {
-      label: 'journal',
       transitionSource: 'textPoster',
       scroll: { mode: 'vertical', edgeGatedSwipe: true },
       clickAction: 'none'

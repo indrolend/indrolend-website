@@ -6,10 +6,9 @@
 
 (function () {
   var ITEMS = {
-    spotifyAnalytics: { label: 'spotify analytics'  },
-    discography:      { label: 'discography'         },
-    devHistory:       { label: 'development history' },
-    journal:          { label: 'journal'             }
+    journal:     { label: 'journal'             },
+    discography: { label: 'discography'         },
+    devHistory:  { label: 'development history' }
   };
 
   function mount(itemId, container) {

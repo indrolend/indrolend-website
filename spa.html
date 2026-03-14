@@ -45,6 +45,8 @@
   <script defer src="js/spa/routes.js"></script>
   <script defer src="js/spa/transitionEngine.js"></script>
   <script defer src="js/spa/overlayManager.js"></script>
+  <script defer src="js/spa/views/idleView.js"></script>
+  <script defer src="js/spa/views/sectionCarouselView.js"></script>
   <script defer src="js/spa/views/homeView.js"></script>
   <script defer src="js/spa/views/socialView.js"></script>
   <script defer src="js/spa/views/musicView.js"></script>
@@ -71,6 +73,14 @@
     Hidden when idle; shown by the transition engine.
   -->
   <canvas id="spa-transition-canvas" aria-hidden="true"></canvas>
+
+  <!--
+    #spa-back-btn
+    Global back control shown only in item mode.
+    Tapping returns to the section carousel (#/<sectionId>).
+    Hidden by default; router.js toggles visibility based on mode.
+  -->
+  <button id="spa-back-btn" aria-label="Back">←</button>
 
   <!--
     Top navigation bar — section links rendered by router.js > updateNav()
