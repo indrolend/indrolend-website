@@ -6,7 +6,7 @@
 (function() {
   'use strict';
 
-  const JOURNAL_ENTRIES_URL = '../JOURNAL_ENTRIES.md';
+  const JOURNAL_ENTRIES_URL = '../../JOURNAL_ENTRIES.md';
 
   /**
    * Load journal entries from markdown file
