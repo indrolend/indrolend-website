@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   try {
     // Fetch the markdown file
-    const response = await fetch('../DEVELOPMENT_HISTORY.md');
+    const response = await fetch('../../DEVELOPMENT_HISTORY.md');
     if (!response.ok) {
       throw new Error(`Failed to load: ${response.status}`);
     }

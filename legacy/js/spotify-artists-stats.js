@@ -7,7 +7,7 @@
  * Dependencies: security-utils.js must be loaded first
  */
 
-const SPOTIFY_STATS_URL = '../data/spotify_stats.json';
+const SPOTIFY_STATS_URL = '../../data/spotify_stats.json';
 const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
 class SpotifyArtistsStatsDisplay {

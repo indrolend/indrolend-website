@@ -4,42 +4,72 @@
 
 ```
 indrolend-website/
-├── index.html                 # Entry point (fake captcha)
-├── pages/                     # All HTML pages
-│   ├── home.html             # Main home page
-│   ├── gallery.html          # Image gallery
-│   ├── tictactoe.html        # Gallery unlock game
-│   ├── wordgame.html         # Redirect to asymptote
-│   └── spotify-demo.html     # Spotify integration demo
-├── css/                       # Stylesheets
+├── index.html                 # Canonical entry point — redirects to spa.html
+├── spa.html                   # SPA shell (primary experience)
+├── legacy/                    # Frozen MPA (preserved, not linked from SPA)
+│   ├── pages/                 # Legacy HTML pages
+│   │   ├── home.html         # Legacy main home page
+│   │   ├── gallery.html      # Image gallery
+│   │   ├── tictactoe.html    # Gallery unlock game
+│   │   ├── discography.html  # Full discography listing
+│   │   ├── journal.html      # Journal entries
+│   │   ├── dev-history.html  # Development history
+│   │   ├── wordgame.html     # Redirect to asymptote/
+│   │   ├── spotify-demo.html # Spotify integration demo
+│   │   └── spotify-artists-test.html
+│   └── js/                   # MPA-only JavaScript
+│       ├── script.js
+│       ├── cursor-character-effect.js
+│       ├── dev-history.js
+│       ├── discography.js
+│       ├── easter-egg.js
+│       ├── journal.js
+│       ├── security-utils.js
+│       ├── spotify-analytics.js
+│       ├── spotify-analytics-data.js
+│       ├── spotify-artists-stats.js
+│       ├── spotify-integration.js
+│       └── engines/          # Legacy transition engines
+│           ├── particle-transition-engine.js
+│           └── genie-transition.js
+├── js/                        # SPA JavaScript
+│   └── spa/                  # SPA runtime modules
+│       ├── engines/          # Shared SPA engines
+│       │   └── particle-clusters.js
+│       ├── views/            # View modules
+│       │   ├── homeView.js
+│       │   ├── socialView.js
+│       │   ├── musicView.js
+│       │   ├── gamesView.js
+│       │   └── aboutView.js
+│       ├── typography/
+│       │   └── importantWords.js
+│       ├── gestures.js
+│       ├── overlayManager.js
+│       ├── router.js
+│       ├── routes.js
+│       └── transitionEngine.js
+├── css/                       # Stylesheets (shared by SPA and legacy)
 │   ├── style.css             # Main styles (unified)
-│   ├── spotify-styles.css    # Spotify component styles
-│   └── spotify-analytics-styles.css  # Analytics styles
-├── js/                        # JavaScript files
-│   ├── script.js             # Main application logic
-│   ├── spotify-integration.js
-│   ├── spotify-analytics.js
-│   └── spotify-analytics-data.js
+│   ├── spa.css               # SPA layout overrides
+│   ├── dev-history.css
+│   ├── discography.css
+│   ├── journal.css
+│   ├── spotify-analytics-styles.css
+│   ├── spotify-artists-stats.css
+│   └── spotify-styles.css
 ├── assets/                    # Static assets
 │   ├── icons/                # Animated GIF icons
-│   │   ├── Tiktoklogospin.gif
-│   │   ├── Instagramlogospin.gif
-│   │   ├── Spotifylogospin.gif
-│   │   ├── Applemusiclogospin.gif
-│   │   ├── Youtubelogospin.gif
-│   │   ├── bandcamplogospin.gif
-│   │   └── cameralogospin.GIF
 │   └── images/               # Static images
-│       └── 5992CDB8.jpg      # Header image
 ├── images/                    # Gallery images (53 files)
+├── asymptote/                 # Asymptote game engine (standalone)
+│   ├── index.html
+│   ├── src/
+│   └── styles/
 ├── backend/                   # Node.js backend
 │   ├── spotify-backend.js
 │   ├── package.json
 │   └── README.md
-├── asymptote/                 # Asymptote game engine
-│   ├── index.html
-│   ├── src/
-│   └── styles/
 ├── data/                      # JSON data files
 │   └── parsed-stats.json
 └── screenshots/               # Screenshot examples
@@ -50,10 +80,16 @@ indrolend-website/
 ## File Relationships
 
 ### Entry Flow
-1. **index.html** → Fake captcha → redirects to **pages/home.html**
-2. **pages/home.html** → Main hub with social links and mini-apps
-3. **pages/tictactoe.html** → Win to unlock **pages/gallery.html**
-4. **pages/gallery.html** → Browse image collection
+1. **index.html** → immediate redirect → **spa.html** (SPA, canonical)
+2. **spa.html** → SPA router → hash-based views (home, social, music, games, about)
+
+### Legacy MPA (access directly, not via index.html)
+1. **legacy/pages/home.html** → Legacy hub with social links and mini-apps
+2. **legacy/pages/tictactoe.html** → Win to unlock **legacy/pages/gallery.html**
+3. **legacy/pages/gallery.html** → Browse image collection
+4. **legacy/pages/wordgame.html** → Redirect to **asymptote/index.html**
+
+See [LEGACY.md](LEGACY.md) for full details on the legacy MPA.
 
 ### CSS Architecture
 - **css/style.css**: Contains all base styles, components, and compatibility layers

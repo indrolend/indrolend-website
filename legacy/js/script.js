@@ -1274,7 +1274,7 @@ Dr. Wei's voice lingers at the edge of the memory:
       function updateDisplay() {
         const name = images[currentIndex];
         galleryFileName.textContent = name;
-        galleryFileLink.href = "../images/" + name;
+        galleryFileLink.href = "../../images/" + name;
         galleryCounter.textContent = (currentIndex + 1) + " / " + images.length;
         
         // Re-initialize important-word effect for the filename

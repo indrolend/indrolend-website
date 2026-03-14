@@ -2,22 +2,28 @@
 
 ## Overview
 
-The site ships as two parallel delivery modes:
+`index.html` is the canonical entry point. It performs an immediate redirect to
+`spa.html`, making the SPA the primary experience for all visitors.
 
-1. **SPA mode** — entry point `spa.html`. A single-page application built in
-   vanilla JS without a framework. Hash-based routing, canvas-heavy views,
-   fullscreen transition effects.
-2. **MPA mode** — traditional multi-page `index.html` plus sub-pages under
-   `pages/`. These pages share CSS with the SPA but load their own scripts.
+The legacy MPA (Multi-Page Application) has been relocated into `/legacy` and
+is frozen. See [LEGACY.md](LEGACY.md) for details.
 
-This document covers SPA mode. MPA mode scripts in `/js` are treated as
-separate concerns and are summarised briefly at the end.
+1. **SPA mode** — canonical entry `index.html` → `spa.html`. A single-page
+   application built in vanilla JS without a framework. Hash-based routing,
+   canvas-heavy views, fullscreen transition effects.
+2. **Legacy MPA** — frozen traditional pages under `legacy/pages/`. Preserved
+   for reference; not linked from the SPA.
+
+This document covers SPA mode.
 
 ---
 
 ## SPA Layer Diagram
 
 ```
+index.html  (redirect only — forwards immediately to spa.html)
+    │
+    ▼
 spa.html
 │
 ├── css/style.css          shared base styles
@@ -25,7 +31,7 @@ spa.html
 │
 └── script load order (all deferred, execute in document order):
     │
-    1. js/particle-clusters.js       → window.__SPA_initParticleCluster
+    1. js/spa/engines/particle-clusters.js → window.__SPA_initParticleCluster
     2. js/spa/typography/importantWords.js → window.__SPA_ImportantWords
     3. js/spa/routes.js              → window.__INDROLEND_ROUTES__
     4. js/spa/transitionEngine.js    → window.__SPA_Transition
@@ -49,11 +55,11 @@ spa.html
 | **view**   | Top-level SPA screen; one per section in the route map       | `js/spa/views/*View.js`           |
 | **section**| Named group of items in the route map (horizontal axis)      | `home`, `social`, `music`, etc.   |
 | **item**   | A single navigable entry inside a section (vertical axis)    | `swarm`, `tiktok`, `spotify`, …   |
-| **engine** | Self-contained animation / behaviour system                  | `transitionEngine.js`, `particle-clusters.js` |
+| **engine** | Self-contained animation / behaviour system                  | `transitionEngine.js`, `js/spa/engines/particle-clusters.js` |
 | **manager**| Shared app-level coordinator; one instance, global API       | `overlayManager.js`, `router.js`, `gestures.js` |
 | **util**   | Pure helper with no side-effects                             | `importantWords.js` (mostly)      |
 | **overlay**| Layered UI rendered above all views                         | managed by `overlayManager.js`    |
-| **legacy** | Old / superseded code not loaded by the SPA                 | `js/particle-transition-engine.js`, `js/genie-transition.js` |
+| **legacy** | Frozen MPA not loaded by the SPA                            | `legacy/js/engines/`, `legacy/pages/` |
 | **demo**   | Showcase / prototype code not used in production            | `particlecarousel.demo.js`        |
 
 ---
@@ -129,22 +135,23 @@ Current status: `home` implements all four. `social` and `music` implement
 
 ---
 
-## MPA / Legacy Scripts (not loaded by spa.html)
+## Legacy MPA (frozen, not loaded by spa.html)
 
-These files live in `/js` but are loaded only by MPA pages:
+The original MPA has been moved into `/legacy`. See [LEGACY.md](LEGACY.md) for
+the full directory layout and access instructions.
 
-| File                           | Purpose                                           |
-|--------------------------------|---------------------------------------------------|
-| `js/script.js`                 | Home page particles + fade-in (MPA home)          |
-| `js/particle-transition-engine.js` | Legacy fullscreen particle transition (disabled) |
-| `js/genie-transition.js`       | Legacy Mac-genie CSS/canvas transition (not used) |
-| `js/cursor-character-effect.js`| Cursor character trail (MPA pages)                |
-| `js/spotify-analytics.js`      | Spotify analytics page                            |
-| `js/spotify-analytics-data.js` | Spotify analytics static data                     |
-| `js/spotify-integration.js`    | Spotify API integration layer                     |
-| `js/spotify-artists-stats.js`  | Spotify artist statistics                         |
-| `js/discography.js`            | Discography page renderer                         |
-| `js/dev-history.js`            | Development history page renderer                 |
-| `js/journal.js`                | Journal page renderer                             |
-| `js/easter-egg.js`             | Easter egg interaction                            |
-| `js/security-utils.js`         | Input sanitisation utilities                      |
+| File                                          | Purpose                                           |
+|-----------------------------------------------|---------------------------------------------------|
+| `legacy/js/script.js`                         | Home page particles + fade-in, gallery, tictactoe |
+| `legacy/js/engines/particle-transition-engine.js` | Legacy fullscreen particle transition (disabled) |
+| `legacy/js/engines/genie-transition.js`       | Legacy Mac-genie CSS/canvas transition (not used) |
+| `legacy/js/cursor-character-effect.js`        | Cursor character trail (MPA pages)                |
+| `legacy/js/spotify-analytics.js`             | Spotify analytics page                            |
+| `legacy/js/spotify-analytics-data.js`        | Spotify analytics static data                     |
+| `legacy/js/spotify-integration.js`           | Spotify API integration layer                     |
+| `legacy/js/spotify-artists-stats.js`         | Spotify artist statistics                         |
+| `legacy/js/discography.js`                   | Discography page renderer                         |
+| `legacy/js/dev-history.js`                   | Development history page renderer                 |
+| `legacy/js/journal.js`                       | Journal page renderer                             |
+| `legacy/js/easter-egg.js`                    | Easter egg interaction                            |
+| `legacy/js/security-utils.js`               | Input sanitisation utilities                      |
