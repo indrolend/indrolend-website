@@ -103,6 +103,27 @@ body.spa-mode {
   height: 100%;
 }
 
+/* ── GIF poster (replaces particle-cluster canvas) ──────────────────────────── */
+.spa-poster-gif-wrap {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+.spa-poster-gif {
+  display: block;
+  max-width: min(180px, 60vw);
+  max-height: min(180px, 40vh);
+  width: auto;
+  height: auto;
+}
+
 .spa-poster-label {
   text-align: center;
   font-size: 2rem;
