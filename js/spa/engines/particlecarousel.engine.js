@@ -100,8 +100,9 @@
       this._morphing    = false; // true while particles are springing to targets
       this._exploding   = false; // true during the outward explosion phase
       this._transitioning = false; // true from goTo start until next GIF appears
-      this._gifPlayer   = null;  // current gifler Animator instance
-      this._rafId       = null;
+      this._gifPlayer      = null;  // current gifler Animator instance
+      this._rafId          = null;
+      this._swipeHintTimer = null;  // timeout ID for the periodic swipe-hint animation
 
       this._resizeBound = this._resize.bind(this);
       window.addEventListener('resize', this._resizeBound);
@@ -225,9 +226,44 @@
           self._gifCanvas.style.display = '';  // clear display:none set in _goTo() during transition
           self._gifCanvas.classList.add('visible');
           self._canvas.style.visibility = 'hidden'; // hide particles while GIF is playing
+          self._startSwipeHintTimer();             // nudge hint after idle delay
           finish();
         }, GIF_FIRST_FRAME_MS);
       });
+    };
+
+    // ── Swipe-hint animation ────────────────────────────────────────────────
+    // After the GIF canvas enters idle, nudge it left (tada-inspired) so users
+    // discover that swiping advances the carousel.  The hint fires 2.5 s after
+    // the GIF appears, then every ~8 s while the view stays idle.
+
+    ParticleCarouselEngine.prototype._clearSwipeHintTimer = function () {
+      if (this._swipeHintTimer) {
+        clearTimeout(this._swipeHintTimer);
+        this._swipeHintTimer = null;
+      }
+      this._gifCanvas.classList.remove('spa-swipe-hint');
+    };
+
+    ParticleCarouselEngine.prototype._startSwipeHintTimer = function () {
+      var self = this;
+      self._clearSwipeHintTimer();
+
+      function scheduleHint(delay) {
+        self._swipeHintTimer = setTimeout(function () {
+          if (!self._gifCanvas.classList.contains('visible')) return;
+          self._gifCanvas.classList.add('spa-swipe-hint');
+
+          function onAnimEnd() {
+            self._gifCanvas.removeEventListener('animationend', onAnimEnd);
+            self._gifCanvas.classList.remove('spa-swipe-hint');
+            scheduleHint(8000); // repeat ~8 s after each cycle finishes
+          }
+          self._gifCanvas.addEventListener('animationend', onAnimEnd);
+        }, delay);
+      }
+
+      scheduleHint(2500); // first nudge 2.5 s into idle
     };
 
     // Call `cb` once morphing is complete (or after SETTLE_TIMEOUT_MS safety timeout).
@@ -492,6 +528,7 @@
       // No-op if already on the requested slide.
       if (targetIdx === self._currentIdx) return;
 
+      self._clearSwipeHintTimer(); // stop hint animation before transition begins
       self._transitioning = true;
 
       // Reveal the particle canvas for the transition (it is hidden while the GIF plays).
@@ -608,6 +645,7 @@
     ParticleCarouselEngine.prototype.destroy = function () {
       if (this._rafId)    { cancelAnimationFrame(this._rafId); this._rafId = null; }
       if (this._gifPlayer) { this._gifPlayer.stop(); this._gifPlayer = null; }
+      this._clearSwipeHintTimer();
       window.removeEventListener('resize', this._resizeBound);
     };
 
