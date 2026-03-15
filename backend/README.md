@@ -1,5 +1,7 @@
 # Spotify Backend API
 
+> **Repo map and operating rules:** [`docs/README.md`](../docs/README.md) · [`docs/AGENT_RULES.md`](../docs/AGENT_RULES.md)
+
 This is a Node.js backend service that securely fetches live Spotify artist data using OAuth 2.0 Client Credentials Flow.
 
 ## Features

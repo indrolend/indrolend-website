@@ -1,5 +1,7 @@
 # Automated Screenshot Parsing System
 
+> **Repo map and operating rules:** [`docs/README.md`](../docs/README.md) · [`docs/AGENT_RULES.md`](../docs/AGENT_RULES.md)
+
 This system automatically processes Spotify stats screenshots using OCR (Optical Character Recognition) to extract comprehensive analytics data including metrics, demographics, geography, and discovery sources.
 
 ## How It Works
