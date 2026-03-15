@@ -64,7 +64,16 @@
   function modeViewKey(mode, sectionId, itemId) {
     if (mode === 'idle')    return '__idle__';
     if (mode === 'section') return '__section__:' + sectionId;
+    // Engine views share one container per section (the engine manages its own items).
+    if (_isEngineView(sectionId)) return '__engine__:' + sectionId;
     return sectionId + '/' + itemId;
+  }
+
+  // Returns true if the section view uses ParticleCarouselEngine for item navigation.
+  function _isEngineView(sectionId) {
+    return !!(window.__SPA_Views &&
+              window.__SPA_Views[sectionId] &&
+              window.__SPA_Views[sectionId].isEngineView);
   }
 
   function defaultItem(sectionId) {
@@ -97,10 +106,15 @@
     } else {
       // item mode — delegate to section view module
       if (window.__SPA_Views && window.__SPA_Views[sectionId]) {
-        window.__SPA_Views[sectionId].mount(itemId, el);
+        if (_isEngineView(sectionId)) {
+          // Engine view: mount the section container (no itemId — engine owns item nav).
+          window.__SPA_Views[sectionId].mount(el);
+        } else {
+          window.__SPA_Views[sectionId].mount(itemId, el);
+        }
       } else {
-        var meta = routes.items[sectionId + '/' + itemId];
-        var label   = meta ? meta.label : itemKey;
+        var meta  = routes.items[sectionId + '/' + itemId];
+        var label = meta ? meta.label : (sectionId + '/' + itemId);
         el.innerHTML =
           '<div class="spa-view-fallback">' +
             '<span class="important-word">' + label + '</span>' +
@@ -164,8 +178,10 @@
       }
     }
 
-    // Run transition when switching between two real views
-    if (!skipTransition && fromView && window.__SPA_Transition) {
+    // Run transition when switching between two DIFFERENT views.
+    // Skip if fromView === view (same container — engine view navigating within a section;
+    // the engine handles its own visual transition internally).
+    if (!skipTransition && fromView && fromView !== view && window.__SPA_Transition) {
       transitioning = true;
       var fromCanvas = null;
       if (fromMode === 'item' &&
@@ -232,7 +248,13 @@
   }
 
   function nextItem() {
-    if (currentMode !== 'item' || !currentSection || !currentItem) return;
+    if (currentMode !== 'item' || !currentSection) return;
+    // Engine views own their own item navigation (particle morph + hash update).
+    if (_isEngineView(currentSection)) {
+      var v = window.__SPA_Views[currentSection];
+      if (v && typeof v.next === 'function') { v.next(); return; }
+    }
+    if (!currentItem) return;
     var items = routes.sections[currentSection].items;
     var idx   = items.indexOf(currentItem);
     var next  = (idx + 1) % items.length;
@@ -240,7 +262,12 @@
   }
 
   function prevItem() {
-    if (currentMode !== 'item' || !currentSection || !currentItem) return;
+    if (currentMode !== 'item' || !currentSection) return;
+    if (_isEngineView(currentSection)) {
+      var v = window.__SPA_Views[currentSection];
+      if (v && typeof v.prev === 'function') { v.prev(); return; }
+    }
+    if (!currentItem) return;
     var items = routes.sections[currentSection].items;
     var idx   = items.indexOf(currentItem);
     var prev  = (idx - 1 + items.length) % items.length;

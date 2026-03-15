@@ -461,6 +461,59 @@ body.spa-mode {
   opacity: 0.75;
 }
 
+/* ── Engine view (ParticleCarouselEngine — social / music sections) ────────── */
+/*
+ * Layout: the .spa-view div (absolute, inset 0) wraps:
+ *   1. .spa-engine-particle-canvas  — fills the view; particles rendered here
+ *   2. .spa-engine-gif-canvas       — centred overlay; shown during GIF idle phase
+ *   3. .spa-engine-label-area       — bottom-centre; label + link/button
+ */
+.spa-engine-view {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.spa-engine-particle-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* GIF canvas: centred, CSS-scaled, hidden until engine adds .visible */
+.spa-engine-gif-canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  /* Size constraints match the engine's _sampleImage maxDim logic */
+  max-width: min(70vw, 420px);
+  max-height: min(65vh, 420px);
+  width: auto;
+  height: auto;
+  pointer-events: none;
+  z-index: 2;
+  display: none;
+}
+
+.spa-engine-gif-canvas.visible {
+  display: block;
+}
+
+/* Label area: centred below the GIF canvas */
+.spa-engine-label-area {
+  position: absolute;
+  bottom: calc(12% + env(safe-area-inset-bottom, 0px));
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 3;
+  font-size: 2rem;
+  pointer-events: auto;
+}
+
 /* ── Responsive tweaks ──────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
   .spa-nav-section-link {

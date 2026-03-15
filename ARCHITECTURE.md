@@ -36,15 +36,17 @@ spa.html  (beta — open directly at /spa.html)
     3. js/spa/routes.js              → window.__INDROLEND_ROUTES__
     4. js/spa/transitionEngine.js    → window.__SPA_Transition
     5. js/spa/overlayManager.js      → window.__SPA_Overlay
-    6. js/spa/views/idleView.js      → window.__SPA_Views.idle
-    7. js/spa/views/sectionCarouselView.js → window.__SPA_Views.sectionCarousel
-    8. js/spa/views/homeView.js      → window.__SPA_Views.home  (legacy; not in route map)
-    9. js/spa/views/socialView.js    → window.__SPA_Views.social
-   10. js/spa/views/musicView.js     → window.__SPA_Views.music
-   11. js/spa/views/gamesView.js     → window.__SPA_Views.games
-   12. js/spa/views/aboutView.js     → window.__SPA_Views.about
-   13. js/spa/router.js              → window.__SPA_Router  (self-inits on DOMContentLoaded)
-   14. js/spa/gestures.js            → window.__SPA_Gestures (self-inits on DOMContentLoaded)
+    6. assets/gifler.min.js          → window.gifler  (GIF frame decoder)
+    7. js/spa/engines/particlecarousel.engine.js → ParticleCarouselEngine class
+    8. js/spa/views/idleView.js      → window.__SPA_Views.idle
+    9. js/spa/views/sectionCarouselView.js → window.__SPA_Views.sectionCarousel
+   10. js/spa/views/homeView.js      → window.__SPA_Views.home  (legacy; not in route map)
+   11. js/spa/views/socialView.js    → window.__SPA_Views.social  (engine view)
+   12. js/spa/views/musicView.js     → window.__SPA_Views.music   (engine view)
+   13. js/spa/views/gamesView.js     → window.__SPA_Views.games
+   14. js/spa/views/aboutView.js     → window.__SPA_Views.about
+   15. js/spa/router.js              → window.__SPA_Router  (self-inits on DOMContentLoaded)
+   16. js/spa/gestures.js            → window.__SPA_Gestures (self-inits on DOMContentLoaded)
 ```
 
 ---
@@ -161,9 +163,18 @@ Special views registered on non-section keys:
 - `window.__SPA_Views.idle` — implements `mount` only; renders idle cluster
 - `window.__SPA_Views.sectionCarousel` — implements `mount` only; renders hero word
 
-Current status: `social` and `music` implement `mount` only (GIF posters, no
-canvas animation). `games` and `about` implement `mount` only. `home` (legacy,
-not in route map) implements all four.
+**Engine views** (`social`, `music`) use `ParticleCarouselEngine` (gifler + spring-physics
+particle morphing). They expose `isEngineView: true` so the router uses one shared container
+per section instead of per-item. Item navigation calls `engine.next()`/`engine.prev()`/
+`engine.goTo(i)` directly; the engine fires `onSlideChange` to update the URL hash.
+
+The 4-phase transition within an engine view:
+1. **IDLE** — gifler renders the animated GIF in `#gif-canvas`; particle canvas hidden beneath
+2. **TRIGGER** — user navigates; gifler stops, live GIF frame is sampled as a particle cloud at exact pixel positions, GIF canvas instantly hidden
+3. **EXPLOSION** — each particle gets a random outward velocity and flies freely for ~320 ms
+4. **REASSEMBLE** — particles spring-morph to the next logo's cloud; when settled, gifler loads and plays the next GIF
+
+Current status: `social` and `music` implement the full engine-view API. `games` and `about` implement `mount` only. `home` (legacy, not in route map) implements all four lifecycle methods.
 
 ---
 
