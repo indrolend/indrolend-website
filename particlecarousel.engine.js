@@ -489,6 +489,8 @@
       var self = this;
       if (self._transitioning || self._slides.length === 0) return;
       var targetIdx = ((idx % self._slides.length) + self._slides.length) % self._slides.length;
+      // No-op if already on the requested slide.
+      if (targetIdx === self._currentIdx) return;
 
       self._transitioning = true;
 

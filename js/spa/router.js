@@ -283,7 +283,8 @@
   function updateBackButton(mode) {
     var btn = document.getElementById('spa-back-btn');
     if (!btn) return;
-    btn.style.display = (mode === 'item') ? 'block' : 'none';
+    // Show back button in item mode and section mode so the hub is always reachable.
+    btn.style.display = (mode === 'item' || mode === 'section') ? 'block' : 'none';
   }
 
   // ─── nav UI (kept functional; hidden via CSS) ───────────────────────────────
@@ -291,6 +292,53 @@
   function updateNav() {
     updateSectionLinks();
     updateItemDots();
+    updateSectionTabs();
+  }
+
+  // ─── section tab bar ────────────────────────────────────────────────────────
+  // Fixed bottom bar showing all 4 content sections; visible in item/section mode.
+  var TAB_SECTIONS = ['social', 'music', 'games', 'about'];
+
+  function updateSectionTabs() {
+    var tabsEl = document.getElementById('spa-section-tabs');
+    if (!tabsEl) return;
+
+    var show = (currentMode === 'item' || currentMode === 'section');
+    tabsEl.style.display = show ? 'block' : 'none';
+    document.body.classList.toggle('spa-tabs-active', show);
+
+    if (!show) return;
+
+    var innerEl = tabsEl.querySelector('.spa-section-tabs-inner');
+    if (!innerEl) return;
+
+    // Build tabs once
+    if (!tabsEl.dataset.built) {
+      tabsEl.dataset.built = 'true';
+      TAB_SECTIONS.forEach(function (sid) {
+        var sec = routes.sections[sid];
+        if (!sec) return;
+        var btn = document.createElement('button');
+        btn.className = 'spa-section-tab';
+        btn.textContent = sec.label;
+        btn.dataset.section = sid;
+        btn.setAttribute('aria-label', sec.label);
+        btn.addEventListener('click', function () {
+          var firstItem = sec.items[0];
+          if (firstItem) {
+            navigate('item', sid, firstItem);
+          } else {
+            navigate('section', sid, null);
+          }
+        });
+        innerEl.appendChild(btn);
+      });
+    }
+
+    // Update active highlight
+    innerEl.querySelectorAll('.spa-section-tab').forEach(function (btn) {
+      btn.classList.toggle('active', btn.dataset.section === currentSection);
+    });
   }
 
   function updateSectionLinks() {
@@ -362,11 +410,11 @@
 
     window.addEventListener('hashchange', handleHashChange);
 
-    // Wire up back button
+    // Wire up back button — always returns to the section hub (#/idle)
     var backBtn = document.getElementById('spa-back-btn');
     if (backBtn) {
       backBtn.addEventListener('click', function () {
-        if (currentSection) navigate('section', currentSection, null);
+        navigate('idle', null, null);
       });
     }
 
