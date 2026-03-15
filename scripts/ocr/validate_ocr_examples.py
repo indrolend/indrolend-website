@@ -300,10 +300,10 @@ def print_summary(all_results: List[Dict[str, Any]]):
 
 def main():
     """Main entry point."""
-    # Get the repository root
+    # Get the repository root (script is in scripts/ocr/)
     script_dir = Path(__file__).parent
-    repo_root = script_dir.parent
-    examples_dir = repo_root / 'screenshots' / 'examples'
+    repo_root = script_dir.parent.parent
+    examples_dir = repo_root / 'inputs' / 'ocr' / 'screenshots' / 'examples'
     
     print("=" * 70)
     print("OCR VALIDATION - Testing Parser Against Ground Truth Examples")
@@ -323,7 +323,7 @@ def main():
     
     if not all_results:
         print("\n⚠ No validation performed. Add example screenshots and ground truth files.")
-        print("   See screenshots/examples/README.md for instructions.")
+        print("   See inputs/ocr/screenshots/examples/README.md for instructions.")
         return 0
     
     # Print summary
