@@ -36,13 +36,17 @@ spa.html  (beta — open directly at /spa.html)
     3. js/spa/routes.js              → window.__INDROLEND_ROUTES__
     4. js/spa/transitionEngine.js    → window.__SPA_Transition
     5. js/spa/overlayManager.js      → window.__SPA_Overlay
-    6. js/spa/views/homeView.js      → window.__SPA_Views.home
-    7. js/spa/views/socialView.js    → window.__SPA_Views.social
-    8. js/spa/views/musicView.js     → window.__SPA_Views.music
-    9. js/spa/views/gamesView.js     → window.__SPA_Views.games
-   10. js/spa/views/aboutView.js     → window.__SPA_Views.about
-   11. js/spa/router.js              → window.__SPA_Router  (self-inits on DOMContentLoaded)
-   12. js/spa/gestures.js            → window.__SPA_Gestures (self-inits on DOMContentLoaded)
+    6. assets/gifler.min.js          → window.gifler  (GIF frame decoder)
+    7. js/spa/engines/particlecarousel.engine.js → ParticleCarouselEngine class
+    8. js/spa/views/idleView.js      → window.__SPA_Views.idle
+    9. js/spa/views/sectionCarouselView.js → window.__SPA_Views.sectionCarousel
+   10. js/spa/views/homeView.js      → window.__SPA_Views.home  (legacy; not in route map)
+   11. js/spa/views/socialView.js    → window.__SPA_Views.social  (engine view)
+   12. js/spa/views/musicView.js     → window.__SPA_Views.music   (engine view)
+   13. js/spa/views/gamesView.js     → window.__SPA_Views.games
+   14. js/spa/views/aboutView.js     → window.__SPA_Views.about
+   15. js/spa/router.js              → window.__SPA_Router  (self-inits on DOMContentLoaded)
+   16. js/spa/gestures.js            → window.__SPA_Gestures (self-inits on DOMContentLoaded)
 ```
 
 ---
@@ -52,9 +56,9 @@ spa.html  (beta — open directly at /spa.html)
 | Term       | Meaning in this codebase                                     | Example files                     |
 |------------|--------------------------------------------------------------|-----------------------------------|
 | **route**  | URL state; the canonical description of sections and items   | `js/spa/routes.js`                |
-| **view**   | Top-level SPA screen; one per section in the route map       | `js/spa/views/*View.js`           |
-| **section**| Named group of items in the route map (horizontal axis)      | `home`, `social`, `music`, etc.   |
-| **item**   | A single navigable entry inside a section (vertical axis)    | `swarm`, `tiktok`, `spotify`, …   |
+| **view**   | Top-level SPA screen; one per route mode or section          | `js/spa/views/*View.js`           |
+| **section**| Named group of items in the route map (horizontal axis)      | `social`, `music`, `games`, `about` |
+| **item**   | A single navigable entry inside a section                    | `tiktok`, `spotify`, `asymptote`, `journal` |
 | **engine** | Self-contained animation / behaviour system                  | `transitionEngine.js`, `js/spa/engines/particle-clusters.js` |
 | **manager**| Shared app-level coordinator; one instance, global API       | `overlayManager.js`, `router.js`, `gestures.js` |
 | **util**   | Pure helper with no side-effects                             | `importantWords.js` (mostly)      |
@@ -78,35 +82,74 @@ they receive their `itemId` from the router.
 
 ---
 
+## SPA Navigation Modes
+
+The router supports exactly three route shapes:
+
+| Hash pattern | Mode | View rendered |
+|---|---|---|
+| `#/idle` | **idle** | `idleView` — pulsing cluster, tap to enter |
+| `#/<sectionId>` | **section** | `sectionCarouselView` — full-screen hero word |
+| `#/<sectionId>/<itemId>` | **item** | section view module (`socialView`, `musicView`, …) |
+
+### Routing rules
+- Empty / unknown hash → redirect to `#/idle`.
+- `#/home` or `#/home/*` → redirect to `#/idle` (legacy route migration).
+- Unknown section → redirect to `#/idle`.
+- Known section + unknown item → redirect to `#/<sectionId>`.
+- Deep links skip idle: `#/music/spotify` loads that item directly.
+
+### Input mapping
+
+#### Mobile (touch)
+| Gesture | section mode | item mode | idle mode |
+|---------|-------------|-----------|-----------|
+| Swipe left | next section (wrap) | next item (wrap) | — |
+| Swipe right | prev section (wrap) | prev item (wrap) | — |
+| Tap hero word | drill to first item | — | — |
+| Tap cluster | — | — | enter first section |
+
+#### Desktop (keyboard)
+| Key | section mode | item mode | idle mode |
+|-----|-------------|-----------|-----------|
+| ArrowRight | next section (wrap) | next item (wrap) | — |
+| ArrowLeft | prev section (wrap) | prev item (wrap) | — |
+| Space | drill to `#/<sectionId>/<firstItem>` | no-op | natural focus |
+| Escape | close overlay (if open) | close overlay (if open) | close overlay (if open) |
+
+Navigation keys are suppressed while an overlay is open (except Escape).
+
+---
+
 ## Navigation Flow
 
 ```
-User swipe / tap link
-        │
-        ▼
-gestures.js  ──calls──►  router.js.__SPA_Router.go(sectionId, itemId)
-                                  │
-                  ┌───────────────┼───────────────────┐
-                  ▼               ▼                   ▼
-         mountView()      onDeactivate(old)   window.location.hash
-                  │               │                   │
-                  ▼               ▼           hashchange event
+User swipe / keyboard / tap
+         │
+         ▼
+gestures.js  ──calls──►  router.js.__SPA_Router (nextSection / prevSection / nextItem / prevItem)
+                                   │
+                   ┌───────────────┼───────────────────┐
+                   ▼               ▼                   ▼
+          mountView()      onDeactivate(old)   window.location.hash
+                   │               │                   │
+                   ▼               ▼           hashchange event
          __SPA_Views[sid]  stops rAF / cleans          │
             .mount()        listeners (view)   handleHashChange()
-                  │                                    │
-                  ▼                                    ▼
-         transitionEngine                      showView(sid, iid)
+                   │                                    │
+                   ▼                                    ▼
+         transitionEngine                      showView(mode, sid, iid)
             .transition()                             │
-                  │                                   ▼
-                  └────── done() ──────►  onActivate(new view)
-                                              starts rAF / listeners
+                   │                                   ▼
+                   └────── done() ──────►  onActivate(new view)
+                                               starts rAF / listeners
 ```
 
 ---
 
 ## View Lifecycle Contract
 
-A view module registers itself on `window.__SPA_Views[sectionId]` and may
+A view module registers itself on `window.__SPA_Views[key]` and may
 implement any subset of these methods:
 
 | Method                        | Called by  | Purpose                                         |
@@ -116,9 +159,22 @@ implement any subset of these methods:
 | `onDeactivate(itemId)`        | router     | Stop rAF loops; remove per-view listeners       |
 | `getTransitionCanvas(itemId)` | router     | Return a canvas the transition engine can sample |
 
-Current status: `home` implements all four. `social` and `music` implement
-`mount`, `onActivate`, and `getTransitionCanvas`. `games` and `about` implement
-`mount` only.
+Special views registered on non-section keys:
+- `window.__SPA_Views.idle` — implements `mount` only; renders idle cluster
+- `window.__SPA_Views.sectionCarousel` — implements `mount` only; renders hero word
+
+**Engine views** (`social`, `music`) use `ParticleCarouselEngine` (gifler + spring-physics
+particle morphing). They expose `isEngineView: true` so the router uses one shared container
+per section instead of per-item. Item navigation calls `engine.next()`/`engine.prev()`/
+`engine.goTo(i)` directly; the engine fires `onSlideChange` to update the URL hash.
+
+The 4-phase transition within an engine view:
+1. **IDLE** — gifler renders the animated GIF in `#gif-canvas`; particle canvas hidden beneath
+2. **TRIGGER** — user navigates; gifler stops, live GIF frame is sampled as a particle cloud at exact pixel positions, GIF canvas instantly hidden
+3. **EXPLOSION** — each particle gets a random outward velocity and flies freely for ~320 ms
+4. **REASSEMBLE** — particles spring-morph to the next logo's cloud; when settled, gifler loads and plays the next GIF
+
+Current status: `social` and `music` implement the full engine-view API. `games` and `about` implement `mount` only. `home` (legacy, not in route map) implements all four lifecycle methods.
 
 ---
 
@@ -128,9 +184,10 @@ Current status: `home` implements all four. `social` and `music` implement
 |--------------------------|---------------------|----------------------------------------|
 | `#spa-view-host`         | router              | Container for all mounted views        |
 | `#spa-transition-canvas` | transitionEngine    | Fullscreen overlay canvas for transitions |
-| `#spa-nav`               | router / HTML       | Section navigation bar                 |
-| `#spa-nav-sections`      | router              | Section link buttons                   |
-| `#spa-item-nav`          | router              | Item indicator dots                    |
+| `#spa-back-btn`          | router / HTML       | Back button — visible in item mode only |
+| `#spa-nav`               | router / HTML       | Section navigation bar (hidden via CSS) |
+| `#spa-nav-sections`      | router              | Section link buttons (hidden via CSS)  |
+| `#spa-item-nav`          | router              | Item indicator dots (hidden via CSS)   |
 | `#spa-overlay-root`      | overlayManager      | OS-modal overlay mount point           |
 
 ---

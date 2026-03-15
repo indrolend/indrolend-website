@@ -103,6 +103,27 @@ body.spa-mode {
   height: 100%;
 }
 
+/* ── GIF poster (replaces particle-cluster canvas) ──────────────────────────── */
+.spa-poster-gif-wrap {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+
+.spa-poster-gif {
+  display: block;
+  max-width: min(180px, 60vw);
+  max-height: min(180px, 40vh);
+  width: auto;
+  height: auto;
+}
+
 .spa-poster-label {
   text-align: center;
   font-size: 2rem;
@@ -325,93 +346,360 @@ body.spa-mode {
   color: var(--text-main, #f5f7ff);
 }
 
-/* ── Top navigation bar ─────────────────────────────────────────────────────── */
+/* ── Top navigation bar (hidden — navigation is now tap + swipe only) ────────── */
 #spa-nav {
+  display: none;
+}
+
+/* ── Item navigation dots (hidden — navigation is now tap + swipe only) ─────── */
+#spa-item-nav {
+  display: none;
+}
+
+/* ── Back button ────────────────────────────────────────────────────────────── */
+#spa-back-btn {
   position: fixed;
-  top: env(safe-area-inset-top, 0px);
-  left: 0;
-  right: 0;
+  top: calc(env(safe-area-inset-top, 0px) + 1rem);
+  left: calc(env(safe-area-inset-left, 0px) + 1rem);
   z-index: 50;
-  pointer-events: none; /* Allow clicks only on children */
-}
-
-.spa-nav-sections {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  justify-content: center;
-  gap: 0.15rem;
-  padding: 0.6rem 1rem 0.4rem;
-  background: rgba(0, 0, 0, 0.55);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  pointer-events: auto;
-}
-
-.spa-nav-section-link {
-  display: inline-block;
+  background: none;
+  border: 1px solid var(--border-subtle, rgba(109, 217, 232, 0.3));
   color: var(--text-muted, #8a92b3);
-  text-decoration: none;
-  font-size: 0.7rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.4rem;
   padding: 0.3rem 0.7rem;
-  border-radius: 3px;
+  border-radius: 4px;
+  cursor: pointer;
   -webkit-transition: color 0.2s, background 0.2s;
   transition: color 0.2s, background 0.2s;
-  font-family: 'EB Garamond', Georgia, serif;
+  /* Hidden by default; router shows it in item mode */
+  display: none;
 }
 
-.spa-nav-section-link:hover,
-.spa-nav-section-link:focus {
+#spa-back-btn:hover,
+#spa-back-btn:focus {
   color: var(--text-main, #f5f7ff);
   background: rgba(255, 255, 255, 0.06);
   outline: none;
 }
 
-.spa-nav-section-link.active {
-  color: var(--terminal-green, #6dd9e8);
-  background: rgba(109, 217, 232, 0.08);
-}
-
-/* ── Item navigation dots ───────────────────────────────────────────────────── */
-#spa-item-nav {
-  position: fixed;
-  bottom: calc(1.4rem + env(safe-area-inset-bottom, 0px));
-  left: 0;
-  right: 0;
+/* ── Idle view (legacy orb styles — kept for safety) ──────────────────────── */
+.spa-idle-view {
   display: -webkit-box;
   display: -webkit-flex;
   display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
   -webkit-box-pack: center;
   -webkit-justify-content: center;
   justify-content: center;
-  gap: 0.55rem;
-  z-index: 50;
+  width: 100%;
+  height: 100%;
 }
 
-.spa-item-dot {
-  width: 7px;
-  height: 7px;
+.spa-idle-cluster {
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  border: none;
-  padding: 0;
+  background: radial-gradient(circle at 40% 40%,
+    rgba(109, 217, 232, 0.5) 0%,
+    rgba(109, 217, 232, 0.08) 60%,
+    transparent 100%);
+  border: 1px solid var(--border-subtle, rgba(109, 217, 232, 0.35));
   cursor: pointer;
-  background: rgba(109, 217, 232, 0.28);
-  -webkit-transition: background 0.25s, -webkit-transform 0.25s;
-  transition: background 0.25s, transform 0.25s;
+  -webkit-animation: spa-idle-pulse 2.4s ease-in-out infinite;
+  animation: spa-idle-pulse 2.4s ease-in-out infinite;
 }
 
-.spa-item-dot.active {
-  background: var(--terminal-green, #6dd9e8);
-  -webkit-transform: scale(1.35);
-  transform: scale(1.35);
+.spa-idle-cluster:hover,
+.spa-idle-cluster:focus {
+  outline: none;
+  border-color: var(--terminal-green, #6dd9e8);
 }
 
-.spa-item-dot:hover {
-  background: rgba(109, 217, 232, 0.6);
+@-webkit-keyframes spa-idle-pulse {
+  0%, 100% { -webkit-transform: scale(1);    opacity: 0.85; }
+  50%       { -webkit-transform: scale(1.12); opacity: 1;    }
+}
+@keyframes spa-idle-pulse {
+  0%, 100% { transform: scale(1);    opacity: 0.85; }
+  50%       { transform: scale(1.12); opacity: 1;    }
+}
+
+/* ── Section Hub — 2×2 grid (new idle view) ─────────────────────────────────
+ * All 4 content sections displayed simultaneously as tappable quadrants.
+ * The 1 px gaps between tiles are drawn by setting gap + background on the
+ * grid container (background shows through gaps as a subtle divider).
+ */
+.spa-hub-view {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr 1px 1fr;
+  grid-template-columns: 1fr 1fr;
+  -ms-grid-rows: 1fr 1px 1fr;
+  grid-template-rows: 1fr 1fr;
+  width: 100%;
+  height: 100%;
+  gap: 1px;
+  background: var(--border-subtle, rgba(109, 217, 232, 0.18));
+}
+
+.spa-hub-tile {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  background: #000;
+  cursor: pointer;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-transition: background 0.18s;
+  transition: background 0.18s;
+}
+
+.spa-hub-tile:hover,
+.spa-hub-tile:focus {
+  background: rgba(109, 217, 232, 0.04);
+  outline: none;
+}
+
+.spa-hub-tile:active {
+  background: rgba(109, 217, 232, 0.09);
+}
+
+/* Small visual accent — a thin top/left rule that brightens on hover */
+.spa-hub-tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  pointer-events: none;
+  -webkit-transition: border-color 0.18s;
+  transition: border-color 0.18s;
+}
+
+.spa-hub-tile:hover::after,
+.spa-hub-tile:focus::after {
+  border-color: rgba(109, 217, 232, 0.12);
+}
+
+.spa-hub-tile-label {
+  font-size: clamp(1.8rem, 7vw, 4.5rem);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-weight: 500;
+  color: var(--text-main, #f5f7ff);
+  letter-spacing: -0.01em;
+  -webkit-user-select: none;
+  user-select: none;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+/* ── Section tab bar ────────────────────────────────────────────────────────
+ * Fixed bottom bar with one tab per content section.
+ * Shown in item mode and section mode (hidden in idle/hub).
+ * router.js toggles visibility via style.display and body.spa-tabs-active.
+ */
+#spa-section-tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: none; /* router shows/hides dynamically */
+  background: rgba(0, 0, 0, 0.92);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border-subtle, rgba(109, 217, 232, 0.18));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.spa-section-tabs-inner {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-around;
+  justify-content: space-around;
+}
+
+.spa-section-tab {
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  background: none;
+  border: none;
+  border-top: 2px solid transparent;
+  color: var(--text-muted, #8a92b3);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 0.88rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.7rem 0.4rem;
+  cursor: pointer;
+  -webkit-transition: color 0.2s, border-color 0.2s;
+  transition: color 0.2s, border-color 0.2s;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.spa-section-tab.active {
+  color: var(--text-main, #f5f7ff);
+  border-top-color: var(--terminal-green, #6dd9e8);
+}
+
+.spa-section-tab:hover,
+.spa-section-tab:focus {
+  color: var(--text-main, #f5f7ff);
+  outline: none;
+}
+
+/* When tab bar is visible push the back button up so it doesn't
+   land in the same visual zone as the tabs.                       */
+body.spa-tabs-active #spa-back-btn {
+  top: calc(env(safe-area-inset-top, 0px) + 0.75rem);
+}
+
+/* Engine label area: lift above tab bar when tabs are showing     */
+body.spa-tabs-active .spa-engine-label-area {
+  bottom: calc(var(--spa-tab-bar-h, 52px) + env(safe-area-inset-bottom, 0px) + 1.2rem);
+}
+
+/* Scroll bodies: ensure last content is reachable above tab bar  */
+body.spa-tabs-active .spa-scroll-body {
+  padding-bottom: calc(var(--spa-tab-bar-h, 52px) + env(safe-area-inset-bottom, 0px) + 2rem);
+}
+
+/* ── Section carousel view ──────────────────────────────────────────────────── */
+.spa-section-carousel-view {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.spa-section-hero-word {
+  font-size: clamp(3rem, 12vw, 8rem);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-weight: 500;
+  color: var(--text-main, #f5f7ff);
+  cursor: pointer;
+  letter-spacing: -0.02em;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-transition: opacity 0.2s;
+  transition: opacity 0.2s;
+}
+
+.spa-section-hero-word:hover,
+.spa-section-hero-word:focus {
+  outline: none;
+  opacity: 0.75;
+}
+
+/* ── Engine view (ParticleCarouselEngine — social / music sections) ────────── */
+/*
+ * Layout: the .spa-view div (absolute, inset 0) wraps:
+ *   1. .spa-engine-particle-canvas  — fills the view; particles rendered here
+ *   2. .spa-engine-gif-canvas       — centred overlay; shown during GIF idle phase
+ *   3. .spa-engine-label-area       — bottom-centre; label + link/button
+ */
+.spa-engine-view {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.spa-engine-particle-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* GIF canvas: centred, CSS-scaled, hidden until engine adds .visible */
+.spa-engine-gif-canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  /* Size constraints match the engine's _sampleImage maxDim logic */
+  max-width: min(70vw, 420px);
+  max-height: min(65vh, 420px);
+  width: auto;
+  height: auto;
+  pointer-events: none;
+  z-index: 2;
+  display: none;
+}
+
+.spa-engine-gif-canvas.visible {
+  display: block;
+}
+
+/* ── Swipe-hint animation ────────────────────────────────────────────────────
+ * Plays on the GIF canvas while idle to hint left-swipe navigation.
+ * Inspired by the "tada" animation from the motion-icons / animate.css library:
+ * telegraph a slight scale-down + tilt, nudge left, spring back past centre,
+ * then settle.  The translate(-50%, -50%) centering must be kept in every step.
+ */
+@-webkit-keyframes spa-swipe-hint {
+  0%   { -webkit-transform: translate(-50%, -50%) scale(1)    rotate(0deg);    }
+  8%   { -webkit-transform: translate(-50%, -50%) scale(0.92) rotate(-1.5deg); }
+  20%  { -webkit-transform: translate(calc(-50% - 28px), -50%) scale(1.08) rotate(-3deg);   }
+  35%  { -webkit-transform: translate(calc(-50% + 10px), -50%) scale(1.03) rotate(1.5deg);  }
+  48%  { -webkit-transform: translate(calc(-50% - 5px),  -50%) scale(1.01) rotate(-0.5deg); }
+  58%  { -webkit-transform: translate(calc(-50% + 2px),  -50%) scale(1)    rotate(0deg);    }
+  68%  { -webkit-transform: translate(-50%, -50%)               scale(1)    rotate(0deg);    }
+  100% { -webkit-transform: translate(-50%, -50%)               scale(1)    rotate(0deg);    }
+}
+@keyframes spa-swipe-hint {
+  0%   { transform: translate(-50%, -50%) scale(1)    rotate(0deg);    }
+  8%   { transform: translate(-50%, -50%) scale(0.92) rotate(-1.5deg); }
+  20%  { transform: translate(calc(-50% - 28px), -50%) scale(1.08) rotate(-3deg);   }
+  35%  { transform: translate(calc(-50% + 10px), -50%) scale(1.03) rotate(1.5deg);  }
+  48%  { transform: translate(calc(-50% - 5px),  -50%) scale(1.01) rotate(-0.5deg); }
+  58%  { transform: translate(calc(-50% + 2px),  -50%) scale(1)    rotate(0deg);    }
+  68%  { transform: translate(-50%, -50%)               scale(1)    rotate(0deg);    }
+  100% { transform: translate(-50%, -50%)               scale(1)    rotate(0deg);    }
+}
+
+.spa-engine-gif-canvas.spa-swipe-hint {
+  -webkit-animation: spa-swipe-hint 1.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  animation:         spa-swipe-hint 1.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spa-engine-gif-canvas.spa-swipe-hint {
+    -webkit-animation: none;
+    animation: none;
+  }
+}
+
+/* Label area: centred below the GIF canvas */
+.spa-engine-label-area {
+  position: absolute;
+  bottom: calc(12% + env(safe-area-inset-bottom, 0px));
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 3;
+  font-size: 2rem;
+  pointer-events: auto;
 }
 
 /* ── Responsive tweaks ──────────────────────────────────────────────────────── */

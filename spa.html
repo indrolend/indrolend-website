@@ -36,15 +36,21 @@
     3. routes.js             — defines window.__INDROLEND_ROUTES__
     4. transitionEngine.js   — exposes window.__SPA_Transition
     5. overlayManager.js     — exposes window.__SPA_Overlay
-    6. views/*               — populate window.__SPA_Views
-    7. router.js             — exposes + auto-inits window.__SPA_Router
-    8. gestures.js           — exposes + auto-inits window.__SPA_Gestures
+    6. gifler.min.js         — exposes window.gifler (GIF frame decoder)
+    7. particlecarousel.engine.js — exposes ParticleCarouselEngine class
+    8. views/*               — populate window.__SPA_Views
+    9. router.js             — exposes + auto-inits window.__SPA_Router
+   10. gestures.js           — exposes + auto-inits window.__SPA_Gestures
   -->
   <script defer src="js/spa/engines/particle-clusters.js"></script>
   <script defer src="js/spa/typography/importantWords.js"></script>
   <script defer src="js/spa/routes.js"></script>
   <script defer src="js/spa/transitionEngine.js"></script>
   <script defer src="js/spa/overlayManager.js"></script>
+  <script defer src="assets/gifler.min.js"></script>
+  <script defer src="js/spa/engines/particlecarousel.engine.js"></script>
+  <script defer src="js/spa/views/idleView.js"></script>
+  <script defer src="js/spa/views/sectionCarouselView.js"></script>
   <script defer src="js/spa/views/homeView.js"></script>
   <script defer src="js/spa/views/socialView.js"></script>
   <script defer src="js/spa/views/musicView.js"></script>
@@ -73,6 +79,14 @@
   <canvas id="spa-transition-canvas" aria-hidden="true"></canvas>
 
   <!--
+    #spa-back-btn
+    Global back control shown only in item mode.
+    Tapping returns to the section carousel (#/<sectionId>).
+    Hidden by default; router.js toggles visibility based on mode.
+  -->
+  <button id="spa-back-btn" aria-label="Back">←</button>
+
+  <!--
     Top navigation bar — section links rendered by router.js > updateNav()
   -->
   <nav id="spa-nav" aria-label="Main navigation">
@@ -84,6 +98,16 @@
     One dot per item in the current section; active dot highlighted.
   -->
   <div id="spa-item-nav" role="navigation" aria-label="Item navigation"></div>
+
+  <!--
+    #spa-section-tabs
+    Fixed bottom tab bar showing all 4 sections (social / music / games / about).
+    Visible in item mode and section mode; hidden in idle mode.
+    Built and managed by router.js > updateSectionTabs().
+  -->
+  <div id="spa-section-tabs" role="navigation" aria-label="Section navigation">
+    <div class="spa-section-tabs-inner"></div>
+  </div>
 
   <!--
     #spa-overlay-root
