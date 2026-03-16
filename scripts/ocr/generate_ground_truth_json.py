@@ -217,8 +217,8 @@ def create_ground_truth_json(image_name: str, stats: Dict[str, Any],
 def main():
     """Main entry point."""
     script_dir = Path(__file__).parent
-    repo_root = script_dir.parent
-    examples_dir = repo_root / 'screenshots' / 'examples'
+    repo_root = script_dir.parent.parent
+    examples_dir = repo_root / 'inputs' / 'ocr' / 'screenshots' / 'examples'
     example_text_path = examples_dir / 'example_text'
     
     print("=" * 70)
@@ -281,8 +281,8 @@ def main():
     
     print(f"\n✓ Successfully generated {len(image_files)} JSON files")
     print("\nNext steps:")
-    print("  1. Review the generated JSON files in screenshots/examples/")
-    print("  2. Run: python scripts/validate_ocr_examples.py")
+    print("  1. Review the generated JSON files in inputs/ocr/screenshots/examples/")
+    print("  2. Run: python scripts/ocr/validate_ocr_examples.py")
     print("  3. Adjust individual JSON files based on what each screenshot actually shows")
     
     return 0

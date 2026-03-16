@@ -6,7 +6,7 @@ This system automatically processes Spotify stats screenshots using OCR (Optical
 
 ## How It Works
 
-1. **Upload Screenshots**: Add your Spotify stats screenshots to the `screenshots/` folder
+1. **Upload Screenshots**: Add your Spotify stats screenshots to the `inputs/ocr/screenshots/` folder
 2. **Automatic Processing**: GitHub Actions automatically triggers when new images are added
 3. **OCR Extraction**: The system uses Tesseract OCR to extract text from the images
 4. **Stats Parsing**: Regular expressions identify and extract comprehensive metrics:
@@ -23,26 +23,21 @@ This system automatically processes Spotify stats screenshots using OCR (Optical
 
 ```
 .
-├── .github/workflows/
-│   └── parse-screenshots.yml        # GitHub Actions workflow
-├── screenshots/                      # Upload your Spotify screenshots here
-│   ├── README.md
-│   ├── *.png                        # Your screenshot files (auto-deleted after processing)
-│   └── examples/                    # Example screenshots for validation
-│       ├── README.md                # Detailed instructions for examples
-│       ├── TEMPLATE.json            # Template for ground truth annotations
-│       ├── *.png                    # Example screenshots (preserved)
-│       └── *.json                   # Ground truth data (not auto-deleted)
+├── inputs/
+│   └── ocr/
+│       └── screenshots/             # Drop new screenshots here (auto-deleted after parse)
+│           └── examples/            # Training examples with ground truth JSON (kept in git)
 ├── scripts/
-│   ├── parse_screenshots.py         # OCR parsing script
-│   ├── validate_ocr_examples.py     # Validation script for examples
-│   ├── generate_ground_truth_json.py # Generate JSON files from example_text
-│   └── requirements.txt             # Python dependencies
-├── data/
-│   ├── parsed-stats.json            # Output: parsed statistics and analytics
-│   └── validation-results.json      # Output: validation results (optional)
-├── spotify-analytics-data.js        # Frontend data loader
-└── spotify-analytics.js             # Frontend display renderer
+│   ├── requirements.txt             # Python dependencies (shared)
+│   ├── ocr/
+│   │   ├── parse_screenshots.py     # OCR parsing script
+│   │   ├── validate_ocr_examples.py # Validation script
+│   │   └── generate_ground_truth_json.py
+│   └── spotify/
+│       └── scrape_spotify_artists.py
+└── data/
+    ├── parsed-stats.json            # Output of OCR pipeline (read by legacy MPA)
+    └── spotify_stats.json           # Output of Spotify scraper (read by legacy MPA)
 ```
 
 ## Manual Usage
@@ -55,13 +50,13 @@ sudo apt-get install tesseract-ocr
 pip install -r scripts/requirements.txt
 
 # Run the parser on screenshots
-python scripts/parse_screenshots.py
+python scripts/ocr/parse_screenshots.py
 
 # Validate OCR accuracy against example screenshots (optional)
-python scripts/validate_ocr_examples.py
+python scripts/ocr/validate_ocr_examples.py
 
 # Generate ground truth JSON files from example_text (if needed)
-python scripts/generate_ground_truth_json.py
+python scripts/ocr/generate_ground_truth_json.py
 ```
 
 ## Validation and Testing
@@ -70,16 +65,16 @@ python scripts/generate_ground_truth_json.py
 
 If you have screenshots with **known correct values** and want to help improve OCR accuracy:
 
-1. Place your example screenshots in `screenshots/examples/`
+1. Place your example screenshots in `inputs/ocr/screenshots/examples/`
 2. Create a corresponding `.json` file with ground truth data
 3. Run the validation script to test accuracy
 
-See `screenshots/examples/README.md` for detailed instructions on the ground truth format.
+See `inputs/ocr/screenshots/examples/README.md` for detailed instructions on the ground truth format.
 
 ### Running Validation
 
 ```bash
-python scripts/validate_ocr_examples.py
+python scripts/ocr/validate_ocr_examples.py
 ```
 
 This will:
@@ -93,11 +88,11 @@ This will:
 If you have a text file with ground truth data (like `example_text`), you can automatically generate JSON files for all example screenshots:
 
 ```bash
-python scripts/generate_ground_truth_json.py
+python scripts/ocr/generate_ground_truth_json.py
 ```
 
 This script:
-- Reads the `screenshots/examples/example_text` file
+- Reads the `inputs/ocr/screenshots/examples/example_text` file
 - Parses all metrics from the text format
 - Generates individual JSON files for each example image
 - Places JSON files alongside their corresponding PNG files
@@ -306,13 +301,13 @@ If you're experiencing issues with OCR parsing accuracy:
    - Make sure all relevant text is visible (not cropped)
 
 2. **Provide Example Screenshots**
-   - Add example screenshots with known correct values to `screenshots/examples/`
+   - Add example screenshots with known correct values to `inputs/ocr/screenshots/examples/`
    - Create ground truth JSON files following the template
-   - See `screenshots/examples/README.md` for detailed instructions
+   - See `inputs/ocr/screenshots/examples/README.md` for detailed instructions
    - This helps identify specific parsing issues
 
 3. **Run Validation**
-   - Use `python scripts/validate_ocr_examples.py` to test accuracy
+   - Use `python scripts/ocr/validate_ocr_examples.py` to test accuracy
    - Review the validation output to see which fields are failing
    - Share the validation results when reporting issues
 
@@ -325,7 +320,7 @@ If you're experiencing issues with OCR parsing accuracy:
    - This helps improve the parser for everyone
 
 5. **Contribute Improvements**
-   - The parsing logic is in `scripts/parse_screenshots.py`
+   - The parsing logic is in `scripts/ocr/parse_screenshots.py`
    - Regex patterns for each metric are clearly documented
    - Test your changes with the validation script
    - Submit a pull request with improvements

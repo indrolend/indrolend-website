@@ -47,7 +47,7 @@ load_dotenv()
 # Configuration
 SPOTIFY_ARTISTS_URL = "https://artists.spotify.com/"
 TIMEOUT = 30  # seconds
-OUTPUT_FILE = Path(__file__).parent.parent / "data" / "spotify_stats.json"
+OUTPUT_FILE = Path(__file__).parent.parent.parent / "data" / "spotify_stats.json"
 
 
 class SpotifyArtistsScraperError(Exception):

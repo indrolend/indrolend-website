@@ -495,11 +495,11 @@ def process_screenshots_folder(screenshots_dir, output_file):
 
 def main():
     """Main entry point for the script."""
-    # Get the repository root (assuming script is in scripts/)
+    # Get the repository root (script is in scripts/ocr/)
     script_dir = Path(__file__).parent
-    repo_root = script_dir.parent
+    repo_root = script_dir.parent.parent
     
-    screenshots_dir = repo_root / 'screenshots'
+    screenshots_dir = repo_root / 'inputs' / 'ocr' / 'screenshots'
     output_file = repo_root / 'data' / 'parsed-stats.json'
     
     print("=" * 60)

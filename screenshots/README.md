@@ -1,13 +1,11 @@
-# Screenshots
+# screenshots — Moved
 
-This folder contains screenshots for OCR parsing.
+> **The OCR screenshot intake has moved.**
 
-## For Processing
+- **New location for processing screenshots:** `inputs/ocr/screenshots/`
+- **New location for training examples:** `inputs/ocr/screenshots/examples/`
 
-Upload your Spotify stats screenshots **directly to this folder** to be automatically processed by the OCR parser.
+Drop new Spotify stats screenshots into `inputs/ocr/screenshots/` and run
+`python scripts/ocr/parse_screenshots.py`.
 
-⚠️ **Note**: Screenshots placed here will be **automatically deleted** after successful parsing to prevent duplicate data.
-
-## For Examples/Training
-
-If you have example screenshots with **known correct values** that you want to use for validation and improving OCR accuracy, place them in the `examples/` subdirectory instead. See `examples/README.md` for detailed instructions.
+See `inputs/README.md` and `scripts/ocr/README.md` for details.
