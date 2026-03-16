@@ -1,101 +1,107 @@
-# Copilot Instructions
+# Agent & Contributor Rules
 
-> Full rules and vocabulary: `docs/AGENT_RULES.md` · Repo map: `docs/README.md`
-
-## Project
-
-Vanilla JS SPA + frozen legacy MPA. No framework, no build system.
-
-- **SPA (primary, beta):** `spa.html` → `js/spa/`
-- **Legacy MPA (frozen):** `index.html` → `legacy/pages/home.html`
-
-New features go in the SPA only. Legacy accepts bug fixes only.
+Canonical operating rules for automated agents and human contributors.
+When in doubt, check here first.
 
 ---
 
-## Key vocabulary
+## Docs authority
 
+| Location | Canonical for |
+|---|---|
+| `docs/` | Repo-wide truths (architecture, rules, runtimes, external intake) |
+| `<dir>/README.md` | That folder's local how-to only |
+| `ARCHITECTURE.md`, `LEGACY.md`, etc. (root) | Reference depth — accurate but not the single source of truth for rules |
+
+Do not treat root-level reference docs as authoritative over `docs/`.
+
+---
+
+## Runtimes
+
+Two runtimes share this repo. Understand which one you are touching before making changes.
+
+| Name | Entry file | Status | Role |
+|---|---|---|---|
+| **SPA** | `spa.html` | Primary (beta) | Vanilla-JS single-page app; hash routing; canvas-heavy |
+| **Legacy MPA** | `index.html` → `legacy/pages/home.html` | Stable entrypoint | Frozen multi-page app; current production default |
+
+Rules:
+- The SPA is the primary development target. New features go in the SPA.
+- The legacy MPA is frozen. Do not add features to it; bug fixes only.
+- `index.html` is a redirect shim — do not add logic there.
+- SPA files live under `js/spa/`. Legacy JS lives under `legacy/js/`. Do not mix them.
+
+---
+
+## Vocabulary (use consistently)
+
+### Runtime / navigation
+| Term | Meaning | Example |
+|---|---|---|
+| **runtime** | Code executing in the browser; either SPA or legacy | "This change touches the SPA runtime" |
+| **entrypoint** | The file a browser opens first | `spa.html`, `legacy/pages/home.html` |
+| **route** | URL state; canonical description of sections and items | `js/spa/routes.js` |
+| **view** | Top-level SPA screen; one per section | `js/spa/views/*View.js` |
+| **section** | Named group of items on the horizontal navigation axis | `home`, `social`, `music` |
+| **item** | A single navigable entry inside a section (vertical axis) | `spotify`, `tiktok` |
+
+### Architecture
+| Term | Meaning | Example |
+|---|---|---|
+| **engine** | Self-contained animation or behaviour system | `transitionEngine.js`, `particle-clusters.js` |
+| **manager** | Shared app-level coordinator; one instance; global API | `overlayManager.js`, `router.js` |
+| **overlay** | Layered UI rendered above all views | managed by `overlayManager.js` |
+| **component** | Reusable UI fragment (not a full view) | — |
+| **util** | Pure helper with no side-effects | `importantWords.js` |
+
+### Code status
 | Term | Meaning |
-|------|---------|
-| **route** | URL state (hash) — canonical in `js/spa/routes.js` |
-| **view** | Top-level SPA screen; one per section (`js/spa/views/*View.js`) |
-| **section** | Horizontal nav group: `home`, `social`, `music`, `games`, `about` |
-| **item** | Vertical nav entry inside a section: `spotify`, `tiktok`, … |
-| **engine** | Self-contained animation system; exposes `init` + `cleanup` |
-| **manager** | App-level coordinator; one global instance |
-| **legacy** | Frozen MPA under `/legacy` — not just "old" |
+|---|---|
+| **legacy** | Frozen/superseded code (the `/legacy` dir); *not* just "old" |
+| **demo** | Showcase or prototype; not used in production | `particlecarousel.demo.js` |
+| **WIP** | Incomplete feature that should not be presented as finished |
 
-Do not call SPA views "pages" — "pages" refers to `legacy/pages/`.
+> **Legacy disambiguation**: "legacy" always refers to the frozen MPA under `/legacy`.
+> Use "old", "previous", or "deprecated" for other outdated code to avoid confusion.
 
 ---
 
-## SPA script load order (`spa.html`)
+## View lifecycle contract (SPA)
 
-Do not reorder without explicit discussion:
-particle-clusters → importantWords → routes → transitionEngine → overlayManager → views (home…about) → router → gestures
+A view module registers itself on `window.__SPA_Views[sectionId]` and should
+implement these methods. All are optional, but cleanup is mandatory when
+`onActivate` adds listeners or starts loops.
 
----
+| Method | Called by | Responsibility |
+|---|---|---|
+| `mount(itemId, containerEl)` | router | Build DOM once; cache element refs; create engines |
+| `onActivate(itemId, viewEl)` | router | Start rAF loops; add per-view event listeners |
+| `onDeactivate(itemId)` | router | **Stop rAF loops; remove per-view listeners** |
+| `getTransitionCanvas(itemId)` | router | Return a canvas the transition engine can sample |
 
-## View lifecycle contract
-
-| Method | Responsibility |
-|--------|----------------|
-| `mount(itemId, containerEl)` | Build DOM once; cache refs; create engines |
-| `onActivate(itemId, viewEl)` | Start rAF loops; add event listeners |
-| `onDeactivate(itemId)` | **Stop rAF loops; remove listeners** — mandatory |
-| `getTransitionCanvas(itemId)` | Return canvas for transition sampler |
-
-Lifecycle rules: listeners added in `onActivate` must be removed in `onDeactivate`. rAF loops, intervals, and timeouts must be cancelled. Hidden views must not run animation work.
-
----
-
-## Layer boundaries
-
-| Layer | Rule |
-|-------|------|
-| views | Route-level behavior and lifecycle only |
-| engines | Animation/behavior; expose `init` + `cleanup` |
-| managers | Coordinate shared systems; one global instance |
-| utils | Pure functions — no DOM, no global state |
+Rules:
+- `onDeactivate` **must** undo everything `onActivate` did. Memory leaks are bugs.
+- `mount` is called once per session; do not re-mount the same view.
+- Views do **not** read `routes.js` directly; they receive `itemId` from the router.
 
 ---
 
-## Pipeline / tooling (non-runtime)
+## External / third-party code
 
-| Directory | Purpose |
-|-----------|---------|
-| `inputs/ocr/screenshots/` | Drop new OCR screenshots here; auto-deleted after parse |
-| `inputs/ocr/screenshots/examples/` | Training examples with ground truth JSON (kept in git) |
-| `inputs/spotify/exports/` | Raw Spotify export files (staging) |
-| `scripts/ocr/` | OCR scripts: `parse_screenshots.py`, `validate_ocr_examples.py` |
-| `scripts/spotify/` | Spotify scraper: `scrape_spotify_artists.py` |
-| `data/` | Auto-generated outputs — do not edit by hand |
+All third-party packs enter the repo through `external/`. See [`../external/README.md`](../external/README.md).
 
-Pipeline docs: `scripts/README.md` · `scripts/ocr/README.md` · `scripts/spotify/README.md`
+Rules:
+- Do **not** place vendor archives (`.tgz`, `.zip`, `.tar.gz`) in `js/spa/` or `legacy/`.
+- Do **not** commit `node_modules/`.
+- After vetting a pack, internalize it into `assets/` (static files) or `js/spa/` (runtime modules).
 
 ---
 
-## External / third-party intake
+## What not to change (without explicit discussion)
 
-Third-party packs **must** land in `external/<pack-name>/` before use.
-Do not place vendor archives in `js/spa/` or `legacy/`.
-See `external/README.md` for the intake workflow.
-
----
-
-## Operating style
-
-- Be direct and concise. No motivational commentary.
-- Prefer the smallest useful change. Preserve behavior unless redesign is requested.
-- Do not introduce abstractions, patterns, or dependencies not already present.
-- Before moving files: identify all references (HTML script tags, CSS links, import paths, script path constants).
-
----
-
-## Do not change without explicit discussion
-
-- `index.html` redirect shim
-- Section/item IDs in `js/spa/routes.js`
-- Anything under `legacy/` beyond isolated bug fixes
-- `data/parsed-stats.json` (written by OCR automation)
-- `data/spotify_stats.json` (written by Spotify scraper)
+- `index.html` entry-point redirect
+- `js/spa/routes.js` section/item names (other views depend on exact IDs)
+- `legacy/` code beyond isolated bug fixes
+- `data/parsed-stats.json` by hand (it is written by automation)
+- GitHub Actions workflows (not in scope for doc-only PRs)
