@@ -1,55 +1,63 @@
 // SPA Social View — TikTok / Instagram / YouTube
-// Each item renders a particle-cluster canvas poster + a clickable important-word label.
+// Uses GifCarouselPanel (which wraps ParticleCarouselEngine + gifler) so that:
+//   • idle state shows the animated GIF (clickable — opens external URL)
+//   • swipe/dot navigation transitions with explode+reassemble particles
+// The per-item view divs are empty routing wrappers; the carousel panel lives
+// as an absolute-fill overlay above all view divs inside #spa-view-host.
 
 (function () {
-  var META = {
-    tiktok:    { label: 'tiktok',    url: 'https://www.tiktok.com/@indrolend',               platform: 'tiktok'    },
-    instagram: { label: 'instagram', url: 'https://www.instagram.com/indrolend.us',           platform: 'instagram' },
-    youtube:   { label: 'youtube',   url: 'https://www.youtube.com/@indrolend',               platform: 'youtube'   }
-  };
+  'use strict';
 
-  var mountedCanvases = {};
+  var ITEM_IDS = ['tiktok', 'instagram', 'youtube'];
 
-  function mount(itemId, container) {
-    var item = META[itemId];
-    if (!item) return;
+  var SLIDES = [
+    { label: 'tiktok',    gifSrc: 'assets/icons/Tiktoklogospin.gif',    href: 'https://www.tiktok.com/@indrolend'      },
+    { label: 'instagram', gifSrc: 'assets/icons/Instagramlogospin.gif', href: 'https://www.instagram.com/indrolend.us' },
+    { label: 'youtube',   gifSrc: 'assets/icons/Youtubelogospin.gif',   href: 'https://www.youtube.com/@indrolend'     },
+  ];
 
-    container.innerHTML =
-      '<div class="spa-poster-view">' +
-        '<div class="spa-poster-canvas-wrap">' +
-          '<canvas data-particle-cluster="' + item.platform + '" class="spa-poster-canvas" aria-label="' + item.label + '"></canvas>' +
-        '</div>' +
-        '<div class="spa-poster-label">' +
-          '<a class="spa-poster-link" href="' + item.url + '" target="_blank" rel="noopener">' +
-            '<span class="important-word">' + item.label + '</span>' +
-          '</a>' +
-        '</div>' +
-      '</div>';
+  var panel = null;
 
-    // Store canvas reference; particle cluster is initialised in onActivate
-    // so the canvas has correct dimensions when the view is actually visible.
-    var cv = container.querySelector('[data-particle-cluster]');
-    if (cv) mountedCanvases[itemId] = cv;
-  }
-
-  // Called after the view becomes visible — safe to read layout dimensions here.
-  function onActivate(itemId) {
-    var item = META[itemId];
-    if (!item) return;
-    var cv = mountedCanvases[itemId];
-    if (cv && window.__SPA_initParticleCluster) {
-      window.__SPA_initParticleCluster(cv, item.platform);
+  function getPanel() {
+    if (!panel) {
+      panel = new GifCarouselPanel(SLIDES);
+      var host = document.getElementById('spa-view-host');
+      if (host) host.appendChild(panel.container);
     }
+    return panel;
   }
 
+  // mount() — called once per item; view div is just a routing wrapper here.
+  function mount(itemId, container) {
+    // intentionally empty — carousel panel overlays all social view divs
+  }
+
+  // onActivate() — called by router after the view div is made visible.
+  function onActivate(itemId) {
+    var idx = ITEM_IDS.indexOf(itemId);
+    if (idx === -1) return;
+    var p = getPanel();
+    p.show();
+    p.goTo(idx);
+  }
+
+  // onDeactivate() — called by router before the view div is hidden.
+  function onDeactivate(itemId) {
+    if (panel) panel.hide();
+  }
+
+  // getTransitionCanvas() — supplies a canvas for section-level SPA transitions.
   function getTransitionCanvas(itemId) {
-    return mountedCanvases[itemId] || null;
+    return panel ? panel.getTransitionCanvas() : null;
   }
 
   if (!window.__SPA_Views) window.__SPA_Views = {};
   window.__SPA_Views.social = {
     mount:               mount,
     onActivate:          onActivate,
-    getTransitionCanvas: getTransitionCanvas
+    onDeactivate:        onDeactivate,
+    getTransitionCanvas: getTransitionCanvas,
+    // Signal to the router that this view handles its own item-level animations.
+    skipItemTransition:  true,
   };
 }());

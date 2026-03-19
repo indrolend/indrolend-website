@@ -1,47 +1,59 @@
-// SPA Home View — "swarm" panel
-// Renders character-particle background identical to the one in pages/home.html.
-// Exposes getTransitionCanvas() so the transition engine can sample its pixels.
+// SPA Home View — swirling orb cluster + section-word navigator.
+//
+// State machine:
+//   ORBS            — rainbow dots orbit center; tap → TRANSITIONING(orbs_to_word)
+//   TRANSITIONING   — canvas animates between ORBS and WORD
+//   WORD            — one section name is displayed as HTML text;
+//                     swipe L/R → TRANSITIONING(word_to_word);
+//                     tap "home" → TRANSITIONING(word_to_orbs);
+//                     tap other  → router.go(section)
+//
+// While active, body.spa-at-home hides the router nav and prevents
+// gestures.js from processing swipe events.
 
 (function () {
+  'use strict';
+
+  var ORB_COLORS = [
+    '#00e5ff', '#ffd600', '#ff1744', '#d500f9', '#00e676', '#e0e0e0', '#2979ff'
+  ];
+
+  var SECTION_IDS    = ['home', 'social', 'music', 'games', 'about'];
+  var PARTICLE_COUNT = 84;   // 12 × 7 colors
+  var SWIPE_MIN_PX   = 40;   // minimum swipe distance
+
+  // ── State ────────────────────────────────────────────────────────────────
+  var state      = 'orbs';  // 'orbs' | 'word' | 'transitioning'
+  var transPhase = null;    // 'orbs_to_word' | 'word_to_orbs' | 'word_to_word'
+  var transStart = null;    // timestamp when current transition began
+  var transNewIdx = 0;      // target word index for word_to_word transition
+  var wordIdx    = 0;       // current section word index (0 = home)
+
+  // ── DOM refs ─────────────────────────────────────────────────────────────
   var canvas      = null;
   var ctx         = null;
-  var animId      = null;
-  var particles   = [];
+  var wordOverlay = null;
+  var wordLabel   = null;
 
-  var PARTICLE_COUNT   = 60;
-  var MAX_SPEED        = 0.6;
-  var CONNECTION_DIST  = 120;
-  var REPULSE_DIST     = 150;
-  var PARTICLE_COLOR   = 'rgba(94, 232, 125, 0.4)';
-  var LINE_COLOR       = 'rgba(94, 232, 125, 0.1)';
+  // ── Animation ────────────────────────────────────────────────────────────
+  var animId    = null;
+  var lastTs    = 0;
 
-  var mouse = { x: null, y: null };
+  // ── Orb particles ────────────────────────────────────────────────────────
+  var orbs = [];
 
-  var charPool = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%&*?!+-=';
-
-  function rndChar() {
-    return charPool[Math.floor(Math.random() * charPool.length)];
-  }
-
-  function makeParticle() {
-    var size = Math.floor(Math.random() * 6 + 10);
-    return {
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * MAX_SPEED,
-      vy: (Math.random() - 0.5) * MAX_SPEED,
-      size: size,
-      font: size + 'px "SF Mono", Menlo, Monaco, Consolas, monospace',
-      char: rndChar(),
-      changeInterval: Math.random() * 1200 + 300,
-      lastChange: performance.now()
-    };
-  }
-
-  function initParticles() {
-    if (!canvas) return;
-    particles = [];
-    for (var i = 0; i < PARTICLE_COUNT; i++) particles.push(makeParticle());
+  function makeOrbs() {
+    orbs = [];
+    for (var i = 0; i < PARTICLE_COUNT; i++) {
+      orbs.push({
+        angle:      (i / PARTICLE_COUNT) * Math.PI * 2,
+        radius:     12 + ((i * 53) % 50),         // 12–62 px
+        speed:      (0.35 + ((i * 37) % 100) / 100) * ((i % 5 === 0) ? -1 : 1),
+        color:      ORB_COLORS[i % ORB_COLORS.length],
+        size:       2.5 + ((i * 17) % 40) / 10,   // 2.5–6.5 px
+        phasePulse: i * 0.75
+      });
+    }
   }
 
   function resizeCanvas() {
@@ -50,127 +62,350 @@
     canvas.height = window.innerHeight;
   }
 
-  function update() {
-    var now = performance.now();
-    particles.forEach(function (p) {
-      if (now - p.lastChange > p.changeInterval) {
-        p.char = rndChar();
-        p.lastChange = now;
-      }
+  // ── Burst particles (word-to-word transition) ────────────────────────────
+  var burst = [];
 
-      // Mouse repulsion
-      if (mouse.x !== null) {
-        var dx   = p.x - mouse.x;
-        var dy   = p.y - mouse.y;
-        var dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < REPULSE_DIST && dist > 0) {
-          var force = (REPULSE_DIST - dist) / REPULSE_DIST;
-          p.vx += (dx / dist) * force * 0.5;
-          p.vy += (dy / dist) * force * 0.5;
-        }
-      }
-
-      p.x  += p.vx;
-      p.y  += p.vy;
-      p.vx *= 0.99;
-      p.vy *= 0.99;
-
-      // Speed cap
-      var spd = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-      var cap = MAX_SPEED * 3;
-      if (spd > cap) { p.vx = (p.vx / spd) * cap; p.vy = (p.vy / spd) * cap; }
-
-      // Bounce
-      if (p.x < 0)             { p.x = 0;             p.vx *= -1; }
-      if (p.x > canvas.width)  { p.x = canvas.width;  p.vx *= -1; }
-      if (p.y < 0)             { p.y = 0;             p.vy *= -1; }
-      if (p.y > canvas.height) { p.y = canvas.height; p.vy *= -1; }
-    });
-  }
-
-  function draw() {
-    if (!ctx) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Characters
-    ctx.fillStyle = PARTICLE_COLOR;
-    particles.forEach(function (p) {
-      ctx.font = p.font;
-      ctx.fillText(p.char, p.x, p.y);
-    });
-
-    // Connections
-    ctx.strokeStyle = LINE_COLOR;
-    ctx.lineWidth   = 1;
-    for (var i = 0; i < particles.length; i++) {
-      for (var j = i + 1; j < particles.length; j++) {
-        var ddx  = particles[i].x - particles[j].x;
-        var ddy  = particles[i].y - particles[j].y;
-        var dist = Math.sqrt(ddx * ddx + ddy * ddy);
-        if (dist < CONNECTION_DIST) {
-          ctx.beginPath();
-          ctx.moveTo(particles[i].x, particles[i].y);
-          ctx.lineTo(particles[j].x, particles[j].y);
-          ctx.stroke();
-        }
-      }
+  function spawnBurst() {
+    var cx = canvas.width / 2;
+    var cy = canvas.height / 2;
+    burst = [];
+    for (var i = 0; i < 64; i++) {
+      var a   = Math.random() * Math.PI * 2;
+      var spd = 2.5 + Math.random() * 8;
+      burst.push({
+        x:     cx, y: cy,
+        vx:    Math.cos(a) * spd,
+        vy:    Math.sin(a) * spd,
+        color: ORB_COLORS[i % ORB_COLORS.length],
+        size:  2 + Math.random() * 3.5
+      });
     }
   }
 
-  function animate() {
-    update();
-    draw();
-    animId = requestAnimationFrame(animate);
+  // ── Drawing helpers ───────────────────────────────────────────────────────
+
+  function stepOrbs(dt) {
+    orbs.forEach(function (o) { o.angle += o.speed * dt; });
   }
 
-  // ─── view lifecycle ──────────────────────────────────────────────────────────
-
-  function mount(itemId, container) {
-    container.innerHTML =
-      '<canvas class="spa-home-canvas" id="spa-home-canvas"></canvas>' +
-      '<div class="spa-home-label"><span class="important-word">indrolend</span></div>';
-
-    canvas = container.querySelector('#spa-home-canvas');
-    ctx    = canvas.getContext('2d');
-
-    resizeCanvas();
-    initParticles();
-
-    canvas.addEventListener('mousemove', function (e) {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+  function drawOrbs(alpha) {
+    if (!ctx || !canvas) return;
+    var cx  = canvas.width / 2;
+    var cy  = canvas.height / 2;
+    var now = performance.now() / 1000;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    orbs.forEach(function (o) {
+      var pulse = 0.65 + 0.35 * Math.sin(now * 2.8 + o.phasePulse);
+      ctx.globalAlpha = pulse * alpha;
+      ctx.shadowBlur  = o.size * 2.8;
+      ctx.shadowColor = o.color;
+      ctx.fillStyle   = o.color;
+      ctx.beginPath();
+      ctx.arc(
+        cx + Math.cos(o.angle) * o.radius,
+        cy + Math.sin(o.angle) * o.radius,
+        o.size, 0, Math.PI * 2
+      );
+      ctx.fill();
     });
-    canvas.addEventListener('mouseleave', function () {
-      mouse.x = null;
-      mouse.y = null;
-    });
-
-    window.addEventListener('resize', function () {
-      resizeCanvas();
-      initParticles();
-    });
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur  = 0;
   }
 
-  function onActivate() {
-    if (!animId) animate();
+  function drawBurst(alpha) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    burst.forEach(function (p) {
+      p.x += p.vx; p.y += p.vy;
+      p.vx *= 0.90; p.vy *= 0.90;
+      ctx.globalAlpha = alpha;
+      ctx.shadowBlur  = 5;
+      ctx.shadowColor = p.color;
+      ctx.fillStyle   = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur  = 0;
   }
 
-  function onDeactivate() {
-    if (animId) {
-      cancelAnimationFrame(animId);
+  // ── Overlay helpers ───────────────────────────────────────────────────────
+
+  function setOverlayOpacity(v) {
+    if (wordOverlay) wordOverlay.style.opacity = v.toFixed(3);
+  }
+
+  function showOverlay(v) {
+    if (wordOverlay) wordOverlay.style.display = v ? 'flex' : 'none';
+  }
+
+  function updateWordLabel() {
+    if (!wordLabel) return;
+    var label = SECTION_IDS[wordIdx];
+    wordLabel.innerHTML = '';
+    var span = document.createElement('span');
+    span.className  = 'important-word';
+    span.textContent = label;
+    wordLabel.appendChild(span);
+    if (window.__SPA_ImportantWords) {
+      window.__SPA_ImportantWords.init(wordLabel);
+    }
+  }
+
+  function flashWord() {
+    if (!wordLabel) return;
+    wordLabel.classList.add('spa-home-flash');
+    wordLabel.addEventListener('animationend', function () {
+      wordLabel.classList.remove('spa-home-flash');
+    }, { once: true });
+  }
+
+  // ── Single animation loop ─────────────────────────────────────────────────
+
+  function tick(ts) {
+    var dt = Math.min((ts - lastTs) / 1000, 0.05);
+    lastTs = ts;
+
+    if (state === 'orbs') {
+      stepOrbs(dt);
+      drawOrbs(1);
+      animId = requestAnimationFrame(tick);
+
+    } else if (state === 'transitioning') {
+      stepOrbs(dt);
+      if (!transStart) transStart = ts;
+      var elapsed = ts - transStart;
+      var done    = runTransition(elapsed);
+      if (!done) {
+        animId = requestAnimationFrame(tick);
+      }
+      // When done, runTransition calls finishTransition which manages animId
+
+    } else {
+      // WORD state — canvas off, no rendering needed
       animId = null;
     }
   }
 
-  function getTransitionCanvas() {
-    return canvas;
+  function startLoop() {
+    if (animId) { cancelAnimationFrame(animId); animId = null; }
+    lastTs = performance.now();
+    animId = requestAnimationFrame(tick);
+  }
+
+  // Returns true when the transition has finished.
+  function runTransition(elapsed) {
+    if (transPhase === 'orbs_to_word') {
+      // 650 ms: orbs fade out (first 55%), word fades in (last 45%)
+      var TOTAL = 650;
+      var t = Math.min(elapsed / TOTAL, 1);
+      drawOrbs(Math.max(0, 1 - t / 0.55));
+      setOverlayOpacity(t > 0.55 ? (t - 0.55) / 0.45 : 0);
+      if (t >= 1) { finishTransition('word'); return true; }
+
+    } else if (transPhase === 'word_to_orbs') {
+      // 650 ms: word fades out (first 45%), orbs fade in (last 55%)
+      var TOTAL = 650;
+      var t = Math.min(elapsed / TOTAL, 1);
+      drawOrbs(t > 0.45 ? (t - 0.45) / 0.55 : 0);
+      setOverlayOpacity(Math.max(0, 1 - t / 0.45));
+      if (t >= 1) { finishTransition('orbs'); return true; }
+
+    } else if (transPhase === 'word_to_word') {
+      // 500 ms: burst rises/falls; word crossfades in the middle
+      var TOTAL = 500;
+      var t = Math.min(elapsed / TOTAL, 1);
+      var burstAlpha = Math.sin(t * Math.PI) * 0.9;
+      drawBurst(burstAlpha);
+
+      if (t < 0.42) {
+        setOverlayOpacity(1 - t / 0.42);
+      } else if (t >= 0.42 && t < 0.58) {
+        setOverlayOpacity(0);
+        // Swap the word at the midpoint (once)
+        if (wordIdx !== transNewIdx) {
+          wordIdx = transNewIdx;
+          updateWordLabel();
+        }
+      } else {
+        setOverlayOpacity((t - 0.58) / 0.42);
+      }
+      if (t >= 1) { finishTransition('word'); return true; }
+    }
+    return false;
+  }
+
+  function finishTransition(newState) {
+    transStart = null;
+    transPhase = null;
+    state      = newState;
+
+    if (state === 'orbs') {
+      showOverlay(false);
+      setOverlayOpacity(0);
+      canvas.style.opacity = '1';
+      startLoop();
+
+    } else if (state === 'word') {
+      // Ensure word index was committed
+      if (wordIdx !== transNewIdx && transNewIdx !== undefined) {
+        wordIdx = transNewIdx;
+        updateWordLabel();
+      }
+      canvas.style.opacity = '0';
+      setOverlayOpacity(1);
+      showOverlay(true);
+      animId = null;
+      // Flash the word as a tap/swipe hint
+      setTimeout(flashWord, 60);
+    }
+  }
+
+  // ── Interaction handlers ──────────────────────────────────────────────────
+
+  function handleTap() {
+    if (state === 'transitioning') return;
+
+    if (state === 'orbs') {
+      // Orbs → first section word ("home")
+      wordIdx    = 0;
+      transNewIdx = 0;
+      updateWordLabel();
+      showOverlay(true);
+      setOverlayOpacity(0);
+      canvas.style.opacity = '1';
+      state      = 'transitioning';
+      transPhase = 'orbs_to_word';
+      transStart = null;
+      startLoop();
+
+    } else if (state === 'word') {
+      if (wordIdx === 0) {
+        // "home" → back to orbs
+        canvas.style.opacity = '1';
+        state      = 'transitioning';
+        transPhase = 'word_to_orbs';
+        transStart = null;
+        startLoop();
+      } else {
+        // Navigate into that section
+        var sid = SECTION_IDS[wordIdx];
+        if (window.__SPA_Router) window.__SPA_Router.go(sid);
+      }
+    }
+  }
+
+  function handleSwipe(dir) {
+    if (state !== 'word') return;
+    var newIdx = dir === 'left'
+      ? (wordIdx + 1) % SECTION_IDS.length
+      : (wordIdx - 1 + SECTION_IDS.length) % SECTION_IDS.length;
+    if (newIdx === wordIdx) return;
+
+    transNewIdx = newIdx;
+    spawnBurst();
+    canvas.style.opacity = '1';
+    state      = 'transitioning';
+    transPhase = 'word_to_word';
+    transStart = null;
+    startLoop();
+  }
+
+  // ── Touch/pointer events ──────────────────────────────────────────────────
+
+  var txStart = 0;
+  var tyStart = 0;
+  var txActive = false;
+
+  function onTouchStart(e) {
+    if (e.touches.length !== 1) return;
+    txStart  = e.touches[0].clientX;
+    tyStart  = e.touches[0].clientY;
+    txActive = true;
+    // Stop gestures.js from also processing this touch
+    e.stopPropagation();
+  }
+
+  function onTouchEnd(e) {
+    if (!txActive) return;
+    txActive = false;
+    if (!e.changedTouches || e.changedTouches.length === 0) return;
+    e.stopPropagation();
+    var dx  = e.changedTouches[0].clientX - txStart;
+    var dy  = e.changedTouches[0].clientY - tyStart;
+    var adx = Math.abs(dx);
+    var ady = Math.abs(dy);
+    if (adx < SWIPE_MIN_PX && ady < SWIPE_MIN_PX) {
+      handleTap();
+    } else if (adx > ady * 1.4) {
+      handleSwipe(dx < 0 ? 'left' : 'right');
+    }
+    // Ignore vertical-only swipes in home view
+  }
+
+  function onTouchCancel() {
+    txActive = false;
+  }
+
+  function onMouseClick() {
+    // Desktop: treat any click as a tap
+    if (state === 'orbs' || state === 'word') handleTap();
+  }
+
+  // ── View lifecycle ────────────────────────────────────────────────────────
+
+  function mount(itemId, container) {
+    container.innerHTML = '';
+
+    // Canvas — draws orbs and burst particles
+    canvas = document.createElement('canvas');
+    canvas.className = 'spa-home-canvas';
+    container.appendChild(canvas);
+    ctx = canvas.getContext('2d');
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // Word overlay — shows current section name as HTML text
+    wordOverlay = document.createElement('div');
+    wordOverlay.className = 'spa-home-word-overlay';
+    wordOverlay.style.display = 'none';
+    wordLabel = document.createElement('div');
+    wordLabel.className = 'spa-home-word';
+    wordOverlay.appendChild(wordLabel);
+    container.appendChild(wordOverlay);
+
+    makeOrbs();
+
+    // Touch events (stopPropagation prevents gestures.js from interfering)
+    container.addEventListener('touchstart',  onTouchStart,  { passive: true });
+    container.addEventListener('touchend',    onTouchEnd);
+    container.addEventListener('touchcancel', onTouchCancel, { passive: true });
+    // Desktop click
+    container.addEventListener('click', onMouseClick);
+  }
+
+  function onActivate() {
+    document.body.classList.add('spa-at-home');
+    // Always start from the orbs state (home = the orb cluster)
+    wordIdx    = 0;
+    state      = 'orbs';
+    transPhase = null;
+    transStart = null;
+    canvas.style.opacity = '1';
+    showOverlay(false);
+    setOverlayOpacity(0);
+    startLoop();
+  }
+
+  function onDeactivate() {
+    document.body.classList.remove('spa-at-home');
+    if (animId) { cancelAnimationFrame(animId); animId = null; }
   }
 
   if (!window.__SPA_Views) window.__SPA_Views = {};
   window.__SPA_Views.home = {
-    mount:               mount,
-    onActivate:          onActivate,
-    onDeactivate:        onDeactivate,
-    getTransitionCanvas: getTransitionCanvas
+    mount:        mount,
+    onActivate:   onActivate,
+    onDeactivate: onDeactivate
   };
 }());

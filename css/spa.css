@@ -52,24 +52,106 @@ body.spa-mode {
   font-size: 2rem;
 }
 
-/* ── Home swarm ─────────────────────────────────────────────────────────────── */
+/* ── Home canvas + orb-word state machine ───────────────────────────────────── */
 .spa-home-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  pointer-events: auto;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  /* opacity toggled by homeView JS */
 }
 
-.spa-home-label {
+/* Word overlay — centered section name, shown after tap on orbs */
+.spa-home-word-overlay {
   position: absolute;
-  bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
-  left: 0;
-  right: 0;
+  inset: 0;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  pointer-events: none; /* JS enables clicks via container */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.spa-home-word {
+  font-family: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  font-size: clamp(3rem, 12vw, 7rem);
+  color: var(--text-main, #f5f7ff);
   text-align: center;
-  pointer-events: none;
-  font-size: 1.8rem;
-  z-index: 2;
+  letter-spacing: 0.07em;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Flash animation — current section word pulses as a tap/swipe hint */
+@-webkit-keyframes spa-home-flash {
+  0%, 100% { opacity: 1;   -webkit-transform: scale(1);    transform: scale(1);    }
+  35%       { opacity: 0.5; -webkit-transform: scale(1.07); transform: scale(1.07); }
+  70%       { opacity: 1;   -webkit-transform: scale(0.96); transform: scale(0.96); }
+}
+@keyframes spa-home-flash {
+  0%, 100% { opacity: 1;   -webkit-transform: scale(1);    transform: scale(1);    }
+  35%       { opacity: 0.5; -webkit-transform: scale(1.07); transform: scale(1.07); }
+  70%       { opacity: 1;   -webkit-transform: scale(0.96); transform: scale(0.96); }
+}
+
+.spa-home-flash {
+  -webkit-animation: spa-home-flash 0.52s ease-in-out 2;
+  animation: spa-home-flash 0.52s ease-in-out 2;
+}
+
+/* Hide top nav bar and item dots while on the home screen */
+body.spa-at-home #spa-nav,
+body.spa-at-home #spa-item-nav {
+  display: none;
+}
+
+/* ── Plain text view (About + Games) ───────────────────────────────────────── */
+/* Clean, readable, centered typography — no particle cloud */
+.spa-text-view {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  /* Offset for the fixed top nav bar */
+  padding-top: calc(env(safe-area-inset-top, 0px) + 3.2rem);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1.5rem);
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.spa-text-view-label {
+  text-align: center;
+  font-size: clamp(2.2rem, 7.5vw, 5rem);
+  line-height: 1.25;
+  padding: 0.8rem 2rem;
+  font-family: 'EB Garamond', Georgia, serif;
+}
+
+.spa-text-view-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.spa-text-view-link:hover .important-word-letter,
+.spa-text-view-link:focus .important-word-letter {
+  font-style: italic;
 }
 
 /* ── Poster views (Social / Music canvas items) ─────────────────────────────── */
@@ -101,6 +183,55 @@ body.spa-mode {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/* ── GIF Carousel Panel (Social / Music animated-GIF items) ─────────────────── */
+/* The container is absolute-fill inside #spa-view-host, above empty view divs.  */
+.spa-carousel-host {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* Particle canvas — filled to viewport by the engine's _resize() */
+.spa-carousel-particle {
+  position: absolute;
+  inset: 0;
+}
+
+/* GIF canvas — centred; gifler sets intrinsic width/height to GIF dimensions.
+   CSS scales the element for display while keeping the bitmap 1:1.             */
+.spa-carousel-gif {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  max-width: min(70vw, 420px);
+  max-height: min(calc(var(--vh, 1vh) * 65), 420px);
+  width: auto;
+  height: auto;
+  pointer-events: auto;
+  cursor: pointer;
+  display: none; /* revealed by engine when first GIF frame is ready */
+  -webkit-tap-highlight-color: transparent;
+}
+
+.spa-carousel-gif.visible {
+  display: block;
+}
+
+/* ── About section links ────────────────────────────────────────────────────── */
+.spa-about-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.spa-about-link:hover .important-word-letter,
+.spa-about-link:focus .important-word-letter {
+  font-style: italic;
 }
 
 .spa-poster-label {

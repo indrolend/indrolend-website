@@ -1,82 +1,67 @@
 // SPA Music View — Spotify / Apple Music / Bandcamp / SoundCloud
-// Canvas-poster items use particle-clusters.js; SoundCloud is a text-poster
-// that opens the soundcloudArchiveMenu overlay.
+// All 4 items use GifCarouselPanel with animated GIFs.
+// SoundCloud opens the archive overlay on tap instead of navigating to a URL.
 
 (function () {
-  var META = {
-    spotify:    { label: 'spotify',     type: 'canvas', url: 'https://open.spotify.com/artist/59X3431NBfd6xWMc3Zlh0v', platform: 'spotify'    },
-    appleMusic: { label: 'apple music', type: 'canvas', url: 'https://music.apple.com/us/artist/onliner/1663334902',   platform: 'applemusic' },
-    bandcamp:   { label: 'bandcamp',    type: 'canvas', url: 'https://indrolend.bandcamp.com',                         platform: 'bandcamp'   },
-    soundcloud: { label: 'soundcloud',  type: 'text',   overlay: 'soundcloudArchiveMenu' }
-  };
+  'use strict';
 
-  var mountedCanvases = {};
+  var ITEM_IDS = ['spotify', 'appleMusic', 'bandcamp', 'soundcloud'];
 
-  function mount(itemId, container) {
-    var item = META[itemId];
-    if (!item) return;
-
-    if (item.type === 'canvas') {
-      container.innerHTML =
-        '<div class="spa-poster-view">' +
-          '<div class="spa-poster-canvas-wrap">' +
-            '<canvas data-particle-cluster="' + item.platform + '" class="spa-poster-canvas" aria-label="' + item.label + '"></canvas>' +
-          '</div>' +
-          '<div class="spa-poster-label">' +
-            '<a class="spa-poster-link" href="' + item.url + '" target="_blank" rel="noopener">' +
-              '<span class="important-word">' + item.label + '</span>' +
-            '</a>' +
-          '</div>' +
-        '</div>';
-
-      // Store canvas reference; particle cluster is initialised in onActivate
-      // so the canvas has correct dimensions when the view is actually visible.
-      var cv = container.querySelector('[data-particle-cluster]');
-      if (cv) mountedCanvases[itemId] = cv;
-
-    } else {
-      // Text poster for SoundCloud
-      container.innerHTML =
-        '<div class="spa-poster-view spa-text-poster">' +
-          '<div class="spa-text-poster-content">' +
-            '<div class="spa-poster-label">' +
-              '<button class="spa-poster-link spa-soundcloud-btn">' +
-                '<span class="important-word">' + item.label + '</span>' +
-              '</button>' +
-            '</div>' +
-            '<p class="spa-poster-hint">tap to browse archives</p>' +
-          '</div>' +
-        '</div>';
-
-      var btn = container.querySelector('.spa-soundcloud-btn');
-      if (btn) {
-        btn.addEventListener('click', function () {
-          if (window.__SPA_Overlay) {
-            window.__SPA_Overlay.open(item.overlay, {});
-          }
-        });
+  var SLIDES = [
+    { label: 'spotify',
+      gifSrc: 'assets/icons/Spotifylogospin.gif',
+      href:   'https://open.spotify.com/artist/59X3431NBfd6xWMc3Zlh0v' },
+    { label: 'apple music',
+      gifSrc: 'assets/icons/Applemusiclogospin.gif',
+      href:   'https://music.apple.com/us/artist/onliner/1663334902' },
+    { label: 'bandcamp',
+      gifSrc: 'assets/icons/bandcamplogospin.gif',
+      href:   'https://indrolend.bandcamp.com' },
+    { label: 'soundcloud',
+      gifSrc: 'assets/icons/soundcloudlogospin.gif',
+      onTap: function () {
+        if (window.__SPA_Overlay) window.__SPA_Overlay.open('soundcloudArchiveMenu', {});
       }
     }
-  }
+  ];
 
-  // Called after the view becomes visible — safe to read layout dimensions here.
-  function onActivate(itemId) {
-    var item = META[itemId];
-    if (!item || item.type !== 'canvas') return;
-    var cv = mountedCanvases[itemId];
-    if (cv && window.__SPA_initParticleCluster) {
-      window.__SPA_initParticleCluster(cv, item.platform);
+  var panel = null;
+
+  function getPanel() {
+    if (!panel) {
+      panel = new GifCarouselPanel(SLIDES);
+      var host = document.getElementById('spa-view-host');
+      if (host) host.appendChild(panel.container);
     }
+    return panel;
   }
 
-  function getTransitionCanvas(itemId) {
-    return mountedCanvases[itemId] || null;
+  function mount(itemId, container) {
+    // intentionally empty — carousel panel overlays all music view divs
+  }
+
+  function onActivate(itemId) {
+    var idx = ITEM_IDS.indexOf(itemId);
+    if (idx === -1) return;
+    var p = getPanel();
+    p.show();
+    p.goTo(idx);
+  }
+
+  function onDeactivate() {
+    if (panel) panel.hide();
+  }
+
+  function getTransitionCanvas() {
+    return panel ? panel.getTransitionCanvas() : null;
   }
 
   if (!window.__SPA_Views) window.__SPA_Views = {};
   window.__SPA_Views.music = {
     mount:               mount,
     onActivate:          onActivate,
-    getTransitionCanvas: getTransitionCanvas
+    onDeactivate:        onDeactivate,
+    getTransitionCanvas: getTransitionCanvas,
+    skipItemTransition:  true
   };
 }());

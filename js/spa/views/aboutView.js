@@ -1,28 +1,36 @@
 // SPA About View
-// Each about item is a full-screen panel with:
-//   - A sticky header using the "important-word" fluctuating letter style
-//   - A scrollable content body
-// Vertical route-swipe is edge-gated (handled by gestures.js + routes.js metadata).
+// Displays each item's label as clean, large, readable HTML text.
+// Items that link to multi-page pages are navigable via click/tap.
+// Transitions between items use the standard SPA transition engine
+// (particle + fade) which is triggered automatically by the router.
 
 (function () {
+  'use strict';
+
   var ITEMS = {
-    spotifyAnalytics: { label: 'spotify analytics'  },
-    discography:      { label: 'discography'         },
-    devHistory:       { label: 'development history' },
-    journal:          { label: 'journal'             }
+    spotifyAnalytics: { label: 'spotify analytics',   href: null                       },
+    discography:      { label: 'discography',          href: '/pages/discography.html'  },
+    devHistory:       { label: 'development history',  href: '/pages/dev-history.html'  },
+    journal:          { label: 'journal',              href: '/pages/journal.html'      }
   };
 
   function mount(itemId, container) {
     var item = ITEMS[itemId];
     if (!item) return;
 
+    var inner;
+    if (item.href) {
+      inner =
+        '<a class="spa-text-view-link" href="' + item.href + '">' +
+          '<span class="important-word">' + item.label + '</span>' +
+        '</a>';
+    } else {
+      inner = '<span class="important-word">' + item.label + '</span>';
+    }
+
     container.innerHTML =
-      '<div class="spa-poster-view spa-text-poster">' +
-        '<div class="spa-text-poster-content">' +
-          '<div class="spa-poster-label">' +
-            '<span class="important-word">' + item.label + '</span>' +
-          '</div>' +
-        '</div>' +
+      '<div class="spa-text-view">' +
+        '<div class="spa-text-view-label">' + inner + '</div>' +
       '</div>';
   }
 
