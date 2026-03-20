@@ -2,9 +2,7 @@
 
 This guide helps you quickly provide example screenshots to improve OCR parsing accuracy.
 
-## The Problem
 
-The OCR parser extracts Spotify statistics from screenshots, but it may not always parse information accurately. To help improve accuracy, you can provide example screenshots with the correct values clearly documented.
 
 ## The Solution
 
@@ -33,10 +31,6 @@ Copy this template and fill in ONLY the values you see in your screenshot:
 ```json
 {
   "description": "What your screenshot shows",
-  "expected_stats": {
-    "listeners": 431,
-    "listeners_change": "+40%",
-    "streams": 2459,
     "streams_change": "+39%",
     "playlist_adds": 238,
     "followers": 244
@@ -119,10 +113,6 @@ You can include any of these fields that appear in your screenshot:
   "discovery_active_total": 83,
   "discovery_artist_profile": 54,
   "discovery_own_playlists": 33,
-  "discovery_listener_queue": 4,
-  
-  "discovery_programmed_total": 12,
-  "discovery_algorithmic_playlists": 3,
   "discovery_other_playlists": 3,
   "discovery_radio_autoplay": 6,
   
@@ -136,6 +126,7 @@ If you have Python and dependencies installed:
 
 ```bash
 # Install dependencies
+// ...existing code moved to ocr/OCR_EXAMPLES_QUICK_START.md ...
 sudo apt-get install tesseract-ocr
 pip install -r scripts/requirements.txt
 

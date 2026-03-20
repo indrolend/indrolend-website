@@ -293,12 +293,8 @@ A: This helps identify parsing issues - include notes in your JSON and open an i
 | **Purpose** | Update live data | Validate/improve parser |
 | **Processing** | Automatic (GitHub Actions) | Manual (validation script) |
 | **After Processing** | Deleted | Preserved |
-| **Requires JSON?** | No | Yes (ground truth) |
-| **In Git?** | No | Yes |
-| **Output** | parsed-stats.json | validation-results.json |
 
-## 🚀 Getting Started
-
+   // ...existing code moved to ocr/OCR_SYSTEM_VISUAL_GUIDE.md ...
 Choose your path:
 
 1. **I want to update my website stats**
