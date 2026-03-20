@@ -1,97 +1,56 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // --- Initialize Particle Page Transitions ---
-  // Disabled: particle transitions were slow and buggy
-  // if (typeof window.ParticleTransitionEngine !== 'undefined') {
-  //   window.ParticleTransitionEngine.init({
-  //     customBehaviors: window.ParticleTransitionEngine.behaviors
-  //   });
-  // }
-
-  // --- Ensure viewport starts at top on page load ---
-  // Mobile browsers sometimes start mid-page after auto-deployment/reload
-  // This ensures users see the header first, not the middle of the content
-  window.scrollTo(0, 0);
-  const homeContainer = document.querySelector(".home-container");
-  if (homeContainer) {
-    homeContainer.scrollTop = 0; // Reset internal scroll position if container is scrollable
-  }
-
-  // --- Home Page Fade-In Animation ---
-  // Trigger fade-in animations when the home page loads
-  const particlesBg = document.getElementById("particles-bg");
-  if (particlesBg) {
-    // Add fade-in class to particles background
-    particlesBg.classList.add("fade-in");
-    
-    // Trigger fade-in for all elements with fade-in-element class
-    const fadeElements = document.querySelectorAll(".fade-in-element");
-    const ANIMATION_TRIGGER_DELAY = 50; // ms delay to ensure animation triggers after initial render
-    fadeElements.forEach(el => {
-      setTimeout(() => {
-        el.classList.add("animate");
-      }, ANIMATION_TRIGGER_DELAY);
-    });
-  }
-
   // --- Particles Background (replaces Matrix) ---
   const particlesCanvas = document.getElementById("particles-bg");
   if (particlesCanvas) {
     const ctx = particlesCanvas.getContext("2d");
     let particles = [];
-    const particleCount = 60;
-    const maxSpeed = 0.6; // Increased speed for better visual effect
-    const particleColor = "rgba(94, 232, 125, 0.4)";
-    const lineColor = "rgba(94, 232, 125, 0.1)";
-    const connectionDistance = 120;
-    
-    // Mouse interaction settings (from particles.js)
-    const mouse = {
-      x: null,
-      y: null
-    };
-    const repulseDistance = 150;
-    const grabDistance = 150;
-    const attractEnabled = false; // Set to true to enable particle-to-particle attraction
-    const attractRotateX = 3000;
-    const attractRotateY = 3000;
-    const bounceEnabled = false; // Set to true to enable particle-to-particle bounce
+    const mouse = { x: null, y: null };
 
-    // Character pool: numbers (0-9), uppercase (A-Z), lowercase (a-z), symbols
-    const charPool = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%&*?!+-=";
-
-    function getRandomChar() {
-      return charPool[Math.floor(Math.random() * charPool.length)];
-    }
+    // Import shared engine
+    const characterParticles = window.__SPA_CharacterParticles || require('../../js/spa/engines/characterParticles.js');
 
     function resizeCanvas() {
       particlesCanvas.width = window.innerWidth;
       particlesCanvas.height = window.innerHeight;
     }
 
-    function createParticle(x, y) {
-      const size = Math.floor(Math.random() * 6 + 10); // Font size between 10-16px
-      const vx = (Math.random() - 0.5) * maxSpeed;
-      const vy = (Math.random() - 0.5) * maxSpeed;
-      return {
-        x: x !== undefined ? x : Math.random() * particlesCanvas.width,
-        y: y !== undefined ? y : Math.random() * particlesCanvas.height,
-        vx: vx,
-        vy: vy,
-        size: size,
-        radius: size / 2, // Used for collision detection
-        font: `${size}px "SF Mono", Menlo, Monaco, Consolas, monospace`, // Pre-cached font string
-        char: getRandomChar(),
-        // Each particle changes at its own random interval (300ms to 1500ms)
-        changeInterval: Math.random() * 1200 + 300,
-        lastChangeTime: performance.now()
-      };
-    }
-
     function initParticles() {
       particles = [];
-      for (let i = 0; i < particleCount; i++) {
-        particles.push(createParticle());
+      for (let i = 0; i < characterParticles.PARTICLE_COUNT; i++) {
+        particles.push(characterParticles.makeParticle(
+          Math.random() * particlesCanvas.width,
+          Math.random() * particlesCanvas.height,
+          String.fromCharCode(65 + Math.floor(Math.random() * 26)) // random char
+        ));
       }
+    }
+
+    function animateParticles() {
+      characterParticles.updateParticles(particles, mouse);
+      ctx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+      characterParticles.drawParticles(ctx, particles);
+      characterParticles.connectParticles(ctx, particles);
+      requestAnimationFrame(animateParticles);
+    }
+
+    resizeCanvas();
+    initParticles();
+    animateParticles();
+
+    particlesCanvas.addEventListener('mousemove', function (e) {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+    particlesCanvas.addEventListener('mouseleave', function () {
+      mouse.x = null;
+      mouse.y = null;
+    });
+
+    window.addEventListener('resize', function () {
+      resizeCanvas();
+      initParticles();
+    });
+  }
     }
 
     function updateParticles() {
