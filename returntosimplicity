@@ -1,0 +1,50 @@
+Yeah — you don’t need a rigid instruction block. You just need a clear, honest narrative + a focused ask.
+
+Here’s a version you can paste into VS Code that sounds like you, keeps it conversational, and still gives the model enough direction:
+
+⸻
+
+I want to reset how I’m working on this repo and explain where I’m at.
+
+This codebase started as a simple one-page site and grew over time through a lot of AI-assisted experimentation. I kept adding features like an idle game, overlays, transitions, Spotify stats, etc., mostly by describing behavior and letting AI generate code. Because of that, the repo grew by accumulation instead of a clean plan.
+
+At some point, I started trying to improve things by adding a lot of AI context files — docs, rules, structure explanations, logs, etc. The idea was that more context would help AI understand the repo better. I also experimented with using multiple LLMs (one for planning, one for parsing/editing), which led to even more context and instructions being created.
+
+Now I feel like I’ve gone too far in that direction. There’s a lot of context, a lot of structure layered on top of structure, and I’m starting to feel lost in the organization. I don’t fully trust what’s actually important in the codebase versus what is just leftover or overbuilt.
+
+What I want to do now is simplify everything and get back to something more grounded. I want to focus on:
+	•	what actually runs
+	•	what files actually matter
+	•	what owns each behavior
+	•	what can be reduced or removed
+
+I still want to preserve the important behavior of the site, but I want the codebase to be smaller, clearer, and easier to understand.
+
+I also don’t want to rely on all the previous context files as absolute truth anymore — I’d rather treat the current codebase as the main source of truth and use the context files only as reference if they’re still relevant.
+
+So I’d like your help figuring out how to move forward from here.
+
+From looking directly at the repo:
+	•	what seems like the active core of the application?
+	•	what major subsystems or features are actually alive?
+	•	which files feel like they are clearly important versus unclear or possibly unnecessary?
+	•	how would you suggest I start simplifying this in a safe way without breaking everything?
+
+I’m not trying to do a full rewrite immediately. I just want a clear starting point for reducing and organizing what I already have.
+
+⸻
+
+That’s it.
+
+No rigid rules, no “don’t do this / do that,” just:
+	•	context
+	•	intent
+	•	questions
+
+This works better with Copilot because it:
+	•	keeps it grounded in the repo
+	•	gives it freedom to inspect
+	•	doesn’t overload it with artificial constraints
+	•	still points it toward reduction instead of expansion
+
+If you want, next step after that response, I can help you write the follow-up prompt that turns its answer into actual cleanup actions.
